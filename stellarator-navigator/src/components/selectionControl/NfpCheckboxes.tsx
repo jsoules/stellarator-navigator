@@ -3,7 +3,7 @@ import { FunctionComponent } from "react"
 
 type Props = {
     selections: boolean[]
-    onChange: (i: number) => void
+    onChange: (i: number, targetState: boolean) => void
 }
 
 // Todo: this is *really* similar to the NcPerHP version; consider merging them.
@@ -16,7 +16,7 @@ const NfpCheckboxes: FunctionComponent<Props> = (props: Props) => {
     return (
         <div style={{paddingLeft: 8, paddingTop: 15}}>
             <Typography id="nfp-checkboxes" gutterBottom>
-                NFP
+                Field Period Count (NFP)
             </Typography>
             {
                 selections.map((v, i) => (
@@ -24,8 +24,8 @@ const NfpCheckboxes: FunctionComponent<Props> = (props: Props) => {
                         <FormControlLabel
                             control={
                                 <Checkbox
-                                    style={{ padding: 1, transform: 'scale(0.8' }}
-                                    onClick={() => onChange(i)}
+                                    style={{ padding: 1, transform: 'scale(0.8)' }}
+                                    onClick={() => onChange(i, !v)}
                                     checked={v}
                                 />
                             }

@@ -1,12 +1,13 @@
 
 import { FormControl, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material"
 import { Fragment, FunctionComponent } from "react"
-import { defaultDependentVariableValue, dependentVariableValidValues } from "./ValidValues"
+import { DependentVariableOpt } from "../../types/Types"
+import { defaultDependentVariableValue, dependentVariableValidValues } from "../display/DependentVariableConfig"
 
 
 type Props = {
-    value: number | undefined,
-    onChange: (evt: SelectChangeEvent<number>) => void
+    value: DependentVariableOpt | undefined,
+    onChange: (evt: SelectChangeEvent<DependentVariableOpt>) => void
 }
 
 const DependentVariableSelector: FunctionComponent<Props> = (props: Props) => {
@@ -18,10 +19,10 @@ const DependentVariableSelector: FunctionComponent<Props> = (props: Props) => {
     return (
         <Fragment>
             <Typography id="dependent-variable-selector" gutterBottom>
-                Dependent Variable
+                Dependent Variable in Plots
             </Typography>
             <FormControl fullWidth size="small">
-                <Select
+                <Select<DependentVariableOpt>
                     value={props.value ?? defaultDependentVariableValue}
                     onChange={onChange}
                 >

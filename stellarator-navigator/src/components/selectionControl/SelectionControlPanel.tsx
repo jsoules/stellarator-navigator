@@ -1,14 +1,12 @@
 import { SelectChangeEvent } from '@mui/material'
 import { FunctionComponent } from 'react'
-import { NavigatorStateAction } from '../../state/NavigatorReducer'
-import { DependentVariableOpt, FilterSettings, NavigatorDispatch } from '../../types/Types'
+import { FilterSettings } from '../../types/Types'
 import CoilLengthPerHpSlider from './CoilLengthPerHpSlider'
 import DependentVariableSelector from './DependentVariableSelector'
 import MeanIotaSelector from './MeanIotaSelector'
 import NcPerHpCheckboxes from './NcPerHpCheckboxes'
 import NfpCheckboxes from './NfpCheckboxes'
 import TotalCoilLengthSlider from './TotalCoilLengthSlider'
-import { parseDependentVariableValues } from './ValidValues'
 
 
 // qa error range 2e-11 to 4e-2 --> do we need a log scale?
@@ -16,14 +14,15 @@ import { parseDependentVariableValues } from './ValidValues'
 // max msc 1.8 - 5.005
 // min dist epsilon-below-0.1 - 0.3
 // gradient 2.5e-14 - 0.1
+// aspect ratio 2.852 - 20.022
 
 type Callbacks = {
-    handleCoilLengthPerHpChange: (newValue: number | number[]) => void
-    handleTotalCoilLengthChange: (newValue: number | number[]) => void
-    handleMeanIotaChange: (event: SelectChangeEvent) => void
+    handleCoilLengthPerHpChange: (event: Event, newValue: number | number[]) => void
+    handleTotalCoilLengthChange: (event: Event, newValue: number | number[]) => void
+    handleMeanIotaChange: (event: SelectChangeEvent<string>) => void
     handleDependentVariableChange: (event: SelectChangeEvent) => void
-    handleNcPerHpCheckboxChange: (index: number) => void
-    handleNfpCheckboxChange: (index: number) => void
+    handleNcPerHpCheckboxChange: (index: number, targetState: boolean) => void
+    handleNfpCheckboxChange: (index: number, targetState: boolean) => void
 }
 
 
@@ -32,51 +31,19 @@ type Props = {
     callbacks: Callbacks
 }
 
-export const handleCoilLengthChange = (dispatch: NavigatorDispatch, type: 'updateCoilLengthPerHp' | 'updateTotalCoilLength', newValue: number | number[]) => {
-    const update: NavigatorStateAction = {
-        type: type,
-        coilLength: newValue as number[]
-    }
-    dispatch(update)
-}
-
-export const handleMeanIotaChg = (dispatch: NavigatorDispatch, event: SelectChangeEvent) => {
-    const update: NavigatorStateAction = {
-        type: 'updateMeanIota',
-        newIota: parseFloat(event.target.value)
-    }
-    dispatch(update)
-}
-
-export const handleDependentVariableChg = (dispatch: NavigatorDispatch, event: SelectChangeEvent) => {
-    const update: NavigatorStateAction = {
-        type: 'updateDependentVariable',
-        newValue: event.target.value as unknown as DependentVariableOpt
-    }
-    dispatch(update)
-}
-
-export const handleCheckboxChange = (dispatch: NavigatorDispatch, type: 'updateNfp' | 'updateNcPerHp', index: number) => {
-    const update: NavigatorStateAction = {
-        type: type,
-        toggleIndex: index
-    }
-    dispatch(update)
-}
-
 const SelectionControlPanel: FunctionComponent<Props> = (props: Props) => {
-    const { filterSettings } = props
+    const { filterSettings, callbacks } = props
     const { coilLengthPerHp, totalCoilLength, meanIota, ncPerHp, nfp, dependentVariable } = filterSettings
 
     return (
         <div style={{paddingLeft: 20, paddingRight: 20, paddingTop: 100}}>
-            <CoilLengthPerHpSlider value={coilLengthPerHp} onChange={() => {}}/>
-            <TotalCoilLengthSlider value={totalCoilLength} onChange={() => {}} />
-            <MeanIotaSelector value={meanIota} onChange={() => {}} />
-            <NcPerHpCheckboxes selections={ncPerHp} onChange={() => {}} />
-            <NfpCheckboxes selections={nfp} onChange={() => {}} />
+            <CoilLengthPerHpSlider value={coilLengthPerHp} onChange={callbacks.handleCoilLengthPerHpChange}/>
+            <TotalCoilLengthSlider value={totalCoilLength} onChange={callbacks.handleTotalCoilLengthChange} />
+            <MeanIotaSelector value={`${meanIota}`} onChange={callbacks.handleMeanIotaChange} />
+            <NcPerHpCheckboxes selections={ncPerHp} onChange={callbacks.handleNcPerHpCheckboxChange} />
+            <NfpCheckboxes selections={nfp} onChange={callbacks.handleNfpCheckboxChange} />
             <hr />
-            <DependentVariableSelector value={parseDependentVariableValues(dependentVariable)} onChange={() => {}} />
+            <DependentVariableSelector value={dependentVariable} onChange={callbacks.handleDependentVariableChange} />
         </div>
     )
 

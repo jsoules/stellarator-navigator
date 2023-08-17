@@ -11,10 +11,12 @@ export type NavigatorStateAction = {
     newIota: number,
 } | {
     type: 'updateNcPerHp',
-    toggleIndex: number
+    index: number,
+    targetState: boolean
 } | {
     type: 'updateNfp',
-    toggleIndex: number
+    index: number,
+    targetState: boolean
 } | {
     type: 'updateDependentVariable',
     newValue: DependentVariableOpt
@@ -37,10 +39,10 @@ const NavigatorReducer = (s: FilterSettings, a: NavigatorStateAction): FilterSet
             return { ...s, meanIota: a.newIota }
         }
         case "updateNcPerHp": {
-            return updateBooleanList('ncPerHp', a.toggleIndex, s)
+            return updateBooleanList('ncPerHp', a.index, a.targetState, s)
         }
         case "updateNfp": {
-            return updateBooleanList('nfp', a.toggleIndex, s)
+            return updateBooleanList('nfp', a.index, a.targetState, s)
         }
         case "updateDependentVariable": {
             return { ...s, dependentVariable: a.newValue }
@@ -51,18 +53,16 @@ const NavigatorReducer = (s: FilterSettings, a: NavigatorStateAction): FilterSet
     }
 }
 
-const updateBooleanList = (key: 'ncPerHp' | 'nfp', toggleIndex: number, settings: FilterSettings): FilterSettings => {
+const updateBooleanList = (key: 'ncPerHp' | 'nfp', index: number, newState: boolean, settings: FilterSettings): FilterSettings => {
     const rightLength = key === 'ncPerHp' ? 13 : key === 'nfp' ? 5 : -1
     const current = key === 'ncPerHp' ? settings.ncPerHp : key === 'nfp' ? settings.nfp : []
 
     if (rightLength === -1) throw Error(`Unsupported keytype ${key} in updateBooleanList.`)
     const reset = current.length !== rightLength
     const newSelections = reset ? new Array(rightLength).fill(false) : current
-    
-    if (!reset) {
-        newSelections[toggleIndex] = !newSelections[toggleIndex]
-    }
-    
+
+    newSelections[index] = newState
+
     const result = { ...settings }
     if (key === 'ncPerHp') {
         result.ncPerHp = newSelections

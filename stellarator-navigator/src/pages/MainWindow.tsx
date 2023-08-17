@@ -1,48 +1,19 @@
-import { SelectChangeEvent } from "@mui/material"
-import { FunctionComponent, useCallback, useContext, useMemo } from "react"
+import { FunctionComponent, useContext } from "react"
 import Splitter from "../components/Splitter"
-import FilterEcho from "../components/display/FilterEcho"
-import SelectionControlPanel, { handleCheckboxChange, handleCoilLengthChange, handleDependentVariableChg, handleMeanIotaChg } from "../components/selectionControl/SelectionControlPanel"
+import useFilterCallbacks from "../components/selectionControl/SelectionControlCallbacks"
+import SelectionControlPanel from "../components/selectionControl/SelectionControlPanel"
 import { NavigatorContext } from "../state/NavigatorContext"
 import useWindowDimensions from "../util/useWindowDimensions"
-
+import FilterEcho from "./FilterEcho"
 
 
 const MainWindow: FunctionComponent = () => {
     const {width, height} = useWindowDimensions()
     const { filterSettings, dispatch } = useContext(NavigatorContext)
+    const callbacks = useFilterCallbacks(dispatch)
 
-    const handleCoilLengthPerHpChange = useCallback((newValue: number | number[]) => {
-        handleCoilLengthChange(dispatch, 'updateCoilLengthPerHp', newValue)
-    }, [dispatch])
-    const handleTotalCoilLengthChange = useCallback((newValue: number | number[]) => {
-        handleCoilLengthChange(dispatch, 'updateTotalCoilLength', newValue)
-    }, [dispatch])
-    const handleMeanIotaChange = useCallback((event: SelectChangeEvent) => {
-        handleMeanIotaChg(dispatch, event)
-    }, [dispatch])
-    const handleDependentVariableChange = useCallback((event: SelectChangeEvent) => {
-        handleDependentVariableChg(dispatch, event)
-    }, [dispatch])
-    const handleNcPerHpCheckboxChange = useCallback((index: number) => {
-        handleCheckboxChange(dispatch, 'updateNcPerHp', index)
-    }, [dispatch])
-    const handleNfpCheckboxChange = useCallback((index: number) => {
-        handleCheckboxChange(dispatch, 'updateNfp', index)
-    }, [dispatch])
+    // TODO: Update selected elements on state change
 
-    const callbacks = useMemo(() => {
-        return {
-            handleCoilLengthPerHpChange,
-            handleTotalCoilLengthChange,
-            handleMeanIotaChange,
-            handleDependentVariableChange,
-            handleNcPerHpCheckboxChange,
-            handleNfpCheckboxChange
-        }
-    }, [handleCoilLengthPerHpChange, handleDependentVariableChange, handleMeanIotaChange, handleNcPerHpCheckboxChange, handleNfpCheckboxChange, handleTotalCoilLengthChange])
-
-    // TODO: Add a context-and-reducer to manage values
     return (
         <div style={{position: 'absolute', width: width - 40, height: height - 40, margin: 20, overflow: 'hidden'}}>
             <Splitter
@@ -54,7 +25,7 @@ const MainWindow: FunctionComponent = () => {
                     <SelectionControlPanel filterSettings={filterSettings} callbacks={callbacks} />
                 </div>
                 <div>
-                    <div>GRAPHS AND STUFF HERE</div>
+                    <div>GRAPHS AND STUFF HERE</div> <br />
                     <FilterEcho s={filterSettings} />
                 </div>
             </Splitter>

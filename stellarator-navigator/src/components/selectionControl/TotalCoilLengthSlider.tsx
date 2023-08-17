@@ -1,8 +1,6 @@
-
-// import { Slider } from "material-ui/Slider"
 import { Slider, Typography } from "@mui/material"
 import { Fragment, FunctionComponent } from "react"
-import { totalCoilLengthValidValues } from "./ValidValues"
+import { totalCoilLengthValidValues } from "../../constants/ValidValues"
 
 const marks = totalCoilLengthValidValues.map(v => {return {value: v, label: ""}}) // was `${v}`
 

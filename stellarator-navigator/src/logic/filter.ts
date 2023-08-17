@@ -1,0 +1,41 @@
+import { coilLengthPerHpValidValues, totalCoilLengthValidValues } from "../constants/ValidValues"
+import { FilterSettings, NavigatorDatabase, StellaratorRecord } from "../types/Types"
+
+export const projectRecords = (selection: Set<number>, database: NavigatorDatabase) => {
+    const projection: StellaratorRecord[] = []
+    selection.forEach(s => projection.push(database.byId[s]))
+    return projection
+}
+
+//  Set intersection should be in the actual language standard Any Day Now
+const _intersect = (shortest: Set<number>, ...rest: Set<number>[]): Set<number> => {
+    const result = rest.reduce((currentResult, newSet) => { return new Set([...currentResult].filter(id => newSet.has(id))) }, shortest)
+    return result
+}
+
+const intersect = (...sets: Set<number>[]): Set<number> => {
+    const minLength = Math.min(...sets.map(s => s.size))
+    const shortestSetIdx = sets.findIndex(s => s.size === minLength)
+    const shortest = sets[shortestSetIdx]
+    
+    return _intersect(shortest, ...sets.filter((_, i) => i !== shortestSetIdx))
+}
+
+const applyFilter = (db: NavigatorDatabase, filters: FilterSettings, updateSelection: React.Dispatch<React.SetStateAction<Set<number>>>) => {
+    const resultSet = db.iotasIndex[filters.meanIota]
+    const perHpRange = filters.coilLengthPerHp ?? [Math.min(...coilLengthPerHpValidValues), Math.max(...coilLengthPerHpValidValues)]
+    const totalRange = filters.totalCoilLength ?? [Math.min(...totalCoilLengthValidValues), Math.max(...totalCoilLengthValidValues)]
+
+    const perHpLengthFilter = new Set(db.list.filter(row => row.coilLengthPerHp >= perHpRange[0] && row.coilLengthPerHp <= perHpRange[1]).map(r => r.id))
+    const totalLengthFilter = new Set(db.list.filter(row => row.totalCoilLength >= totalRange[0] && row.totalCoilLength <= totalRange[1]).map(r => r.id))
+
+    const finalResult = intersect(resultSet, perHpLengthFilter, totalLengthFilter)
+
+    updateSelection(finalResult)
+}
+
+// ncPerHp: number,            // range 1-13, coil count per half-period
+// nfp: number,                // range 1-5, field period count
+// TODO: allow filtering by visible dependent-variable range!!
+
+export default applyFilter

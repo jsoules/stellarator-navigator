@@ -1,12 +1,12 @@
 
 import { FormControl, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material"
 import { Fragment, FunctionComponent } from "react"
-import { meanIotaSentinelValue, meanIotaValidValues } from "./ValidValues"
+import { meanIotaSentinelValue, meanIotaValidValues } from "../../constants/ValidValues"
 
 
 type Props = {
-    value: number | undefined,
-    onChange: (evt: SelectChangeEvent<number>) => void
+    value: string | undefined,
+    onChange: (evt: SelectChangeEvent<string>) => void
 }
 
 const MeanIotaSelector: FunctionComponent<Props> = (props: Props) => {
@@ -22,10 +22,10 @@ const MeanIotaSelector: FunctionComponent<Props> = (props: Props) => {
     return (
         <Fragment>
             <Typography id="mean-iota-selector" gutterBottom>
-                Mean Iota
+                Mean Magnetic Shear (Iota)
             </Typography>
             <FormControl fullWidth size="small">
-                <Select
+                <Select<string>
                     value={props.value ?? meanIotaSentinelValue}
                     onChange={onChange}
                 >

@@ -1,8 +1,6 @@
-
-// import { Slider } from "material-ui/Slider"
 import { Slider, Typography } from "@mui/material"
 import { Fragment, FunctionComponent } from "react"
-import { coilLengthPerHpValidValues } from "./ValidValues"
+import { coilLengthPerHpValidValues } from "../../constants/ValidValues"
 
 const marks = coilLengthPerHpValidValues.map(v => {return {value: v, label: ""}})
 
@@ -22,7 +20,7 @@ const CoilLengthPerHpSlider: FunctionComponent<Props> = (props: Props) => {
     return (
         <Fragment>
             <Typography id="coil-length-per-hp-slider" gutterBottom>
-                Coil Length Per HP
+                Coil Length Per Half-Period
             </Typography>
             <Slider
                 getAriaLabel={() => 'Coil length per hp'}

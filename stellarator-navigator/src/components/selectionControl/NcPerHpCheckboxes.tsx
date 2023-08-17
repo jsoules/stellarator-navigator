@@ -3,7 +3,7 @@ import { FunctionComponent } from "react"
 
 type Props = {
     selections: boolean[]
-    onChange: (i: number) => void
+    onChange: (i: number, targetState: boolean) => void
 }
 
 const NcPerHpCheckboxes: FunctionComponent<Props> = (props: Props) => {
@@ -14,7 +14,7 @@ const NcPerHpCheckboxes: FunctionComponent<Props> = (props: Props) => {
     return (
         <div style={{paddingLeft: 8, paddingTop: 15}}>
             <Typography id="nc-per-hp-checkboxes" gutterBottom>
-                NC per HP
+                Coil Count per Half-Period (NC per HP)
             </Typography>
             {
                 selections.map((v, i) => (
@@ -22,8 +22,8 @@ const NcPerHpCheckboxes: FunctionComponent<Props> = (props: Props) => {
                         <FormControlLabel
                             control={
                                 <Checkbox
-                                    style={{ padding: 1, transform: 'scale(0.8' }}
-                                    onClick={() => onChange(i)}
+                                    style={{ padding: 1, transform: 'scale(0.8)' }}
+                                    onClick={() => onChange(i, !v)}
                                     checked={v}
                                 />
                             }

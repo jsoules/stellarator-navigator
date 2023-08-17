@@ -1,4 +1,7 @@
-import React, { FunctionComponent, PropsWithChildren, useMemo, useReducer } from "react";
+import React, { FunctionComponent, PropsWithChildren, useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import { initialNavigatorState } from "../constants/Defaults";
+import database from "../logic/database";
+import applyFilter, { projectRecords } from "../logic/filter";
 import { FilterSettings, NavigatorContextType } from "../types/Types";
 import NavigatorReducer from "./NavigatorReducer";
 
@@ -11,36 +14,39 @@ import NavigatorReducer from "./NavigatorReducer";
 // * A way to change the current filters
 // POSSIBLY a way to associate each ID with its target?
 
-const initialNavigatorState: FilterSettings = {
-    coilLengthPerHp: undefined,
-    totalCoilLength: undefined,
-    meanIota: 0.1,
-    ncPerHp: new Array(13).fill(false),
-    nfp: new Array(5).fill(false),
-    dependentVariable: "maxKappa"
-}
 
+// TODO: SHOULD WE SPLIT THIS CONTEXT?
 
 export const NavigatorContext = React.createContext<NavigatorContextType>({
     filterSettings: initialNavigatorState,
     selection: new Set<number>(),
+    database,
     dispatch: () => {},
-    fetchRecords: (ids: Set<number>) => { ids.clear(); return {} }, // TODO
+    fetchRecords: (ids: Set<number>) => { ids.clear(); return [] }, // TODO
 })
 
-type Props = {
-    id: number
-}
-
-const SetupFilterContext: FunctionComponent<PropsWithChildren<Props>> = (props: PropsWithChildren<Props>) => {
+const SetupFilterContext: FunctionComponent<PropsWithChildren> = (props: PropsWithChildren) => {
     const { children } = props
     const [filterSettings, filterSettingDispatch] = useReducer(NavigatorReducer, initialNavigatorState)
+    const [selection, updateSelection] = useState(new Set<number>())
+    const doFilter = useCallback((filters: FilterSettings) => {
+        applyFilter(database, filters, updateSelection)
+    }, [updateSelection])
+    const doRowProjection = useCallback((selection: Set<number>) => {
+        return projectRecords(selection, database)
+    }, [])
+
+    useEffect(() => {
+        doFilter(filterSettings)
+    }, [filterSettings, doFilter])
+
     const ctxt: NavigatorContextType = useMemo(() => {return {
         filterSettings,
+        selection,
+        database,
         dispatch: filterSettingDispatch,
-        selection: new Set<number>(),
-        fetchRecords: (ids: Set<number>) => { ids.clear(); return {} }, // TODO
-    }}, [filterSettings, filterSettingDispatch])
+        fetchRecords: doRowProjection
+    }}, [selection, filterSettings, filterSettingDispatch, doRowProjection])
 
     return (
         <NavigatorContext.Provider value={ctxt}>

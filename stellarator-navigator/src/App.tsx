@@ -1,10 +1,11 @@
-// May trim these later
+// May trim font references later
 import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 import './App.css'
 import MainWindow from './pages/MainWindow'
+import SetupFilterContext from './state/NavigatorContext'
 
 
 function App() {
@@ -14,7 +15,9 @@ function App() {
     // (Or maybe that happens via query?)
 
     return (
-        <MainWindow />
+        <SetupFilterContext>
+            <MainWindow />
+        </SetupFilterContext>
       )
 }
 
