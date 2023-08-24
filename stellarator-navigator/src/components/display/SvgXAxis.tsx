@@ -2,14 +2,20 @@
 
 import { scaleLinear } from "d3"
 import { FunctionComponent, useMemo } from "react"
+import { BoundedPlotDimensions, IndependentVariableOpt } from "../../types/Types"
+import { independentVariableValidValues } from "./DependentVariableConfig"
+
+const clipAvoidanceOffset = 6
 
 type AxisProps = {
     dataDomain: number[],
-    canvasRange: number[]
+    canvasRange: number[],
+    type: IndependentVariableOpt,
+    dims: BoundedPlotDimensions
 }
 
 const SvgXAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
-    const { dataDomain, canvasRange } = props
+    const { dataDomain, canvasRange, dims, type } = props
     
     const ticks = useMemo(() => {
         const xScale = scaleLinear()
@@ -26,14 +32,17 @@ const SvgXAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
             }))
     }, [canvasRange, dataDomain])
 
+    // See if this works or if you need to use a <g> group internal to the svg tag
+    const transform = useMemo(() => `translate(-${clipAvoidanceOffset}, ${dims.boundedHeight})`, [dims.boundedHeight])
+
     return (
-        <svg>
+        <g transform={transform} key="x-axis">
             <path
                 d={[
-                    "M", 6+canvasRange[0], 6,
-                    "v", -6,
-                    "H", 6+canvasRange[1],
-                    "v", 6,
+                    "M", clipAvoidanceOffset+canvasRange[0], dims.tickLength,
+                    "v", -dims.tickLength,
+                    "H", clipAvoidanceOffset+canvasRange[1],
+                    "v", dims.tickLength,
                 ].join(" ")}
                 fill="none"
                 stroke="currentColor"
@@ -41,25 +50,34 @@ const SvgXAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
             {ticks.map(({ value, xOffset }) => (
                 <g
                     key={`xtick-${value}`}
-                    transform={`translate(${xOffset + 6}, 0)`}
+                    transform={`translate(${xOffset + clipAvoidanceOffset}, 0)`}
                 >
                     <line
-                        y2="6"
+                        y2={`${dims.tickLength}`}
                         stroke="currentColor"
                     />
                     <text
                         key={value}
                         style={{
-                            fontSize: "10px",
+                            fontSize: `${dims.fontPx}px`,
                             textAnchor: "middle",
-                            transform: "translateY(20px)"
+                            transform: `translateY(${2 * dims.fontPx}px)`
                     }}>
                         {/* TODO -- Format to limit decimals/digit count */}
                         { value }
                     </text>
                 </g>
             ))}
-        </svg>
+            <g key="x-axis-label" transform={`translate(${(dims.boundedWidth / 2) + clipAvoidanceOffset}, 0)`}>
+                <text style={{
+                    fontSize: `${1.5*dims.fontPx}px`,
+                    textAnchor: "middle",
+                    transform: `translateY(${4 * dims.fontPx}px)`
+                }}>
+                    {(independentVariableValidValues.find(v => v.value === type) || {text: 'OOPS'}).text}
+                </text>
+            </g>
+        </g>
     )
 }
 

@@ -1,32 +1,37 @@
 
 import { scaleLinear, scaleLog } from "d3"
 import { FunctionComponent, useMemo } from "react"
-import { DependentVariableOpt } from "../../types/Types"
+import { BoundedPlotDimensions, DependentVariableOpt } from "../../types/Types"
+import { dependentVariableValidValues } from "./DependentVariableConfig"
 
 type AxisProps = {
     dataRange: number[]
     canvasRange: number[]
     type: DependentVariableOpt
+    dims: BoundedPlotDimensions
 }
 
 const leadingDigit = (v: number) => {
     return Math.round(v / (10 ** Math.floor(Math.log10(v))))
 }
-const logDisplayDigits = [1] // TODO: Needs to be more sophisticated: number of displayed digits shuld depend on 
+const logDisplayDigits = [1] // TODO: Needs to be more sophisticated: number of displayed digits shuld depend on ??
+
+const clipAvoidanceX = 30
+const clipAvoidanceY = 20
+const axisLabelOffset = 10
 
 const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
-    const { dataRange, canvasRange, type } = props
+    const { dataRange, canvasRange, type, dims } = props
+    const yAxisTransform = useMemo(() => `translate(-${clipAvoidanceX + dims.tickLength}, -${clipAvoidanceY})`, [dims.tickLength])
 
-    // TODO: harmonize with x-ticks code
     // TODO: Customize range!! (or no?)
-    const pixelsPerTick = 30
     const ticks = useMemo(() => {
         const realDataRange = type === 'qaError'
             ? [10 ** dataRange[0], 10 ** dataRange[1]]
-            : canvasRange
+            : dataRange
         const yScale = type === 'qaError' ? scaleLog(realDataRange, canvasRange) : scaleLinear(dataRange, canvasRange)
         const height = canvasRange[1] - canvasRange[0]
-        const targetTickCount = Math.max(1, Math.floor(height / pixelsPerTick))
+        const targetTickCount = Math.max(1, Math.floor(height / dims.pixelsPerTick))
 
         return yScale.ticks(targetTickCount)
         .map(value => ({
@@ -36,30 +41,16 @@ const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
                     ? value.toFixed(1)
                     : logDisplayDigits.includes(leadingDigit(value)) ? value.toExponential(0) : ''
         }))
-
-        // if (!useLog) {
-        //     return yScale.ticks(targetTickCount)
-        //         .map(value => ({
-        //             value,
-        //             yOffset: height - yScale(value)
-        //         }))
-        // }
-        // const format = yScale.tickFormat(4)
-        // return yScale.ticks(targetTickCount).map(format).map()
-    }, [canvasRange, dataRange, type])
-
-    // const powerOfTwo = (v: number) => Number.isInteger(Math.log2(Math.round(v / (10 ** Math.floor(Math.log10(v))))))
-    
-    // const logDisplayDigits = [8, 2, 4] // TODO: Needs to be more sophisticated: number of displayed digits shuld depend on 
+    }, [canvasRange, dataRange, type, dims])
 
     return (
-        <svg>
+        <g transform={yAxisTransform} key="y-axis">
             <path
                 d={[
-                    "M", 30, canvasRange[0] + 20,
-                    "h", 6,
-                    "V", canvasRange[1] + 20,
-                    "h", -6,
+                    "M", clipAvoidanceX, canvasRange[0] + clipAvoidanceY,
+                    "h", dims.tickLength,
+                    "V", canvasRange[1] + clipAvoidanceY,
+                    "h", -dims.tickLength,
                 ].join(" ")}
                 fill="none"
                 stroke="currentColor"
@@ -69,18 +60,16 @@ const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
                     <g
                         key={`ytick-${value}`}
                         // transform={`translate(${yOffset}, 0)`}
-                        transform={`translate(36, ${yOffset + 20})`}
+                        transform={`translate(${dims.tickLength + clipAvoidanceX}, ${yOffset + clipAvoidanceY})`}
                     >
-                        <line x2="-6" stroke="currentColor"
-                        />
-                        {/* // TODO: FIX WIDTH FOR GRIDLINE */}
-                        {type === 'qaError' && leadingDigit(value) === 1 && <line x2="600" stroke="#cbcbcb" />}
+                        <line x2={`-${dims.tickLength}`} stroke="currentColor" />
+                        {type === 'qaError' && leadingDigit(value) === 1 && <line x2={dims.boundedWidth} stroke="#cbcbcb" />}
                         <text
                             key={`yticklabel-${value}`}
                             style={{
-                                fontSize: "10px",
+                                fontSize: `${dims.fontPx}px`,
                                 textAnchor: "middle",
-                                transform: "translateX(-20px) translateY(3px)"
+                                transform: `translateX(-${clipAvoidanceY}px) translateY(${dims.tickLength/2}px)`
                             }}
                             >
                             { label }
@@ -88,7 +77,16 @@ const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
                     </g>
                 )
             })}
-        </svg>
+            <g key="y-axis-label" transform={`translate(-${axisLabelOffset}, ${(dims.boundedHeight / 2) + dims.marginTop})`}>
+                {/* This seems too simple but also seems to be doing the right thing so, why not? */}
+                <text style={{
+                    fontSize: `${1.5*dims.fontPx}px`,
+                    textAnchor: "middle"
+                }} transform="rotate(-90)">
+                    {(dependentVariableValidValues.find(v => v.value === type) || {text: 'OOPS'}).text}
+                </text>
+            </g>
+        </g>
     )
 }
 

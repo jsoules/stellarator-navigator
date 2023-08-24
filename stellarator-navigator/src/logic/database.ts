@@ -34,7 +34,7 @@ const rawData = _rawData as RawData
 
 const data = rawData.data
 
-export const dataList = data.map((row) => {
+const dataList = data.map((row) => {
     return {
         id: row[13],
         coilLengthPerHp: row[1],
@@ -52,7 +52,7 @@ export const dataList = data.map((row) => {
     } as StellaratorRecord
 })
 
-export const dataDict: RecordDict = {}
+const dataDict: RecordDict = {}
 
 dataList.forEach(entry => {
     dataDict[entry.id] = entry

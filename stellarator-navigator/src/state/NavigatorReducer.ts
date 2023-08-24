@@ -1,4 +1,4 @@
-import { DependentVariableOpt, FilterSettings } from "../types/Types"
+import { DependentVariableOpt, FilterSettings, IndependentVariableOpt } from "../types/Types"
 
 export type NavigatorStateAction = {
     type: 'updateCoilLengthPerHp',
@@ -20,6 +20,12 @@ export type NavigatorStateAction = {
 } | {
     type: 'updateDependentVariable',
     newValue: DependentVariableOpt
+} | {
+    type: 'updateIndependentVariable',
+    newValue: IndependentVariableOpt
+} | {
+    type: 'updateMarkedRecords',
+    newSelections: Set<number>
 }
 
 // TODO: updating the filter should automatically trigger a narrowing or widening of the
@@ -46,6 +52,12 @@ const NavigatorReducer = (s: FilterSettings, a: NavigatorStateAction): FilterSet
         }
         case "updateDependentVariable": {
             return { ...s, dependentVariable: a.newValue }
+        }
+        case "updateIndependentVariable": {
+            return { ...s, independentVariable: a.newValue }
+        }
+        case "updateMarkedRecords": {
+            return { ...s, markedRecords: a.newSelections }
         }
         default: {
             throw Error(`Unknown reducer action ${JSON.stringify(a)}`)

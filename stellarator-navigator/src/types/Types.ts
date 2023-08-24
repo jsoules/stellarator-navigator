@@ -2,6 +2,7 @@ import { Dispatch } from "react"
 import { NavigatorStateAction } from "../state/NavigatorReducer"
 
 export type DependentVariableOpt = 'maxKappa' | 'maxMsc' | 'minDist' | 'qaError'
+export type IndependentVariableOpt = 'total' | 'halfPeriod'
 
 export type FilterSettings = {
     coilLengthPerHp: number[]
@@ -10,6 +11,8 @@ export type FilterSettings = {
     ncPerHp: boolean[],
     nfp: boolean[],
     dependentVariable: DependentVariableOpt,
+    independentVariable: IndependentVariableOpt,
+    markedRecords: Set<number>
 }
 
 export type StellaratorRecord = {
@@ -44,10 +47,28 @@ export type NavigatorDispatch = Dispatch<NavigatorStateAction>
 
 export type NavigatorContextType = {
     filterSettings: FilterSettings
-    selection: Set<number>   // TODO: maybe remove this?
+    selection: Set<number>
     database: NavigatorDatabase
     dispatch: React.Dispatch<NavigatorStateAction>
     fetchRecords: (ids: Set<number>) => StellaratorRecord[]
 }
 
 export type FilterUpdateAction = unknown
+
+
+export type PlotDimensions = {
+    width: number
+    height: number
+    marginTop: number
+    marginRight: number
+    marginBottom: number
+    marginLeft: number
+}
+
+export type BoundedPlotDimensions = PlotDimensions & {
+    boundedWidth: number
+    boundedHeight: number
+    tickLength: number
+    pixelsPerTick: number
+    fontPx: number
+}

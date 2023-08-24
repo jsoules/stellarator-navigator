@@ -1,50 +1,40 @@
 import { ScaleLinear, ScaleLogarithmic, scaleOrdinal, ScaleOrdinal } from "d3"
 import { FunctionComponent } from "react"
-import { DependentVariableOpt, StellaratorRecord } from "../../types/Types"
+import { filterNc, filterNfp } from "../../logic/filter"
+import { DependentVariableOpt, IndependentVariableOpt, StellaratorRecord } from "../../types/Types"
 import { WongCBFriendly } from "./Colormaps"
+import { onClickDot, onHoverDot, onHoverOff } from "./interactions"
 
 
 type ScatterplotProps = {
     data: StellaratorRecord[]
     dependentVar: DependentVariableOpt
+    independentVar: IndependentVariableOpt
     xScale: ScaleLinear<number, number, never>
     yScale: ScaleLinear<number, number, never> | ScaleLogarithmic<number, number, never>
     height: number
+    markedIds?: Set<number>
     highlightedSeries?: number
     colormap?: string[]
+    nfpValue?: number
+    ncPerHpValue?: number
 }
 
-// NOTE: THIS WOULD REQUIRE REFFING THE DOTS
-// --> So we would do it instead with props passed through to the dots
-//  // Highlight the specie that is hovered
-//  const highlight = function(event,d){
-
-//     selected_specie = d.Species
-
-//     d3.selectAll(".dot")
-//       .transition()
-//       .duration(200)
-//       .style("fill", "lightgrey")
-//       .attr("r", 3)
-
-//     d3.selectAll("." + selected_specie)
-//       .transition()
-//       .duration(200)
-//       .style("fill", color(selected_specie))
-//       .attr("r", 7)
-//   }
 
 type dotProps = {
     rec: StellaratorRecord
     yVar: DependentVariableOpt
+    xVar: IndependentVariableOpt
     xScale: ScaleLinear<number, number, never>
     yScale: ScaleLinear<number, number, never> | ScaleLogarithmic<number, number, never>
     height: number
     colors: ScaleOrdinal<string, string, never>
+    isMarked?: boolean
 }
 
+
 const Dot: FunctionComponent<dotProps> = (props: dotProps) => {
-    const { rec, yVar, colors, xScale, yScale, height } = props
+    const { rec, yVar, xVar, colors, xScale, yScale, height, isMarked } = props
     if (rec === undefined) return <></>
 
     let y = 0
@@ -66,25 +56,38 @@ const Dot: FunctionComponent<dotProps> = (props: dotProps) => {
     if (isNaN(height - y)) {
         console.log(`issue with record ${JSON.stringify(rec)} y was ${y}`)
     }
-    // console.log(`point ${rec.id} ${height} ${y} cy ${height - y}`)
     return <circle
-        cx={xScale(rec.totalCoilLength)}
+        key={`${rec.id}`}
+        cx={xScale(xVar === 'total' ? rec.totalCoilLength : rec.coilLengthPerHp)}
         cy={(height - y)}
         fill={colors(`${rec.seed}`)}
-        r="4"
-        onClick={() => console.log(`Clicked id ${rec.id}`)}
+        r={isMarked ? "8" : "4"}
+        onClick={() => onClickDot(rec.id)}
+        onMouseEnter={() => onHoverDot(rec.id)}
+        onMouseLeave={() => onHoverOff(rec.id)}
     />
 }
 
 
 const HybridSnScatterplot: FunctionComponent<ScatterplotProps> = (props: ScatterplotProps) => {
-    const { colormap, data, xScale, yScale, height, dependentVar } = props
+    const { colormap, data, xScale, yScale, height, markedIds, dependentVar, independentVar, nfpValue, ncPerHpValue } = props
     if (data === undefined || data.length === 0) return <></>
     const _colors = (colormap ?? WongCBFriendly) as string[]
     const color = scaleOrdinal()
         .domain(['0', '1', '2', '3', '4', '5', '6', '7'])
         .range(_colors) as ScaleOrdinal<string, string, never>
-    const dots = data.map(rec => (<Dot rec={rec} yVar={dependentVar} colors={color} xScale={xScale} yScale={yScale} height={height}/>))
+    const filteredData = filterNc(filterNfp(data, nfpValue), ncPerHpValue)
+    const dots = filteredData.map(rec => (
+        <Dot key={`dot-${rec.id}`}
+            rec={rec}
+            yVar={dependentVar}
+            xVar={independentVar}
+            colors={color}
+            xScale={xScale}
+            yScale={yScale}
+            height={height}
+            isMarked={markedIds?.has(rec.id)}
+        />))
     return dots
 }
 

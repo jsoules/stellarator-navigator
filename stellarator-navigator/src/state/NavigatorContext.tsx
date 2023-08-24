@@ -45,8 +45,8 @@ const SetupFilterContext: FunctionComponent<PropsWithChildren> = (props: PropsWi
         selection,
         database,
         dispatch: filterSettingDispatch,
-        fetchRecords: doRowProjection
-    }}, [selection, filterSettings, filterSettingDispatch, doRowProjection])
+        fetchRecords: doRowProjection,
+    }}, [filterSettings, selection, doRowProjection])
 
     return (
         <NavigatorContext.Provider value={ctxt}>

@@ -28,18 +28,18 @@ const defaultGripMargin = 2
 const Splitter: FunctionComponent<PropsWithChildren<Props>> = (props) => {
     const {width, height, initialPosition, onChange, adjustable=true, positionFromRight=false, direction='horizontal'} = props
 
-    const size1 = direction === 'horizontal' ? width : height
+    const splitDimension = direction === 'horizontal' ? width : height
     // const size2 = direction === 'horizontal' ? height : width
 
     const [gripPosition, setGripPosition] = useState<number>(initialPosition)
     useEffect(() => {
-        if (gripPosition > size1 - 4) {
-            setGripPosition(size1 - 4)
+        if (gripPosition > splitDimension - 4) {
+            setGripPosition(splitDimension - 4)
         }
-        else if ((gripPosition < 4) && (size1 > 20)) {
+        else if ((gripPosition < 4) && (splitDimension > 20)) {
             setGripPosition(4)
         }
-    }, [gripPosition, width, size1])
+    }, [gripPosition, width, splitDimension])
 
     if (!props.children) throw Error('Unexpected: no props.children')
 
@@ -69,13 +69,13 @@ const Splitter: FunctionComponent<PropsWithChildren<Props>> = (props) => {
         return <child1.type {...child1.props} width={width} height={height} />
     }
 
-    const gripPositionFromLeft = positionFromRight ? size1 - gripPosition : gripPosition
+    const gripPositionFromLeft = positionFromRight ? splitDimension - gripPosition : gripPosition
 
     const gripThickness = adjustable ? (props.gripThickness ?? defaultGripThickness) : 0
     const gripInnerThickness = adjustable ? (props.gripInnerThickness ?? defaultGripInnerThickness) : 0
     const gripMargin = adjustable ? (props.gripMargin ?? defaultGripMargin) : 0
     const size1A = gripPositionFromLeft - gripThickness / 2 - gripMargin
-    const size1B = size1 - size1A - gripThickness - 2 * gripMargin
+    const size1B = splitDimension - size1A - gripThickness - 2 * gripMargin
 
     const style0: React.CSSProperties = {
         top: 0,
@@ -135,7 +135,7 @@ const Splitter: FunctionComponent<PropsWithChildren<Props>> = (props) => {
         if (newGripPositionFromLeft === gripPositionFromLeft) {
             return;
         }
-        const newGripPosition = positionFromRight ? size1 - newGripPositionFromLeft : newGripPositionFromLeft
+        const newGripPosition = positionFromRight ? splitDimension - newGripPositionFromLeft : newGripPositionFromLeft
         setGripPosition(newGripPosition)
         onChange && onChange(newGripPosition)
     }

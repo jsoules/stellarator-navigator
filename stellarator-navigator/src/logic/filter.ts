@@ -34,6 +34,17 @@ const applyFilter = (db: NavigatorDatabase, filters: FilterSettings, updateSelec
     updateSelection(finalResult)
 }
 
+// Todo: combine these to one call? Eh...
+export const filterNfp = (records: StellaratorRecord[], nfp?: number): StellaratorRecord[] => {
+    if (nfp === undefined) return records
+    return records.filter(d => d.nfp === nfp)
+}
+
+export const filterNc = (records: StellaratorRecord[], nc?: number): StellaratorRecord[] => {
+    if (nc === undefined) return records
+    return records.filter(d => d.ncPerHp === nc)
+}
+
 // ncPerHp: number,            // range 1-13, coil count per half-period
 // nfp: number,                // range 1-5, field period count
 // TODO: allow filtering by visible dependent-variable range!!

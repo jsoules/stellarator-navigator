@@ -1,6 +1,7 @@
 import { FunctionComponent, useContext } from "react"
 import { FilterSettings } from "../types/Types"
 
+import { useAxes, useScales } from "../components/display/PlotScaling"
 import SvgWrapper from "../components/display/SvgWrapper"
 import { NavigatorContext } from "../state/NavigatorContext"
 
@@ -8,14 +9,38 @@ type Props = {
     s: FilterSettings
 }
 
-const FilterEcho: FunctionComponent<Props> = (props: Props) => {
-    const { s } = props
-    s.coilLengthPerHp = s.coilLengthPerHp ?? [-3, -1]
-    s.totalCoilLength = s.totalCoilLength ?? [-10, -9]
+// If using context, probably don't need to pass in explicitly?
+const FilterEcho: FunctionComponent<Props> = () => {
     const { filterSettings, fetchRecords, selection } = useContext(NavigatorContext)
+    filterSettings.totalCoilLength = filterSettings.totalCoilLength ?? [-10, -9]
+    filterSettings.coilLengthPerHp = filterSettings.coilLengthPerHp ?? [-3, -1]
     const oneSelection = selection.keys().next().value as number
     const records = fetchRecords(new Set([oneSelection]))
     const allRecords = fetchRecords(selection)
+    // const dataDomain = useMemo(() => {
+    //     return [filterSettings.totalCoilLength[0], filterSettings.totalCoilLength[1]]
+    // }, [filterSettings.totalCoilLength])
+    const nfp = filterSettings.nfp.findIndex(s => s)
+    const nc = filterSettings.ncPerHp.findIndex(s => s)
+    const requestedDims = {
+        marginTop: 20,
+        marginRight: 20,
+        marginBottom: 60,
+        marginLeft: 80,
+        height: 400,
+        width: 640,
+        boundedHeight: 400 - 20 - 60,
+        boundedWidth: 640 - 20 - 80,
+        tickLength: 6,
+        fontPx: 10,
+        pixelsPerTick: 30
+    }
+    const [xScale, yScale] = useScales({dependentVar: filterSettings.dependentVariable, independentVar: filterSettings.independentVariable, dimsIn: requestedDims})
+    const [xAxis, yAxis] = useAxes({
+        xScale, yScale,
+        dependentVar: filterSettings.dependentVariable, independentVar: filterSettings.independentVariable,
+        dims: requestedDims
+    })
     return (
         <div>
             <div>
@@ -27,18 +52,18 @@ const FilterEcho: FunctionComponent<Props> = (props: Props) => {
                 </ul>
                 <div>
                     <SvgWrapper
-                        useXAxis={true}
-                        useYAxis={true}
                         data={allRecords}
                         // data={records}
-                        // dependentVar={"maxMsc"}
                         dependentVar={filterSettings.dependentVariable}
-                        requestedDims={{
-                            marginTop: 20,
-                            marginRight: 60,
-                            marginBottom: 20,
-                            marginLeft: 40
-                        }}
+                        independentVar={filterSettings.independentVariable}
+                        xScale={xScale}
+                        yScale={yScale}
+                        xAxis={xAxis}
+                        yAxis={yAxis}
+                        dims={requestedDims}
+                        nfpValue={nfp}
+                        ncPerHpValue={nc}
+                        clickHandler={() => {}}
                     />
                 </div>
             </div>

@@ -7,7 +7,9 @@ export const initialNavigatorState: FilterSettings = {
     meanIota: 0.1,
     ncPerHp: new Array(13).fill(false),
     nfp: new Array(5).fill(false),
-    dependentVariable: "maxKappa"
+    dependentVariable: "maxKappa",
+    independentVariable: "total",
+    markedRecords: new Set<number>(),
 }
 
 export const initialDatabase: NavigatorDatabase = {
