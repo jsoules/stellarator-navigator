@@ -10,6 +10,8 @@ type SnTableProps = {
     activeNc?: number
 }
 
+const variableColumnsDefaultWidth = 110
+
 // id, length per hp, legnth total, mean iota, nc per hp, nfp, seed, maxKappa, maxMsc, minDist, qaError, gradient, aspect ratio
 const columns: GridColDef[] = [
     // id
@@ -72,7 +74,8 @@ const columns: GridColDef[] = [
     {
         field: 'maxKappa',
         headerName: 'Max Kappa',
-        width: 110,
+        flex: 1,
+        minWidth: variableColumnsDefaultWidth,
         description: 'Maximum curvature',
         sortable: true,
     },
@@ -80,7 +83,8 @@ const columns: GridColDef[] = [
     {
         field: 'maxMsc',
         headerName: 'Max MSC',
-        width: 110,
+        flex: 1,
+        minWidth: variableColumnsDefaultWidth,
         description: 'Max MSC',
         sortable: true,
     },
@@ -88,7 +92,8 @@ const columns: GridColDef[] = [
     {
         field: 'minDist',
         headerName: 'Min dist',
-        width: 110,
+        flex: 1,
+        minWidth: variableColumnsDefaultWidth,
         description: 'TKTK',
         sortable: true,
     },
@@ -96,7 +101,8 @@ const columns: GridColDef[] = [
     {
         field: 'qaError',
         headerName: 'QA Error',
-        width: 110,
+        flex: 1,
+        minWidth: variableColumnsDefaultWidth,
         description: 'Quasiasymmetry Error',
         sortable: true,
     },
@@ -104,7 +110,8 @@ const columns: GridColDef[] = [
     {
         field: 'gradient',
         headerName: 'Gradient',
-        width: 110,
+        flex: 1,
+        minWidth: variableColumnsDefaultWidth,
         description: 'TKTKTK',
         sortable: true,
     },
@@ -112,7 +119,8 @@ const columns: GridColDef[] = [
     {
         field: 'aspectRatio',
         headerName: 'Aspect Ratio',
-        width: 110,
+        flex: 1,
+        minWidth: variableColumnsDefaultWidth,
         description: 'TKTKTK',
         sortable: true,
     },
@@ -140,6 +148,7 @@ const SnTable: FunctionComponent<SnTableProps> = (props: SnTableProps) => {
     })
     // TODO: row selection feature slows down the UI something pretty fierce.
     // Can we fix it? Should we maybe omit it?
+
     return (
         <div style={{ height: 600, width: "100%" }}>
             <DataGrid

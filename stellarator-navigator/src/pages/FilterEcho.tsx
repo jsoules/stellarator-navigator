@@ -62,7 +62,7 @@ const FilterEcho: FunctionComponent<Props> = () => {
                         yAxis={yAxis}
                         dims={requestedDims}
                         nfpValue={nfp}
-                        ncPerHpValue={nc}
+                        ncPerHpValue={nc === -1 ? undefined : nc}
                         clickHandler={() => {}}
                     />
                 </div>

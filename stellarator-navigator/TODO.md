@@ -20,6 +20,18 @@
 
 [ ] implement the 3d popups
 
+    [x] Implement routing
+
+    [x] Implement new-window click response action
+
+    [x] Implement a summary screen for an individual record
+
+    [ ] Implement a Canvas
+
+    [ ] Implement API to pull the model records
+
+    [ ] Implement drawing the 3d model on the Canvas
+
 [?] make static axis settings for the different dependent variables, rather than recomputing in one component
 
 [?] add horizontal lines for linear depvar graphs?

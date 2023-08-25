@@ -115,7 +115,7 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
     )
 
     return (
-        <div>
+        <div style={{ margin: 20 }}>
             <Grid container>
                 {rows}
             </Grid>

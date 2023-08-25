@@ -7,13 +7,7 @@ import './App.css'
 import MainWindow from './pages/MainWindow'
 import SetupFilterContext from './state/NavigatorContext'
 
-
 function App() {
-    // TODO: Initializations, state, wrappers.
-    // See MCMCMonitor App.tsx for examples.
-    // This will probably involve loading the (hard-coded?) database info (?)
-    // (Or maybe that happens via query?)
-
     return (
         <SetupFilterContext>
             <MainWindow />

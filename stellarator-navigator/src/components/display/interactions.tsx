@@ -7,10 +7,6 @@ export const useOnClickPlot = (setActiveNfp: Dispatch<SetStateAction<number>>, s
     }, [setActiveNc, setActiveNfp])
 }
 
-// export const getOnClickPlot = (nfp: number, ncPerHp?: number) => {
-//     console.log(`Click received for plot: ${nfp}-${ncPerHp}`)
-// }
-
 export const onHoverDot = (id: number) => {
     console.log(`Hovered ${id}`)
 }
@@ -20,27 +16,5 @@ export const onHoverOff = (id: number) => {
 }
 
 export const onClickDot = (id: number) => {
-    console.log(`Clicked dot for record ${id}`)
+    window.open(`model/${id}`, "_blank", "noreferrer")
 }
-
-
-// NOTE: THIS WOULD REQUIRE REFFING THE DOTS
-// --> So we would do it instead with props passed through to the dots
-//  // Highlight the specie that is hovered
-//  const highlight = function(event,d){
-
-//     selected_specie = d.Species
-
-//     d3.selectAll(".dot")
-//       .transition()
-//       .duration(200)
-//       .style("fill", "lightgrey")
-//       .attr("r", 3)
-
-//     d3.selectAll("." + selected_specie)
-//       .transition()
-//       .duration(200)
-//       .style("fill", color(selected_specie))
-//       .attr("r", 7)
-//   }
-

@@ -38,7 +38,7 @@ const SelectionControlPanel: FunctionComponent<Props> = (props: Props) => {
     const { coilLengthPerHp, totalCoilLength, meanIota, ncPerHp, nfp, dependentVariable, independentVariable } = filterSettings
 
     return (
-        <div style={{paddingLeft: 20, paddingRight: 20, paddingTop: 100}}>
+        <div style={{margin: 20, paddingLeft: 20, paddingRight: 20, paddingTop: 100}}>
             <CoilLengthPerHpSlider value={coilLengthPerHp} onChange={callbacks.handleCoilLengthPerHpChange}/>
             <TotalCoilLengthSlider value={totalCoilLength} onChange={callbacks.handleTotalCoilLengthChange} />
             <MeanIotaSelector value={`${meanIota}`} onChange={callbacks.handleMeanIotaChange} />

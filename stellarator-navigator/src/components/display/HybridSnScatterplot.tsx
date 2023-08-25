@@ -3,7 +3,8 @@ import { FunctionComponent } from "react"
 import { filterNc, filterNfp } from "../../logic/filter"
 import { DependentVariableOpt, IndependentVariableOpt, StellaratorRecord } from "../../types/Types"
 import { WongCBFriendly } from "./Colormaps"
-import { onClickDot, onHoverDot, onHoverOff } from "./interactions"
+// import { onClickDot, onHoverDot, onHoverOff } from "./interactions"
+import { onClickDot } from "./interactions"
 
 
 type ScatterplotProps = {
@@ -63,8 +64,8 @@ const Dot: FunctionComponent<dotProps> = (props: dotProps) => {
         fill={colors(`${rec.seed}`)}
         r={isMarked ? "8" : "4"}
         onClick={() => onClickDot(rec.id)}
-        onMouseEnter={() => onHoverDot(rec.id)}
-        onMouseLeave={() => onHoverOff(rec.id)}
+        // onMouseEnter={() => onHoverDot(rec.id)}
+        // onMouseLeave={() => onHoverOff(rec.id)}
     />
 }
 

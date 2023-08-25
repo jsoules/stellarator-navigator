@@ -1,37 +1,53 @@
-import { FunctionComponent, useContext } from "react"
+import { FunctionComponent, useContext, useMemo } from "react"
 import Splitter from "../components/Splitter"
 import useFilterCallbacks from "../components/selectionControl/SelectionControlCallbacks"
 import SelectionControlPanel from "../components/selectionControl/SelectionControlPanel"
+import useRoute from "../routing/useRoute"
 import { NavigatorContext } from "../state/NavigatorContext"
 import useWindowDimensions from "../util/useWindowDimensions"
-// import FilterEcho from "./FilterEcho"
+import FilterEcho from "./FilterEcho"
+import Model from "./Model"
 import PlotGrid from "./PlotGrid"
 
+
+const splitterInitialPosition = 500
+const splitterWidthRolloff = 30
 
 const MainWindow: FunctionComponent = () => {
     const {width, height} = useWindowDimensions()
     const { filterSettings, dispatch } = useContext(NavigatorContext)
     const callbacks = useFilterCallbacks(dispatch)
     const selectionUpdate = callbacks.handleUpdateMarks
+    const { route } = useRoute()
 
-    // TODO: Update selected elements on state change
+    // Note: was height - 40, may need to reinstate to allow room for a banner
+    const effectiveHeight = useMemo(() => height, [height])
+    const effectiveWidth = useMemo(() => width - 40, [width])
+
+    if (route.page === 'model') {
+        return <Model id={route.recordId} />
+    }
+
+    let content = <span />
+    if (route.page === 'filterEcho') {
+        content = <FilterEcho s={filterSettings} />
+    }
+    if (route.page === 'home') {
+        content = <PlotGrid filters={filterSettings} width={width - splitterInitialPosition - splitterWidthRolloff} height={effectiveHeight} selectionHandler={selectionUpdate} />
+    }
 
     return (
-        <div style={{position: 'absolute', width: width - 40, height: height - 40, margin: 20, overflow: 'hidden'}}>
+        
+        <div style={{position: 'absolute', width: effectiveWidth, height: effectiveHeight, overflow: 'hidden'}}>
             <Splitter
-                width={width - 30}
-                height={height - 40}
-                initialPosition={500}
+                width={width - splitterWidthRolloff}
+                height={effectiveHeight}
+                initialPosition={splitterInitialPosition}
             >
                 <div>
                     <SelectionControlPanel filterSettings={filterSettings} callbacks={callbacks} />
                 </div>
-                {/* Note, these width/height values will get overwritten if the Splitter is moved */}
-                <PlotGrid filters={filterSettings} width={width - 530} height={height - 40} selectionHandler={selectionUpdate} />
-                {/* <div>
-                    <div>GRAPHS AND STUFF HERE</div> <br />
-                    <FilterEcho s={filterSettings}/>
-                </div> */}
+                {content}
             </Splitter>
         </div>
     )
