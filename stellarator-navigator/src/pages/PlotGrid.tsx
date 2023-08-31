@@ -2,10 +2,10 @@ import { Grid } from "@mui/material"
 import { GridRowSelectionModel } from "@mui/x-data-grid"
 import { ScaleLinear } from "d3"
 import { FunctionComponent, useContext, useMemo, useState } from "react"
-import { computePerPlotDimensions, useAxes, useScales } from "../components/display/PlotScaling"
 import SnTable from "../components/display/SnTable"
-import SvgWrapper from "../components/display/SvgWrapper"
-import { useOnClickPlot } from "../components/display/interactions"
+import { computePerPlotDimensions, useAxes, useScales } from "../components/display/plots/PlotScaling"
+import SvgWrapper from "../components/display/plots/SvgWrapper"
+import { useOnClickPlot } from "../components/display/plots/interactions"
 import { NavigatorContext } from "../state/NavigatorContext"
 import { BoundedPlotDimensions, DependentVariableOpt, FilterSettings, IndependentVariableOpt, StellaratorRecord } from "../types/Types"
 
@@ -67,7 +67,7 @@ const Row: FunctionComponent<RowProps> = (props: RowProps) => {
     </Grid>
 }
 
-
+const internalMargin = 20
 const PlotGrid: FunctionComponent<Props> = (props: Props) => {
     const { filters, selectionHandler, width, height } = props
     const [activeNfp, setActiveNfp] = useState(1)
@@ -80,7 +80,7 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
 
     // Compute dimensions
     const nfps = getSelectedNfps(filters)
-    const [dims, colCount] = useMemo(() => computePerPlotDimensions(nfps.length, width, height), [height, nfps.length, width])
+    const [dims, colCount] = useMemo(() => computePerPlotDimensions(nfps.length, width - 2*internalMargin, height), [height, nfps.length, width])
 
     // TODO: Filter data domain?
     // const dataDomain = useMemo(() => [filters.totalCoilLength[0], filters.totalCoilLength[1]], [filters.totalCoilLength])
@@ -115,14 +115,12 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
     )
 
     return (
-        <div style={{ margin: 20 }}>
+        <div style={{ margin: internalMargin }}>
             <Grid container>
                 {rows}
             </Grid>
             Currently each plot is {dims.width} x {dims.height} with {nfps.length} ({colCount}) columns.
 
-            Will need to work out how to display the 3D--we probably need to convert
-            everything to something more three.js-friendly.
             <hr style={{width: "75%"}} />
             <SnTable records={allRecords} selectionHandler={selectionHandler} activeNfp={activeNfp} activeNc={activeNc} />
         </div>

@@ -1,12 +1,11 @@
 import { SelectChangeEvent } from '@mui/material'
 import { FunctionComponent } from 'react'
 import { FilterSettings } from '../../types/Types'
+import { NcPerHpCheckboxes, NfpCheckboxes } from './Checkboxes'
 import CoilLengthPerHpSlider from './CoilLengthPerHpSlider'
 import DependentVariableSelector from './DependentVariableSelector'
 import IndependentVariableSelector from './IndependentVariableSelector'
 import MeanIotaSelector from './MeanIotaSelector'
-import NcPerHpCheckboxes from './NcPerHpCheckboxes'
-import NfpCheckboxes from './NfpCheckboxes'
 import TotalCoilLengthSlider from './TotalCoilLengthSlider'
 
 

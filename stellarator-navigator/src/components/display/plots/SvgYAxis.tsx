@@ -1,7 +1,7 @@
 
 import { scaleLinear, scaleLog } from "d3"
 import { FunctionComponent, useMemo } from "react"
-import { BoundedPlotDimensions, DependentVariableOpt } from "../../types/Types"
+import { BoundedPlotDimensions, DependentVariableOpt } from "../../../types/Types"
 import { dependentVariableValidValues } from "./DependentVariableConfig"
 
 type AxisProps = {
@@ -14,7 +14,7 @@ type AxisProps = {
 const leadingDigit = (v: number) => {
     return Math.round(v / (10 ** Math.floor(Math.log10(v))))
 }
-const logDisplayDigits = [1] // TODO: Needs to be more sophisticated: number of displayed digits shuld depend on ??
+const logDisplayDigits = [1] // TODO: Does this need to be more sophisticated?
 
 const clipAvoidanceX = 30
 const clipAvoidanceY = 20
@@ -59,7 +59,6 @@ const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
                 return (
                     <g
                         key={`ytick-${value}`}
-                        // transform={`translate(${yOffset}, 0)`}
                         transform={`translate(${dims.tickLength + clipAvoidanceX}, ${yOffset + clipAvoidanceY})`}
                     >
                         <line x2={`-${dims.tickLength}`} stroke="currentColor" />

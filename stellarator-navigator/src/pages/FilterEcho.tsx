@@ -1,8 +1,8 @@
 import { FunctionComponent, useContext } from "react"
 import { FilterSettings } from "../types/Types"
 
-import { useAxes, useScales } from "../components/display/PlotScaling"
-import SvgWrapper from "../components/display/SvgWrapper"
+import { useAxes, useScales } from "../components/display/plots/PlotScaling"
+import SvgWrapper from "../components/display/plots/SvgWrapper"
 import { NavigatorContext } from "../state/NavigatorContext"
 
 type Props = {

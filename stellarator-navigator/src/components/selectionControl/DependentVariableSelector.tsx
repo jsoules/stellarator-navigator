@@ -2,7 +2,7 @@
 import { FormControl, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material"
 import { Fragment, FunctionComponent } from "react"
 import { DependentVariableOpt } from "../../types/Types"
-import { defaultDependentVariableValue, dependentVariableValidValues } from "../display/DependentVariableConfig"
+import { defaultDependentVariableValue, dependentVariableValidValues } from "../display/plots/DependentVariableConfig"
 
 
 type Props = {

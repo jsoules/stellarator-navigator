@@ -6,15 +6,38 @@ type Props = {
     onChange: (i: number, targetState: boolean) => void
 }
 
-const NcPerHpCheckboxes: FunctionComponent<Props> = (props: Props) => {
-    const { selections, onChange } = props
+export const NcPerHpCheckboxes: FunctionComponent<Props> = (props: Props) => {
+    return CheckboxTemplate({ ...props, type: 'nc' })
+}
 
-    // TODO: Line-break these in some reasonable way
+
+export const NfpCheckboxes: FunctionComponent<Props> = (props: Props) => {
+    return CheckboxTemplate({ ...props, type: 'nfp' })
+}
+
+
+type TemplateProps = Props & {
+    type: 'nc' | 'nfp'
+}
+
+
+const ncId = "nc-per-hp-checkboxes"
+const ncDesc = "Coil Count per Half-Period (NC per HP)"
+
+const nfpId = 'nfp-checkboxes'
+const nfpDesc = "Field Period Count (NFP)"
+
+const CheckboxTemplate: FunctionComponent<TemplateProps> = (props: TemplateProps) => {
+    const { selections, onChange, type } = props
+
+    // TODO: line break in some reasonable way?
+    const desc = type === 'nc' ? ncDesc : nfpDesc
+    const id = type === 'nc' ? ncId : nfpId
 
     return (
         <div style={{paddingLeft: 8, paddingTop: 15}}>
-            <Typography id="nc-per-hp-checkboxes" gutterBottom>
-                Coil Count per Half-Period (NC per HP)
+            <Typography id={id} gutterBottom>
+                {desc}
             </Typography>
             {
                 selections.map((v, i) => (

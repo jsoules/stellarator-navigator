@@ -18,6 +18,12 @@
 
 [?] implement dot mouseover highlights (??)
 
+[x] Validate requested record ID against known set of records in useRoute.ts
+
+[x] DRY out NC/NFP selection code in filter.ts
+
+[x] DRY out the nc/nfp checkbox UI code
+
 [ ] implement the 3d popups
 
     [x] Implement routing
@@ -26,13 +32,37 @@
 
     [x] Implement a summary screen for an individual record
 
-    [ ] Implement a Canvas
+    [x] Implement a Canvas / Three --> (use 63600 as an example record since it has surfaces and curves both)
 
-    [ ] Implement API to pull the model records
+    [x] Implement API to pull the model records
 
-    [ ] Implement drawing the 3d model on the Canvas
+    [ ] Implement magnetic field surface display
+    
+    [ ] Implement checkbox to toggle magnetic field surface display
+
+    [x] Implement drawing the 3d model on the Canvas
+
+[ ] Review and centralize styling in PlotScaling.tsx
+
+[ ] Ensure good package structure for javascript files
+
+[ ] Consider line-breaking of checkboxes for nc/nfp
+
+[ ] Consider need for additional database indexing
+
+[ ] Consider removing route to FilterEcho page in useRoute.ts for production
+
+[ ] Consider automatically updating selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
+
+[?] Review ranges in axes
 
 [?] make static axis settings for the different dependent variables, rather than recomputing in one component
 
 [?] add horizontal lines for linear depvar graphs?
+
+[?] restrict visible independent-axis to the range currently selected by the sliders?
+
+[?] don't hard-code width/height for canvas in Model.tsx
+
+[?] Confirm acceptable performance with the row selection features in the table
 

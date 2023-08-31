@@ -1,8 +1,8 @@
 import { ScaleLinear, ScaleLogarithmic, scaleOrdinal, ScaleOrdinal } from "d3"
 import { FunctionComponent } from "react"
-import { filterNc, filterNfp } from "../../logic/filter"
-import { DependentVariableOpt, IndependentVariableOpt, StellaratorRecord } from "../../types/Types"
-import { WongCBFriendly } from "./Colormaps"
+import { filterNc, filterNfp } from "../../../logic/filter"
+import { DependentVariableOpt, IndependentVariableOpt, StellaratorRecord } from "../../../types/Types"
+import { WongCBFriendly } from "../Colormaps"
 // import { onClickDot, onHoverDot, onHoverOff } from "./interactions"
 import { onClickDot } from "./interactions"
 

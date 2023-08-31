@@ -1,7 +1,6 @@
-// Adapted from https://2019.wattenberger.com/blog/react-and-d3
 import { ScaleLinear } from "d3"
 import { FunctionComponent, useMemo, } from "react"
-import { BoundedPlotDimensions, DependentVariableOpt, IndependentVariableOpt, StellaratorRecord } from "../../types/Types"
+import { BoundedPlotDimensions, DependentVariableOpt, IndependentVariableOpt, StellaratorRecord } from "../../../types/Types"
 import HybridSnScatterplot from "./HybridSnScatterplot"
 import { plotGutterHorizontal } from "./PlotScaling"
 

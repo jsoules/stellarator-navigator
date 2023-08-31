@@ -1,4 +1,4 @@
-import { DependentVariableOpt, IndependentVariableOpt } from "../../types/Types"
+import { DependentVariableOpt, IndependentVariableOpt } from "../../../types/Types"
 
 export const defaultDependentVariableValue = 'qaError'
 

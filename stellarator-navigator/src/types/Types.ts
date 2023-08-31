@@ -72,3 +72,14 @@ export type BoundedPlotDimensions = PlotDimensions & {
     pixelsPerTick: number
     fontPx: number
 }
+
+export type Vec3 = [number, number, number]
+
+export type Vec3Field = Vec3[][]
+
+export type ScalarField = number[][]
+
+export type SurfaceApiResponseObject = {
+    surfacePoints: Vec3Field[],
+    pointValues: ScalarField[]
+}

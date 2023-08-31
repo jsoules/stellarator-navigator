@@ -1,0 +1,7 @@
+- set FLASK_ENV=development and FLASK_APP=app.py (update to a real name)
+
+
+
+TODO:
+- Should the flask server also be serving the main app? If so, how?
+- Is this CORS solution adequate?

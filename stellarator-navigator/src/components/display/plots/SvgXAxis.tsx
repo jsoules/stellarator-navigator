@@ -2,7 +2,7 @@
 
 import { scaleLinear } from "d3"
 import { FunctionComponent, useMemo } from "react"
-import { BoundedPlotDimensions, IndependentVariableOpt } from "../../types/Types"
+import { BoundedPlotDimensions, IndependentVariableOpt } from "../../../types/Types"
 import { independentVariableValidValues } from "./DependentVariableConfig"
 
 const clipAvoidanceOffset = 6
@@ -32,7 +32,6 @@ const SvgXAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
             }))
     }, [canvasRange, dataDomain])
 
-    // See if this works or if you need to use a <g> group internal to the svg tag
     const transform = useMemo(() => `translate(-${clipAvoidanceOffset}, ${dims.boundedHeight})`, [dims.boundedHeight])
 
     return (

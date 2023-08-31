@@ -5,24 +5,12 @@ import applyFilter, { projectRecords } from "../logic/filter";
 import { FilterSettings, NavigatorContextType } from "../types/Types";
 import NavigatorReducer from "./NavigatorReducer";
 
-// consumer components can use useContext($CONTEXTNAME) to get the context's contents
-// e.g. const { data, dispatch, checkCnxnStatus } = useContext(MCMCMonitorContext)
-// So context needs to provide them with:
-// * a way to interact with the database
-// * the current set of selected IDs
-// * what the current filters are
-// * A way to change the current filters
-// POSSIBLY a way to associate each ID with its target?
-
-
-// TODO: SHOULD WE SPLIT THIS CONTEXT?
-
 export const NavigatorContext = React.createContext<NavigatorContextType>({
     filterSettings: initialNavigatorState,
     selection: new Set<number>(),
     database,
     dispatch: () => {},
-    fetchRecords: (ids: Set<number>) => { ids.clear(); return [] }, // TODO
+    fetchRecords: (ids: Set<number>) => { ids.clear(); return [] },
 })
 
 const SetupFilterContext: FunctionComponent<PropsWithChildren> = (props: PropsWithChildren) => {

@@ -1,23 +1,29 @@
-import { FunctionComponent, useContext } from "react"
+import { FunctionComponent, useContext, useRef } from "react"
 import RecordManifest from "../components/display/RecordManifest"
+import { useCoils } from "../components/display/fetch3dData"
+import Scene3DPanelView from "../components/display/viewer"
 import { NavigatorContext } from "../state/NavigatorContext"
-// import { StellaratorRecord } from "../types/Types"
 
 type ModelProps = {
     id: number | string
-    // record: StellaratorRecord
 }
 
 
 const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
-    // const { id, record } = props
     const { id } = props
     const { fetchRecords } = useContext(NavigatorContext)
+    const canvasRef = useRef(null)
     const numericId = typeof(id) === "number" ? id : parseInt(id)
     const rec = fetchRecords(new Set([numericId]))[0]
+    // const coils = getCoils({ recordId: "63600" })
+    const apiCoils = useCoils({ recordId: `${id}` })
     return (
         <div>
-            // TODO CANVAS
+            <div>
+                <canvas ref={canvasRef} />
+                {/* TODO: Don't restrict this width/height to these values, do something smarter */}
+                <Scene3DPanelView width={800} height={640} canvasRef={canvasRef} coils={apiCoils} />
+            </div>
             <RecordManifest rec={rec} />
         </div>
     )

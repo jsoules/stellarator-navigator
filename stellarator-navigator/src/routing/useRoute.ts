@@ -13,21 +13,31 @@ export type Route = {
     page: 'filterEcho'
 }
 
+
+const isPlausibleRecordId = (id: string): boolean => {
+    const numericRecordId = parseInt(id)
+    if (isNaN(numericRecordId)) return false
+    return (numericRecordId >= 21021 && numericRecordId <= 180162)
+}
+
+
 const useRoute = () => {
     const location = useLocation()
     const navigate = useNavigate()
 
     const route: Route = useMemo(() => {
         if (location.pathname.startsWith('/model/')) {
-            // expected to be of form BASENAME/model/MODEL_ID
+            // URLs of form BASENAME/model/MODEL_ID
             const tokens = location.pathname.split('/')
             const recordId = tokens[2]
-            // todo: could validate record here
+            if (!isPlausibleRecordId(recordId)) {
+                console.log(`Requested record ID ${recordId} is invalid.`)
+                return { page: 'home' }
+            }
             return {
                 page: 'model',
                 recordId: recordId
             }
-            // TODO: Probably remove this from production version
         } else if (location.pathname.startsWith('/filterEcho/')) {
             return {
                 page: 'filterEcho'

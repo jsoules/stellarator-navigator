@@ -72,6 +72,3 @@ const database: NavigatorDatabase = {
 }
 
 export default database
-
-// TODO TUESDAY:
-// - memoize these guys --> is that needed at all? Surely not?
