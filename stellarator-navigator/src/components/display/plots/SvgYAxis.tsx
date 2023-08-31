@@ -16,13 +16,13 @@ const leadingDigit = (v: number) => {
 }
 const logDisplayDigits = [1] // TODO: Does this need to be more sophisticated?
 
-const clipAvoidanceX = 30
-const clipAvoidanceY = 20
-const axisLabelOffset = 10
+// const clipAvoidanceX = 30
+// const clipAvoidanceY = 20
+// const axisLabelOffset = 10
 
 const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
     const { dataRange, canvasRange, type, dims } = props
-    const yAxisTransform = useMemo(() => `translate(-${clipAvoidanceX + dims.tickLength}, -${clipAvoidanceY})`, [dims.tickLength])
+    const yAxisTransform = useMemo(() => `translate(-${dims.clipAvoidanceXOffset + dims.tickLength}, -${dims.clipAvoidanceYOffset})`, [dims.clipAvoidanceXOffset, dims.clipAvoidanceYOffset, dims.tickLength])
 
     // TODO: Customize range!! (or no?)
     const ticks = useMemo(() => {
@@ -47,9 +47,9 @@ const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
         <g transform={yAxisTransform} key="y-axis">
             <path
                 d={[
-                    "M", clipAvoidanceX, canvasRange[0] + clipAvoidanceY,
+                    "M", dims.clipAvoidanceXOffset, canvasRange[0] + dims.clipAvoidanceYOffset,
                     "h", dims.tickLength,
-                    "V", canvasRange[1] + clipAvoidanceY,
+                    "V", canvasRange[1] + dims.clipAvoidanceYOffset,
                     "h", -dims.tickLength,
                 ].join(" ")}
                 fill="none"
@@ -59,7 +59,7 @@ const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
                 return (
                     <g
                         key={`ytick-${value}`}
-                        transform={`translate(${dims.tickLength + clipAvoidanceX}, ${yOffset + clipAvoidanceY})`}
+                        transform={`translate(${dims.tickLength + dims.clipAvoidanceXOffset}, ${yOffset + dims.clipAvoidanceYOffset})`}
                     >
                         <line x2={`-${dims.tickLength}`} stroke="currentColor" />
                         {type === 'qaError' && leadingDigit(value) === 1 && <line x2={dims.boundedWidth} stroke="#cbcbcb" />}
@@ -68,7 +68,7 @@ const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
                             style={{
                                 fontSize: `${dims.fontPx}px`,
                                 textAnchor: "middle",
-                                transform: `translateX(-${clipAvoidanceY}px) translateY(${dims.tickLength/2}px)`
+                                transform: `translateX(-${dims.clipAvoidanceYOffset}px) translateY(${dims.tickLength/2}px)`
                             }}
                             >
                             { label }
@@ -76,7 +76,7 @@ const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
                     </g>
                 )
             })}
-            <g key="y-axis-label" transform={`translate(-${axisLabelOffset}, ${(dims.boundedHeight / 2) + dims.marginTop})`}>
+            <g key="y-axis-label" transform={`translate(-${dims.axisLabelOffset}, ${(dims.boundedHeight / 2) + dims.marginTop})`}>
                 {/* This seems too simple but also seems to be doing the right thing so, why not? */}
                 <text style={{
                     fontSize: `${1.5*dims.fontPx}px`,

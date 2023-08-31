@@ -1,4 +1,5 @@
 - set FLASK_ENV=development and FLASK_APP=app.py (update to a real name)
+- then "flask run" in the directory with the server app
 
 
 

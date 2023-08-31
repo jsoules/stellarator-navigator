@@ -5,8 +5,6 @@ import { FunctionComponent, useMemo } from "react"
 import { BoundedPlotDimensions, IndependentVariableOpt } from "../../../types/Types"
 import { independentVariableValidValues } from "./DependentVariableConfig"
 
-const clipAvoidanceOffset = 6
-
 type AxisProps = {
     dataDomain: number[],
     canvasRange: number[],
@@ -32,15 +30,15 @@ const SvgXAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
             }))
     }, [canvasRange, dataDomain])
 
-    const transform = useMemo(() => `translate(-${clipAvoidanceOffset}, ${dims.boundedHeight})`, [dims.boundedHeight])
+    const transform = useMemo(() => `translate(-${dims.clipAvoidanceXOffset}, ${dims.boundedHeight})`, [dims.clipAvoidanceXOffset, dims.boundedHeight])
 
     return (
         <g transform={transform} key="x-axis">
             <path
                 d={[
-                    "M", clipAvoidanceOffset+canvasRange[0], dims.tickLength,
+                    "M", dims.clipAvoidanceXOffset+canvasRange[0], dims.tickLength,
                     "v", -dims.tickLength,
-                    "H", clipAvoidanceOffset+canvasRange[1],
+                    "H", dims.clipAvoidanceXOffset+canvasRange[1],
                     "v", dims.tickLength,
                 ].join(" ")}
                 fill="none"
@@ -49,7 +47,7 @@ const SvgXAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
             {ticks.map(({ value, xOffset }) => (
                 <g
                     key={`xtick-${value}`}
-                    transform={`translate(${xOffset + clipAvoidanceOffset}, 0)`}
+                    transform={`translate(${xOffset + dims.clipAvoidanceXOffset}, 0)`}
                 >
                     <line
                         y2={`${dims.tickLength}`}
@@ -67,7 +65,7 @@ const SvgXAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
                     </text>
                 </g>
             ))}
-            <g key="x-axis-label" transform={`translate(${(dims.boundedWidth / 2) + clipAvoidanceOffset}, 0)`}>
+            <g key="x-axis-label" transform={`translate(${(dims.boundedWidth / 2) + dims.clipAvoidanceXOffset}, 0)`}>
                 <text style={{
                     fontSize: `${1.5*dims.fontPx}px`,
                     textAnchor: "middle",

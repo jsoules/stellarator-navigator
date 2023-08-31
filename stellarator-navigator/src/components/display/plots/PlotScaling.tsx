@@ -93,14 +93,18 @@ const maxPlotAspect = 2.5
 
 // TODO: Add SvgYAxis (clipAvoidanceX, clipAvoidanceY, axisLabelOffset) and SvgXAxis (clipAvoidanceOffset) to this
 // and make them proportional to the other hard-coded values for consistent styling
+const fontPx = 10
 const baseDims = {
     marginTop: 30,
     marginRight: 20,
     marginBottom: 60,
     marginLeft: 80,
     tickLength: 6,
-    fontPx: 10,
-    pixelsPerTick: 30
+    fontPx,
+    pixelsPerTick: 3 * fontPx,
+    clipAvoidanceXOffset: 30,
+    clipAvoidanceYOffset: 20,
+    axisLabelOffset: 10,
 }
 
 export const computePerPlotDimensions = (selectedNfps: number, spaceWidth: number, spaceHeight: number): [BoundedPlotDimensions, number] => {

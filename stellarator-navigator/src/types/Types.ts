@@ -70,7 +70,10 @@ export type BoundedPlotDimensions = PlotDimensions & {
     boundedHeight: number
     tickLength: number
     pixelsPerTick: number
-    fontPx: number
+    fontPx: number,
+    clipAvoidanceXOffset: number,
+    clipAvoidanceYOffset: number,
+    axisLabelOffset: number
 }
 
 export type Vec3 = [number, number, number]

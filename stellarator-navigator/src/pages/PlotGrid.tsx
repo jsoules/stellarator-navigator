@@ -1,7 +1,7 @@
 import { Grid } from "@mui/material"
 import { GridRowSelectionModel } from "@mui/x-data-grid"
 import { ScaleLinear } from "d3"
-import { FunctionComponent, useContext, useMemo, useState } from "react"
+import { FunctionComponent, useContext, useEffect, useMemo, useState } from "react"
 import SnTable from "../components/display/SnTable"
 import { computePerPlotDimensions, useAxes, useScales } from "../components/display/plots/PlotScaling"
 import SvgWrapper from "../components/display/plots/SvgWrapper"
@@ -21,6 +21,20 @@ const getSelectedNfps = (filters: FilterSettings): number[] => {
     const _nfps = (filters.nfp.map((v, i) => (v ? i + 1 : void {}))).filter(x => x !== undefined) as unknown as number[]
     const nfps = _nfps.length === 0 ? [1, 2, 3, 4, 5] : _nfps
     return nfps
+}
+
+
+const rectifySelectedTable = (activeNc: number | undefined, activeNfp: number, ncChecks: boolean[], nfps: number[]) => {
+    const firstNc = ncChecks.findIndex(x => x) + 1
+    const activeNcGood = (activeNc !== undefined) && ncChecks[activeNc - 1]
+
+    const targetNc = firstNc === 0
+        ? undefined
+        : activeNcGood ? activeNc : firstNc
+
+    const targetNfp = nfps.includes(activeNfp) ? activeNfp : nfps[0]
+
+    return { targetNc, targetNfp }
 }
 
 
@@ -84,6 +98,16 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
 
     // TODO: Filter data domain?
     // const dataDomain = useMemo(() => [filters.totalCoilLength[0], filters.totalCoilLength[1]], [filters.totalCoilLength])
+
+    useEffect(() => {
+        const { targetNc, targetNfp } = rectifySelectedTable(activeNc, activeNfp, filters.ncPerHp, nfps)
+        if (activeNc !== targetNc) {
+            setActiveNc(targetNc)
+        }
+        if (activeNfp !== targetNfp) {
+            setActiveNfp(targetNfp)
+        }
+    }, [activeNc, activeNfp, filters.ncPerHp, nfps])
 
     // Scales & Axes
     const [xScale, yScale] = useScales({dependentVar: filters.dependentVariable, independentVar: filters.independentVariable, dimsIn: dims})

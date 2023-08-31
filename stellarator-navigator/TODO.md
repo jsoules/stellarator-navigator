@@ -24,6 +24,12 @@
 
 [x] DRY out the nc/nfp checkbox UI code
 
+[x] Consider need for additional database indexing (I considered it, we don't need it right now)
+
+[x] Check & prevent situation where active table refers to a graph that isn't visible
+
+[x] Review and centralize styling in PlotScaling.tsx
+
 [ ] implement the 3d popups
 
     [x] Implement routing
@@ -42,17 +48,13 @@
 
     [x] Implement drawing the 3d model on the Canvas
 
-[ ] Review and centralize styling in PlotScaling.tsx
-
 [ ] Ensure good package structure for javascript files
-
-[ ] Consider line-breaking of checkboxes for nc/nfp
-
-[ ] Consider need for additional database indexing
 
 [ ] Consider removing route to FilterEcho page in useRoute.ts for production
 
 [ ] Consider automatically updating selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
+
+[?] Consider line-breaking of checkboxes for nc/nfp
 
 [?] Review ranges in axes
 
@@ -65,4 +67,10 @@
 [?] don't hard-code width/height for canvas in Model.tsx
 
 [?] Confirm acceptable performance with the row selection features in the table
+
+[-] secure domain name
+
+[-] consider branding
+
+[-] finalize deployment details with SCC
 
