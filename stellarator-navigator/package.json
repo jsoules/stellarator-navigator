@@ -30,6 +30,7 @@
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.5",
     "react-router-dom": "^6.15.0",
+    "scale-color-perceptual": "^1.1.2",
     "three": "^0.155.0",
     "three.js": "^0.77.1",
     "vitest": "^0.34.1"

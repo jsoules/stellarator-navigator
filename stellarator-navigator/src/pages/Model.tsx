@@ -1,7 +1,7 @@
 import { FunctionComponent, useContext, useRef } from "react"
 import RecordManifest from "../components/display/RecordManifest"
-import { useCoils } from "../components/display/fetch3dData"
-import Scene3DPanelView from "../components/display/viewer"
+import SimulationView from "../components/display/SimulationView"
+import { useCoils, useSurfaces } from "../components/display/fetch3dData"
 import { NavigatorContext } from "../state/NavigatorContext"
 
 type ModelProps = {
@@ -16,13 +16,14 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     const numericId = typeof(id) === "number" ? id : parseInt(id)
     const rec = fetchRecords(new Set([numericId]))[0]
     // const coils = getCoils({ recordId: "63600" })
-    const apiCoils = useCoils({ recordId: `${id}` })
+    const coils = useCoils({ recordId: `${id}` })
+    const surfs = useSurfaces({ recordId: `${id}` })
     return (
         <div>
             <div>
                 <canvas ref={canvasRef} />
                 {/* TODO: Don't restrict this width/height to these values, do something smarter */}
-                <Scene3DPanelView width={800} height={640} canvasRef={canvasRef} coils={apiCoils} />
+                <SimulationView width={800} height={640} canvasRef={canvasRef} coils={coils} surfs={surfs} />
             </div>
             <RecordManifest rec={rec} />
         </div>

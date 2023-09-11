@@ -1,8 +1,7 @@
-// import { readFileSync } from 'fs'
-
 import { useEffect, useMemo, useState } from "react"
 import * as THREE from "three"
 import { ScalarField, SurfaceApiResponseObject, Vec3, Vec3Field } from "../../types/Types"
+import { valueToRgbTriplet } from "./Colormaps"
 
 type apiRequestProps = {
     recordId: string
@@ -58,6 +57,7 @@ export const useCoils = (props: apiRequestProps) => {
     useEffect(() => {
         fetch(`${CurvesEndpoint}${recordId}`)
             .then((response) => response.json())
+            // .then((response) => {console.log(response); return response.json()})
             .then((coilData) => {
                 // console.log(coilData)
                 coilData.forEach((coil: Vec3[]) => coil.push(coil[0]))
@@ -98,6 +98,7 @@ export const useSurfaces = (props: apiRequestProps) => {
         fetch(`${SurfacesEndpoint}${recordId}`)
             .then((response) => response.json())
             .then((surfObj) => {
+                // console.log(surfObj)
                 const surface: SurfaceApiResponseObject = {
                     surfacePoints: surfObj.surfacePoints,
                     pointValues: surfObj.pointValues
@@ -112,9 +113,50 @@ export const useSurfaces = (props: apiRequestProps) => {
 }
 
 
+const triangulateField = (width: number, height: number): number[] => {
+    return Array(height - 1).fill(0).map((_, h) => {
+      return Array(width - 1).fill(0).map((__, w) => {
+        const rowOffset = width * h
+        const x = rowOffset + w
+        return [x, x+1, x+width, x+1, x+width, x+width+1]
+      })
+    }).flat().flat()
+}
+    
+
 export const getSurfaces = (surfacePoints: Vec3Field[], pointValues: ScalarField[]) => {
-    console.log(`surface count: ${surfacePoints.length} scalar-field count: ${pointValues.length}`)
-    // TODO: Figure out how to convert the mayavi-style implicit mapping into an actual
-    // mesh geometry
-    return []
+    if (surfacePoints === undefined || pointValues === undefined) return []
+
+    // For each surface (if any), we'll create a BufferGeometry and add the
+    // 30 x 30 x [x, y, z] data to that geometry as "known vertices".
+    // We map those points to surfaces by using two triangles per 4-point neighborhood,
+    // to create a mapping that says point (x, y) is adjacent to points (x, y+1) and
+    // (x + 1, y) (see the triangulateField function).
+    // Then give it a white mesh with vertex coloring per the pointValues parameter.
+    
+    const surfaces = surfacePoints.map((field, idx) => {
+        const surfaceGeometry = new THREE.BufferGeometry()
+        const vertices = new Float32Array(field.flat().flat())
+        const indices = triangulateField(30, 30)
+
+        surfaceGeometry.setIndex(indices)
+        surfaceGeometry.setAttribute('position', new THREE.BufferAttribute( vertices, 3 ))
+        surfaceGeometry.computeVertexNormals()  // todo: does this actually do anything?
+
+        const color = new Float32Array((pointValues[idx].flat().map(v => valueToRgbTriplet(v))).flat())
+        surfaceGeometry.setAttribute('color', new THREE.BufferAttribute(color, 3))
+
+        const material = new THREE.MeshPhongMaterial({
+            color: 'white',
+            flatShading: true,
+            side: THREE.DoubleSide,
+            vertexColors: true,
+            wireframe: false
+        })
+        
+        const mesh = new THREE.Mesh(surfaceGeometry, material)
+        return mesh
+    })
+    
+    return surfaces
 }

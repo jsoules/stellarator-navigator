@@ -2696,6 +2696,11 @@ rw@1:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
+scale-color-perceptual@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/scale-color-perceptual/-/scale-color-perceptual-1.1.2.tgz#370fb1aa1fc48261d3048f34edfe6155fb0a52d5"
+  integrity sha512-xuadE0xPnV+maBOLTl4ZcN0tGeBiU8ucRlLTIv74t/9dMEr3tiCAW+WfHePZ/JI3d452+kPvNmW6i3ty15iiIw==
+
 scheduler@^0.23.0:
   version "0.23.0"
   resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.23.0.tgz#ba8041afc3d30eb206a487b6b384002e4e61fdfe"

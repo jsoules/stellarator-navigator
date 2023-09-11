@@ -6,7 +6,7 @@ app = Flask(__name__)
 CORS(app)
 
 INVALID_PATH_SENTINEL = "INVALID_TYPE"
-valid_endpoint_types = ['curves', 'surfaces']
+valid_endpoint_types = ['curves', 'surfaces', 'modB']
 
 @app.route('/')
 def index() -> str:
@@ -59,6 +59,7 @@ def fetch_surfaces(id: str):
     modB = np.loadtxt(m_path).reshape((30, 30, -1)).transpose((2, 0, 1))
     normalized_modB = modB - np.min(modB, axis=1, keepdims=True)
     normalized_modB = normalized_modB / np.max(normalized_modB, axis=1, keepdims=True)
+    print(f"surfacepoints has {len(surfs.tolist())} elements")
 
     return { "surfacePoints": surfs.tolist(), "pointValues": normalized_modB.tolist() }
 

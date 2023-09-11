@@ -42,9 +42,15 @@
 
     [x] Implement API to pull the model records
 
-    [ ] Implement magnetic field surface display
+    [x] Implement magnetic field surface display
+
+    [x] Fix color map for magnetic field surface display
     
-    [ ] Implement checkbox to toggle magnetic field surface display
+    [ ] Use dropdown for magnetic field surface color map styling
+
+    [ ] Implement checkbox to toggle magnetic field surface display layers
+
+    [ ] Look for way to smooth the triangulated surfaces for magnetic field display?
 
     [x] Implement drawing the 3d model on the Canvas
 
@@ -56,15 +62,23 @@
 
 [?] Consider line-breaking of checkboxes for nc/nfp
 
-[?] Review ranges in axes
+[ ] Correct names of variables (e.g. iota is something other than shear; shear is w/r/t e.g. iota)
+
+[ ] Add all available variables as options for dependent and independent axes
+
+[ ] Review ranges in axes --> allow zooming in by the sliders
 
 [?] make static axis settings for the different dependent variables, rather than recomputing in one component
 
-[?] add horizontal lines for linear depvar graphs?
+[ ] add horizontal lines for all plots regardless of dependent variable
 
-[?] restrict visible independent-axis to the range currently selected by the sliders?
+[ ] add "background field error" horizontal line for QA error plot (check received example code, s.b. 50e-6 or so)
 
-[?] don't hard-code width/height for canvas in Model.tsx
+[ ] restrict visible independent-axis to the range currently selected by the sliders? --> this is also a zoom thing, yes do this
+
+[ ] Round the aspect ratio to one decimal; group by it and allow it to be selected (dropdown or checkbox, AG to send values)
+
+[?] don't hard-code width/height for canvas in Model.tsx --> worry about this later
 
 [?] Confirm acceptable performance with the row selection features in the table
 
@@ -73,4 +87,6 @@
 [-] consider branding
 
 [-] finalize deployment details with SCC
+
+[ ] "show entire stellarator" checkbox --> AG will give the operation
 
