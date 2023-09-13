@@ -4,7 +4,7 @@ import { FunctionComponent, MutableRefObject, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { SurfaceApiResponseObject, Vec3 } from '../../../types/Types';
-import { colorizeSurfaces, makeSurfaces, makeTubes } from './fetch3dData';
+import { colorizeSurfaces, makeSurfaces, makeTubes } from './geometry';
 // see https://github.com/magland/volumeview/blob/be55b7a9b6c78c24aa45310bd2e30f01f4269a26/gui/src/VolumeViewData.ts#L158
 
 type Props = {
