@@ -13,6 +13,10 @@ export type Route = {
     page: 'filterEcho'
 }
 
+// This is all very manual-style routing, with the main landing page reading the route and returning the
+// appropriate contents. Basically, I'm not making real use of react-router here--its framework
+// assumptions are more than I want to deal with here. I just need to know when the location
+// changes so I can do my own routing downstream.
 
 const isPlausibleRecordId = (id: string): boolean => {
     const numericRecordId = parseInt(id)
@@ -21,33 +25,15 @@ const isPlausibleRecordId = (id: string): boolean => {
 }
 
 
+const redirectHome = (): Route => {
+    window.history.replaceState(null, "", "/")
+    return { page: "home" }
+}
+
+
 const useRoute = () => {
     const location = useLocation()
     const navigate = useNavigate()
-
-    const route: Route = useMemo(() => {
-        if (location.pathname.startsWith('/model/')) {
-            // URLs of form BASENAME/model/MODEL_ID
-            const tokens = location.pathname.split('/')
-            const recordId = tokens[2]
-            if (!isPlausibleRecordId(recordId)) {
-                console.log(`Requested record ID ${recordId} is invalid.`)
-                return { page: 'home' }
-            }
-            return {
-                page: 'model',
-                recordId: recordId
-            }
-        } else if (location.pathname.startsWith('/filterEcho/')) {
-            return {
-                page: 'filterEcho'
-            }
-        } else {
-            return {
-                page: 'home'
-            }
-        }
-    }, [location])
 
     const setRoute = useCallback((r: Route) => {
         if (r.page === 'home') {
@@ -60,6 +46,28 @@ const useRoute = () => {
             navigate({...location, pathname: '/filterEcho/'})
         }
     }, [location, navigate])
+
+    const route: Route = useMemo(() => {
+        if (location.pathname.startsWith('/model/')) {
+            // URLs of form BASENAME/model/MODEL_ID
+            const tokens = location.pathname.split('/')
+            const recordId = tokens[2]
+            if (!isPlausibleRecordId(recordId)) {
+                console.log(`Requested record ID ${recordId} is invalid.`)
+                return redirectHome()
+            }
+            return {
+                page: 'model',
+                recordId: recordId
+            }
+        } else if (location.pathname.startsWith('/filterEcho/')) {
+            return {
+                page: 'filterEcho'
+            }
+        } else {
+            return redirectHome()
+        }
+    }, [location])
 
     return { route, setRoute }
 }

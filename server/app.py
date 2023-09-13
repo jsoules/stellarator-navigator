@@ -57,9 +57,19 @@ def fetch_surfaces(id: str):
     m_path = make_file_path(id, type='modB')
     surfs = np.loadtxt(s_path).reshape((30, 30, -1, 3)).transpose((2, 0, 1, 3)) * 10
     modB = np.loadtxt(m_path).reshape((30, 30, -1)).transpose((2, 0, 1))
-    normalized_modB = modB - np.min(modB, axis=1, keepdims=True)
-    normalized_modB = normalized_modB / np.max(normalized_modB, axis=1, keepdims=True)
-    print(f"surfacepoints has {len(surfs.tolist())} elements")
+    # Bs = []
+    # for k in range(modB.shape[0]):
+    #     B = (modB[k, :, :] - np.min(modB[k, :, :]))
+    #     B = B / np.max(B)
+    #     Bs.append(B)
+    # normalized_modB = np.array(Bs)
+
+    tmp = modB.reshape((-1, 900))
+    nmb = tmp - np.min(tmp, axis=1, keepdims=True)
+    nmb = nmb / np.max(nmb, axis=1, keepdims=True)
+    nmb = nmb.reshape((-1, 30, 30))
+
+    normalized_modB = nmb
 
     return { "surfacePoints": surfs.tolist(), "pointValues": normalized_modB.tolist() }
 

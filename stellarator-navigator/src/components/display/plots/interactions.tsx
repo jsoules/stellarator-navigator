@@ -16,5 +16,5 @@ export const onHoverOff = (id: number) => {
 }
 
 export const onClickDot = (id: number) => {
-    window.open(`model/${id}`, "_blank", "noreferrer")
+    window.open(`/model/${id}`, "_blank", "noreferrer")
 }

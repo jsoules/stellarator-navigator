@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import * as THREE from "three"
+// import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils'
+import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils'
 import { ScalarField, SurfaceApiResponseObject, Vec3, Vec3Field } from "../../types/Types"
 import { valueToRgbTriplet } from "./Colormaps"
 
@@ -118,7 +120,8 @@ const triangulateField = (width: number, height: number): number[] => {
       return Array(width - 1).fill(0).map((__, w) => {
         const rowOffset = width * h
         const x = rowOffset + w
-        return [x, x+1, x+width, x+1, x+width, x+width+1]
+        // return [x, x+1, x+width, x+1, x+width, x+width+1]
+        return [x, x+1, x+width, x+1, x+width + 1, x+width]
       })
     }).flat().flat()
 }
@@ -141,19 +144,30 @@ export const getSurfaces = (surfacePoints: Vec3Field[], pointValues: ScalarField
 
         surfaceGeometry.setIndex(indices)
         surfaceGeometry.setAttribute('position', new THREE.BufferAttribute( vertices, 3 ))
-        surfaceGeometry.computeVertexNormals()  // todo: does this actually do anything?
 
-        const color = new Float32Array((pointValues[idx].flat().map(v => valueToRgbTriplet(v))).flat())
+
+        if (idx === 5) {
+            console.log(`vertex values:\n${pointValues[idx]}`)
+        }
+        const color = new Float32Array((pointValues[idx].flat().map(v => valueToRgbTriplet(v, 'plasma'))).flat())
         surfaceGeometry.setAttribute('color', new THREE.BufferAttribute(color, 3))
 
-        const material = new THREE.MeshPhongMaterial({
+        // this line probably does nothing as I'm already using indexed
+        const sg = BufferGeometryUtils.mergeVertices(surfaceGeometry)
+        sg.computeVertexNormals()  // todo: does this actually do anything?
+        surfaceGeometry.computeVertexNormals()
+
+        // const material = new THREE.MeshPhongMaterial({
+        const material = new THREE.MeshStandardMaterial({
             color: 'white',
-            flatShading: true,
+            flatShading: false,
             side: THREE.DoubleSide,
+            // side: THREE.FrontSide,
             vertexColors: true,
             wireframe: false
         })
         
+        // const mesh = new THREE.Mesh(sg, material)
         const mesh = new THREE.Mesh(surfaceGeometry, material)
         return mesh
     })

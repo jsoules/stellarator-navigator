@@ -70,7 +70,7 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
         if (canvas === null) return undefined
         // field-of-view (vertical, in degrees); aspect ratio; near; far -- defines camera frustum
         const camera = new THREE.PerspectiveCamera( 60, width / height, 0.1, 100 )
-        const pointLight = new THREE.PointLight(0xffffff, 100)
+        const pointLight = new THREE.PointLight(0xffffff, 10)
         camera.add(pointLight)
         return camera
     }, [canvas, width, height])
@@ -103,8 +103,14 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
     }, [])
 
     const spotlight = useMemo(() => {
-        const spotLight = new THREE.SpotLight( 0xffffff, 1000 );
+        const spotLight = new THREE.SpotLight( 0xffffff, 7000 );
         spotLight.position.set( center.x, center.y, -1 * (center.z + zSpan * 2) );
+        return spotLight
+    }, [center.x, center.y, center.z, zSpan])
+
+    const spot2 = useMemo(() => {
+        const spotLight = new THREE.SpotLight( 0xffffff, 7000 );
+        spotLight.position.set( center.x, center.y, (center.z + zSpan * 2) );
         return spotLight
     }, [center.x, center.y, center.z, zSpan])
 
@@ -124,6 +130,7 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
 
         scene.add(ambientLight)
         scene.add(spotlight)
+        scene.add(spot2)
 
         objects.forEach(obj => scene.add(obj))
         
@@ -139,7 +146,7 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
         return () => {
             controls.removeEventListener('change', render)
         }
-    }, [renderer, camera, controls, height, objects, width, scene, ambientLight, spotlight])
+    }, [renderer, camera, controls, height, objects, width, scene, ambientLight, spotlight, spot2])
 
     return (
         <></>
