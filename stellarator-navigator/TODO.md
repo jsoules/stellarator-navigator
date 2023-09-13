@@ -90,3 +90,5 @@
 
 [ ] "show entire stellarator" checkbox --> AG will give the operation
 
+[ ] Revisit normalization for fields: should normalize across entire device, no?
+

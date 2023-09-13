@@ -3,8 +3,8 @@
 import { FunctionComponent, MutableRefObject, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { SurfaceApiResponseObject, Vec3 } from '../../types/Types';
-import { getSurfaces, getTubes } from './fetch3dData';
+import { SurfaceApiResponseObject, Vec3 } from '../../../types/Types';
+import { colorizeSurfaces, makeSurfaces, makeTubes } from './fetch3dData';
 // see https://github.com/magland/volumeview/blob/be55b7a9b6c78c24aa45310bd2e30f01f4269a26/gui/src/VolumeViewData.ts#L158
 
 type Props = {
@@ -39,10 +39,23 @@ type Props = {
 
 const unitBox = new THREE.Box3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 1, 1))
 const grayBackground = new THREE.Color( 0x444444 )
+const fieldMaterial = new THREE.MeshStandardMaterial({
+    color: 'white',
+    flatShading: false,
+    side: THREE.DoubleSide,
+    // side: THREE.FrontSide,
+    vertexColors: true,
+    wireframe: false
+})
+const tubeMaterial = new THREE.MeshPhongMaterial({ color: 0xe0e0e0 })
+// a useful alternative for testing
+// const redTubeMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000 })
+
+const ambientLight = new THREE.AmbientLight( 0xe0e0e0, 1.0 )
+
 
 const SimulationView: FunctionComponent<Props> = (props: Props) => {
     const { width, height, canvasRef, coils, surfs } = props
-
     const canvas = canvasRef.current
 
     const scene = useMemo(() => {
@@ -52,13 +65,15 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
     }, [])
 
     const objects = useMemo(() => {
-        const coilTubes = coils === undefined ? [] : getTubes(coils)
-        const surfaces = surfs === undefined ? [] : getSurfaces(surfs.surfacePoints, surfs.pointValues)
-        // TODO: Does memoization break this
-        if (surfaces) {
-            return [...coilTubes, ...surfaces]
+        const coilTubes = coils === undefined ? [] : makeTubes(coils)
+        const surfaces = surfs === undefined ? [] : makeSurfaces(surfs.surfacePoints)
+        if (surfs !== undefined) {
+            colorizeSurfaces(surfaces, surfs.pointValues, 'plasma')
         }
-        return [...coilTubes]
+        // TODO: Does memoization break this?
+        const coilMeshes = coilTubes.map(c => new THREE.Mesh(c, tubeMaterial))
+        const surfaceMeshes = surfaces.map(s => new THREE.Mesh(s, fieldMaterial))
+        return [...coilMeshes, ...surfaceMeshes]
     }, [coils, surfs])
 
 
@@ -95,12 +110,7 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
         if (!controls) return
         camera.position.set(center.x, center.y, -1 * (center.z + zSpan * 1.5))
         controls.target.set(center.x, center.y, center.z)
-        console.log(`camera position: ${center.x} ${center.y} ${-1 * (center.z + zSpan * 2)}`)
     }, [center.x, center.y, center.z, zSpan, camera, controls]) // important to not pass in center, because reference will change whenever bbox reference changes
-
-    const ambientLight = useMemo(() => {
-        return new THREE.AmbientLight( 0xe0e0e0, 1.0 )
-    }, [])
 
     const spotlight = useMemo(() => {
         const spotLight = new THREE.SpotLight( 0xffffff, 7000 );
@@ -146,7 +156,7 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
         return () => {
             controls.removeEventListener('change', render)
         }
-    }, [renderer, camera, controls, height, objects, width, scene, ambientLight, spotlight, spot2])
+    }, [renderer, camera, controls, height, objects, width, scene, spotlight, spot2])
 
     return (
         <></>

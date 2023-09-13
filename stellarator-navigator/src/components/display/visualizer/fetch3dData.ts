@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import * as THREE from "three"
-// import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils'
-import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils'
-import { ScalarField, SurfaceApiResponseObject, Vec3, Vec3Field } from "../../types/Types"
-import { valueToRgbTriplet } from "./Colormaps"
+import { ScalarField, SurfaceApiResponseObject, Vec3, Vec3Field } from "../../../types/Types"
+import { SupportedColorMap, valueToRgbTriplet } from "../Colormaps"
 
 type apiRequestProps = {
     recordId: string
@@ -59,13 +57,9 @@ export const useCoils = (props: apiRequestProps) => {
     useEffect(() => {
         fetch(`${CurvesEndpoint}${recordId}`)
             .then((response) => response.json())
-            // .then((response) => {console.log(response); return response.json()})
             .then((coilData) => {
-                // console.log(coilData)
                 coilData.forEach((coil: Vec3[]) => coil.push(coil[0]))
                 setCoils(coilData)
-                // console.log(wrapped)
-                // setCoils(coilData)
             })
             .catch((err) => {
                 console.log(err)
@@ -75,20 +69,13 @@ export const useCoils = (props: apiRequestProps) => {
 }
 
 
-export const getTubes = (coils: Vec3[][], makeRed?: boolean): THREE.Mesh[] => {
-    const meshes: THREE.Mesh[] = []
-    // const material = new THREE.MeshBasicMaterial({ color: 0xe0e0e0 })
-    const material = new THREE.MeshPhongMaterial({ color: 0xe0e0e0 })
-    const redMat = new THREE.MeshPhongMaterial({ color: 0xff0000 })
-    coils.forEach(coil => {
+export const makeTubes = (coils: Vec3[][]): THREE.TubeGeometry[] => {
+    return coils.map(coil => {
         const points = coil.map(c => new THREE.Vector3(...c))
         const curve = new THREE.CatmullRomCurve3(points)
         // path, # tube segments, radius, # radial segments, whether to close the loop
-        const geometry = new THREE.TubeGeometry(curve, 61, 0.2, 13, true)
-        const mesh = new THREE.Mesh( geometry, makeRed ? redMat : material )
-        meshes.push(mesh)
+        return new THREE.TubeGeometry(curve, 61, 0.2, 13, true)
     })
-    return meshes
 }
 
 
@@ -98,9 +85,13 @@ export const useSurfaces = (props: apiRequestProps) => {
 
     useEffect(() => {
         fetch(`${SurfacesEndpoint}${recordId}`)
-            .then((response) => response.json())
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`API endpoint did not return data:\n${response.status} ${response.statusText}`)
+                }
+                return response.json()
+            })
             .then((surfObj) => {
-                // console.log(surfObj)
                 const surface: SurfaceApiResponseObject = {
                     surfacePoints: surfObj.surfacePoints,
                     pointValues: surfObj.pointValues
@@ -120,57 +111,46 @@ const triangulateField = (width: number, height: number): number[] => {
       return Array(width - 1).fill(0).map((__, w) => {
         const rowOffset = width * h
         const x = rowOffset + w
-        // return [x, x+1, x+width, x+1, x+width, x+width+1]
         return [x, x+1, x+width, x+1, x+width + 1, x+width]
       })
     }).flat().flat()
 }
     
 
-export const getSurfaces = (surfacePoints: Vec3Field[], pointValues: ScalarField[]) => {
-    if (surfacePoints === undefined || pointValues === undefined) return []
+export const makeSurfaces = (surfacePoints: Vec3Field[]) => {
+    if (surfacePoints === undefined) return []
 
-    // For each surface (if any), we'll create a BufferGeometry and add the
+    // For each surface, create a BufferGeometry and add the
     // 30 x 30 x [x, y, z] data to that geometry as "known vertices".
-    // We map those points to surfaces by using two triangles per 4-point neighborhood,
+    // Then map those points into surfaces by using two triangles per 4-point neighborhood,
     // to create a mapping that says point (x, y) is adjacent to points (x, y+1) and
     // (x + 1, y) (see the triangulateField function).
-    // Then give it a white mesh with vertex coloring per the pointValues parameter.
     
-    const surfaces = surfacePoints.map((field, idx) => {
+    const surfaces = surfacePoints.map((field) => {
         const surfaceGeometry = new THREE.BufferGeometry()
         const vertices = new Float32Array(field.flat().flat())
         const indices = triangulateField(30, 30)
 
         surfaceGeometry.setIndex(indices)
         surfaceGeometry.setAttribute('position', new THREE.BufferAttribute( vertices, 3 ))
-
-
-        if (idx === 5) {
-            console.log(`vertex values:\n${pointValues[idx]}`)
-        }
-        const color = new Float32Array((pointValues[idx].flat().map(v => valueToRgbTriplet(v, 'plasma'))).flat())
-        surfaceGeometry.setAttribute('color', new THREE.BufferAttribute(color, 3))
-
-        // this line probably does nothing as I'm already using indexed
-        const sg = BufferGeometryUtils.mergeVertices(surfaceGeometry)
-        sg.computeVertexNormals()  // todo: does this actually do anything?
         surfaceGeometry.computeVertexNormals()
 
-        // const material = new THREE.MeshPhongMaterial({
-        const material = new THREE.MeshStandardMaterial({
-            color: 'white',
-            flatShading: false,
-            side: THREE.DoubleSide,
-            // side: THREE.FrontSide,
-            vertexColors: true,
-            wireframe: false
-        })
-        
-        // const mesh = new THREE.Mesh(sg, material)
-        const mesh = new THREE.Mesh(surfaceGeometry, material)
-        return mesh
+        return surfaceGeometry
     })
     
     return surfaces
 }
+
+
+export const colorizeSurfaces = (surfaces: THREE.BufferGeometry[], scalars: ScalarField[], colormap: SupportedColorMap = 'viridis') => {
+    if (scalars === undefined) return []
+
+    surfaces.forEach((s, idx) => {
+        const vertexColors = new Float32Array((scalars[idx].flat().map(v => valueToRgbTriplet(v, colormap))).flat())
+        s.setAttribute('color', new THREE.BufferAttribute(vertexColors, 3))
+        return s
+    })
+
+    return surfaces
+}
+

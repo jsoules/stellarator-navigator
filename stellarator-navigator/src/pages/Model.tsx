@@ -1,7 +1,7 @@
 import { FunctionComponent, useContext, useRef } from "react"
-import RecordManifest from "../components/display/RecordManifest"
-import SimulationView from "../components/display/SimulationView"
-import { useCoils, useSurfaces } from "../components/display/fetch3dData"
+import RecordManifest from "../components/display/visualizer/RecordManifest"
+import SimulationView from "../components/display/visualizer/SimulationView"
+import { useCoils, useSurfaces } from "../components/display/visualizer/fetch3dData"
 import { NavigatorContext } from "../state/NavigatorContext"
 
 type ModelProps = {

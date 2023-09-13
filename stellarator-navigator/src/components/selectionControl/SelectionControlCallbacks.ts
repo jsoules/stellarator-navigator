@@ -46,9 +46,6 @@ export const handleCheckboxChange = (dispatch: NavigatorDispatch, type: 'updateN
 }
 
 export const handleUpdateMarkedRecords = (dispatch: NavigatorDispatch, model: GridRowSelectionModel) => {
-    // console.log(`Received new selection model:\n${JSON.stringify(model)}\ntype ${Array.isArray(model)}`)
-    // console.log(`Type of first element: ${typeof(model[0])}`)
-    // Confirms: this is just an array of the IDs of the selected rows, as numbers
     const selections = new Set<number>(model as unknown as number[])
     const update: NavigatorStateAction = {
         type: 'updateMarkedRecords',
