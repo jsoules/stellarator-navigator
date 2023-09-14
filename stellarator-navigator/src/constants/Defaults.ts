@@ -1,4 +1,4 @@
-import { FilterSettings, NavigatorDatabase } from "../types/Types";
+import { FilterSettings, NavigatorDatabase } from "@snTypes/Types";
 import { coilLengthPerHpValidValues, totalCoilLengthValidValues } from "./ValidValues";
 
 export const initialNavigatorState: FilterSettings = {

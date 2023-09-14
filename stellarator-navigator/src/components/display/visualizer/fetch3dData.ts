@@ -1,5 +1,5 @@
+import { SurfaceApiResponseObject, Vec3 } from "@snTypes/Types"
 import { useEffect, useMemo, useState } from "react"
-import { SurfaceApiResponseObject, Vec3 } from "../../../types/Types"
 
 type apiRequestProps = {
     recordId: string

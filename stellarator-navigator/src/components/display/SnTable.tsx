@@ -1,7 +1,7 @@
 import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid'
+import { filterNc, filterNfp } from '@snState/filter'
+import { StellaratorRecord } from '@snTypes/Types'
 import { FunctionComponent } from 'react'
-import { filterNc, filterNfp } from '../../logic/filter'
-import { StellaratorRecord } from '../../types/Types'
 
 type SnTableProps = {
     records: StellaratorRecord[]

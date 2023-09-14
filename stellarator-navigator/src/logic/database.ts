@@ -1,7 +1,6 @@
-import { meanIotaSentinelValue, meanIotaValidValues } from "../constants/ValidValues"
-// import * as _rawData from "../data_16082023.json"
-import * as _rawData from "../data_17082023.json"
-import { NavigatorDatabase, RecordDict, StellaratorRecord } from "../types/Types"
+import { NavigatorDatabase, RecordDict, StellaratorRecord } from "@snTypes/Types"
+import { meanIotaSentinelValue, meanIotaValidValues } from "@snTypes/ValidValues"
+import * as _rawData from "data_17082023.json"
 
 type RawData = {
     columns: string[],

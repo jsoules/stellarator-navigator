@@ -1,5 +1,5 @@
+import { StellaratorRecord } from "@snTypes/Types"
 import { FunctionComponent } from "react"
-import { StellaratorRecord } from "../../../types/Types"
 
 
 type recordProps = {

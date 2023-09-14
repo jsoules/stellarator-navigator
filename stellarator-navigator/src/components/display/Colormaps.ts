@@ -1,5 +1,6 @@
 import { CSSProperties } from "react"
 import { inferno, magma, plasma, viridis } from 'scale-color-perceptual'
+
 export type SupportedColorMap = 'inferno' | 'magma' | 'plasma' | 'viridis' | 'hsv' | 'default'
 
 export const Tab20: CSSProperties["color"][] = [

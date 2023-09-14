@@ -3,9 +3,9 @@ import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
+import MainWindow from '@snComponents/MainWindow'
+import SetupFilterContext from '@snState/NavigatorContext'
 import './App.css'
-import MainWindow from './pages/MainWindow'
-import SetupFilterContext from './state/NavigatorContext'
 
 function App() {
     return (

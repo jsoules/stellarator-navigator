@@ -1,8 +1,8 @@
 import { SelectChangeEvent } from '@mui/material'
 import { GridRowSelectionModel } from '@mui/x-data-grid'
+import { NavigatorStateAction } from '@snState/NavigatorReducer'
+import { DependentVariableOpt, IndependentVariableOpt, NavigatorDispatch } from '@snTypes/Types'
 import { Dispatch, useCallback, useMemo } from 'react'
-import { NavigatorStateAction } from '../../state/NavigatorReducer'
-import { DependentVariableOpt, IndependentVariableOpt, NavigatorDispatch } from '../../types/Types'
 
 export const handleCoilLengthChange = (dispatch: NavigatorDispatch, type: 'updateCoilLengthPerHp' | 'updateTotalCoilLength', newValue: number | number[]) => {
     const update: NavigatorStateAction = {

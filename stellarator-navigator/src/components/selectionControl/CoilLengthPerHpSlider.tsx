@@ -1,6 +1,6 @@
 import { Slider, Typography } from "@mui/material"
+import { coilLengthPerHpValidValues } from "@snTypes/ValidValues"
 import { Fragment, FunctionComponent } from "react"
-import { coilLengthPerHpValidValues } from "../../constants/ValidValues"
 
 const marks = coilLengthPerHpValidValues.map(v => {return {value: v, label: ""}})
 

@@ -25,7 +25,39 @@
     "typeRoots": [
         "src/types",
         "node_modules/@types" /* the default, manually added back */
-    ]
+    ],
+
+    /* Fix imports */
+    "baseUrl": "./src",
+    "paths": {
+        "@snUtil/*": [
+            "util/*"
+        ],
+        "@snTypes/*": [
+            "types/*",
+            "constants/*"
+        ],
+        "@snComponents/*": [
+            "components/*",
+            "pages/*"
+        ],
+        "@snDisplayComponents/*": [
+            "components/display/*"
+        ],
+        "@snControlComponents/*": [
+            "components/selectionControl/*"
+        ],
+        "@snVisualizer/*": [
+            "components/display/visualizer/*"
+        ],
+        "@snPlots/*": [
+            "components/display/plots/*"
+        ],
+        "@snState/*": [
+            "logic/*",
+            "state/*"
+        ]
+    }
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

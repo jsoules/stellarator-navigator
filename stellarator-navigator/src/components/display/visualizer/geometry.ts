@@ -1,6 +1,7 @@
+import { SupportedColorMap, valueToRgbTriplet } from "@snDisplayComponents/Colormaps"
+import { ScalarField, Vec3, Vec3Field } from "@snTypes/Types"
+import { useMemo } from "react"
 import * as THREE from "three"
-import { ScalarField, Vec3, Vec3Field } from "../../../types/Types"
-import { SupportedColorMap, valueToRgbTriplet } from "../Colormaps"
 
 
 export const makeTubes = (coils: Vec3[][]): THREE.TubeGeometry[] => {
@@ -60,5 +61,128 @@ export const colorizeSurfaces = (surfaces: THREE.BufferGeometry[], scalars: Scal
 
     return surfaces
 }
+
+
+
+type BoundingPoints = {
+    xmin: number
+    ymin: number
+    zmin: number
+    xmax: number
+    ymax: number
+    zmax: number
+}
+
+const unitBox: BoundingPoints = {
+    xmin: 0,
+    ymin: 0,
+    zmin: 0,
+    xmax: 1,
+    ymax: 1,
+    zmax: 1
+}
+
+const useBoundingBox = (points: Vec3[]): BoundingPoints => {
+    return useMemo(() => {
+        if (points.length === 0) return unitBox
+
+        const xs: number[] = []
+        const ys: number[] = []
+        const zs: number[] = []
+        points.forEach(p => {
+            xs.push(p[0])
+            ys.push(p[1])
+            zs.push(p[2])
+        })
+        return {
+            xmin: Math.min(...xs),
+            ymin: Math.min(...ys),
+            zmin: Math.min(...zs),
+            xmax: Math.max(...xs),
+            ymax: Math.max(...ys),
+            zmax: Math.max(...zs)
+        }        
+    }, [points])
+}
+
+
+export const usePositions = (coils?: Vec3[][]) => {
+    // It's probably not necessary to split the memoization like this,
+    // but I'm concerned about substantively-equal-but-referentially-distinct
+    // repeated calls, which I'm attempting to cut off here.
+    const extremePts = useBoundingBox(coils ? coils.flat() : [])
+    const centerX = (extremePts.xmin + extremePts.xmax)/2
+    const centerY = (extremePts.ymin + extremePts.ymax)/2
+    const centerZ = (extremePts.zmin + extremePts.zmax)/2
+    const zSpan = extremePts.zmax - extremePts.zmin
+
+    const center = useMemo(() => new THREE.Vector3(centerX, centerY, centerZ), [centerX, centerY, centerZ])
+    const zOffset = useMemo(() => new THREE.Vector3(0, 0, zSpan), [zSpan])
+
+    return useMemo(() => { return { center, zOffset }}, [center, zOffset])
+}
+
+
+// // Note: the below is legacy code and will be deleted before release.
+// // I don't believe we need a formal Three.JS bounding box or box model--we are not engaging with it in any
+// // sophisticated way--but I didn't want to lose the current state just in case.
+
+// const unitBox = new THREE.Box3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 1, 1))
+// const getBoundingBox = (points: Vec3[]) => {
+//     if (points.length === 0) return unitBox
+//     const xs: number[] = []
+//     const ys: number[] = []
+//     const zs: number[] = []
+//     points.forEach(pt => {
+//         xs.push(pt[0])
+//         ys.push(pt[1])
+//         zs.push(pt[2])
+//     })
+//     const vmin = ([min(xs), min(ys), min(zs)])
+//     const vmax = ([max(xs), max(ys), max(zs)])
+
+//     return new THREE.Box3(new THREE.Vector3(...vmin), new THREE.Vector3(...vmax))
+// }
+
+// const min = (a: number[]) => {
+//     return a.reduce((prev, current) => (prev < current) ? prev : current, a[0] || 0)
+// }
+
+// const max = (a: number[]) => {
+//     return a.reduce((prev, current) => (prev > current) ? prev : current, a[0] || 0)
+// }
+
+// const bbox = useMemo(() => {
+//     return getBoundingBox(coils ? coils.flat() : [])
+// }, [coils])
+
+// const center = useMemo(() => {
+//     return {x: (bbox.min.x + bbox.max.x) / 2, y: (bbox.min.y + bbox.max.y) / 2, z: (bbox.min.z + bbox.max.z) / 2}
+// }, [bbox])
+
+// const zSpan = useMemo(() => {
+//     return bbox.max.z - bbox.min.z
+// }, [bbox])
+
+// useEffect(() => {
+//     if (!camera) return
+//     if (!controls) return
+//     camera.position.set(viewDims.centerx, viewDims.centery, -1 * (viewDims.centerz + viewDims.zspan * 1.5))
+//     controls.target.set(viewDims.centerx, viewDims.centery, viewDims.centerz)
+//     // Note: don't depend directly on viewDims; reference might change without changing the scalars
+// }, [camera, controls, viewDims.centerx, viewDims.centery, viewDims.centerz, viewDims.zspan])
+
+// const spotlight = useMemo(() => {
+//     const spotLight = new THREE.SpotLight( 0xffffff, 7000 );
+//     spotLight.position.set( viewDims.centerx, viewDims.centery, -1 * (viewDims.centerz + viewDims.zspan * 2) );
+//     return spotLight
+// }, [viewDims.centerx, viewDims.centery, viewDims.centerz, viewDims.zspan])
+
+// const spot2 = useMemo(() => {
+//     const spotLight = new THREE.SpotLight( 0xffffff, 7000 );
+//     spotLight.position.set( viewDims.centerx, viewDims.centery, (viewDims.centerz + viewDims.zspan * 2) );
+//     return spotLight
+// }, [viewDims.centerx, viewDims.centery, viewDims.centerz, viewDims.zspan])
+
 
 

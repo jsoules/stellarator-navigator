@@ -1,8 +1,8 @@
+import database from "@snState/database";
+import applyFilter, { projectRecords } from "@snState/filter";
+import { initialNavigatorState } from "@snTypes/Defaults";
+import { FilterSettings, NavigatorContextType } from "@snTypes/Types";
 import React, { FunctionComponent, PropsWithChildren, useCallback, useEffect, useMemo, useReducer, useState } from "react";
-import { initialNavigatorState } from "../constants/Defaults";
-import database from "../logic/database";
-import applyFilter, { projectRecords } from "../logic/filter";
-import { FilterSettings, NavigatorContextType } from "../types/Types";
 import NavigatorReducer from "./NavigatorReducer";
 
 export const NavigatorContext = React.createContext<NavigatorContextType>({

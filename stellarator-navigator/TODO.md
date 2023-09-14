@@ -92,3 +92,5 @@
 
 [ ] Revisit normalization for fields: should normalize across entire device, no?
 
+[ ] Reorg with index.js files to collect contents of small files
+

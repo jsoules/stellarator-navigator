@@ -1,13 +1,13 @@
 import { Grid } from "@mui/material"
 import { GridRowSelectionModel } from "@mui/x-data-grid"
+import SnTable from "@snDisplayComponents/SnTable"
+import { computePerPlotDimensions, useAxes, useScales } from "@snPlots/PlotScaling"
+import SvgWrapper from "@snPlots/SvgWrapper"
+import { useOnClickPlot } from "@snPlots/interactions"
+import { NavigatorContext } from "@snState/NavigatorContext"
+import { BoundedPlotDimensions, DependentVariableOpt, FilterSettings, IndependentVariableOpt, StellaratorRecord } from "@snTypes/Types"
 import { ScaleLinear } from "d3"
 import { FunctionComponent, useContext, useEffect, useMemo, useState } from "react"
-import SnTable from "../components/display/SnTable"
-import { computePerPlotDimensions, useAxes, useScales } from "../components/display/plots/PlotScaling"
-import SvgWrapper from "../components/display/plots/SvgWrapper"
-import { useOnClickPlot } from "../components/display/plots/interactions"
-import { NavigatorContext } from "../state/NavigatorContext"
-import { BoundedPlotDimensions, DependentVariableOpt, FilterSettings, IndependentVariableOpt, StellaratorRecord } from "../types/Types"
 
 type Props = {
     filters: FilterSettings

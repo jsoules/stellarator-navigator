@@ -1,5 +1,5 @@
+import { NavigatorStateAction } from "@snState/NavigatorReducer"
 import { Dispatch } from "react"
-import { NavigatorStateAction } from "../state/NavigatorReducer"
 
 export type DependentVariableOpt = 'maxKappa' | 'maxMsc' | 'minDist' | 'qaError'
 export type IndependentVariableOpt = 'total' | 'halfPeriod'

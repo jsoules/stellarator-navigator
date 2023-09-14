@@ -1,5 +1,5 @@
-import { coilLengthPerHpValidValues, totalCoilLengthValidValues } from "../constants/ValidValues"
-import { FilterSettings, NavigatorDatabase, StellaratorRecord } from "../types/Types"
+import { FilterSettings, NavigatorDatabase, StellaratorRecord } from "@snTypes/Types"
+import { coilLengthPerHpValidValues, totalCoilLengthValidValues } from "@snTypes/ValidValues"
 
 export const projectRecords = (selection: Set<number>, database: NavigatorDatabase) => {
     const projection: StellaratorRecord[] = []

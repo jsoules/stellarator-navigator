@@ -1,8 +1,8 @@
+import { NavigatorContext } from "@snState/NavigatorContext"
+import RecordManifest from "@snVisualizer/RecordManifest"
+import SimulationView from "@snVisualizer/SimulationView"
+import { useCoils, useSurfaces } from "@snVisualizer/fetch3dData"
 import { FunctionComponent, useContext, useRef } from "react"
-import RecordManifest from "../components/display/visualizer/RecordManifest"
-import SimulationView from "../components/display/visualizer/SimulationView"
-import { useCoils, useSurfaces } from "../components/display/visualizer/fetch3dData"
-import { NavigatorContext } from "../state/NavigatorContext"
 
 type ModelProps = {
     id: number | string

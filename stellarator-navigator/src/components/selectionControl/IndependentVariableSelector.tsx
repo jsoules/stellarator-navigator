@@ -1,8 +1,8 @@
 
 import { FormControl, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material"
+import { defaultIndependentVariableValue, independentVariableValidValues } from "@snPlots/DependentVariableConfig"
+import { IndependentVariableOpt } from "@snTypes/Types"
 import { FunctionComponent } from "react"
-import { IndependentVariableOpt } from "../../types/Types"
-import { defaultIndependentVariableValue, independentVariableValidValues } from "../display/plots/DependentVariableConfig"
 
 
 type Props = {

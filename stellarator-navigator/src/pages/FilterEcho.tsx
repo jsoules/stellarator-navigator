@@ -1,9 +1,9 @@
+import { FilterSettings } from "@snTypes/Types"
 import { FunctionComponent, useContext } from "react"
-import { FilterSettings } from "../types/Types"
 
-import { useAxes, useScales } from "../components/display/plots/PlotScaling"
-import SvgWrapper from "../components/display/plots/SvgWrapper"
-import { NavigatorContext } from "../state/NavigatorContext"
+import { useAxes, useScales } from "@snPlots/PlotScaling"
+import SvgWrapper from "@snPlots/SvgWrapper"
+import { NavigatorContext } from "@snState/NavigatorContext"
 
 type Props = {
     s: FilterSettings
@@ -33,7 +33,10 @@ const FilterEcho: FunctionComponent<Props> = () => {
         boundedWidth: 640 - 20 - 80,
         tickLength: 6,
         fontPx: 10,
-        pixelsPerTick: 30
+        pixelsPerTick: 30,
+        clipAvoidanceXOffset: 30,
+        clipAvoidanceYOffset: 20,
+        axisLabelOffset: 10,
     }
     const [xScale, yScale] = useScales({dependentVar: filterSettings.dependentVariable, independentVar: filterSettings.independentVariable, dimsIn: requestedDims})
     const [xAxis, yAxis] = useAxes({

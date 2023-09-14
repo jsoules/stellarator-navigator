@@ -1,7 +1,7 @@
 
 import { FormControl, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material"
+import { meanIotaSentinelValue, meanIotaValidValues } from "@snTypes/ValidValues"
 import { Fragment, FunctionComponent } from "react"
-import { meanIotaSentinelValue, meanIotaValidValues } from "../../constants/ValidValues"
 
 
 type Props = {

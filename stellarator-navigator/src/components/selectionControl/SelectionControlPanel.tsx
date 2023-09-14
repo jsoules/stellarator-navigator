@@ -1,6 +1,6 @@
 import { SelectChangeEvent } from '@mui/material'
+import { FilterSettings } from '@snTypes/Types'
 import { FunctionComponent } from 'react'
-import { FilterSettings } from '../../types/Types'
 import { NcPerHpCheckboxes, NfpCheckboxes } from './Checkboxes'
 import CoilLengthPerHpSlider from './CoilLengthPerHpSlider'
 import DependentVariableSelector from './DependentVariableSelector'

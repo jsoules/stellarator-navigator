@@ -1,4 +1,4 @@
-import { DependentVariableOpt, FilterSettings, IndependentVariableOpt } from "../types/Types"
+import { DependentVariableOpt, FilterSettings, IndependentVariableOpt } from "@snTypes/Types"
 
 export type NavigatorStateAction = {
     type: 'updateCoilLengthPerHp',
