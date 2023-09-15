@@ -1,4 +1,4 @@
-import { DependentVariableOpt, IndependentVariableOpt } from "../../../types/Types"
+import { DependentVariableOpt, IndependentVariableOpt } from "@snTypes/Types"
 
 export const defaultDependentVariableValue = 'qaError'
 

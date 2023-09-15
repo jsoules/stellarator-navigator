@@ -1,3 +1,4 @@
+import { SupportedColorMap } from '@snDisplayComponents/Colormaps'
 import { SurfaceApiResponseObject, Vec3 } from '@snTypes/Types'
 import { FunctionComponent, MutableRefObject, useEffect, useMemo } from 'react'
 import * as THREE from 'three'
@@ -13,6 +14,8 @@ type Props = {
     width: number
     height: number
     canvasRef: MutableRefObject<null | HTMLCanvasElement>
+    colorScheme?: SupportedColorMap
+    surfaceChecks?: boolean[]
     coils?: Vec3[][]
     surfs?: SurfaceApiResponseObject
 }
@@ -26,20 +29,36 @@ const scene = new THREE.Scene()
 scene.background = grayBackground
 
 const SimulationView: FunctionComponent<Props> = (props: Props) => {
-    const { width, height, canvasRef, coils, surfs } = props
+    const { width, height, canvasRef, coils, surfs, surfaceChecks, colorScheme } = props
     const canvas = canvasRef.current
 
-    const objects = useMemo(() => {
+    const tubes = useMemo(() => {
         const coilTubes = coils === undefined ? [] : makeTubes(coils)
+        const coilMeshes = coilTubes.map(c => new THREE.Mesh(c, tubeMaterial))
+        return coilMeshes
+    }, [coils])
+
+    const surfaces = useMemo(() => {
         const surfaces = surfs === undefined ? [] : makeSurfaces(surfs.surfacePoints)
         if (surfs !== undefined) {
-            colorizeSurfaces(surfaces, surfs.pointValues, 'plasma')
+            colorizeSurfaces(surfaces, surfs.pointValues, colorScheme)
         }
         // TODO: Does memoization break this?
-        const coilMeshes = coilTubes.map(c => new THREE.Mesh(c, tubeMaterial))
         const surfaceMeshes = surfaces.map(s => new THREE.Mesh(s, fieldMaterial))
-        return [...coilMeshes, ...surfaceMeshes]
-    }, [coils, surfs])
+        return [...surfaceMeshes]
+    }, [colorScheme, surfs])
+
+    const objects = useMemo(() => {
+        const displayedSurfaces: THREE.Mesh<THREE.BufferGeometry, THREE.Material>[] = []
+        const definiteSurfaces = surfaces ?? []
+        const definiteChecks = surfaceChecks ?? []
+        definiteChecks.forEach((v, idx) => {
+            if (v) {
+                displayedSurfaces.push(definiteSurfaces[idx])
+            }
+        })
+        return [...tubes, ...displayedSurfaces]
+    }, [tubes, surfaces, surfaceChecks])
 
     const spots = spotlights
     const positions = usePositions(coils)

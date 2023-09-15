@@ -3,6 +3,15 @@ import { inferno, magma, plasma, viridis } from 'scale-color-perceptual'
 
 export type SupportedColorMap = 'inferno' | 'magma' | 'plasma' | 'viridis' | 'hsv' | 'default'
 
+export const DefaultColorMap: SupportedColorMap = 'plasma'
+export const MapsConfig: {key: number, value: SupportedColorMap}[] = [
+    { key: 1, value: 'plasma'  },
+    { key: 2, value: 'inferno' },
+    { key: 3, value: 'magma'   },
+    { key: 4, value: 'viridis' },
+    { key: 5, value: 'hsv'     }
+]
+
 export const Tab20: CSSProperties["color"][] = [
     "#1f77b4",
     "#aec7e8",

@@ -9,8 +9,6 @@ export type Route = {
 } | {
     page: 'model',
     recordId: string
-} | {
-    page: 'filterEcho'
 }
 
 // This is all very manual-style routing, with the main landing page reading the route and returning the
@@ -42,9 +40,6 @@ const useRoute = () => {
         if (r.page === 'model') {
             navigate({...location, pathname: `/model/${r.recordId}`})
         }
-        if (r.page === 'filterEcho') {
-            navigate({...location, pathname: '/filterEcho/'})
-        }
     }, [location, navigate])
 
     const route: Route = useMemo(() => {
@@ -53,16 +48,12 @@ const useRoute = () => {
             const tokens = location.pathname.split('/')
             const recordId = tokens[2]
             if (!isPlausibleRecordId(recordId)) {
-                console.log(`Requested record ID ${recordId} is invalid.`)
+                console.warn(`Requested record ID ${recordId} is invalid.`)
                 return redirectHome()
             }
             return {
                 page: 'model',
                 recordId: recordId
-            }
-        } else if (location.pathname.startsWith('/filterEcho/')) {
-            return {
-                page: 'filterEcho'
             }
         } else {
             return redirectHome()

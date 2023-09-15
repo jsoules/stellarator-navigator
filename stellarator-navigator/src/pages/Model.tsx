@@ -1,13 +1,14 @@
+import { SupportedColorMap } from "@snComponents/display/Colormaps"
+import SurfaceControls from "@snComponents/display/visualizer/SurfaceControls"
 import { NavigatorContext } from "@snState/NavigatorContext"
 import RecordManifest from "@snVisualizer/RecordManifest"
 import SimulationView from "@snVisualizer/SimulationView"
 import { useCoils, useSurfaces } from "@snVisualizer/fetch3dData"
-import { FunctionComponent, useContext, useRef } from "react"
+import { FunctionComponent, useContext, useRef, useState } from "react"
 
 type ModelProps = {
     id: number | string
 }
-
 
 const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     const { id } = props
@@ -15,15 +16,33 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     const canvasRef = useRef(null)
     const numericId = typeof(id) === "number" ? id : parseInt(id)
     const rec = fetchRecords(new Set([numericId]))[0]
-    // const coils = getCoils({ recordId: "63600" })
     const coils = useCoils({ recordId: `${id}` })
     const surfs = useSurfaces({ recordId: `${id}` })
+
+    const [surfaceChecks, setSurfaceChecks] = useState<boolean[]>([])
+    const [colorMap, setColorMap] = useState<SupportedColorMap>('plasma')
+
     return (
         <div>
-            <div>
+            <div style={{padding: 10}}>
                 <canvas ref={canvasRef} />
                 {/* TODO: Don't restrict this width/height to these values, do something smarter */}
-                <SimulationView width={800} height={640} canvasRef={canvasRef} coils={coils} surfs={surfs} />
+                <SimulationView
+                    width={800}
+                    height={640}
+                    canvasRef={canvasRef}
+                    coils={coils}
+                    surfs={surfs}
+                    surfaceChecks={surfaceChecks}
+                    colorScheme={colorMap}
+                />
+                <SurfaceControls
+                    surfaces={surfs}
+                    surfaceChecks={surfaceChecks}
+                    setSurfaceChecks={setSurfaceChecks}
+                    colorMap={colorMap}
+                    setColorMap={setColorMap}
+                />
             </div>
             <RecordManifest rec={rec} />
         </div>

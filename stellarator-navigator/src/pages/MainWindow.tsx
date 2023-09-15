@@ -5,7 +5,6 @@ import useWindowDimensions from "@snUtil/useWindowDimensions"
 import { FunctionComponent, useContext, useMemo } from "react"
 import useRoute from "routing/useRoute"
 import Splitter from "../components/Splitter"
-import FilterEcho from "./FilterEcho"
 import Model from "./Model"
 import PlotGrid from "./PlotGrid"
 
@@ -29,9 +28,6 @@ const MainWindow: FunctionComponent = () => {
     }
 
     let content = <span />
-    if (route.page === 'filterEcho') {
-        content = <FilterEcho s={filterSettings} />
-    }
     if (route.page === 'home') {
         content = <PlotGrid filters={filterSettings} width={width - splitterInitialPosition - splitterWidthRolloff} height={effectiveHeight} selectionHandler={selectionUpdate} />
     }

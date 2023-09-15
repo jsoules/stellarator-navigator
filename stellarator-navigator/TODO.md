@@ -16,8 +16,6 @@
 
 [x] implement table selection highlights
 
-[?] implement dot mouseover highlights (??)
-
 [x] Validate requested record ID against known set of records in useRoute.ts
 
 [x] DRY out NC/NFP selection code in filter.ts
@@ -30,7 +28,7 @@
 
 [x] Review and centralize styling in PlotScaling.tsx
 
-[ ] implement the 3d popups
+[x] implement the 3d popups
 
     [x] Implement routing
 
@@ -46,17 +44,17 @@
 
     [x] Fix color map for magnetic field surface display
     
-    [ ] Use dropdown for magnetic field surface color map styling
+    [x] Use dropdown for magnetic field surface color map styling
 
-    [ ] Implement checkbox to toggle magnetic field surface display layers
+    [x] Implement checkbox to toggle magnetic field surface display layers
 
-    [ ] Look for way to smooth the triangulated surfaces for magnetic field display?
+    [x] Look for way to smooth the triangulated surfaces for magnetic field display?
 
     [x] Implement drawing the 3d model on the Canvas
 
-[ ] Ensure good package structure for javascript files
+[x] Avoid relative imports
 
-[ ] Consider removing route to FilterEcho page in useRoute.ts for production
+[x] Remove FilterEcho page
 
 [ ] Consider automatically updating selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
 
@@ -93,4 +91,13 @@
 [ ] Revisit normalization for fields: should normalize across entire device, no?
 
 [ ] Reorg with index.js files to collect contents of small files
+
+[?] implement dot mouseover highlights (??)
+
+[ ] Don't hard-code 60 points per tube -- depends on fourier mode
+
+[ ] --> need API endpoint for people to download the raw files from the simulations (coils, currents, nml) "download vmec" button to fetch the nml, expand later
+
+[ ] --> it'd be nice if you could plot "for a given NFP, show all in the same plot your selection" (toggle "show on same plot")
+    --> then color-code the nc/hp values
 

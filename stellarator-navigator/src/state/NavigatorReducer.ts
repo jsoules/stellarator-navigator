@@ -70,7 +70,7 @@ const updateBooleanList = (key: 'ncPerHp' | 'nfp', index: number, newState: bool
     const current = key === 'ncPerHp' ? settings.ncPerHp : key === 'nfp' ? settings.nfp : []
 
     if (rightLength === -1) throw Error(`Unsupported keytype ${key} in updateBooleanList.`)
-    const reset = current.length !== rightLength
+    const reset = current.length !== rightLength    // handles initialization
     const newSelections = reset ? new Array(rightLength).fill(false) : current
 
     newSelections[index] = newState
