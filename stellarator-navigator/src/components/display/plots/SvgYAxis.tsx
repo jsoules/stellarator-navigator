@@ -1,8 +1,8 @@
 
+import { BoundedPlotDimensions, DependentVariableOpt } from "@snTypes/Types"
 import { scaleLinear, scaleLog } from "d3"
 import { FunctionComponent, useMemo } from "react"
-import { BoundedPlotDimensions, DependentVariableOpt } from "../../../types/Types"
-import { dependentVariableValidValues } from "./DependentVariableConfig"
+import { dependentVariableRanges, dependentVariableValidValues } from "./DependentVariableConfig"
 
 type AxisProps = {
     dataRange: number[]
@@ -11,37 +11,61 @@ type AxisProps = {
     dims: BoundedPlotDimensions
 }
 
+// if I had 100 ticks and we went from 10 to 20, I'd be fine with 1 digit. That's because we cover 10 before the decimal, and 100 / 10 <= 10.
+// If I had 100 ticks and we went from 5 to 10, I'd be in trouble, because 100 / 5 = 20, which means more than 10 ticks per big-unit step.
+// If I had 100 ticks and we went from 4.5 to 6, that's 6-4.5 = 2.5, 100 / 2.5 = 40, def need 2
+// 
+// So what I really want to know is ticks / range, ceil(log10(that)).
+
 const leadingDigit = (v: number) => {
     return Math.round(v / (10 ** Math.floor(Math.log10(v))))
 }
 const logDisplayDigits = [1] // TODO: Does this need to be more sophisticated?
 
-// const clipAvoidanceX = 30
-// const clipAvoidanceY = 20
-// const axisLabelOffset = 10
-
 const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
     const { dataRange, canvasRange, type, dims } = props
+    const isLog = dependentVariableRanges[type].isLog
     const yAxisTransform = useMemo(() => `translate(-${dims.clipAvoidanceXOffset + dims.tickLength}, -${dims.clipAvoidanceYOffset})`, [dims.clipAvoidanceXOffset, dims.clipAvoidanceYOffset, dims.tickLength])
+    const markLineColor = "#1f77b4" // should be equivalent to the tableau blue that was the default
 
     // TODO: Customize range!! (or no?)
-    const ticks = useMemo(() => {
-        const realDataRange = type === 'qaError'
+    const yScale = useMemo(() => {
+        const realDataRange = isLog
             ? [10 ** dataRange[0], 10 ** dataRange[1]]
             : dataRange
-        const yScale = type === 'qaError' ? scaleLog(realDataRange, canvasRange) : scaleLinear(dataRange, canvasRange)
-        const height = canvasRange[1] - canvasRange[0]
-        const targetTickCount = Math.max(1, Math.floor(height / dims.pixelsPerTick))
+        return isLog ? scaleLog(realDataRange, canvasRange) : scaleLinear(dataRange, canvasRange)
+    }, [canvasRange, dataRange, isLog])
 
-        return yScale.ticks(targetTickCount)
-        .map(value => ({
-            value,
-            yOffset: height - yScale(value),
-            label: type !== 'qaError'
-                    ? value.toFixed(1)
-                    : logDisplayDigits.includes(leadingDigit(value)) ? value.toExponential(0) : ''
-        }))
-    }, [canvasRange, dataRange, type, dims])
+    const canvasHeight = useMemo(() => {
+        return canvasRange[1] - canvasRange[0]
+    }, [canvasRange])
+
+    const ticks = useMemo(() => {
+        const targetTickCount = Math.max(1, Math.floor(canvasHeight / dims.pixelsPerTick))
+        const baseTicks = yScale.ticks(targetTickCount)
+        // TODO: See if we need to adjust log-label logic once we can zoom in and might all be in one band
+        // if we're on the log scale, we don't care about this--we don't label every tick then
+        // for an actual linear scale, we want to make sure we print only decimal places that might change
+        // So basically, figure out how many gaps (total ticks - 1) we have for each unit of the data range,
+        // take the log-base-10 of that, and round up for fractions
+        const digits = isLog ? 1 : Math.ceil(Math.log10((baseTicks.length - 1) / (dataRange[1] - dataRange[0])))
+
+        return baseTicks
+            .map(value => ({
+                value,
+                yOffset: canvasHeight - yScale(value),
+                label: isLog
+                        ? logDisplayDigits.includes(leadingDigit(value)) ? value.toExponential(0) : ''
+                        : value.toFixed(digits)
+            }))
+    }, [canvasHeight, dims.pixelsPerTick, yScale, isLog, dataRange])
+
+    const markedLineY = useMemo(() => {
+        const mark = dependentVariableRanges[type].marked
+        if (mark === undefined) return undefined
+        const markedValue = isLog ? 10 ** mark : mark
+        return canvasHeight - yScale(markedValue)
+    }, [canvasHeight, isLog, type, yScale])
 
     return (
         <g transform={yAxisTransform} key="y-axis">
@@ -62,13 +86,14 @@ const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
                         transform={`translate(${dims.tickLength + dims.clipAvoidanceXOffset}, ${yOffset + dims.clipAvoidanceYOffset})`}
                     >
                         <line x2={`-${dims.tickLength}`} stroke="currentColor" />
-                        {type === 'qaError' && leadingDigit(value) === 1 && <line x2={dims.boundedWidth} stroke="#cbcbcb" />}
+                        {dependentVariableRanges[type].isLog && leadingDigit(value) === 1 && <line x2={dims.boundedWidth} stroke="#cbcbcb" />}
+                        {!dependentVariableRanges[type].isLog && <line x2={dims.boundedWidth} stroke="#cbcbcb" />}
                         <text
                             key={`yticklabel-${value}`}
                             style={{
                                 fontSize: `${dims.fontPx}px`,
-                                textAnchor: "middle",
-                                transform: `translateX(-${dims.clipAvoidanceYOffset}px) translateY(${dims.tickLength/2}px)`
+                                textAnchor: "end",
+                                transform: `translateX(-${dims.tickLength*2}px) translateY(${dims.tickLength/2}px)`
                             }}
                             >
                             { label }
@@ -76,6 +101,14 @@ const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
                     </g>
                 )
             })}
+            {markedLineY && (
+                <g
+                    key={"markedLine"}
+                    transform={`translate(${dims.tickLength + dims.clipAvoidanceXOffset}, ${markedLineY + dims.clipAvoidanceYOffset})`}
+                >
+                    <line x2={dims.boundedWidth} stroke={markLineColor} strokeWidth="2" />
+                </g>
+            )}
             <g key="y-axis-label" transform={`translate(-${dims.axisLabelOffset}, ${(dims.boundedHeight / 2) + dims.marginTop})`}>
                 {/* This seems too simple but also seems to be doing the right thing so, why not? */}
                 <text style={{

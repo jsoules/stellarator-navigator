@@ -1,6 +1,6 @@
+import { BoundedPlotDimensions, DependentVariableOpt, IndependentVariableOpt } from "@snTypes/Types"
 import { ScaleLinear, scaleLinear } from "d3"
 import { useMemo } from "react"
-import { BoundedPlotDimensions, DependentVariableOpt, IndependentVariableOpt } from "../../../types/Types"
 import { dependentVariableRanges, independentVariableRanges } from "./DependentVariableConfig"
 import SvgXAxis from "./SvgXAxis"
 import SvgYAxis from "./SvgYAxis"
@@ -82,11 +82,11 @@ export const useAxes = (props: axisProps) => {
 
 
 // TODO: These will be tweaked
-const plotGutterVertical = 15
+export const plotGutterVertical = 15
 export const plotGutterHorizontal = 15
 const minPlotX = 250
 const minPlotY = 250
-// aspect ratio is width/height
+// aspect ratio is width/height (I'm talking about the plot aspect ratio here, not the quantity in the data)
 // const minPlotAspect = 0.5 // this turns out not to matter--we don't need to fill vertical space
 const idealPlotAspect = 1.4
 const maxPlotAspect = 2.5
@@ -104,12 +104,12 @@ const baseDims = {
     pixelsPerTick: 3 * fontPx,
     clipAvoidanceXOffset: 30,
     clipAvoidanceYOffset: 20,
-    axisLabelOffset: 10,
+    axisLabelOffset: 15,
 }
 
 export const computePerPlotDimensions = (selectedNfps: number, spaceWidth: number, spaceHeight: number): [BoundedPlotDimensions, number] => {
     const colCount =  selectedNfps === 0 ? 5 : selectedNfps
-    const availableWidth = spaceWidth - (plotGutterVertical * (colCount)) // gutter's-width margin on either side
+    const availableWidth = spaceWidth - (plotGutterVertical * (colCount + 1)) // gutter's-width margin on either side
     const availableHeight = spaceHeight - plotGutterHorizontal * 2 // apply some margin
     let plotWidth = Math.max(availableWidth / colCount, minPlotX)
     let plotHeight = -1

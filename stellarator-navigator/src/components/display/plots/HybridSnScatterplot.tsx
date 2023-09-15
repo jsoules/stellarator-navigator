@@ -1,8 +1,8 @@
+import { Tol } from "@snDisplayComponents/Colormaps"
+import { DependentVariableOpt, IndependentVariableOpt, StellaratorRecord } from "@snTypes/Types"
 import { ScaleLinear, ScaleLogarithmic, scaleOrdinal, ScaleOrdinal } from "d3"
 import { FunctionComponent } from "react"
 import { filterNc, filterNfp } from "../../../logic/filter"
-import { DependentVariableOpt, IndependentVariableOpt, StellaratorRecord } from "../../../types/Types"
-import { WongCBFriendly } from "../Colormaps"
 // import { onClickDot, onHoverDot, onHoverOff } from "./interactions"
 import { onClickDot } from "./interactions"
 
@@ -73,7 +73,7 @@ const Dot: FunctionComponent<dotProps> = (props: dotProps) => {
 const HybridSnScatterplot: FunctionComponent<ScatterplotProps> = (props: ScatterplotProps) => {
     const { colormap, data, xScale, yScale, height, markedIds, dependentVar, independentVar, nfpValue, ncPerHpValue } = props
     if (data === undefined || data.length === 0) return <></>
-    const _colors = (colormap ?? WongCBFriendly) as string[]
+    const _colors = (colormap ?? Tol) as string[]
     const color = scaleOrdinal()
         .domain(['0', '1', '2', '3', '4', '5', '6', '7'])
         .range(_colors) as ScaleOrdinal<string, string, never>

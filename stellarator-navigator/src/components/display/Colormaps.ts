@@ -59,6 +59,26 @@ export const WongCBFriendly: string[] = [
     "#CC79A7"
 ]
 
+// and another one pulling from https://personal.sron.nl/~pault/ entry of 2021.04.02 -- get feedback
+// Note: it's *really challenging* to get 13 distinct colors with sufficient contrast; we probably
+// can't fully meet web accessibility guidelines under these constraints. Hopefully it isn't as
+// important since the data can be explored in other ways.
+export const Tol: string[] = [
+    "#332288", // indigo
+    "#88CCEE", // cyan
+    "#44AA99", // teal
+    "#117733", // forest green
+    "#999933", // olive
+    "#DDCC77", // sand
+    "#CC6677", // rose
+    "#882255", // wine
+    "#AA4499", // purple
+    "#0077BB", // midrange blue (added)
+    "#ddaa33", // a dark yellow (added)
+    "#000000", // black (added)
+    "#999999"  // mid-tone grey (added)
+]
+
 // also consider https://thenode.biologists.com/data-visualization-with-flying-colors/research/
 
 // Continuous scales for display: cross-import from scale-color-perceptual

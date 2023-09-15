@@ -9,7 +9,7 @@ type Props = {
     onChange: (evt: SelectChangeEvent<SupportedColorMap>) => void
 }
 
-const ColorMapSelector: FunctionComponent<Props> = (props: Props) => {
+const SurfaceColorMapSelector: FunctionComponent<Props> = (props: Props) => {
     const { onChange } = props
     const items = MapsConfig.map(item =>
         <MenuItem key={item.key} value={item.value}>{item.value}</MenuItem>
@@ -17,7 +17,7 @@ const ColorMapSelector: FunctionComponent<Props> = (props: Props) => {
     
     return (
         <Fragment>
-            <Typography id="dependent-variable-selector" gutterBottom>
+            <Typography id="dependent-variable-selector" gutterBottom fontWeight="bold">
                 Surface color scheme
             </Typography>
             <FormControl fullWidth size="small">
@@ -32,4 +32,4 @@ const ColorMapSelector: FunctionComponent<Props> = (props: Props) => {
     )
 }
 
-export default ColorMapSelector
+export default SurfaceColorMapSelector

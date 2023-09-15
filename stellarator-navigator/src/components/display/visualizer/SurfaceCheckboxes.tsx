@@ -12,14 +12,11 @@ const SurfaceCheckboxes: FunctionComponent<Props> = (props: Props) => {
     const checkCount = selections.filter(v => v).length
     const allChecked = checkCount === selections.length
 
-    return selections.length === 0 ? <></> :
-        (<div style={{paddingLeft: 8 }}>
-            <Typography id="SurfaceCheckboxes">
-                Surfaces to display:
-            </Typography>
+    const allCheckbox = selections.length > 1
+        ? (
             <div key="allSelect">
                 <FormControlLabel
-                    label="(all)"
+                    label="(toggle all)"
                     control={
                         <Checkbox
                             style={{ padding: 1, transform: 'scale(0.8)' }}
@@ -30,6 +27,14 @@ const SurfaceCheckboxes: FunctionComponent<Props> = (props: Props) => {
                     }
                 />
             </div>
+        ) : (<></>)
+
+    return selections.length === 0 ? <></> :
+        (<div style={{paddingLeft: 8 }}>
+            <Typography id="SurfaceCheckboxes" fontWeight="bold">
+                Surfaces to display
+            </Typography>
+            { allCheckbox }
             {
                 selections.map((v, i) => (
                     <span key={i + 1}>

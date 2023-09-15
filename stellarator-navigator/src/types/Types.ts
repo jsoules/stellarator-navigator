@@ -24,8 +24,10 @@ export type FilterSettings = {
 // restrictions: 
 // curvature, mean squared curvature: not to exceed 5, highlight that line
 // minimum intercoil distance: put a line for 0.1 meters
-// if aspect ratio is plotted, it should be flat: when # of surfaces = 1, it should be 20. When nsurf = 2, it should be 10. etc.
-// 
+
+
+// MAKE SURE IOTA IS THERE!
+// iota (rotational transform)
 
 // qa_error:  0 means perfect QA on the volume --> Quasiasymmetry error (directly related to particle losses) (no unit) --> THIS SHOULD BE SQRT OF THE QUANTITY!
 // coil_length_per_hp: length of coil used per half period (meters)

@@ -1,8 +1,8 @@
 import { SelectChangeEvent } from "@mui/material"
 import { SupportedColorMap } from "@snComponents/display/Colormaps"
-import ColorMapSelector from "@snComponents/display/visualizer/ColorMapSelector"
 import { SurfaceApiResponseObject } from "@snTypes/Types"
 import SurfaceCheckboxes from "@snVisualizer/SurfaceCheckboxes"
+import SurfaceColorMapSelector from "@snVisualizer/SurfaceColorMapSelector"
 import { Dispatch, FunctionComponent, SetStateAction, useCallback, useEffect } from "react"
 
 type ModelProps = {
@@ -40,7 +40,7 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
                     <SurfaceCheckboxes selections={surfaceChecks} onChange={handleCheckboxChange} />
                 </div>
                 <div style={{flex: 1, padding: 20 }}>
-                    <ColorMapSelector value={colorMap} onChange={handleColorMapChange} />
+                    <SurfaceColorMapSelector value={colorMap} onChange={handleColorMapChange} />
                 </div>
             </div>
         )

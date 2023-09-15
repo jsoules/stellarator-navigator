@@ -2,7 +2,7 @@ import { ScaleLinear } from "d3"
 import { FunctionComponent, useMemo, } from "react"
 import { BoundedPlotDimensions, DependentVariableOpt, IndependentVariableOpt, StellaratorRecord } from "../../../types/Types"
 import HybridSnScatterplot from "./HybridSnScatterplot"
-import { plotGutterHorizontal } from "./PlotScaling"
+import { plotGutterHorizontal, plotGutterVertical } from "./PlotScaling"
 
 type Props = {
     dims: BoundedPlotDimensions
@@ -36,7 +36,7 @@ const SvgWrapper: FunctionComponent<Props> = (props: Props) => {
     return (
         <div
             className="Chart__wrapper"
-            style={{ height: dims.height + plotGutterHorizontal }}
+            style={{ height: dims.height + plotGutterHorizontal, marginLeft: plotGutterVertical/2, marginRight: plotGutterVertical/2 }}
         >
             <svg width={dims.width} height={dims.height} onClick={() => clickHandler(nfpValue, ncPerHpValue)}>
                 <g transform={`translate(${dims.marginLeft + dims.boundedWidth / 2}, ${1.7*dims.fontPx})`} key="plot-label">

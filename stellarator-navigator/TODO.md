@@ -64,13 +64,13 @@
 
 [ ] Add all available variables as options for dependent and independent axes
 
-[ ] Review ranges in axes --> allow zooming in by the sliders
-
 [?] make static axis settings for the different dependent variables, rather than recomputing in one component
 
-[ ] add horizontal lines for all plots regardless of dependent variable
+[x] add horizontal lines for all plots regardless of dependent variable
 
-[ ] add "background field error" horizontal line for QA error plot (check received example code, s.b. 50e-6 or so)
+[x] add "background field error" horizontal line for QA error plot (check received example code, s.b. 50e-6 or so)
+
+[ ] Review ranges in axes --> allow zooming in by the sliders
 
 [ ] restrict visible independent-axis to the range currently selected by the sliders? --> this is also a zoom thing, yes do this
 
@@ -94,10 +94,11 @@
 
 [?] implement dot mouseover highlights (??)
 
-[ ] Don't hard-code 60 points per tube -- depends on fourier mode
+[ ] Don't hard-code 60 points per tube -- depends on fourier mode, so server needs to know ranges :(
 
 [ ] --> need API endpoint for people to download the raw files from the simulations (coils, currents, nml) "download vmec" button to fetch the nml, expand later
 
+[ ] color-code based on nc/hp values, not seed values
+
 [ ] --> it'd be nice if you could plot "for a given NFP, show all in the same plot your selection" (toggle "show on same plot")
-    --> then color-code the nc/hp values
 

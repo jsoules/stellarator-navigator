@@ -41,6 +41,7 @@ database/
 received/
 notes.py
 data_19072023.pkl
+*gz
 
 # Installer logs
 pip-log.txt
