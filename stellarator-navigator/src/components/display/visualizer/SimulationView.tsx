@@ -32,6 +32,7 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
     const { width, height, canvasRef, coils, surfs, surfaceChecks, colorScheme } = props
     const canvas = canvasRef.current
 
+    // TODO: Allow material customization (to get coil colors)
     const tubes = useMemo(() => {
         const coilTubes = coils === undefined ? [] : makeTubes(coils)
         const coilMeshes = coilTubes.map(c => new THREE.Mesh(c, tubeMaterial))
@@ -60,42 +61,18 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
         return [...tubes, ...displayedSurfaces]
     }, [tubes, surfaces, surfaceChecks])
 
-    const spots = spotlights
-    const positions = usePositions(coils)
+    const focalPositions = usePositions(coils)
     const camera = useSvCamera(width, height)
     const controls = useSvControls(canvas, camera)
     const renderer = useSvRenderer(canvas, width, height)
 
     useEffect(() => {
-        updatePositions(camera, controls, positions, spots)
-    }, [camera, controls, positions, positions.center, positions.zOffset, spots])
-
+        updatePositions(camera, controls, focalPositions, spotlights)
+    }, [camera, controls, focalPositions, focalPositions.center, focalPositions.zOffset])
 
     useEffect(() => {
-        if (!scene) return
-        if (!controls) return
-        if (!camera) return
-
-        scene.clear()
-
-        scene.add(ambientLight)
-        spots.forEach(s => scene.add(s))
-        objects.forEach(obj => scene.add(obj))
-        
-        scene.add(camera)
-
-        const render = () => {
-            renderer.render( scene, camera );
-        }
-        controls.addEventListener( 'change', render );
-        controls.update()
-        render()
-
-        return () => {
-            controls.removeEventListener('change', render)
-        }
-    }, [renderer, camera, controls, height, objects, width, spots])
-
+        return makeScene(controls, camera, spotlights, objects, renderer)
+    }, [height, width, controls, camera, objects, renderer])
     return (
         <></>
     )
@@ -110,6 +87,30 @@ const updatePositions = (camera: THREE.PerspectiveCamera, controls: OrbitControl
     // TODO: some more sophisticated logic for spotlighting?
     spots[0].position.copy(positions.center).setZ(-50)
     spots[1].position.copy(positions.center).setZ(50)
+}
+
+
+const makeScene = (controls: OrbitControls | undefined, camera: THREE.PerspectiveCamera, spots: THREE.SpotLight[], objects: THREE.Mesh[], renderer: THREE.WebGLRenderer) => {
+    if (!controls) return
+
+    scene.clear()
+
+    scene.add(ambientLight)
+    spots.forEach(s => scene.add(s))
+    objects.forEach(obj => scene.add(obj))
+    
+    scene.add(camera)
+
+    const render = () => {
+        renderer.render( scene, camera );
+    }
+    controls.addEventListener( 'change', render );
+    controls.update()
+    render()
+
+    return () => {
+        controls.removeEventListener('change', render)
+    }
 }
 
 

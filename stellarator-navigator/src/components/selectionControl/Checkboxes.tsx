@@ -1,4 +1,5 @@
 import { Checkbox, FormControlLabel, Typography } from "@mui/material"
+import { getLabel } from "@snTypes/DataDictionary"
 import { FunctionComponent } from "react"
 
 type Props = {
@@ -22,10 +23,10 @@ type TemplateProps = Props & {
 
 
 const ncId = "nc-per-hp-checkboxes"
-const ncDesc = "Coil Count per Half-Period (NC per HP)"
+const ncDesc = getLabel({name: 'ncPerHp', labelType: 'long'})
 
 const nfpId = 'nfp-checkboxes'
-const nfpDesc = "Field Period Count (NFP)"
+const nfpDesc = getLabel({name: 'nfp', labelType: 'long'})
 
 const CheckboxTemplate: FunctionComponent<TemplateProps> = (props: TemplateProps) => {
     const { selections, onChange, type } = props

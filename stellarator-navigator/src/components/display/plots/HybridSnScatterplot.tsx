@@ -1,9 +1,10 @@
 import { Tol } from "@snDisplayComponents/Colormaps"
-import { DependentVariableOpt, IndependentVariableOpt, StellaratorRecord } from "@snTypes/Types"
-import { ScaleLinear, ScaleLogarithmic, scaleOrdinal, ScaleOrdinal } from "d3"
+import { filterNc, filterNfp } from "@snState/filter"
+import { StellaratorRecord } from "@snTypes/Types"
+import { ScaleLinear, ScaleLogarithmic, ScaleOrdinal, scaleOrdinal } from "d3"
 import { FunctionComponent } from "react"
-import { filterNc, filterNfp } from "../../../logic/filter"
 // import { onClickDot, onHoverDot, onHoverOff } from "./interactions"
+import { DependentVariableOpt, IndependentVariableOpt } from "@snTypes/DataDictionary"
 import { onClickDot } from "./interactions"
 
 
@@ -43,11 +44,11 @@ const Dot: FunctionComponent<dotProps> = (props: dotProps) => {
         case "maxKappa":
             y = yScale(rec.maxKappa)
             break
-        case "maxMsc":
-            y = yScale(rec.maxMsc)
+        case "maxMeanSquaredCurve":
+            y = yScale(rec.maxMeanSquaredCurve)
             break
-        case "minDist":
-            y = yScale(rec.minDist)
+        case "minIntercoilDist":
+            y = yScale(rec.minIntercoilDist)
             break
         case "qaError":
             y = yScale(rec.qaError)
@@ -61,7 +62,7 @@ const Dot: FunctionComponent<dotProps> = (props: dotProps) => {
         key={`${rec.id}`}
         cx={xScale(xVar === 'total' ? rec.totalCoilLength : rec.coilLengthPerHp)}
         cy={(height - y)}
-        fill={colors(`${rec.seed}`)}
+        fill={colors(`${rec.ncPerHp}`)}
         r={isMarked ? "8" : "4"}
         onClick={() => onClickDot(rec.id)}
         // onMouseEnter={() => onHoverDot(rec.id)}
@@ -75,7 +76,7 @@ const HybridSnScatterplot: FunctionComponent<ScatterplotProps> = (props: Scatter
     if (data === undefined || data.length === 0) return <></>
     const _colors = (colormap ?? Tol) as string[]
     const color = scaleOrdinal()
-        .domain(['0', '1', '2', '3', '4', '5', '6', '7'])
+        .domain(Array(_colors.length).fill(0).map((_, i) => `${i}`))
         .range(_colors) as ScaleOrdinal<string, string, never>
     const filteredData = filterNc(filterNfp(data, nfpValue), ncPerHpValue)
     const dots = filteredData.map(rec => (

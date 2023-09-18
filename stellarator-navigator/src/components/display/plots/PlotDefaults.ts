@@ -1,4 +1,4 @@
-import { PlotDimensions } from "./SvgWrapper"
+import { PlotDimensions } from "@snTypes/Types"
 
 export const defaultStyling: PlotDimensions = {
     width: 640,

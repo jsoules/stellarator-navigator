@@ -1,9 +1,9 @@
 // adapted from https://2019.wattenberger.com/blog/react-and-d3
 
+import { IndependentVariableOpt, independentVariableValidValues } from "@snTypes/DataDictionary"
+import { BoundedPlotDimensions } from "@snTypes/Types"
 import { scaleLinear } from "d3"
 import { FunctionComponent, useMemo } from "react"
-import { BoundedPlotDimensions, IndependentVariableOpt } from "../../../types/Types"
-import { independentVariableValidValues } from "./DependentVariableConfig"
 
 type AxisProps = {
     dataDomain: number[],

@@ -62,14 +62,6 @@ const columns: GridColDef[] = [
         description: 'Field period count',
         sortable: true,
     },
-    // seed
-    {
-        field: 'seed',
-        headerName: 'Seed',
-        width: 60,
-        description: 'Simulation seed settings',
-        sortable: true,
-    },
     // maxKappa
     {
         field: 'maxKappa',
@@ -137,10 +129,9 @@ const SnTable: FunctionComponent<SnTableProps> = (props: SnTableProps) => {
             iota: r.meanIota,
             ncPerHp: r.ncPerHp,
             nfp: r.nfp,
-            seed: r.seed,
             maxKappa: r.maxKappa,
-            maxMsc: r.maxMsc,
-            minDist: r.minDist,
+            maxMsc: r.maxMeanSquaredCurve,
+            minDist: r.minIntercoilDist,
             qaError: (10 ** r.qaError).toExponential(6),
             gradient: (10 ** r.gradient).toExponential(6),
             aspectRatio: r.aspectRatio

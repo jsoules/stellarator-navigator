@@ -19,7 +19,7 @@ export type Route = {
 const isPlausibleRecordId = (id: string): boolean => {
     const numericRecordId = parseInt(id)
     if (isNaN(numericRecordId)) return false
-    return (numericRecordId >= 21021 && numericRecordId <= 180162)
+    return (numericRecordId >= 950 && numericRecordId <= 505000)
 }
 
 

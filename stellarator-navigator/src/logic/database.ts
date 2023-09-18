@@ -43,8 +43,8 @@ const dataList = data.map((row) => {
         nfp: row[8],
         seed: row[11],
         maxKappa: row[4],
-        maxMsc: row[5],
-        minDist: row[6],
+        maxMeanSquaredCurve: row[5],
+        minIntercoilDist: row[6],
         qaError: row[0],
         gradient: row[10],
         aspectRatio: row[12]

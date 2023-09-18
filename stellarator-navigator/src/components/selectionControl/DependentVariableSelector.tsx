@@ -1,7 +1,6 @@
 
 import { FormControl, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material"
-import { defaultDependentVariableValue, dependentVariableValidValues } from "@snPlots/DependentVariableConfig"
-import { DependentVariableOpt } from "@snTypes/Types"
+import { DependentVariableOpt, defaultDependentVariableValue, dependentVariableValidValues } from "@snTypes/DataDictionary"
 import { Fragment, FunctionComponent } from "react"
 
 

@@ -1,4 +1,5 @@
 import { Slider, Typography } from "@mui/material"
+import { getLabel } from "@snTypes/DataDictionary"
 import { totalCoilLengthValidValues } from "@snTypes/ValidValues"
 import { Fragment, FunctionComponent } from "react"
 
@@ -21,7 +22,7 @@ const TotalCoilLengthSlider: FunctionComponent<Props> = (props: Props) => {
     return (
         <Fragment>
             <Typography id="total-coil-length-slider" gutterBottom>
-                Total Coil Length
+                { getLabel({name: 'totalCoilLength', labelType: 'long'}) }
             </Typography>
             <Slider
                 getAriaLabel={() => 'Total coil length'}

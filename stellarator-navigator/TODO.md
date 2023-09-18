@@ -94,11 +94,14 @@
 
 [?] implement dot mouseover highlights (??)
 
-[ ] Don't hard-code 60 points per tube -- depends on fourier mode, so server needs to know ranges :(
-
 [ ] --> need API endpoint for people to download the raw files from the simulations (coils, currents, nml) "download vmec" button to fetch the nml, expand later
 
-[ ] color-code based on nc/hp values, not seed values
+[x] color-code based on nc/hp values, not seed values
 
 [ ] --> it'd be nice if you could plot "for a given NFP, show all in the same plot your selection" (toggle "show on same plot")
 
+[ ] Give option to plot coil currents (found in the graphics/currents/ directory structure)
+    
+    [ ] normalized across devices, showing absolute value
+
+    [ ] normalized per device, following sign convention

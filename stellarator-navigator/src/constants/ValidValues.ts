@@ -35,7 +35,7 @@ export const totalCoilLengthValidValues = [
 export const meanIotaSentinelValue = "-100"
 
 export const meanIotaValidValues = [
-    -0.6, -0.5, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9
+    0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9
 ]
 
 export const ncPerHpValidValues = [
@@ -44,5 +44,11 @@ export const ncPerHpValidValues = [
 
 export const nfpValidValues = [
     1, 2, 3, 4, 5
+]
+
+export const nFourierCoilValidValues = [6, 16]
+
+export const nSurfacesValidValues = [
+    1, 2, 3, 4, 5, 6, 7
 ]
 

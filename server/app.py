@@ -5,8 +5,12 @@ import numpy as np
 app = Flask(__name__)
 CORS(app)
 
+## TODO: Use more robust path management
+
 INVALID_PATH_SENTINEL = "INVALID_TYPE"
 valid_endpoint_types = ['curves', 'surfaces', 'modB']
+graphics_types = ['surfaces', 'curves', 'modB',]
+database_root = "../stellarator_database"
 
 @app.route('/')
 def index() -> str:
@@ -37,7 +41,18 @@ def make_file_path(id: str, type: str='curves') -> str:
     if not (type in valid_endpoint_types):
         return INVALID_PATH_SENTINEL
     prefix = id[:-3]
-    return f"../database/{type}/{prefix}/{type}{id}.txt"
+    dir = f"graphics/{type}" if type in graphics_types else type
+
+    suffix = '.txt'
+    file_base = f"{type}{id}"
+    if type == 'simsopt_serials':
+        suffix = '.json'
+    if type == 'nml':
+        suffix = id
+        file_base = "input."
+        # return f"{database_root}/{dir}/{prefix}/input.{id}"
+
+    return f"{database_root}/{dir}/{prefix}/{file_base}{suffix}"
 
 
 # In the current spec, the only valid IDs are pure numeric,
@@ -49,7 +64,7 @@ def fetch_curves(id: str):
     path = make_file_path(id, type='curves')
     # * 10 to put the points into an order of magnitude that's more comfortable
     # for the 3D library
-    points = np.loadtxt(path).reshape((60, -1, 3)).transpose((1, 0, 2)) * 10
+    points = np.loadtxt(path).reshape((160, -1, 3)).transpose((1, 0, 2)) * 10
     return points.tolist()
 
 

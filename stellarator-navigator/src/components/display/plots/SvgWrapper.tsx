@@ -1,6 +1,7 @@
+import { DependentVariableOpt, IndependentVariableOpt } from "@snTypes/DataDictionary"
+import { BoundedPlotDimensions, StellaratorRecord } from "@snTypes/Types"
 import { ScaleLinear } from "d3"
 import { FunctionComponent, useMemo, } from "react"
-import { BoundedPlotDimensions, DependentVariableOpt, IndependentVariableOpt, StellaratorRecord } from "../../../types/Types"
 import HybridSnScatterplot from "./HybridSnScatterplot"
 import { plotGutterHorizontal, plotGutterVertical } from "./PlotScaling"
 

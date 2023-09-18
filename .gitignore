@@ -146,4 +146,4 @@ dmypy.json
 .pyre/
 
 # Libraries
-node_modules
+node_modules/

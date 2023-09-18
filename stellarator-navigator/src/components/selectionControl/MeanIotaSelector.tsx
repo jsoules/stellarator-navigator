@@ -1,5 +1,6 @@
 
 import { FormControl, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material"
+import { getLabel } from "@snTypes/DataDictionary"
 import { meanIotaSentinelValue, meanIotaValidValues } from "@snTypes/ValidValues"
 import { Fragment, FunctionComponent } from "react"
 
@@ -22,7 +23,7 @@ const MeanIotaSelector: FunctionComponent<Props> = (props: Props) => {
     return (
         <Fragment>
             <Typography id="mean-iota-selector" gutterBottom>
-                Mean Magnetic Shear (Iota)
+                {getLabel({name: 'meanIota', labelType: 'long'})}
             </Typography>
             <FormControl fullWidth size="small">
                 <Select<string>

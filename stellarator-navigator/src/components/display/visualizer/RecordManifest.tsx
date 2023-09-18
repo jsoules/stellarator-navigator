@@ -30,21 +30,17 @@ const RecordManifest: FunctionComponent<recordProps> = (props: recordProps) => {
             <span className="manifestLabel">Field periods:</span>
             <span>{rec.nfp}</span>
         </div>
-        <div key="seed">
-            <span className="manifestLabel">Seed:</span>
-            <span>{rec.seed}</span>
-        </div>
         <div key="maxKappa">
             <span className="manifestLabel">Max kappa:</span>
             <span>{rec.maxKappa}</span>
         </div>
         <div key="maxMsc">
             <span className="manifestLabel">Max MSC:</span>
-            <span>{rec.maxMsc}</span>
+            <span>{rec.maxMeanSquaredCurve}</span>
         </div>
         <div key="minDist">
             <span className="manifestLabel">Min Dist:</span>
-            <span>{rec.minDist}</span>
+            <span>{rec.minIntercoilDist}</span>
         </div>
         <div key="qaError">
             <span className="manifestLabel">QA Error:</span>

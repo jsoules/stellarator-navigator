@@ -9,7 +9,7 @@ export const makeTubes = (coils: Vec3[][]): THREE.TubeGeometry[] => {
         const points = coil.map(c => new THREE.Vector3(...c))
         const curve = new THREE.CatmullRomCurve3(points)
         // path, # tube segments, radius, # radial segments, whether to close the loop
-        return new THREE.TubeGeometry(curve, 61, 0.2, 13, true)
+        return new THREE.TubeGeometry(curve, 161, 0.2, 13, true)
     })
 }
 

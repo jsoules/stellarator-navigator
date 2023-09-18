@@ -1,8 +1,8 @@
 
-import { BoundedPlotDimensions, DependentVariableOpt } from "@snTypes/Types"
+import { DependentVariableOpt, dependentVariableRanges, dependentVariableValidValues } from "@snTypes/DataDictionary"
+import { BoundedPlotDimensions } from "@snTypes/Types"
 import { scaleLinear, scaleLog } from "d3"
 import { FunctionComponent, useMemo } from "react"
-import { dependentVariableRanges, dependentVariableValidValues } from "./DependentVariableConfig"
 
 type AxisProps = {
     dataRange: number[]

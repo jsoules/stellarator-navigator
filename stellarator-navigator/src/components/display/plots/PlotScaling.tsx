@@ -1,7 +1,7 @@
 import { BoundedPlotDimensions, DependentVariableOpt, IndependentVariableOpt } from "@snTypes/Types"
 import { ScaleLinear, scaleLinear } from "d3"
 import { useMemo } from "react"
-import { dependentVariableRanges, independentVariableRanges } from "./DependentVariableConfig"
+import { dependentVariableRanges, independentVariableRanges } from "../../../constants/DataDictionary"
 import SvgXAxis from "./SvgXAxis"
 import SvgYAxis from "./SvgYAxis"
 

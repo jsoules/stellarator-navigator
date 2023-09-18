@@ -1,7 +1,7 @@
 import { CSSProperties } from "react"
 import { inferno, magma, plasma, viridis } from 'scale-color-perceptual'
 
-export type SupportedColorMap = 'inferno' | 'magma' | 'plasma' | 'viridis' | 'hsv' | 'default'
+export type SupportedColorMap = 'inferno' | 'magma' | 'plasma' | 'viridis' | 'hsv' | 'blueOrange' | 'default'
 
 export const DefaultColorMap: SupportedColorMap = 'plasma'
 export const MapsConfig: {key: number, value: SupportedColorMap}[] = [
@@ -112,6 +112,9 @@ const getRgbValue = (value: number, scheme: SupportedColorMap = 'viridis'): stri
         case 'hsv':
             return hsv(value)
             break
+        case 'blueOrange':
+            return blueOrange(value)
+            break
         default:
             return `#${toPaddedRgb(value)}8080`
     }
@@ -158,3 +161,21 @@ const hsv = (value: number): string => {
     const b = clamp(-2 + slope * (Math.min(value, 2/3)) - slope * (Math.max(0, value - 2/3)))
     return `#${toPaddedRgb(r)}${toPaddedRgb(g)}${toPaddedRgb(b)}`
 }
+
+
+const blueOrange = (value: number): string => {
+    // here 'value' is in the range (-1, 1) and we want to map negative values
+    // to blue and positive values to the contrasting orange.
+    // Specifically, full blue = -1 = azure = #007FFF,
+    // full orange = 1 = #FF7F00.
+    // So our midpoint will be #7F7F7F-gray.
+    const offset = Math.floor(128 * Math.abs(value))
+    const low = toPaddedRgb(Math.max(0, 127 - offset))
+    const high = toPaddedRgb(Math.min(255, 127 + offset))
+    return value === 0
+        ? '#7f7f7f'
+        : value < 0
+            ? `#${low}7f${high}`
+            : `#${high}7f${low}`
+}
+
