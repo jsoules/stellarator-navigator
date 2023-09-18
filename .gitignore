@@ -38,10 +38,13 @@ MANIFEST
 compressed/
 *npy
 database/
+database-old/
+stellarator_database/
 received/
 notes.py
 data_19072023.pkl
 *gz
+*tar
 
 # Installer logs
 pip-log.txt
@@ -141,3 +144,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Libraries
+node_modules

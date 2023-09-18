@@ -45,9 +45,10 @@ def make_file_path(id: str, type: str='curves') -> str:
 def id_clean(id: str) -> bool:
     return id.isnumeric()
 
-
 def fetch_curves(id: str):
     path = make_file_path(id, type='curves')
+    # * 10 to put the points into an order of magnitude that's more comfortable
+    # for the 3D library
     points = np.loadtxt(path).reshape((60, -1, 3)).transpose((1, 0, 2)) * 10
     return points.tolist()
 
@@ -55,6 +56,7 @@ def fetch_curves(id: str):
 def fetch_surfaces(id: str):
     s_path = make_file_path(id, type='surfaces')
     m_path = make_file_path(id, type='modB')
+    # Again, multiply by 10 to put points in a more comfortable range for three.js
     surfs = np.loadtxt(s_path).reshape((30, 30, -1, 3)).transpose((2, 0, 1, 3)) * 10
     modB = np.loadtxt(m_path).reshape((30, 30, -1)).transpose((2, 0, 1))
     # Bs = []
