@@ -64,8 +64,6 @@
 
 [ ] Add all available variables as options for dependent and independent axes
 
-[?] make static axis settings for the different dependent variables, rather than recomputing in one component
-
 [x] add horizontal lines for all plots regardless of dependent variable
 
 [x] add "background field error" horizontal line for QA error plot (check received example code, s.b. 50e-6 or so)
@@ -103,5 +101,26 @@
 [ ] Give option to plot coil currents (found in the graphics/currents/ directory structure)
     
     [ ] normalized across devices, showing absolute value
+        --> Need to precompute the correct coefficient (and probably hard-code it)
 
     [ ] normalized per device, following sign convention
+
+[ ] Add "open selected" button to the table
+
+[ ] Add button to hit API endpoint for raw-file download (to the model view page most likely)
+
+[ ] UPDATED CONTROLS:
+
+    [ ] Dropdown for globalization method (both, 0, 1)
+
+    [ ] Turn mean iota into checkboxes
+
+    [ ] Dropdown for # fourier coils (both, 6, 16)
+
+    [ ] Checkboxes for n surfaces
+
+    [ ] Sliders for max kappa, max msc, min icd, qa error, aspect ratio, minor radius, volume, min c2sd
+
+    [ ] Toggle plot-splitting *** OOOH HARD?
+
+    [ ] Add a "deselect all" checkbox to the default template

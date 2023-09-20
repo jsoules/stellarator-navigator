@@ -1,5 +1,5 @@
 import database from "@snState/database";
-import applyFilter, { projectRecords } from "@snState/filter";
+import applyFilterToState, { projectRecords } from "@snState/filter";
 import { initialNavigatorState } from "@snTypes/Defaults";
 import { FilterSettings, NavigatorContextType } from "@snTypes/Types";
 import React, { FunctionComponent, PropsWithChildren, useCallback, useEffect, useMemo, useReducer, useState } from "react";
@@ -18,7 +18,7 @@ const SetupFilterContext: FunctionComponent<PropsWithChildren> = (props: PropsWi
     const [filterSettings, filterSettingDispatch] = useReducer(NavigatorReducer, initialNavigatorState)
     const [selection, updateSelection] = useState(new Set<number>())
     const doFilter = useCallback((filters: FilterSettings) => {
-        applyFilter(database, filters, updateSelection)
+        applyFilterToState(filters, updateSelection)
     }, [updateSelection])
     const doRowProjection = useCallback((selection: Set<number>) => {
         return projectRecords(selection, database)

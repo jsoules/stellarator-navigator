@@ -1,5 +1,6 @@
 import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid'
 import { filterNc, filterNfp } from '@snState/filter'
+import { CategoricalFields, ContinuousFields, Fields } from '@snTypes/DataDictionary'
 import { StellaratorRecord } from '@snTypes/Types'
 import { FunctionComponent } from 'react'
 
@@ -12,115 +13,36 @@ type SnTableProps = {
 
 const variableColumnsDefaultWidth = 110
 
-// id, length per hp, legnth total, mean iota, nc per hp, nfp, seed, maxKappa, maxMsc, minDist, qaError, gradient, aspect ratio
-const columns: GridColDef[] = [
-    // id
-    {
-        field: 'id',
-        headerName: 'ID',
-        width: 70,
-        description: 'Unique identifier of the design simulation',
-        sortable: true,
-    },
-    // length per hp
-    {
-        field: 'lengthPerHp',
-        headerName: 'HP Length',
-        width: 100,
-        description: 'Coil length (m) per half-period',
-        sortable: true,
-    },
-    // legnth total
-    {
-        field: 'lengthTotal',
-        headerName: 'Total Length',
-        width: 100,
-        description: 'Total coil length (m)',
-        sortable: true,
-    },
-    // mean iota
-    {
-        field: 'iota',
-        headerName: 'Mean Iota',
-        width: 90,
-        description: 'Mean magnetic shear',
-        sortable: true,
-    },
-    // nc per hp
-    {
-        field: 'ncPerHp',
-        headerName: 'Coils/hp',
-        width: 80,
-        description: 'Coil count per half-period',
-        sortable: true,
-    },
-    // nfp
-    {
-        field: 'nfp',
-        headerName: 'n FP',
-        width: 50,
-        description: 'Field period count',
-        sortable: true,
-    },
-    // maxKappa
-    {
-        field: 'maxKappa',
-        headerName: 'Max Kappa',
+
+const fixedWidthCols: GridColDef[] = CategoricalFields.map(f => {
+    const fieldDef = Fields[f]
+    const unitSuffix = fieldDef.unit === undefined ? '' : ` (${fieldDef.unit})`
+    return {
+        field: f,
+        headerName: fieldDef.shortLabel,
+        width: fieldDef.tableColumnWidth,
+        description: fieldDef.description + unitSuffix,
+        sortable: true
+    }
+})
+
+const varWidthCols: GridColDef[] = ContinuousFields.map(f => {
+    const fieldDef = Fields[f]
+    const unitSuffix = fieldDef.unit === undefined ? '' : ` (${fieldDef.unit})`
+    return {
+        field: f,
+        headerName: fieldDef.shortLabel,
+        description: fieldDef.description + unitSuffix,
         flex: 1,
         minWidth: variableColumnsDefaultWidth,
-        description: 'Maximum curvature',
-        sortable: true,
-    },
-    // maxMsc
-    {
-        field: 'maxMsc',
-        headerName: 'Max MSC',
-        flex: 1,
-        minWidth: variableColumnsDefaultWidth,
-        description: 'Max MSC',
-        sortable: true,
-    },
-    // minDist
-    {
-        field: 'minDist',
-        headerName: 'Min dist',
-        flex: 1,
-        minWidth: variableColumnsDefaultWidth,
-        description: 'TKTK',
-        sortable: true,
-    },
-    // qaError
-    {
-        field: 'qaError',
-        headerName: 'QA Error',
-        flex: 1,
-        minWidth: variableColumnsDefaultWidth,
-        description: 'Quasiasymmetry Error',
-        sortable: true,
-    },
-    // gradient
-    {
-        field: 'gradient',
-        headerName: 'Gradient',
-        flex: 1,
-        minWidth: variableColumnsDefaultWidth,
-        description: 'TKTKTK',
-        sortable: true,
-    },
-    // aspect ratio
-    {
-        field: 'aspectRatio',
-        headerName: 'Aspect Ratio',
-        flex: 1,
-        minWidth: variableColumnsDefaultWidth,
-        description: 'TKTKTK',
-        sortable: true,
-    },
-]
+        sortable: true
+    }
+})
 
 const SnTable: FunctionComponent<SnTableProps> = (props: SnTableProps) => {
     const { records, selectionHandler, activeNfp, activeNc } = props
     const filteredRecords = filterNc(filterNfp(records, activeNfp), activeNc)
+    const columns = [...fixedWidthCols, ...varWidthCols]
     const rows = filteredRecords.map(r => {
         return {
             id: r.id,
@@ -154,3 +76,111 @@ const SnTable: FunctionComponent<SnTableProps> = (props: SnTableProps) => {
 }
 
 export default SnTable
+
+
+//// DEPRECATED
+
+// const columns: GridColDef[] = [
+//     // id
+//     {
+//         field: 'id',
+//         headerName: 'ID',
+//         width: 70,
+//         description: 'Unique identifier of the design simulation',
+//         sortable: true,
+//     },
+//     // length per hp
+//     {
+//         field: 'lengthPerHp',
+//         headerName: 'HP Length',
+//         width: 100,
+//         description: 'Coil length (m) per half-period',
+//         sortable: true,
+//     },
+//     // legnth total
+//     {
+//         field: 'lengthTotal',
+//         headerName: 'Total Length',
+//         width: 100,
+//         description: 'Total coil length (m)',
+//         sortable: true,
+//     },
+//     // mean iota
+//     {
+//         field: 'iota',
+//         headerName: 'Mean Iota',
+//         width: 90,
+//         description: 'Mean magnetic shear',
+//         sortable: true,
+//     },
+//     // nc per hp
+//     {
+//         field: 'ncPerHp',
+//         headerName: 'Coils/hp',
+//         width: 80,
+//         description: 'Coil count per half-period',
+//         sortable: true,
+//     },
+//     // nfp
+//     {
+//         field: 'nfp',
+//         headerName: 'n FP',
+//         width: 50,
+//         description: 'Field period count',
+//         sortable: true,
+//     },
+//     // maxKappa
+//     {
+//         field: 'maxKappa',
+//         headerName: 'Max Kappa',
+//         flex: 1,
+//         minWidth: variableColumnsDefaultWidth,
+//         description: 'Maximum curvature',
+//         sortable: true,
+//     },
+//     // maxMsc
+//     {
+//         field: 'maxMsc',
+//         headerName: 'Max MSC',
+//         flex: 1,
+//         minWidth: variableColumnsDefaultWidth,
+//         description: 'Max MSC',
+//         sortable: true,
+//     },
+//     // minDist
+//     {
+//         field: 'minDist',
+//         headerName: 'Min dist',
+//         flex: 1,
+//         minWidth: variableColumnsDefaultWidth,
+//         description: 'TKTK',
+//         sortable: true,
+//     },
+//     // qaError
+//     {
+//         field: 'qaError',
+//         headerName: 'QA Error',
+//         flex: 1,
+//         minWidth: variableColumnsDefaultWidth,
+//         description: 'Quasiasymmetry Error',
+//         sortable: true,
+//     },
+//     // gradient
+//     {
+//         field: 'gradient',
+//         headerName: 'Gradient',
+//         flex: 1,
+//         minWidth: variableColumnsDefaultWidth,
+//         description: 'TKTKTK',
+//         sortable: true,
+//     },
+//     // aspect ratio
+//     {
+//         field: 'aspectRatio',
+//         headerName: 'Aspect Ratio',
+//         flex: 1,
+//         minWidth: variableColumnsDefaultWidth,
+//         description: 'TKTKTK',
+//         sortable: true,
+//     },
+// ]

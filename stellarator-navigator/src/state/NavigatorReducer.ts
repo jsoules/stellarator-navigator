@@ -1,4 +1,5 @@
-import { DependentVariableOpt, FilterSettings, IndependentVariableOpt } from "@snTypes/Types"
+import { BooleanFields, DependentVariables, Fields, IndependentVariableOpt } from "@snTypes/DataDictionary"
+import { FilterSettings } from "@snTypes/Types"
 
 export type NavigatorStateAction = {
     type: 'updateCoilLengthPerHp',
@@ -6,9 +7,10 @@ export type NavigatorStateAction = {
 } | {
     type: 'updateTotalCoilLength',
     coilLength: number[]
-} | {
-    type: 'updateMeanIota',
-    newIota: number,
+// } | {
+//     type: 'updateMeanIota',
+//     newIota: number,
+// TODO: UNIFY THE BOOLEAN UPDATES
 } | {
     type: 'updateNcPerHp',
     index: number,
@@ -18,8 +20,16 @@ export type NavigatorStateAction = {
     index: number,
     targetState: boolean
 } | {
+    type: 'updateMeanIota',
+    index: number,
+    targetState: boolean
+} | {
+    type: 'updateNSurfaces',
+    index: number,
+    targetState: boolean
+} | {
     type: 'updateDependentVariable',
-    newValue: DependentVariableOpt
+    newValue: DependentVariables
 } | {
     type: 'updateIndependentVariable',
     newValue: IndependentVariableOpt
@@ -42,13 +52,16 @@ const NavigatorReducer = (s: FilterSettings, a: NavigatorStateAction): FilterSet
             return { ...s, totalCoilLength: [Math.min(...a.coilLength), Math.max(...a.coilLength)] }
         }
         case "updateMeanIota": {
-            return { ...s, meanIota: a.newIota }
+            return updateBooleanList('meanIota', a.index, a.targetState, s)
         }
         case "updateNcPerHp": {
             return updateBooleanList('ncPerHp', a.index, a.targetState, s)
         }
         case "updateNfp": {
             return updateBooleanList('nfp', a.index, a.targetState, s)
+        }
+        case "updateNSurfaces": {
+            return updateBooleanList('nSurfaces', a.index, a.targetState, s)
         }
         case "updateDependentVariable": {
             return { ...s, dependentVariable: a.newValue }
@@ -65,23 +78,20 @@ const NavigatorReducer = (s: FilterSettings, a: NavigatorStateAction): FilterSet
     }
 }
 
-const updateBooleanList = (key: 'ncPerHp' | 'nfp', index: number, newState: boolean, settings: FilterSettings): FilterSettings => {
-    const rightLength = key === 'ncPerHp' ? 13 : key === 'nfp' ? 5 : -1
-    const current = key === 'ncPerHp' ? settings.ncPerHp : key === 'nfp' ? settings.nfp : []
+const updateBooleanList = (key: BooleanFields, index: number, newState: boolean, settings: FilterSettings): FilterSettings => {
+    const rightLength = (Fields[key].values || []).length
+    if (!(key in settings)) {
+        throw Error(`Initialization error for boolean filter for ${key}.`)
+    }
+    const current = (settings[key] ?? [])
 
-    if (rightLength === -1) throw Error(`Unsupported keytype ${key} in updateBooleanList.`)
     const reset = current.length !== rightLength    // handles initialization
     const newSelections = reset ? new Array(rightLength).fill(false) : current
 
     newSelections[index] = newState
 
     const result = { ...settings }
-    if (key === 'ncPerHp') {
-        result.ncPerHp = newSelections
-    }
-    if (key === 'nfp') {
-        result.nfp = newSelections
-    }
+    result[key] = newSelections
     
     return result
 }

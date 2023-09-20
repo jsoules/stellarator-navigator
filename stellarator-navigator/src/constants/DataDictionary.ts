@@ -1,38 +1,70 @@
-import { coilLengthPerHpValidValues, meanIotaValidValues, nFourierCoilValidValues, ncPerHpValidValues, nfpValidValues, totalCoilLengthValidValues } from "./ValidValues"
+import { coilLengthPerHpValidValues, meanIotaValidValues, nFourierCoilValidValues, nSurfacesValidValues, ncPerHpValidValues, nfpValidValues, totalCoilLengthValidValues } from "./ValidValues"
 
-export type DependentVariableOpt = 'maxKappa' | 'maxMeanSquaredCurve' | 'minIntercoilDist' | 'qaError'
-export type IndependentVariableOpt = 'total' | 'halfPeriod'
+export type DependentVariableOpt = 'coilLengthPerHp' | 'totalCoilLength' | 'maxKappa' | 'maxMeanSquaredCurve' | 'minIntercoilDist' | 'qaError'
+                                | 'aspectRatio' | 'minorRadius' | 'volume' | 'minCoil2SurfaceDist'
+                // NOTE: I think putting categorical variables on the x-axis isn't going to be terribly informative but we'll try it
+export type IndependentVariableOpt = 'totalCoilLength' | 'coilLengthPerHp'
+                                    | 'meanIota' | 'ncPerHp' | 'nfp' | 'globalizationMethod' | 'nFourierCoil' | 'nSurfaces'
+                                    | 'maxKappa' | 'maxMeanSquaredCurve' | 'minIntercoilDist' | 'qaError' | 'aspectRatio'
+                                    | 'minorRadius' | 'volume' | 'minCoil2SurfaceDist'
 
-export const defaultDependentVariableValue = 'qaError'
-
-export const dependentVariableValidValues: {key: number, value: DependentVariableOpt, text: string}[] = [
-    { key: 1, value:            'maxKappa', text: 'Max curvature (Kappa)'        },
-    { key: 2, value: 'maxMeanSquaredCurve', text: 'Max mean-squared curvature'   },
-    { key: 3, value:    'minIntercoilDist', text: 'Minimum Intercoil Distance'   },
-    { key: 4, value:             'qaError', text: 'Quasi-Axisymmetry (QA) Error' }
-] 
-
-export const dependentVariableRanges = {
-    'maxKappa':            { range: [0,          5], isLog: false, marked:  5    },
-    'maxMeanSquaredCurve': { range: [0,        5.5], isLog: false, marked:  5    },
-    'minIntercoilDist':    { range: [0,        0.3], isLog: false, marked:  0.1  },
-    'qaError':             { range: [-10.71, -1.39], isLog: true , marked: -4.30 },
+export enum DependentVariables {
+    COIL_LENGTH_PER_HP = 'coilLengthPerHp',
+    TOTAL_COIL_LENGTH = 'totalCoilLength',
+    MAX_KAPPA = 'maxKappa',
+    MAX_MEAN_SQUARED_CURVE = 'maxMeanSquaredCurve',
+    MIN_INTERCOIL_DIST = 'minIntercoilDist',
+    QA_ERROR = 'qaError',
+    ASPECT_RATIO = 'aspectRatio',
+    MINOR_RADIUS = 'minorRadius',
+    VOLUME = 'volume',
+    MIN_COIL_TO_SURFACE_DIST = 'minCoil2SurfaceDist'
 }
 
-export const defaultIndependentVariableValue = 'total'
+export const defaultDependentVariableValue = DependentVariables.QA_ERROR
+export const defaultIndependentVariableValue = 'totalCoilLength'
+
+export const dependentVariableDropdownConfig: { key: number, fieldName: DependentVariables }[] = [
+    { key:  1, fieldName: DependentVariables.QA_ERROR                 },
+    { key:  2, fieldName: DependentVariables.MAX_KAPPA                },
+    { key:  3, fieldName: DependentVariables.MAX_MEAN_SQUARED_CURVE   },
+    { key:  4, fieldName: DependentVariables.MIN_INTERCOIL_DIST       },
+    { key:  5, fieldName: DependentVariables.MIN_COIL_TO_SURFACE_DIST },
+    { key:  6, fieldName: DependentVariables.MINOR_RADIUS             },
+    { key:  7, fieldName: DependentVariables.VOLUME                   },
+    { key:  8, fieldName: DependentVariables.ASPECT_RATIO             },
+    { key:  9, fieldName: DependentVariables.COIL_LENGTH_PER_HP       },
+    { key: 10, fieldName: DependentVariables.TOTAL_COIL_LENGTH        },
+]
+
+// export const dependentVariableValidValues: {key: number, value: DependentVariableOpt, text: string}[] = [
+//     { key: 1, value:            'maxKappa', text: 'Max curvature (Kappa)'        },
+//     { key: 2, value: 'maxMeanSquaredCurve', text: 'Max mean-squared curvature'   },
+//     { key: 3, value:    'minIntercoilDist', text: 'Minimum Intercoil Distance'   },
+//     { key: 4, value:             'qaError', text: 'Quasi-Axisymmetry (QA) Error' }
+// ] 
+
+// export const dependentVariableRanges = {
+//     'maxKappa':            { range: [0,          5], isLog: false, marked:  5    },
+//     'maxMeanSquaredCurve': { range: [0,        5.5], isLog: false, marked:  5    },
+//     'minIntercoilDist':    { range: [0,        0.3], isLog: false, marked:  0.1  },
+//     'qaError':             { range: [-10.71, -1.39], isLog: true , marked: -4.30 },
+// }
+
 
 export const independentVariableValidValues: {key: number, value: IndependentVariableOpt, text: string}[] = [
-    { key: 1, value: 'total',      text: 'Total coil length (m)'           },
-    { key: 2, value: 'halfPeriod', text: 'Coil length per half-period (m)' }
+    { key: 1, value: 'totalCoilLength', text: 'Total coil length (m)'           },
+    { key: 2, value: 'coilLengthPerHp', text: 'Coil length per half-period (m)' }
 ]
 
 export const independentVariableRanges = {
-    'total':      { range: [0, 120], isLog: false },
-    'halfPeriod': { range: [0,  60], isLog: false }
+    'totalCoilLength': { range: [0, 120], isLog: false },
+    'coilLengthPerHp': { range: [0,  60], isLog: false }
 }
 
 export type FieldDefinition = {
     shortLabel: string,
+    plotLabel: string,
     fullLabel: string,
     description: string,
     unit?: string,
@@ -41,39 +73,54 @@ export type FieldDefinition = {
     isLog: boolean,
     isCategorical: boolean,
     markedValue?: number,
-
+    tableColumnWidth?: number
 }
 
 type FieldRecords = {
     [name: string]: FieldDefinition
 }
 
-const METER_UNIT = "M"
-
 // TODO: Something about init-capping these in some contexts
-export const getLabel = (props: {name: string, labelType: 'short' | 'long'}) => {
+export const getLabel = (props: {name: string, labelType: 'short' | 'long' | 'plot'}) => {
     const { name, labelType } = props
     const rec = Fields[name]
     if (rec === undefined) {
         console.warn(`Attempt to request description for unknown field ${name}.`)
         return 'ERROR OCCURRED'
     }
-    return `${labelType === 'short' ? rec.shortLabel : rec.fullLabel}${rec.unit === undefined ? '' : ` (${rec.unit})`}`
+    const unitPart = rec.unit === undefined ? '' : ` (${rec.unit})`
+    // TODO: ugly, fix
+    const labelPart = labelType === 'short' ? rec.shortLabel : labelType === 'plot' ? rec.plotLabel : rec.fullLabel
+    return `${labelPart}${unitPart}`
 }
 
+export const getValuesFromBoolArray = (field: string, choices: boolean[]) => {
+    if (choices.length === 0) return []
+
+    const vals = Fields[field].values ?? []
+    if (vals.length !== choices.length ) {
+        throw Error(`Boolean-to-values for Key ${field}: choices length ${choices.length} but values length ${vals.length}`)
+    }
+    return vals.filter((_, idx) => choices[idx])
+}
+
+const METER_UNIT = "M"
 export const Fields: FieldRecords = {
     'id': {
         shortLabel: "ID",
+        plotLabel: "ID",
         fullLabel: "Device ID",
-        description: "Unique identifier of the device",
+        description: "Unique identifier of the design simulation",
         unit: undefined,
         range: [952, 504819],
         isLog: false,
-        isCategorical: false,
-        markedValue: undefined
+        isCategorical: true,
+        markedValue: undefined,
+        tableColumnWidth: 70
     },
     'coilLengthPerHp': {
         shortLabel: "HP length",
+        plotLabel: "Half-period len",
         fullLabel: "Coil length per half-period",
         description: "Total length of coil per half-period",
         unit: METER_UNIT,
@@ -81,10 +128,12 @@ export const Fields: FieldRecords = {
         values: coilLengthPerHpValidValues,
         isLog: false,
         isCategorical: true,
-        markedValue: undefined
+        markedValue: undefined,
+        tableColumnWidth: 100
     },
     'totalCoilLength': {
         shortLabel: "Total length",
+        plotLabel: "Total coil len",
         fullLabel: "Total coil length",
         description: "Total length of coil used to construct the device",
         unit: METER_UNIT,
@@ -92,11 +141,13 @@ export const Fields: FieldRecords = {
         values: totalCoilLengthValidValues,
         isLog: false,
         isCategorical: true,
-        markedValue: undefined
+        markedValue: undefined,
+        tableColumnWidth: 100
     },
     'meanIota': {
         // TODO: CONFIRM VERBIAGE ON THIS
         shortLabel: "Mean Iota",
+        plotLabel: "Mean Iota",
         fullLabel: "Mean Iota",
         description: "The mean pitch of a particle trajectory across the surface",
         unit: undefined,
@@ -104,10 +155,12 @@ export const Fields: FieldRecords = {
         values: meanIotaValidValues,
         isLog: false,
         isCategorical: true,
-        markedValue: undefined
+        markedValue: undefined,
+        tableColumnWidth: 90
     },
     'ncPerHp': {
         shortLabel: "Coils/hp",
+        plotLabel: "Coils per HP",
         fullLabel: "Coil count per half-period (NC per HP)",
         description: "Coil count per half-period",
         unit: undefined,
@@ -115,10 +168,12 @@ export const Fields: FieldRecords = {
         values: ncPerHpValidValues,
         isLog: false,
         isCategorical: true,
-        markedValue: undefined
+        markedValue: undefined,
+        tableColumnWidth: 80
     },
     'nfp': {
         shortLabel: "# FP",
+        plotLabel: "FP Count",
         fullLabel: "Number of Field Periods",
         description: "Count of field periods",
         unit: undefined,
@@ -126,38 +181,48 @@ export const Fields: FieldRecords = {
         values: nfpValidValues,
         isLog: false,
         isCategorical: true,
-        markedValue: undefined
+        markedValue: undefined,
+        tableColumnWidth: 50
     },
     'globalizationMethod': {
         shortLabel: "Algo",
+        plotLabel: "Optimization algorithm",
         fullLabel: "Global optimization algorithm",
         description: "Global optimization algorithm used to generate the device",
         unit: undefined,
         range: [0, 1],
+        values: [0, 1],
         isLog: false,
         isCategorical: true,
-        markedValue: undefined
+        markedValue: undefined,
+        tableColumnWidth: 50,
     },
     'nFourierCoil': {
         shortLabel: "# modes",
+        plotLabel: "Fourier mode count",
         fullLabel: "Number of Fourier modes",
         description: "Number of fourier modes used to reprsent each modular coil",
         range: [6, 16],
         values: nFourierCoilValidValues,
         isLog: false,
         isCategorical: true,
-        markedValue: undefined
+        markedValue: undefined,
+        tableColumnWidth: 60
     },
     'nSurfaces': {
         shortLabel: "# Surfaces",
+        plotLabel: "Surface count",
         fullLabel: "Number of surfaces",
         description: "Number of surfaces on which quasiasymmetry was optimized",
         range: [1, 7],
+        values: nSurfacesValidValues,
         isLog: false,
-        isCategorical: true
+        isCategorical: true,
+        tableColumnWidth: 70
     },
     'maxKappa': {
         shortLabel: "Max kappa",
+        plotLabel: "Max curve",
         fullLabel: "Max curvature (kappa)",
         description: "Maximum curvature in the coils of the device",
         unit: `1/${METER_UNIT}`,
@@ -168,6 +233,7 @@ export const Fields: FieldRecords = {
     },
     'maxMeanSquaredCurve': {
         shortLabel: "Max MSC",
+        plotLabel: "Max mean-sq curve",
         fullLabel: "Max mean-squared curvature",
         description: "Maximum mean squared curvature of the coils",
         unit: `1/${METER_UNIT}^2`,
@@ -178,7 +244,8 @@ export const Fields: FieldRecords = {
     },
     'minIntercoilDist': {
         shortLabel: "Min c-c dist",
-        fullLabel: "Min intercoil dist",
+        plotLabel: "Min intercoil dist",
+        fullLabel: "Minimum intercoil dist",
         description: "Minimum distance between coils",
         unit: METER_UNIT,
         range: [0.08, 0.4],
@@ -187,10 +254,10 @@ export const Fields: FieldRecords = {
         markedValue: 0.1
     },
     'qaError': {
-        // TODO: DISPLAY SQUARE ROOT OF THIS??
-        shortLabel: "QA Err",
-        fullLabel: "Quasi-Asymmtery (QA) Error",
-        description: "Quasi-Asymmetry (QA) error, directly related to particle losses",
+        shortLabel: "Sqrt(QA Err)",
+        plotLabel: "Root of QA Error",
+        fullLabel: "Root of Quasi-Axisymmtery (QA) Error",
+        description: "Square root of quasi-Axisymmetry (QA) error, proxy for particle loss",
         range: [-10.94, -1.07],
         isLog: true,
         isCategorical: false,
@@ -198,6 +265,7 @@ export const Fields: FieldRecords = {
     },
     'gradient': {
         shortLabel: "Gradient",
+        plotLabel: "Gradient",
         fullLabel: "Optimization gradient",
         description: "Norm of the gradient at the final iteration of the optimization algorithm--an indicator of closeness to optimality",
         range: [-12.74, 12.12],
@@ -205,7 +273,8 @@ export const Fields: FieldRecords = {
         isCategorical: false,
     },
     'aspectRatio': {
-        shortLabel: "Aspect ratio",
+        shortLabel: "AR",
+        plotLabel: "Aspect ratio",
         fullLabel: "Aspect ratio",
         description: "The aspect ratio of the device, computed using the VMEC definition",
         range: [2.5, 20.03],
@@ -213,7 +282,8 @@ export const Fields: FieldRecords = {
         isCategorical: false,
     },
     'minorRadius': {
-        shortLabel: "Min rad",
+        shortLabel: "Minor rad",
+        plotLabel: "Minor radius",
         fullLabel: "Minor radius",
         description: "The minor radius of the outermost surface, scaled so the major radius is 1",
         unit: METER_UNIT,
@@ -223,6 +293,7 @@ export const Fields: FieldRecords = {
     },
     'volume': {
         shortLabel: "Vol",
+        plotLabel: "Volume",
         fullLabel: "Volume",
         description: "Volme enclosed by the outermost toroidal surface over which quasiasymmetry was optimized",
         unit: `${METER_UNIT}^3`,
@@ -232,12 +303,73 @@ export const Fields: FieldRecords = {
     },
     'minCoil2SurfaceDist': {
         shortLabel: "Min cs dist",
+        plotLabel: "Min coil-surface dist",
         fullLabel: "Min coil-surface distance",
         description: "Minimumn distance between any device coil and the outermost surface over which quasiasymmetry was optimized",
         unit: METER_UNIT,
         range: [0.0999, 0.61],
         isLog: false,
         isCategorical: false,
+        markedValue: 0.1
     }
 }
 
+export type BooleanFields = 'ncPerHp' | 'nfp' | 'meanIota' | 'nSurfaces'
+export type ContinuousFields = 'maxKappa' | 'maxMeanSquaredCurve' | 'minIntercoilDist' | 'qaError' | 'aspectRatio' |
+                            'minorRadius' | 'volume' | 'minCoil2SurfaceDist' | 'coilLengthPerHp' | 'totalCoilLength'
+export type SelectionFields = 'globalizationMethod' | 'nFourierCoil'
+
+export type CategoricalIndexSet = {[key in CategoricalIndexedFields]: NumericIndex}
+export type NumericIndex = {[key: number]: Set<number>}
+
+export enum CategoricalIndexedFields {
+    MEAN_IOTA = 'meanIota',
+    NC_PER_HP = 'ncPerHp',
+    NFP = 'nfp',
+    GLOBALIZATION_METHOD = 'globalizationMethod',
+    NFOURIER = 'nFourierCoil',
+    NSURFACES = 'nSurfaces'
+}
+
+export const CategoricalFields = [
+    'id',
+    'coilLengthPerHp',
+    'totalCoilLength',
+    'meanIota',
+    'ncPerHp',
+    'nfp',
+    'globalizationMethod',
+    'nFourierCoil',
+    'nSurfaces',
+]
+
+export const ContinuousFields = [
+    'maxKappa',
+    'maxMeanSquaredCurve',
+    'minIntercoilDist',
+    'qaError',
+    'gradient',
+    'aspectRatio',
+    'minorRadius',
+    'volume',
+    'minCoil2SurfaceDist'
+]
+
+// x qa_error:  0 means perfect QA on the volume --> Quasiasymmetry error (directly related to particle losses) (no unit) --> THIS SHOULD BE SQRT OF THE QUANTITY!
+// x coil_length_per_hp: length of coil used per half period (meters)
+// x total_coil_length: total coil length used to construct the coils (meters)
+// x mean_iota:
+// x max_kappa: max curvature in the coils of the device (we don't want this above 5 meters^-1) "max curvature" (1/meters)
+// x max_msc: maximum mean squared curvature of the coils (we don't want this above 5 meters^-2) "max mean squared curvature" (1/meters-squared)
+// x min_coil2coil_dist: minimum intercoil distance in meters (we don't want this below 10 cm) "minimum intercoil distance" (meters)
+// x nc_per_hp: number of discrete coils per half period of the device "coils per half period" (unitless)
+// x nfp: discrete rotational symmetry "Number of field periods" (unitless) 
+// x aspect_ratio: the aspect ratio of the device. (obvs) (unitless) (note it is using the VMEC definition)
+// x ID: ID number of the device. (obvs) (unitless)
+// x globalization_method: the global optimization algorithm I used to get that device, either 0 or 1. 0 = "naive" 1 = "TuRBO"
+// x minor_radius: the minor radius of the outermost surface "minor radius" (explain that this is scaled so major radius is always 1) (meters)
+// x Nfourier_coil: the number of Fourier modes used to represent each modular coil, either 6, or 16. (for plotting, some coils have 60 points, others have 160)
+// x Nsurfaces: number of surfaces on which quasisymmetry was optimized. --> Should correspond to the # of surfaces in the database
+// x volume: the volume enclosed by the outermost toroidal surface on which quasisymmetry was optimized. --> in meters cubed.
+// x min_coil2surface_dist: 
+// x gradient: norm of gradient at the final iteration of the optimization algorithm,  indication of how close we are to optimality --> arbitrary, part of optimizer

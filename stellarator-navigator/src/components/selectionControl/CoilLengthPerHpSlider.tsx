@@ -17,14 +17,15 @@ const maxValue = Math.max(...coilLengthPerHpValidValues)
 const CoilLengthPerHpSlider: FunctionComponent<Props> = (props: Props) => {
     const { onChange } = props
     const value = props.value ?? [minValue, maxValue]
+    const label = getLabel({name: 'coilLengthPerHp', labelType: 'long'})
 
     return (
         <Fragment>
             <Typography id="coil-length-per-hp-slider" gutterBottom>
-                { getLabel({name: 'coilLengthPerHp', labelType: 'long'}) }
+                { label }
             </Typography>
             <Slider
-                getAriaLabel={() => 'Coil length per hp'}
+                getAriaLabel={() => label}
                 value={value}
                 onChange={onChange}
                 valueLabelDisplay="auto"

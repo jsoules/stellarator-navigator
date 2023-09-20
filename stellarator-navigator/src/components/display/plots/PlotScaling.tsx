@@ -1,7 +1,7 @@
-import { BoundedPlotDimensions, DependentVariableOpt, IndependentVariableOpt } from "@snTypes/Types"
+import { DependentVariableOpt, Fields, IndependentVariableOpt } from "@snTypes/DataDictionary"
+import { BoundedPlotDimensions } from "@snTypes/Types"
 import { ScaleLinear, scaleLinear } from "d3"
 import { useMemo } from "react"
-import { dependentVariableRanges, independentVariableRanges } from "../../../constants/DataDictionary"
 import SvgXAxis from "./SvgXAxis"
 import SvgYAxis from "./SvgYAxis"
 
@@ -38,9 +38,14 @@ export const useScales = (props: useScalesProps) => {
     const { dependentVar, independentVar, dimsIn } = props
 
     // TODO: Configure
-    const dataDomain = useMemo(() => independentVariableRanges[independentVar].range, [independentVar])
+    // TODO: AGAIN RESTRICT TO FILTERED VALUES
+    const dataDomain = useMemo(() => {
+        const baseRange = Fields[independentVar].range
+        return [Math.min(0, baseRange[0]), baseRange[1]]
+    }, [independentVar])
     const dataRange = useMemo(() => {
-        return dependentVariableRanges[dependentVar].range 
+        const baseRange = Fields[dependentVar].range
+        return [Math.min(0, baseRange[0]), baseRange[1]]
     }, [dependentVar])
 
     const xScale = useXScale(dataDomain, dimsIn.boundedWidth)

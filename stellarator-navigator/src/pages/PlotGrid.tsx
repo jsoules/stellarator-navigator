@@ -5,7 +5,8 @@ import { computePerPlotDimensions, useAxes, useScales } from "@snPlots/PlotScali
 import SvgWrapper from "@snPlots/SvgWrapper"
 import { useOnClickPlot } from "@snPlots/interactions"
 import { NavigatorContext } from "@snState/NavigatorContext"
-import { BoundedPlotDimensions, DependentVariableOpt, FilterSettings, IndependentVariableOpt, StellaratorRecord } from "@snTypes/Types"
+import { DependentVariableOpt, IndependentVariableOpt } from "@snTypes/DataDictionary"
+import { BoundedPlotDimensions, FilterSettings, StellaratorRecord } from "@snTypes/Types"
 import { ScaleLinear } from "d3"
 import { FunctionComponent, useContext, useEffect, useMemo, useState } from "react"
 

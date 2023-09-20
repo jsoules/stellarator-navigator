@@ -1,19 +1,19 @@
 
 import { FormControl, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material"
-import { DependentVariableOpt, defaultDependentVariableValue, dependentVariableValidValues } from "@snTypes/DataDictionary"
+import { DependentVariables, defaultDependentVariableValue, dependentVariableDropdownConfig, getLabel } from "@snTypes/DataDictionary"
 import { Fragment, FunctionComponent } from "react"
 
 
 type Props = {
-    value: DependentVariableOpt | undefined,
-    onChange: (evt: SelectChangeEvent<DependentVariableOpt>) => void
+    value: DependentVariables | undefined,
+    onChange: (evt: SelectChangeEvent<DependentVariables>) => void
 }
 
 const DependentVariableSelector: FunctionComponent<Props> = (props: Props) => {
     const { onChange } = props
-    const items = dependentVariableValidValues.map(item =>
-        <MenuItem key={item.key} value={item.value}>{item.text}</MenuItem>
-    )
+    const items = dependentVariableDropdownConfig.map(item => {
+        return (<MenuItem key={item.key} value={item.fieldName}>{getLabel({name: item.fieldName, labelType: 'long'})}</MenuItem>)
+    })
     
     return (
         <Fragment>
@@ -21,7 +21,7 @@ const DependentVariableSelector: FunctionComponent<Props> = (props: Props) => {
                 Dependent Variable in Plots
             </Typography>
             <FormControl fullWidth size="small">
-                <Select<DependentVariableOpt>
+                <Select<DependentVariables>
                     value={props.value ?? defaultDependentVariableValue}
                     onChange={onChange}
                 >

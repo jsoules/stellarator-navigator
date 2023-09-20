@@ -60,7 +60,7 @@ const Dot: FunctionComponent<dotProps> = (props: dotProps) => {
     }
     return <circle
         key={`${rec.id}`}
-        cx={xScale(xVar === 'total' ? rec.totalCoilLength : rec.coilLengthPerHp)}
+        cx={xScale(rec[xVar])}
         cy={(height - y)}
         fill={colors(`${rec.ncPerHp}`)}
         r={isMarked ? "8" : "4"}

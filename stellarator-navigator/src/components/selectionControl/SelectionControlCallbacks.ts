@@ -1,7 +1,8 @@
 import { SelectChangeEvent } from '@mui/material'
 import { GridRowSelectionModel } from '@mui/x-data-grid'
 import { NavigatorStateAction } from '@snState/NavigatorReducer'
-import { DependentVariableOpt, IndependentVariableOpt, NavigatorDispatch } from '@snTypes/Types'
+import { DependentVariables, IndependentVariableOpt } from '@snTypes/DataDictionary'
+import { NavigatorDispatch } from '@snTypes/Types'
 import { Dispatch, useCallback, useMemo } from 'react'
 
 export const handleCoilLengthChange = (dispatch: NavigatorDispatch, type: 'updateCoilLengthPerHp' | 'updateTotalCoilLength', newValue: number | number[]) => {
@@ -12,18 +13,20 @@ export const handleCoilLengthChange = (dispatch: NavigatorDispatch, type: 'updat
     dispatch(update)
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const handleMeanIotaChg = (dispatch: NavigatorDispatch, event: SelectChangeEvent<string>) => {
-    const update: NavigatorStateAction = {
-        type: 'updateMeanIota',
-        newIota: parseFloat(event.target.value)
-    }
-    dispatch(update)
+    // const update: NavigatorStateAction = {
+    //     type: 'updateMeanIota',
+    //     newIota: parseFloat(event.target.value)
+    // }
+    // dispatch(update)
+    return
 }
 
 export const handleDependentVariableChg = (dispatch: NavigatorDispatch, event: SelectChangeEvent) => {
     const update: NavigatorStateAction = {
         type: 'updateDependentVariable',
-        newValue: event.target.value as unknown as DependentVariableOpt
+        newValue: event.target.value as unknown as DependentVariables
     }
     dispatch(update)
 }

@@ -39,6 +39,7 @@ const SvgWrapper: FunctionComponent<Props> = (props: Props) => {
             className="Chart__wrapper"
             style={{ height: dims.height + plotGutterHorizontal, marginLeft: plotGutterVertical/2, marginRight: plotGutterVertical/2 }}
         >
+            {/* DO THIS PROPERLY -- Label should be its own component at this point */}
             <svg width={dims.width} height={dims.height} onClick={() => clickHandler(nfpValue, ncPerHpValue)}>
                 <g transform={`translate(${dims.marginLeft + dims.boundedWidth / 2}, ${1.7*dims.fontPx})`} key="plot-label">
                     <text

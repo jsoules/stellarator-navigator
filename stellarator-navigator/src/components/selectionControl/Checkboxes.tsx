@@ -7,8 +7,10 @@ type Props = {
     onChange: (i: number, targetState: boolean) => void
 }
 
+// TODO: drop the extra exports, trim this
+
 export const NcPerHpCheckboxes: FunctionComponent<Props> = (props: Props) => {
-    return CheckboxTemplate({ ...props, type: 'nc' })
+    return CheckboxTemplate({ ...props, type: 'ncPerHp' })
 }
 
 
@@ -18,22 +20,18 @@ export const NfpCheckboxes: FunctionComponent<Props> = (props: Props) => {
 
 
 type TemplateProps = Props & {
-    type: 'nc' | 'nfp'
+    type: 'ncPerHp' | 'nfp'
 }
 
 
-const ncId = "nc-per-hp-checkboxes"
-const ncDesc = getLabel({name: 'ncPerHp', labelType: 'long'})
-
-const nfpId = 'nfp-checkboxes'
-const nfpDesc = getLabel({name: 'nfp', labelType: 'long'})
-
 const CheckboxTemplate: FunctionComponent<TemplateProps> = (props: TemplateProps) => {
     const { selections, onChange, type } = props
+    const id = `${type}-checkboxes`
+    const desc = getLabel({name: type, labelType: 'long'})
 
     // TODO: line break in some reasonable way?
-    const desc = type === 'nc' ? ncDesc : nfpDesc
-    const id = type === 'nc' ? ncId : nfpId
+    // const desc = type === 'nc' ? ncDesc : nfpDesc
+    // const id = type === 'nc' ? ncId : nfpId
 
     return (
         <div style={{paddingLeft: 8, paddingTop: 15}}>

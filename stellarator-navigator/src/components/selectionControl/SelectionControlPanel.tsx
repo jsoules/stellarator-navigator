@@ -5,16 +5,8 @@ import { NcPerHpCheckboxes, NfpCheckboxes } from './Checkboxes'
 import CoilLengthPerHpSlider from './CoilLengthPerHpSlider'
 import DependentVariableSelector from './DependentVariableSelector'
 import IndependentVariableSelector from './IndependentVariableSelector'
-import MeanIotaSelector from './MeanIotaSelector'
 import TotalCoilLengthSlider from './TotalCoilLengthSlider'
 
-
-// qa error range 2e-11 to 4e-2 --> do we need a log scale?
-// max kappa 1.5 - 4.4
-// max msc 1.8 - 5.005
-// min dist epsilon-below-0.1 - 0.3
-// gradient 2.5e-14 - 0.1
-// aspect ratio 2.852 - 20.022
 
 type Callbacks = {
     handleCoilLengthPerHpChange: (event: Event, newValue: number | number[]) => void

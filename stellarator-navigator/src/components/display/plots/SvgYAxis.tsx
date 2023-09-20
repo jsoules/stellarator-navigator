@@ -1,5 +1,5 @@
 
-import { DependentVariableOpt, dependentVariableRanges, dependentVariableValidValues } from "@snTypes/DataDictionary"
+import { DependentVariableOpt, Fields, getLabel, } from "@snTypes/DataDictionary"
 import { BoundedPlotDimensions } from "@snTypes/Types"
 import { scaleLinear, scaleLog } from "d3"
 import { FunctionComponent, useMemo } from "react"
@@ -24,7 +24,7 @@ const logDisplayDigits = [1] // TODO: Does this need to be more sophisticated?
 
 const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
     const { dataRange, canvasRange, type, dims } = props
-    const isLog = dependentVariableRanges[type].isLog
+    const isLog = Fields[type].isLog
     const yAxisTransform = useMemo(() => `translate(-${dims.clipAvoidanceXOffset + dims.tickLength}, -${dims.clipAvoidanceYOffset})`, [dims.clipAvoidanceXOffset, dims.clipAvoidanceYOffset, dims.tickLength])
     const markLineColor = "#1f77b4" // should be equivalent to the tableau blue that was the default
 
@@ -41,14 +41,14 @@ const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
     }, [canvasRange])
 
     const ticks = useMemo(() => {
+        // TODO: See if we need to adjust log-label logic once we can zoom in and might all be in one band
         const targetTickCount = Math.max(1, Math.floor(canvasHeight / dims.pixelsPerTick))
         const baseTicks = yScale.ticks(targetTickCount)
-        // TODO: See if we need to adjust log-label logic once we can zoom in and might all be in one band
         // if we're on the log scale, we don't care about this--we don't label every tick then
         // for an actual linear scale, we want to make sure we print only decimal places that might change
         // So basically, figure out how many gaps (total ticks - 1) we have for each unit of the data range,
         // take the log-base-10 of that, and round up for fractions
-        const digits = isLog ? 1 : Math.ceil(Math.log10((baseTicks.length - 1) / (dataRange[1] - dataRange[0])))
+        const digits = isLog ? 1 : Math.max(0, Math.ceil(Math.log10((baseTicks.length - 1) / (dataRange[1] - dataRange[0]))))
 
         return baseTicks
             .map(value => ({
@@ -61,7 +61,7 @@ const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
     }, [canvasHeight, dims.pixelsPerTick, yScale, isLog, dataRange])
 
     const markedLineY = useMemo(() => {
-        const mark = dependentVariableRanges[type].marked
+        const mark = Fields[type].markedValue
         if (mark === undefined) return undefined
         const markedValue = isLog ? 10 ** mark : mark
         return canvasHeight - yScale(markedValue)
@@ -86,8 +86,8 @@ const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
                         transform={`translate(${dims.tickLength + dims.clipAvoidanceXOffset}, ${yOffset + dims.clipAvoidanceYOffset})`}
                     >
                         <line x2={`-${dims.tickLength}`} stroke="currentColor" />
-                        {dependentVariableRanges[type].isLog && leadingDigit(value) === 1 && <line x2={dims.boundedWidth} stroke="#cbcbcb" />}
-                        {!dependentVariableRanges[type].isLog && <line x2={dims.boundedWidth} stroke="#cbcbcb" />}
+                        {isLog && leadingDigit(value) === 1 && <line x2={dims.boundedWidth} stroke="#cbcbcb" />}
+                        {!isLog && <line x2={dims.boundedWidth} stroke="#cbcbcb" />}
                         <text
                             key={`yticklabel-${value}`}
                             style={{
@@ -115,7 +115,7 @@ const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
                     fontSize: `${1.5*dims.fontPx}px`,
                     textAnchor: "middle"
                 }} transform="rotate(-90)">
-                    {(dependentVariableValidValues.find(v => v.value === type) || {text: 'OOPS'}).text}
+                    {getLabel({name: type, labelType: 'plot'})}
                 </text>
             </g>
         </g>

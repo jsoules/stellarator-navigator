@@ -1,4 +1,5 @@
 
+//// DEPRECATED, but still a good example of the selection dropdown implmentation.
 import { FormControl, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material"
 import { getLabel } from "@snTypes/DataDictionary"
 import { meanIotaSentinelValue, meanIotaValidValues } from "@snTypes/ValidValues"
