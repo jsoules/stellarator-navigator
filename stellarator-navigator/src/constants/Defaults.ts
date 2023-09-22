@@ -1,5 +1,5 @@
 import { FilterSettings, NavigatorDatabase } from "@snTypes/Types";
-import { CategoricalIndexedFields, DependentVariables, Fields } from "./DataDictionary";
+import { CategoricalIndexedFields, DependentVariables, Fields, IndependentVariables } from "./DataDictionary";
 import { coilLengthPerHpValidValues, totalCoilLengthValidValues } from "./ValidValues";
 
 export const initialNavigatorState: FilterSettings = {
@@ -11,18 +11,18 @@ export const initialNavigatorState: FilterSettings = {
     // new
     nSurfaces: new Array((Fields.nSurfaces.values ?? []).length).fill(false),
     maxKappa: (Fields.maxKappa.range),
-    maxMeanSquaredCurve: [],
-    minIntercoilDist: [],
-    qaError: [],
-    aspectRatio: [],
-    minorRadius: [],
-    volume: [],
-    minCoil2SurfaceDist: [],
+    maxMeanSquaredCurve: (Fields.maxMeanSquaredCurve.range),
+    minIntercoilDist: (Fields.minIntercoilDist.range),
+    qaError: (Fields.qaError.range),
+    aspectRatio: (Fields.aspectRatio.range),
+    minorRadius: (Fields.minorRadius.range),
+    volume: (Fields.volume.range),
+    minCoil2SurfaceDist: (Fields.minCoil2SurfaceDist.range),
     globalizationMethod: undefined,
     nFourierCoil: undefined,
     //
     dependentVariable: DependentVariables.QA_ERROR,
-    independentVariable: "totalCoilLength",
+    independentVariable: IndependentVariables.TOTAL_COIL_LENGTH,
     markedRecords: new Set<number>(),
 }
 

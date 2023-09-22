@@ -56,33 +56,23 @@
 
 [x] Remove FilterEcho page
 
-[ ] Consider automatically updating selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
+[x] Correct names of variables (e.g. iota is something other than shear; shear is w/r/t e.g. iota)
 
-[?] Consider line-breaking of checkboxes for nc/nfp
-
-[ ] Correct names of variables (e.g. iota is something other than shear; shear is w/r/t e.g. iota)
-
-[ ] Add all available variables as options for dependent and independent axes
+[x] Add all available variables as options for dependent and independent axes
 
 [x] add horizontal lines for all plots regardless of dependent variable
 
 [x] add "background field error" horizontal line for QA error plot (check received example code, s.b. 50e-6 or so)
 
-[ ] Review ranges in axes --> allow zooming in by the sliders
+[x] Review ranges in axes --> allow zooming in by the sliders
 
-[ ] restrict visible independent-axis to the range currently selected by the sliders? --> this is also a zoom thing, yes do this
+[x] restrict visible independent-axis to the range currently selected by the sliders? --> this is also a zoom thing, yes do this
 
-[ ] Round the aspect ratio to one decimal; group by it and allow it to be selected (dropdown or checkbox, AG to send values)
+[x] Round the aspect ratio to one decimal --> filtering superseded
 
-[?] don't hard-code width/height for canvas in Model.tsx --> worry about this later
+[x] Fix display of slider for log scale
 
-[?] Confirm acceptable performance with the row selection features in the table
-
-[-] secure domain name
-
-[-] consider branding
-
-[-] finalize deployment details with SCC
+[x] color-code based on nc/hp values, not seed values
 
 [ ] "show entire stellarator" checkbox --> AG will give the operation
 
@@ -90,13 +80,9 @@
 
 [ ] Reorg with index.js files to collect contents of small files
 
-[?] implement dot mouseover highlights (??)
+[ ] add API endpoint for people to download the raw files from the simulations (coils, currents, nml) "download vmec" button to fetch the nml, expand later
 
-[ ] --> need API endpoint for people to download the raw files from the simulations (coils, currents, nml) "download vmec" button to fetch the nml, expand later
-
-[x] color-code based on nc/hp values, not seed values
-
-[ ] --> it'd be nice if you could plot "for a given NFP, show all in the same plot your selection" (toggle "show on same plot")
+[ ] Add "open selected" button to the table
 
 [ ] Give option to plot coil currents (found in the graphics/currents/ directory structure)
     
@@ -105,22 +91,70 @@
 
     [ ] normalized per device, following sign convention
 
-[ ] Add "open selected" button to the table
+[ ] Consider automatically updating selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
 
-[ ] Add button to hit API endpoint for raw-file download (to the model view page most likely)
+[x] Fix y-axis tickmarks and lines for log scale with smaller ranges
+
+[ ] REDO THE DATABASE EXPORT WITH QA ROOTED
+    [ ] THEN UPDATE THE LINE SETTING
 
 [ ] UPDATED CONTROLS:
 
     [ ] Dropdown for globalization method (both, 0, 1)
 
-    [ ] Turn mean iota into checkboxes
-
     [ ] Dropdown for # fourier coils (both, 6, 16)
 
-    [ ] Checkboxes for n surfaces
+    [x] Add a "de/select all" checkbox to the default checkbox template
+    
+    [x] Turn mean iota into checkboxes
 
-    [ ] Sliders for max kappa, max msc, min icd, qa error, aspect ratio, minor radius, volume, min c2sd
+    [x] Checkboxes for n surfaces
 
-    [ ] Toggle plot-splitting *** OOOH HARD?
+    [x] Sliders for max kappa, max msc, min icd, qa error, aspect ratio, minor radius, volume, min c2sd
 
-    [ ] Add a "deselect all" checkbox to the default template
+    [x] Unify sliders
+
+[ ] Get rid of the "filterNc, filterNfp" stuff
+
+[ ] Toggle plot-splitting *** OOOH HARD?
+
+[ ] Review range-change performance. Would drag-select be better from this perspective?
+
+[ ] Improve filtering performance with large numbers of criteria!!
+
+[ ] Poincare thing:
+inside graphics/poincare is now the poincare plots (those scatter plots) in poincare{ID}_0.txt and poincare{ID}_1.txt
+the first file is the poincare plot at cylindrical angle=0 degrees and the second file is the poincare plot at cylindrical angle=pi/nfp/2
+first column is the ID of the dot (dots with the same ID should have the same colour)
+second and third columns are the (R, Z) positions of the dot
+next inside graphics/poincare are cross sections of surfaces in the same cylindrical angles angle=0 degrees and cylindrical angle=pi/nfp/2,
+with file names xs_{ID}_0.txt and xs_{ID}_1.txt.
+Columns 1 and 2 are the R and Z coordinates of the cross section for one surface.  Columns 2 and 3 are cross sections for two surfaces, etc...
+these cross sections should be plotted on top of the poincare plots, sort of like this:
+so the red lines are the sirface cross sections, superimposed on the poincare plot dots
+SEE SLACK MSG 9/21/23 15:47 ff
+
+[ ] Another per-device plot: iota profile. it's in a database key, which contains a list of x-y vals. X is "normalized toroidal flux" (unitless)
+    and y is rotational transform value also unitless. Horizontal line of "mean_iota" value for the device.
+
+[ ] Add new keys: elongation, shear (slope of best least-squares linear approx of iota_profile); maybe surface_type and message.
+
+[ ] Use database from permanent location of https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR/
+
+
+QUERY OR DISTANT:
+
+[?] Consider line-breaking of checkboxes for nc/nfp
+
+[?] don't hard-code width/height for canvas in Model.tsx --> worry about this later
+
+[?] Confirm acceptable performance with the row selection features in the table
+
+[?] implement dot mouseover highlights (??)
+
+[-] secure domain name
+
+[-] consider branding
+
+[-] finalize deployment details with SCC
+

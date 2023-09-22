@@ -5,7 +5,7 @@ import { computePerPlotDimensions, useAxes, useScales } from "@snPlots/PlotScali
 import SvgWrapper from "@snPlots/SvgWrapper"
 import { useOnClickPlot } from "@snPlots/interactions"
 import { NavigatorContext } from "@snState/NavigatorContext"
-import { DependentVariableOpt, IndependentVariableOpt } from "@snTypes/DataDictionary"
+import { DependentVariables, IndependentVariables } from "@snTypes/DataDictionary"
 import { BoundedPlotDimensions, FilterSettings, StellaratorRecord } from "@snTypes/Types"
 import { ScaleLinear } from "d3"
 import { FunctionComponent, useContext, useEffect, useMemo, useState } from "react"
@@ -41,8 +41,8 @@ const rectifySelectedTable = (activeNc: number | undefined, activeNfp: number, n
 
 type RowProps = {
     data: StellaratorRecord[]
-    dependentVar: DependentVariableOpt
-    independentVar: IndependentVariableOpt
+    dependentVar: DependentVariables
+    independentVar: IndependentVariables
     dims: BoundedPlotDimensions
     xScale: ScaleLinear<number, number, never>
     yScale: ScaleLinear<number, number, never>
@@ -111,7 +111,7 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
     }, [activeNc, activeNfp, filters.ncPerHp, nfps])
 
     // Scales & Axes
-    const [xScale, yScale] = useScales({dependentVar: filters.dependentVariable, independentVar: filters.independentVariable, dimsIn: dims})
+    const [xScale, yScale] = useScales({filters, dimsIn: dims})
     const [xAxis, yAxis] = useAxes({
         xScale, yScale,
         dependentVar: filters.dependentVariable, independentVar: filters.independentVariable,
@@ -119,6 +119,7 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
     })
     const marks = useMemo(() => filters.markedRecords, [filters])
     
+    // TODO: Improved handling of SnTable records; don't redo the filter?
     const ncs = filters.ncPerHp.map((v, i) => (v ? i + 1 : void {})).filter(x => x !== undefined) as unknown as number[]
     const rows = (ncs.length === 0 ? [undefined] : ncs).map(
         nc => <Row
@@ -144,7 +145,8 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
             <Grid container>
                 {rows}
             </Grid>
-            Currently each plot is {dims.width} x {dims.height} with {nfps.length} ({colCount}) columns.
+            <div>Currently each plot is {dims.width} x {dims.height} with {nfps.length} ({colCount}) columns.</div>
+            <div>Current filter settings return {allRecords.length} devices.</div>
 
             <hr style={{width: "75%"}} />
             <SnTable records={allRecords} selectionHandler={selectionHandler} activeNfp={activeNfp} activeNc={activeNc} />

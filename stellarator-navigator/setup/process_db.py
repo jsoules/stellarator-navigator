@@ -10,6 +10,7 @@ with open(input_file_name, "rb") as file:
 fields_to_log_scale = ["qa_error", "gradient"]
 for field in fields_to_log_scale:
     data[field] = data[field].transform(lambda x: np.log10(x))
+data["qa_error"] = data["qa_error"].transform(lambda x: x/2) # we actually want sqrt of this value
 
 data.to_json(output_file_name, orient='split', double_precision=10)
 

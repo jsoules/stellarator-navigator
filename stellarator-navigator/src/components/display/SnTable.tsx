@@ -1,6 +1,6 @@
 import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid'
 import { filterNc, filterNfp } from '@snState/filter'
-import { CategoricalFields, ContinuousFields, Fields } from '@snTypes/DataDictionary'
+import { Fields, GlobalizationMethodNames } from '@snTypes/DataDictionary'
 import { StellaratorRecord } from '@snTypes/Types'
 import { FunctionComponent } from 'react'
 
@@ -13,8 +13,11 @@ type SnTableProps = {
 
 const variableColumnsDefaultWidth = 110
 
+const fieldnames = Object.keys(Fields)
+const fixedWidthFields = fieldnames.filter(fn => Fields[fn].tableColumnWidth !== undefined)
+const varWidthFields = fieldnames.filter(fn => Fields[fn].tableColumnWidth === undefined)
 
-const fixedWidthCols: GridColDef[] = CategoricalFields.map(f => {
+const fixedWidthCols: GridColDef[] = fixedWidthFields.map(f => {
     const fieldDef = Fields[f]
     const unitSuffix = fieldDef.unit === undefined ? '' : ` (${fieldDef.unit})`
     return {
@@ -26,7 +29,7 @@ const fixedWidthCols: GridColDef[] = CategoricalFields.map(f => {
     }
 })
 
-const varWidthCols: GridColDef[] = ContinuousFields.map(f => {
+const varWidthCols: GridColDef[] = varWidthFields.map(f => {
     const fieldDef = Fields[f]
     const unitSuffix = fieldDef.unit === undefined ? '' : ` (${fieldDef.unit})`
     return {
@@ -39,6 +42,8 @@ const varWidthCols: GridColDef[] = ContinuousFields.map(f => {
     }
 })
 
+// TODO: improve hardcoding of field names
+
 const SnTable: FunctionComponent<SnTableProps> = (props: SnTableProps) => {
     const { records, selectionHandler, activeNfp, activeNc } = props
     const filteredRecords = filterNc(filterNfp(records, activeNfp), activeNc)
@@ -46,17 +51,23 @@ const SnTable: FunctionComponent<SnTableProps> = (props: SnTableProps) => {
     const rows = filteredRecords.map(r => {
         return {
             id: r.id,
-            lengthPerHp: r.coilLengthPerHp,
-            lengthTotal: r.totalCoilLength,
-            iota: r.meanIota,
+            coilLengthPerHp: r.coilLengthPerHp,
+            totalCoilLength: r.totalCoilLength,
+            meanIota: r.meanIota,
             ncPerHp: r.ncPerHp,
             nfp: r.nfp,
-            maxKappa: r.maxKappa,
-            maxMsc: r.maxMeanSquaredCurve,
-            minDist: r.minIntercoilDist,
-            qaError: (10 ** r.qaError).toExponential(6),
-            gradient: (10 ** r.gradient).toExponential(6),
-            aspectRatio: r.aspectRatio
+            globalizationMethod: GlobalizationMethodNames[r.globalizationMethod],
+            nFourierCoil: r.nFourierCoil,
+            nSurfaces: r.nSurfaces,
+            maxKappa: r.maxKappa.toFixed(5),
+            maxMeanSquaredCurve: r.maxMeanSquaredCurve.toFixed(5),
+            minIntercoilDist: r.minIntercoilDist.toFixed(5),
+            qaError: (10 ** r.qaError).toExponential(4),
+            gradient: (10 ** r.gradient).toExponential(4),
+            aspectRatio: r.aspectRatio.toFixed(1),
+            minorRadius: r.minorRadius.toFixed(3),
+            volume: r.volume.toFixed(5),
+            minCoil2SurfaceDist: r.minCoil2SurfaceDist.toFixed(5)
         }
     })
     // TODO: row selection feature slows down the UI something pretty fierce.
@@ -76,111 +87,3 @@ const SnTable: FunctionComponent<SnTableProps> = (props: SnTableProps) => {
 }
 
 export default SnTable
-
-
-//// DEPRECATED
-
-// const columns: GridColDef[] = [
-//     // id
-//     {
-//         field: 'id',
-//         headerName: 'ID',
-//         width: 70,
-//         description: 'Unique identifier of the design simulation',
-//         sortable: true,
-//     },
-//     // length per hp
-//     {
-//         field: 'lengthPerHp',
-//         headerName: 'HP Length',
-//         width: 100,
-//         description: 'Coil length (m) per half-period',
-//         sortable: true,
-//     },
-//     // legnth total
-//     {
-//         field: 'lengthTotal',
-//         headerName: 'Total Length',
-//         width: 100,
-//         description: 'Total coil length (m)',
-//         sortable: true,
-//     },
-//     // mean iota
-//     {
-//         field: 'iota',
-//         headerName: 'Mean Iota',
-//         width: 90,
-//         description: 'Mean magnetic shear',
-//         sortable: true,
-//     },
-//     // nc per hp
-//     {
-//         field: 'ncPerHp',
-//         headerName: 'Coils/hp',
-//         width: 80,
-//         description: 'Coil count per half-period',
-//         sortable: true,
-//     },
-//     // nfp
-//     {
-//         field: 'nfp',
-//         headerName: 'n FP',
-//         width: 50,
-//         description: 'Field period count',
-//         sortable: true,
-//     },
-//     // maxKappa
-//     {
-//         field: 'maxKappa',
-//         headerName: 'Max Kappa',
-//         flex: 1,
-//         minWidth: variableColumnsDefaultWidth,
-//         description: 'Maximum curvature',
-//         sortable: true,
-//     },
-//     // maxMsc
-//     {
-//         field: 'maxMsc',
-//         headerName: 'Max MSC',
-//         flex: 1,
-//         minWidth: variableColumnsDefaultWidth,
-//         description: 'Max MSC',
-//         sortable: true,
-//     },
-//     // minDist
-//     {
-//         field: 'minDist',
-//         headerName: 'Min dist',
-//         flex: 1,
-//         minWidth: variableColumnsDefaultWidth,
-//         description: 'TKTK',
-//         sortable: true,
-//     },
-//     // qaError
-//     {
-//         field: 'qaError',
-//         headerName: 'QA Error',
-//         flex: 1,
-//         minWidth: variableColumnsDefaultWidth,
-//         description: 'Quasiasymmetry Error',
-//         sortable: true,
-//     },
-//     // gradient
-//     {
-//         field: 'gradient',
-//         headerName: 'Gradient',
-//         flex: 1,
-//         minWidth: variableColumnsDefaultWidth,
-//         description: 'TKTKTK',
-//         sortable: true,
-//     },
-//     // aspect ratio
-//     {
-//         field: 'aspectRatio',
-//         headerName: 'Aspect Ratio',
-//         flex: 1,
-//         minWidth: variableColumnsDefaultWidth,
-//         description: 'TKTKTK',
-//         sortable: true,
-//     },
-// ]

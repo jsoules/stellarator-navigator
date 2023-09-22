@@ -1,5 +1,5 @@
-import { CategoricalIndexSet, CategoricalIndexedFields, Fields, NumericIndex } from "@snTypes/DataDictionary"
-import { NavigatorDatabase, RecordDict, StellaratorRecord } from "@snTypes/Types"
+import { CategoricalIndexedFields, Fields } from "@snTypes/DataDictionary"
+import { CategoricalIndexSet, NavigatorDatabase, NumericIndex, RecordDict, StellaratorRecord } from "@snTypes/Types"
 // import { meanIotaSentinelValue, meanIotaValidValues } from "@snTypes/ValidValues"
 import * as _rawData from "database.json"
 
@@ -67,12 +67,6 @@ const dataDict: RecordDict = {}
 dataList.forEach(entry => {
     dataDict[entry.id] = entry
 })
-
-// const iotasIndex: {[key: number]: Set<number>} = {}
-// meanIotaValidValues.forEach(v => {
-//     iotasIndex[v] = new Set(dataList.filter(row => row.meanIota === v).map(row => row.id))
-// })
-// iotasIndex[meanIotaSentinelValue] = new Set(dataList.map(row => row.id))
 
 // TODO: Is this going to use too much memory?
 

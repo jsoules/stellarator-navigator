@@ -1,43 +1,45 @@
 import { Checkbox, FormControlLabel, Typography } from "@mui/material"
-import { getLabel } from "@snTypes/DataDictionary"
+import { ToggleableVariables, getLabel } from "@snTypes/DataDictionary"
 import { FunctionComponent } from "react"
 
 type Props = {
+    type: ToggleableVariables
     selections: boolean[]
-    onChange: (i: number, targetState: boolean) => void
+    labels?: string[]
+    onChange: (type: ToggleableVariables, i: number, targetState: boolean) => void
 }
 
-// TODO: drop the extra exports, trim this
-
-export const NcPerHpCheckboxes: FunctionComponent<Props> = (props: Props) => {
-    return CheckboxTemplate({ ...props, type: 'ncPerHp' })
-}
-
-
-export const NfpCheckboxes: FunctionComponent<Props> = (props: Props) => {
-    return CheckboxTemplate({ ...props, type: 'nfp' })
-}
-
-
-type TemplateProps = Props & {
-    type: 'ncPerHp' | 'nfp'
-}
-
-
-const CheckboxTemplate: FunctionComponent<TemplateProps> = (props: TemplateProps) => {
-    const { selections, onChange, type } = props
+const CheckboxTemplate: FunctionComponent<Props> = (props: Props) => {
+    const { selections, onChange, type, labels } = props
     const id = `${type}-checkboxes`
     const desc = getLabel({name: type, labelType: 'long'})
-
+    const checkCount = selections.filter(v => v).length
+    const allChecked = checkCount === selections.length
     // TODO: line break in some reasonable way?
-    // const desc = type === 'nc' ? ncDesc : nfpDesc
-    // const id = type === 'nc' ? ncId : nfpId
+
+    const allCheckbox = selections.length > 1
+        ? (
+            <div key="allSelect">
+                <FormControlLabel
+                    label="(toggle all)"
+                    control={
+                        <Checkbox
+                            style={{ padding: 1, transform: 'scale(0.8)' }}
+                            onClick={() => onChange(type, -1, !allChecked)}
+                            checked={allChecked}
+                            indeterminate={(checkCount > 0) && !allChecked}
+                        />
+                    }
+                />
+            </div>
+        ) : (<></>)
 
     return (
         <div style={{paddingLeft: 8, paddingTop: 15}}>
             <Typography id={id} gutterBottom>
                 {desc}
             </Typography>
+            { allCheckbox }
             {
                 selections.map((v, i) => (
                     <span key={i + 1}>
@@ -45,11 +47,11 @@ const CheckboxTemplate: FunctionComponent<TemplateProps> = (props: TemplateProps
                             control={
                                 <Checkbox
                                     style={{ padding: 1, transform: 'scale(0.8)' }}
-                                    onClick={() => onChange(i, !v)}
+                                    onClick={() => onChange(type, i, !v)}
                                     checked={v}
                                 />
                             }
-                            label={i + 1}
+                            label={labels ? labels[i] : i + 1}
                         />
                     </span>
                 ))
@@ -59,4 +61,4 @@ const CheckboxTemplate: FunctionComponent<TemplateProps> = (props: TemplateProps
 }
 
 
-export default NcPerHpCheckboxes
+export default CheckboxTemplate

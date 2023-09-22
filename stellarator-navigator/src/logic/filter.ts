@@ -1,5 +1,5 @@
-import { BooleanFields, CategoricalIndexSet, ContinuousFields, Fields, SelectionFields, getValuesFromBoolArray } from "@snTypes/DataDictionary"
-import { FilterSettings, NavigatorDatabase, StellaratorRecord } from "@snTypes/Types"
+import { ContinuousFields, Fields, SelectionFields, ToggleableVariables, getValuesFromBoolArray } from "@snTypes/DataDictionary"
+import { CategoricalIndexSet, FilterSettings, NavigatorDatabase, StellaratorRecord } from "@snTypes/Types"
 import database from "./database"
 
 export const projectRecords = (selection: Set<number>, database: NavigatorDatabase) => {
@@ -27,31 +27,13 @@ const applyFilterToState = (filters: FilterSettings, updateSelection: React.Disp
     updateSelection(set)
 }
 
-// const applyFilterToState = (db: NavigatorDatabase, filters: FilterSettings, updateSelection: React.Dispatch<React.SetStateAction<Set<number>>>) => {
-//     const resultSet = db.iotasIndex[filters.meanIota]
-//     const perHpRange = filters.coilLengthPerHp ?? [Math.min(...coilLengthPerHpValidValues), Math.max(...coilLengthPerHpValidValues)]
-//     const totalRange = filters.totalCoilLength ?? [Math.min(...totalCoilLengthValidValues), Math.max(...totalCoilLengthValidValues)]
-
-//     const perHpLengthFilter = new Set(db.list.filter(row => row.coilLengthPerHp >= perHpRange[0] && row.coilLengthPerHp <= perHpRange[1]).map(r => r.id))
-//     const totalLengthFilter = new Set(db.list.filter(row => row.totalCoilLength >= totalRange[0] && row.totalCoilLength <= totalRange[1]).map(r => r.id))
-
-//     const finalResult = intersect(resultSet, perHpLengthFilter, totalLengthFilter)
-
-//     updateSelection(finalResult)
-// }
-
+// TODO: DEBOUNCE?
 export const applyFiltersToSet = (filters: FilterSettings, set?: Set<number>): Set<number> => {
-    console.log(`Applying filters as defined from:\n${JSON.stringify(filters)}`)
     const boolSets = booleanFilters.map(b => {
         const { key, callback } = b
         const choices = filters[key]
         return callback(choices)
     })
-    // const rangeFilters = rangeFilters.map(r => {
-    //     const { key, callback } = r
-    //     const values = filters[key]
-    //     return callback(values)
-    // })
     const selectionSets = selectionFilters.map(f => {
         const { key, callback } = f
         const val = filters[key]
@@ -67,27 +49,26 @@ export const applyFiltersToSet = (filters: FilterSettings, set?: Set<number>): S
         return callback(valueRange)
     })
     const finalSet = new Set(materializedRows.filter(r => rangeTests.every(test => test(r))).map(r => r.id))
-    console.log(`Final set has ${finalSet.size} elements.\nIniitial set size: ${set?.size}\nCategorical makes ${selectionSets.length} filters.\nAfter categorical intersect, ${indexIntersectionSet.size} elements`)
     return finalSet
 }
 
 export type checkboxFilterType = 'nfp' | 'ncPerHp' | 'meanIota' | 'nSurfaces'
 
 // Filter setup
-const makeBooleanFilter = (key: BooleanFields, db: NavigatorDatabase) => {
+const makeBooleanFilter = (key: ToggleableVariables, db: NavigatorDatabase) => {
     const callback = (choices: boolean[]) => {
         if (choices.every(c => c) || choices.every(c => !c)) {
             return undefined
         }
         const vals = getValuesFromBoolArray(key, choices)
-        const idx = db.categoricalIndexes[key as keyof CategoricalIndexSet]
+        const idx = db.categoricalIndexes[key as unknown as keyof CategoricalIndexSet]
         const sets = vals.map(v => idx[v])
         const union = new Set(sets.reduce((curr: number[], newSet) => { return [...curr, ...newSet] }, []))
         return union
     }
     return {key, callback}
 }
-const booleanFields: BooleanFields[] = ['nfp', 'ncPerHp', 'meanIota', 'nSurfaces']
+const booleanFields: ToggleableVariables[] = [ToggleableVariables.MEAN_IOTA, ToggleableVariables.NFP, ToggleableVariables.NC_PER_HP, ToggleableVariables.N_SURFACES]
 export const booleanFilters = booleanFields.map(f => makeBooleanFilter(f, database))
 
 

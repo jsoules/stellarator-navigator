@@ -4,14 +4,14 @@ import { StellaratorRecord } from "@snTypes/Types"
 import { ScaleLinear, ScaleLogarithmic, ScaleOrdinal, scaleOrdinal } from "d3"
 import { FunctionComponent } from "react"
 // import { onClickDot, onHoverDot, onHoverOff } from "./interactions"
-import { DependentVariableOpt, IndependentVariableOpt } from "@snTypes/DataDictionary"
+import { DependentVariables, IndependentVariables } from "@snTypes/DataDictionary"
 import { onClickDot } from "./interactions"
 
 
 type ScatterplotProps = {
     data: StellaratorRecord[]
-    dependentVar: DependentVariableOpt
-    independentVar: IndependentVariableOpt
+    dependentVar: DependentVariables
+    independentVar: IndependentVariables
     xScale: ScaleLinear<number, number, never>
     yScale: ScaleLinear<number, number, never> | ScaleLogarithmic<number, number, never>
     height: number
@@ -25,8 +25,8 @@ type ScatterplotProps = {
 
 type dotProps = {
     rec: StellaratorRecord
-    yVar: DependentVariableOpt
-    xVar: IndependentVariableOpt
+    yVar: DependentVariables
+    xVar: IndependentVariables
     xScale: ScaleLinear<number, number, never>
     yScale: ScaleLinear<number, number, never> | ScaleLogarithmic<number, number, never>
     height: number
@@ -39,24 +39,9 @@ const Dot: FunctionComponent<dotProps> = (props: dotProps) => {
     const { rec, yVar, xVar, colors, xScale, yScale, height, isMarked } = props
     if (rec === undefined) return <></>
 
-    let y = 0
-    switch (yVar) {
-        case "maxKappa":
-            y = yScale(rec.maxKappa)
-            break
-        case "maxMeanSquaredCurve":
-            y = yScale(rec.maxMeanSquaredCurve)
-            break
-        case "minIntercoilDist":
-            y = yScale(rec.minIntercoilDist)
-            break
-        case "qaError":
-            y = yScale(rec.qaError)
-            break
-        default: y = 0
-    }
+    const y = yScale(rec[yVar])
     if (isNaN(height - y)) {
-        console.log(`issue with record ${JSON.stringify(rec)} y was ${y}`)
+        console.warn(`issue with record ${JSON.stringify(rec)} y was ${y}`)
     }
     return <circle
         key={`${rec.id}`}

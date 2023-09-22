@@ -1,27 +1,27 @@
 
 import { FormControl, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material"
-import { IndependentVariableOpt, defaultIndependentVariableValue, independentVariableValidValues } from "@snTypes/DataDictionary"
+import { IndependentVariables, defaultIndependentVariableValue, getLabel, independentVariableDropdownConfig } from "@snTypes/DataDictionary"
 import { FunctionComponent } from "react"
 
 
 type Props = {
-    value: IndependentVariableOpt | undefined,
-    onChange: (evt: SelectChangeEvent<IndependentVariableOpt>) => void
+    value: IndependentVariables | undefined,
+    onChange: (evt: SelectChangeEvent<IndependentVariables>) => void
 }
 
 const IndependentVariableSelector: FunctionComponent<Props> = (props: Props) => {
     const { onChange } = props
-    const items = independentVariableValidValues.map(item =>
-        <MenuItem key={item.key} value={item.value}>{item.text}</MenuItem>
+    const items = independentVariableDropdownConfig.map(item =>
+        <MenuItem key={item.key} value={item.fieldName}>{getLabel({name: item.fieldName, labelType: 'long'})}</MenuItem>
     )
     
     return (
         <div style={{ paddingBottom: 10 }}>
-            <Typography id="dependent-variable-selector" gutterBottom>
+            <Typography id="independent-variable-selector" gutterBottom>
                 Independent Variable in Plots
             </Typography>
             <FormControl fullWidth size="small">
-                <Select<IndependentVariableOpt>
+                <Select<IndependentVariables>
                     value={props.value ?? defaultIndependentVariableValue}
                     onChange={onChange}
                 >

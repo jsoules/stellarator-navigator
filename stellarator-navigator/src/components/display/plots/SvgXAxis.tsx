@@ -1,6 +1,6 @@
 // adapted from https://2019.wattenberger.com/blog/react-and-d3
 
-import { IndependentVariableOpt, independentVariableValidValues } from "@snTypes/DataDictionary"
+import { IndependentVariables, getLabel } from "@snTypes/DataDictionary"
 import { BoundedPlotDimensions } from "@snTypes/Types"
 import { scaleLinear } from "d3"
 import { FunctionComponent, useMemo } from "react"
@@ -8,7 +8,7 @@ import { FunctionComponent, useMemo } from "react"
 type AxisProps = {
     dataDomain: number[],
     canvasRange: number[],
-    type: IndependentVariableOpt,
+    type: IndependentVariables,
     dims: BoundedPlotDimensions
 }
 
@@ -71,7 +71,7 @@ const SvgXAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
                     textAnchor: "middle",
                     transform: `translateY(${4 * dims.fontPx}px)`
                 }}>
-                    {(independentVariableValidValues.find(v => v.value === type) || {text: 'OOPS'}).text}
+                    {getLabel({name: type, labelType: 'plot'})}
                 </text>
             </g>
         </g>

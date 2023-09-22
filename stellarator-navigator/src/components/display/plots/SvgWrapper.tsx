@@ -1,4 +1,4 @@
-import { DependentVariableOpt, IndependentVariableOpt } from "@snTypes/DataDictionary"
+import { DependentVariables, IndependentVariables } from "@snTypes/DataDictionary"
 import { BoundedPlotDimensions, StellaratorRecord } from "@snTypes/Types"
 import { ScaleLinear } from "d3"
 import { FunctionComponent, useMemo, } from "react"
@@ -8,8 +8,8 @@ import { plotGutterHorizontal, plotGutterVertical } from "./PlotScaling"
 type Props = {
     dims: BoundedPlotDimensions
     data: StellaratorRecord[]
-    dependentVar: DependentVariableOpt
-    independentVar: IndependentVariableOpt
+    dependentVar: DependentVariables
+    independentVar: IndependentVariables
     xScale: ScaleLinear<number, number, never>
     yScale: ScaleLinear<number, number, never>
     highlightedSeries?: number

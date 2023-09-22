@@ -1,27 +1,28 @@
 import { SelectChangeEvent } from '@mui/material'
 import { GridRowSelectionModel } from '@mui/x-data-grid'
 import { NavigatorStateAction } from '@snState/NavigatorReducer'
-import { DependentVariables, IndependentVariableOpt } from '@snTypes/DataDictionary'
+import { DependentVariables, IndependentVariables, RangeVariables, ToggleableVariables } from '@snTypes/DataDictionary'
 import { NavigatorDispatch } from '@snTypes/Types'
 import { Dispatch, useCallback, useMemo } from 'react'
 
-export const handleCoilLengthChange = (dispatch: NavigatorDispatch, type: 'updateCoilLengthPerHp' | 'updateTotalCoilLength', newValue: number | number[]) => {
+
+const _handleRangeChange = (dispatch: NavigatorDispatch, field: RangeVariables, newRange: number | number[]) => {
     const update: NavigatorStateAction = {
-        type: type,
-        coilLength: newValue as number[]
+        type: "updateRange",
+        field,
+        newRange: newRange as number[]
     }
     dispatch(update)
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const handleMeanIotaChg = (dispatch: NavigatorDispatch, event: SelectChangeEvent<string>) => {
-    // const update: NavigatorStateAction = {
-    //     type: 'updateMeanIota',
-    //     newIota: parseFloat(event.target.value)
-    // }
-    // dispatch(update)
-    return
-}
+// export const handleMeanIotaChg = (dispatch: NavigatorDispatch, event: SelectChangeEvent<string>) => {
+//     // const update: NavigatorStateAction = {
+//     //     type: 'updateMeanIota',
+//     //     newIota: parseFloat(event.target.value)
+//     // }
+//     // dispatch(update)
+//     return
+// }
 
 export const handleDependentVariableChg = (dispatch: NavigatorDispatch, event: SelectChangeEvent) => {
     const update: NavigatorStateAction = {
@@ -34,14 +35,15 @@ export const handleDependentVariableChg = (dispatch: NavigatorDispatch, event: S
 export const handleIndependentVariableChg = (dispatch: NavigatorDispatch, event: SelectChangeEvent) => {
     const update: NavigatorStateAction = {
         type: 'updateIndependentVariable',
-        newValue: event.target.value as unknown as IndependentVariableOpt
+        newValue: event.target.value as unknown as IndependentVariables
     }
     dispatch(update)
 }
 
-export const handleCheckboxChange = (dispatch: NavigatorDispatch, type: 'updateNfp' | 'updateNcPerHp', index: number, targetState: boolean) => {
+export const handleCheckboxChangeBase = (dispatch: NavigatorDispatch, field: ToggleableVariables, index: number, targetState: boolean) => {
     const update: NavigatorStateAction = {
-        type: type,
+        type: "updateCheckField",
+        field: field,
         index: index,
         targetState
     }
@@ -58,14 +60,8 @@ export const handleUpdateMarkedRecords = (dispatch: NavigatorDispatch, model: Gr
 }
 
 const useFilterCallbacks = (dispatch: Dispatch<NavigatorStateAction>) => {
-    const handleCoilLengthPerHpChange = useCallback((_: Event, newValue: number | number[]) => {
-        handleCoilLengthChange(dispatch, 'updateCoilLengthPerHp', newValue)
-    }, [dispatch])
-    const handleTotalCoilLengthChange = useCallback((_: Event, newValue: number | number[]) => {
-        handleCoilLengthChange(dispatch, 'updateTotalCoilLength', newValue)
-    }, [dispatch])
-    const handleMeanIotaChange = useCallback((event: SelectChangeEvent<string>) => {
-        handleMeanIotaChg(dispatch, event)
+    const handleRangeChange = useCallback((_: Event, field: RangeVariables, newValue: number | number[]) => {
+        _handleRangeChange(dispatch, field, newValue)
     }, [dispatch])
     const handleDependentVariableChange = useCallback((event: SelectChangeEvent) => {
         handleDependentVariableChg(dispatch, event)
@@ -73,11 +69,8 @@ const useFilterCallbacks = (dispatch: Dispatch<NavigatorStateAction>) => {
     const handleIndependentVariableChange = useCallback((event: SelectChangeEvent) => {
         handleIndependentVariableChg(dispatch, event)
     }, [dispatch])
-    const handleNcPerHpCheckboxChange = useCallback((index: number, targetState: boolean) => {
-        handleCheckboxChange(dispatch, 'updateNcPerHp', index, targetState)
-    }, [dispatch])
-    const handleNfpCheckboxChange = useCallback((index: number, targetState: boolean) => {
-        handleCheckboxChange(dispatch, 'updateNfp', index, targetState)
+    const handleCheckboxChange = useCallback((field: ToggleableVariables, index: number, targetState: boolean) => {
+        handleCheckboxChangeBase(dispatch, field, index, targetState)
     }, [dispatch])
     const handleUpdateMarks = useCallback((model: GridRowSelectionModel) => {
         handleUpdateMarkedRecords(dispatch, model)
@@ -85,17 +78,13 @@ const useFilterCallbacks = (dispatch: Dispatch<NavigatorStateAction>) => {
 
     const callbacks = useMemo(() => {
         return {
-            handleCoilLengthPerHpChange,
-            handleTotalCoilLengthChange,
-            handleMeanIotaChange,
+            handleRangeChange,
+            handleCheckboxChange,
             handleDependentVariableChange,
             handleIndependentVariableChange,
-            handleNcPerHpCheckboxChange,
-            handleNfpCheckboxChange,
             handleUpdateMarks,
         }
-    }, [handleCoilLengthPerHpChange, handleDependentVariableChange, handleIndependentVariableChange, handleMeanIotaChange,
-        handleNcPerHpCheckboxChange, handleNfpCheckboxChange, handleTotalCoilLengthChange, handleUpdateMarks])
+    }, [handleCheckboxChange, handleDependentVariableChange, handleIndependentVariableChange, handleRangeChange, handleUpdateMarks])
 
     return callbacks
 }

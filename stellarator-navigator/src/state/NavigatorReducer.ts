@@ -1,4 +1,4 @@
-import { BooleanFields, DependentVariables, Fields, IndependentVariableOpt } from "@snTypes/DataDictionary"
+import { DependentVariables, Fields, IndependentVariables, RangeVariables, ToggleableVariables } from "@snTypes/DataDictionary"
 import { FilterSettings } from "@snTypes/Types"
 
 export type NavigatorStateAction = {
@@ -7,24 +7,13 @@ export type NavigatorStateAction = {
 } | {
     type: 'updateTotalCoilLength',
     coilLength: number[]
-// } | {
-//     type: 'updateMeanIota',
-//     newIota: number,
-// TODO: UNIFY THE BOOLEAN UPDATES
 } | {
-    type: 'updateNcPerHp',
-    index: number,
-    targetState: boolean
+    type: 'updateRange',
+    field: RangeVariables,
+    newRange: number[]
 } | {
-    type: 'updateNfp',
-    index: number,
-    targetState: boolean
-} | {
-    type: 'updateMeanIota',
-    index: number,
-    targetState: boolean
-} | {
-    type: 'updateNSurfaces',
+    type: 'updateCheckField',
+    field: ToggleableVariables,
     index: number,
     targetState: boolean
 } | {
@@ -32,7 +21,7 @@ export type NavigatorStateAction = {
     newValue: DependentVariables
 } | {
     type: 'updateIndependentVariable',
-    newValue: IndependentVariableOpt
+    newValue: IndependentVariables
 } | {
     type: 'updateMarkedRecords',
     newSelections: Set<number>
@@ -51,17 +40,11 @@ const NavigatorReducer = (s: FilterSettings, a: NavigatorStateAction): FilterSet
         case "updateTotalCoilLength": {
             return { ...s, totalCoilLength: [Math.min(...a.coilLength), Math.max(...a.coilLength)] }
         }
-        case "updateMeanIota": {
-            return updateBooleanList('meanIota', a.index, a.targetState, s)
+        case "updateRange": {
+            return updateRange(a.field, a.newRange, s)
         }
-        case "updateNcPerHp": {
-            return updateBooleanList('ncPerHp', a.index, a.targetState, s)
-        }
-        case "updateNfp": {
-            return updateBooleanList('nfp', a.index, a.targetState, s)
-        }
-        case "updateNSurfaces": {
-            return updateBooleanList('nSurfaces', a.index, a.targetState, s)
+        case "updateCheckField": {
+            return updateBooleanList(a.field, a.index, a.targetState, s)
         }
         case "updateDependentVariable": {
             return { ...s, dependentVariable: a.newValue }
@@ -78,7 +61,7 @@ const NavigatorReducer = (s: FilterSettings, a: NavigatorStateAction): FilterSet
     }
 }
 
-const updateBooleanList = (key: BooleanFields, index: number, newState: boolean, settings: FilterSettings): FilterSettings => {
+const updateBooleanList = (key: ToggleableVariables, index: number, newState: boolean, settings: FilterSettings): FilterSettings => {
     const rightLength = (Fields[key].values || []).length
     if (!(key in settings)) {
         throw Error(`Initialization error for boolean filter for ${key}.`)
@@ -86,14 +69,32 @@ const updateBooleanList = (key: BooleanFields, index: number, newState: boolean,
     const current = (settings[key] ?? [])
 
     const reset = current.length !== rightLength    // handles initialization
-    const newSelections = reset ? new Array(rightLength).fill(false) : current
-
-    newSelections[index] = newState
+    const newSelections = reset ? new Array(rightLength).fill(false)
+                                : index === -1
+                                    ? new Array(rightLength).fill(newState)
+                                    : current
+    if (index >= 0) {
+        newSelections[index] = newState
+    }
 
     const result = { ...settings }
     result[key] = newSelections
     
     return result
+}
+
+const updateRange = (key: RangeVariables, newRange: number[], settings: FilterSettings) => {
+    const existingRange = settings[key]
+    if (existingRange === undefined || existingRange.length !== 2) {
+        throw Error(`Error attempting to update non-extant/misconfigured range ${key} (currently ${existingRange})`)
+    }
+    if (newRange[0] === existingRange[0] && newRange[1] === existingRange[1]) {
+        // no change, return reference equality. Shouldn't happen
+        return settings
+    }
+    const newSettings = { ...settings}
+    newSettings[key] = [Math.min(...newRange), Math.max(...newRange)]
+    return newSettings
 }
 
 export default NavigatorReducer

@@ -1,64 +1,63 @@
-import { DependentVariableOpt, Fields, IndependentVariableOpt } from "@snTypes/DataDictionary"
-import { BoundedPlotDimensions } from "@snTypes/Types"
+import { DependentVariables, Fields, IndependentVariables, RangeVariables, defaultDependentVariableValue, defaultIndependentVariableValue, getEnumVals } from "@snTypes/DataDictionary"
+import { BoundedPlotDimensions, FilterSettings } from "@snTypes/Types"
 import { ScaleLinear, scaleLinear } from "d3"
 import { useMemo } from "react"
 import SvgXAxis from "./SvgXAxis"
 import SvgYAxis from "./SvgYAxis"
 
 
-
-export const useXScale = (dataDomain: number[], width: number) => {
-    const xScale = useMemo(() => {
+const useScale = (dataRange: number[], physicalRange: number) => {
+    const scale = useMemo(() => {
         return scaleLinear()
-            .domain((dataDomain ?? [0, 0]))
-            .range([0, width])
-    }, [dataDomain, width])
-    return xScale
-}
-
-
-export const useYScale = (dataRange: number[], height: number) => {
-    const yScale = useMemo(() => {
-        const scale = scaleLinear()
             .domain(dataRange)
-            .range([0, height])
-        return scale
-    }, [dataRange, height])
-    return yScale
+            .range([0, physicalRange])
+    }, [dataRange, physicalRange])
+    return scale
 }
 
 
 type useScalesProps = {
-    dependentVar: DependentVariableOpt
-    independentVar: IndependentVariableOpt
+    filters: FilterSettings
     dimsIn: BoundedPlotDimensions
 }
 
 export const useScales = (props: useScalesProps) => {
-    const { dependentVar, independentVar, dimsIn } = props
+    const { filters, dimsIn } = props
+    const independentVar = filters?.independentVariable ?? defaultIndependentVariableValue
+    const dependentVar = filters?.dependentVariable ?? defaultDependentVariableValue
+    const rangeVals = getEnumVals(RangeVariables)
 
-    // TODO: Configure
-    // TODO: AGAIN RESTRICT TO FILTERED VALUES
+    const { low: iLow, high: iHigh } = getExtrema(filters, independentVar, rangeVals.includes(independentVar))
+    const { low: dLow, high: dHigh } = getExtrema(filters, dependentVar, rangeVals.includes(dependentVar))
+
     const dataDomain = useMemo(() => {
-        const baseRange = Fields[independentVar].range
-        return [Math.min(0, baseRange[0]), baseRange[1]]
-    }, [independentVar])
+        return [iLow, iHigh]
+    }, [iHigh, iLow])
     const dataRange = useMemo(() => {
-        const baseRange = Fields[dependentVar].range
-        return [Math.min(0, baseRange[0]), baseRange[1]]
-    }, [dependentVar])
+        return [dLow, dHigh]
+    }, [dHigh, dLow])
 
-    const xScale = useXScale(dataDomain, dimsIn.boundedWidth)
-    const yScale = useYScale(dataRange, dimsIn.boundedHeight)
+    const xScale = useScale(dataDomain, dimsIn.boundedWidth)
+    const yScale = useScale(dataRange, dimsIn.boundedHeight)
 
     return [xScale, yScale]
 }
 
+
+const getExtrema = (filters: FilterSettings, field: IndependentVariables | DependentVariables, validRangeField: boolean) => {
+    const baseRange = Fields[field].range
+    const range = (validRangeField ? (filters[field] ?? []) : baseRange) as number[]
+    const low = baseRange[0] === range[0] ? Math.min(0, range[0]) : range[0]
+    const high = range[1]
+    return ({low, high})
+}
+
+
 type axisProps = {
     xScale: ScaleLinear<number, number, never>
     yScale: ScaleLinear<number, number, never>
-    dependentVar: DependentVariableOpt
-    independentVar: IndependentVariableOpt
+    dependentVar: DependentVariables
+    independentVar: IndependentVariables
     dims: BoundedPlotDimensions
 }
 

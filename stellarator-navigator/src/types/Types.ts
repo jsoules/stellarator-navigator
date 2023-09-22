@@ -1,5 +1,5 @@
 import { NavigatorStateAction } from "@snState/NavigatorReducer"
-import { CategoricalIndexSet, DependentVariables, IndependentVariableOpt } from "@snTypes/DataDictionary"
+import { CategoricalIndexedFields, DependentVariables, IndependentVariables } from "@snTypes/DataDictionary"
 import { Dispatch } from "react"
 
 export type FilterSettings = {
@@ -9,7 +9,6 @@ export type FilterSettings = {
     ncPerHp: boolean[],
     nfp: boolean[],
     nSurfaces: boolean[],
-    // NEW
     maxKappa: number[],
     maxMeanSquaredCurve: number[],
     minIntercoilDist: number[],
@@ -20,9 +19,8 @@ export type FilterSettings = {
     minCoil2SurfaceDist: number[],
     globalizationMethod?: number,
     nFourierCoil?: number,
-    // END NEW
     dependentVariable: DependentVariables,
-    independentVariable: IndependentVariableOpt,
+    independentVariable: IndependentVariables,
     markedRecords: Set<number>
 }
 
@@ -59,7 +57,6 @@ export type StellaratorRecord = {
     // constraint_success: boolean, // always true; confirm this in preprocessing.
 }
 export type RecordDict = { [key: number]: StellaratorRecord }
-export const GlobalizationMethodNames = ["naive", "TuRBO"]
 
 export type NavigatorDatabase = {
     list: StellaratorRecord[]
@@ -68,6 +65,9 @@ export type NavigatorDatabase = {
     // iotasIndex: {[key: number]: Set<number>}
     categoricalIndexes: CategoricalIndexSet
 }
+
+export type CategoricalIndexSet = {[key in CategoricalIndexedFields]: NumericIndex}
+export type NumericIndex = {[key: number]: Set<number>}
 
 export type NavigatorDispatch = Dispatch<NavigatorStateAction>
 
