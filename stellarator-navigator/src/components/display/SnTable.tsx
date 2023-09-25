@@ -1,6 +1,6 @@
 import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid'
-import { filterNc, filterNfp } from '@snState/filter'
-import { Fields, GlobalizationMethodNames } from '@snTypes/DataDictionary'
+import { filterTo } from '@snState/filter'
+import { Fields, GlobalizationMethodNames, KnownFields, ToggleableVariables } from '@snTypes/DataDictionary'
 import { StellaratorRecord } from '@snTypes/Types'
 import { FunctionComponent } from 'react'
 
@@ -14,11 +14,11 @@ type SnTableProps = {
 const variableColumnsDefaultWidth = 110
 
 const fieldnames = Object.keys(Fields)
-const fixedWidthFields = fieldnames.filter(fn => Fields[fn].tableColumnWidth !== undefined)
-const varWidthFields = fieldnames.filter(fn => Fields[fn].tableColumnWidth === undefined)
+const fixedWidthFields = fieldnames.filter(fn => Fields[fn as KnownFields].tableColumnWidth !== undefined)
+const varWidthFields = fieldnames.filter(fn => Fields[fn as KnownFields].tableColumnWidth === undefined)
 
 const fixedWidthCols: GridColDef[] = fixedWidthFields.map(f => {
-    const fieldDef = Fields[f]
+    const fieldDef = Fields[f as KnownFields]
     const unitSuffix = fieldDef.unit === undefined ? '' : ` (${fieldDef.unit})`
     return {
         field: f,
@@ -30,7 +30,7 @@ const fixedWidthCols: GridColDef[] = fixedWidthFields.map(f => {
 })
 
 const varWidthCols: GridColDef[] = varWidthFields.map(f => {
-    const fieldDef = Fields[f]
+    const fieldDef = Fields[f as KnownFields]
     const unitSuffix = fieldDef.unit === undefined ? '' : ` (${fieldDef.unit})`
     return {
         field: f,
@@ -46,7 +46,12 @@ const varWidthCols: GridColDef[] = varWidthFields.map(f => {
 
 const SnTable: FunctionComponent<SnTableProps> = (props: SnTableProps) => {
     const { records, selectionHandler, activeNfp, activeNc } = props
-    const filteredRecords = filterNc(filterNfp(records, activeNfp), activeNc)
+    
+    const filters: {[key in ToggleableVariables]?: number | undefined} = {}
+    filters[ToggleableVariables.NFP] = activeNfp
+    filters[ToggleableVariables.NC_PER_HP] = activeNc
+    const filteredRecords = filterTo(records, filters)
+
     const columns = [...fixedWidthCols, ...varWidthCols]
     const rows = filteredRecords.map(r => {
         return {

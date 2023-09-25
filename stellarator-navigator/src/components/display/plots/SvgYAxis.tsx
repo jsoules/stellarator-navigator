@@ -17,6 +17,7 @@ const computeTicksToLabel = (allTicks: number[]) => {
     // We solve this not by a number-based rule, but by just trying to get a good split
     // among the available number of ticks for each OOM. Empirically this seems to look
     // fine if we label ~ one in five ticks per OOM.
+    // Note this returns the *indices* of the labels to display.
 
     const oom = (x: number) => Math.floor(Math.log10(x))
     const oomTransitions = allTicks

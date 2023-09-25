@@ -1,6 +1,7 @@
-import { ContinuousFields, Fields, SelectionFields, ToggleableVariables, getValuesFromBoolArray } from "@snTypes/DataDictionary"
+import { Fields, RangeVariables, ToggleableVariables, TripartiteVariables, getValuesFromBoolArray } from "@snTypes/DataDictionary"
 import { CategoricalIndexSet, FilterSettings, NavigatorDatabase, StellaratorRecord } from "@snTypes/Types"
 import database from "./database"
+
 
 export const projectRecords = (selection: Set<number>, database: NavigatorDatabase) => {
     const projection: StellaratorRecord[] = []
@@ -8,11 +9,13 @@ export const projectRecords = (selection: Set<number>, database: NavigatorDataba
     return projection
 }
 
+
 //  Set intersection should be in the actual language standard Any Day Now
 const _intersect = (shortest: Set<number>, ...rest: Set<number>[]): Set<number> => {
     const result = rest.reduce((currentResult, newSet) => { return new Set([...currentResult].filter(id => newSet.has(id))) }, shortest)
     return result
 }
+
 
 export const intersect = (...sets: Set<number>[]): Set<number> => {
     const minLength = Math.min(...sets.map(s => s.size))
@@ -22,10 +25,12 @@ export const intersect = (...sets: Set<number>[]): Set<number> => {
     return _intersect(shortest, ...sets.filter((_, i) => i !== shortestSetIdx))
 }
 
+
 const applyFilterToState = (filters: FilterSettings, updateSelection: React.Dispatch<React.SetStateAction<Set<number>>>) => {
     const set = applyFiltersToSet(filters, database.allIdSet)
     updateSelection(set)
 }
+
 
 // TODO: DEBOUNCE?
 export const applyFiltersToSet = (filters: FilterSettings, set?: Set<number>): Set<number> => {
@@ -36,7 +41,7 @@ export const applyFiltersToSet = (filters: FilterSettings, set?: Set<number>): S
     })
     const selectionSets = selectionFilters.map(f => {
         const { key, callback } = f
-        const val = filters[key]
+        const val = filters[key as TripartiteVariables]
         return callback(val)
     })
     const allSets = [set, ...boolSets, ...selectionSets].filter(s => s !== undefined) as Set<number>[]
@@ -52,7 +57,6 @@ export const applyFiltersToSet = (filters: FilterSettings, set?: Set<number>): S
     return finalSet
 }
 
-export type checkboxFilterType = 'nfp' | 'ncPerHp' | 'meanIota' | 'nSurfaces'
 
 // Filter setup
 const makeBooleanFilter = (key: ToggleableVariables, db: NavigatorDatabase) => {
@@ -72,7 +76,7 @@ const booleanFields: ToggleableVariables[] = [ToggleableVariables.MEAN_IOTA, Tog
 export const booleanFilters = booleanFields.map(f => makeBooleanFilter(f, database))
 
 
-const makeRangeFilter = (key: ContinuousFields) => {
+const makeRangeFilter = (key: RangeVariables) => {
     const callback = (range: number[]) => {
         if (range.length === 0) {
             return () => true
@@ -87,58 +91,31 @@ const makeRangeFilter = (key: ContinuousFields) => {
     }
     return {key, callback}
 }
-const continuousFields: ContinuousFields[] = ['maxKappa', 'maxMeanSquaredCurve', 'minIntercoilDist', 'qaError', 'aspectRatio',
-                                            'minorRadius', 'volume', 'minCoil2SurfaceDist', 'coilLengthPerHp', 'totalCoilLength']
-export const rangeFilters = continuousFields.map(f => makeRangeFilter(f))
+export const rangeFilters = Object.values(RangeVariables).filter(rv => isNaN(Number(rv))).map(f => makeRangeFilter(f as RangeVariables))
 
 
-const makeSelectionFilter = (key: SelectionFields, db: NavigatorDatabase) => {
+const makeSelectionFilter = (key: TripartiteVariables, db: NavigatorDatabase) => {
     const callback = (value?: number) => {
         if (value === undefined) return undefined
         const vals = Fields[key].range
-        if (!(value in vals)) {
-            throw Error(`Attempt to filter ${key} with unknown value ${value}`)
+        if (!(vals.includes(value))) {
+            throw Error(`Attempt to filter ${key} with unknown value ${value}, known range ${Fields[key].range}`)
         }
         return db.categoricalIndexes[key][value]
     }
     return {key, callback}
 }
-const selectionFields: SelectionFields[] = ['globalizationMethod', 'nFourierCoil']
-export const selectionFilters = selectionFields.map(f => makeSelectionFilter(f, database))
+export const selectionFilters = Object.values(TripartiteVariables).filter(v => isNaN(Number(v))).map(f => makeSelectionFilter(f as TripartiteVariables, database))
 
 
-
-// TODO: DON'T USE THESE, refer to the new lookup function in the data dictionary
-// Todo: combine these to one call? Eh...
-export const filterNfp = (records: StellaratorRecord[], nfp?: number): StellaratorRecord[] => {
-    return filterCheckboxes(records, 'nfp', nfp)
-}
-
-export const filterNc = (records: StellaratorRecord[], nc?: number): StellaratorRecord[] => {
-    return filterCheckboxes(records, 'ncPerHp', nc)
-}
-
-
-const filterCheckboxes = (records: StellaratorRecord[], type: checkboxFilterType, v?: number, ): StellaratorRecord[] => {
-    if (v === undefined) return records
-    // switch(type) {
-    //     case 'nfp': {
-    //         return records.filter(d => d.nfp === v)
-    //     }
-    //     case 'ncPerHp': {
-    //         return records.filter(d => d.ncPerHp === v)
-    //     }
-    //     case 'meanIota': {
-    //         return records.filter(d => d.meanIota === v)
-    //     }
-    //     case 'nSurfaces': {
-    //         return records.filter(d => d.nSurfaces === v)
-    //     }
-    //     default: {
-    //         return []
-    //     }
-    // }
-    return records.filter(d => d[type] === v)
+export const filterTo = (records: StellaratorRecord[], filters: { [key in ToggleableVariables]?: number }) => {
+    let result = records
+    Object.keys(filters).forEach(k => {
+        if (filters[k as ToggleableVariables] !== undefined) {
+            result = result.filter(r => r[k as ToggleableVariables] === filters[k as ToggleableVariables])
+        }
+    })
+    return result
 }
 
 

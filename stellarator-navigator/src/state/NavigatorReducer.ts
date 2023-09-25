@@ -1,13 +1,7 @@
-import { DependentVariables, Fields, IndependentVariables, RangeVariables, ToggleableVariables } from "@snTypes/DataDictionary"
+import { DependentVariables, Fields, IndependentVariables, RangeVariables, ToggleableVariables, TripartiteVariables } from "@snTypes/DataDictionary"
 import { FilterSettings } from "@snTypes/Types"
 
 export type NavigatorStateAction = {
-    type: 'updateCoilLengthPerHp',
-    coilLength: number[]
-} | {
-    type: 'updateTotalCoilLength',
-    coilLength: number[]
-} | {
     type: 'updateRange',
     field: RangeVariables,
     newRange: number[]
@@ -16,6 +10,10 @@ export type NavigatorStateAction = {
     field: ToggleableVariables,
     index: number,
     targetState: boolean
+} | {
+    type: 'updateTripartiteField',
+    field: TripartiteVariables,
+    newValue: number | undefined
 } | {
     type: 'updateDependentVariable',
     newValue: DependentVariables
@@ -34,17 +32,14 @@ export type NavigatorStateAction = {
 
 const NavigatorReducer = (s: FilterSettings, a: NavigatorStateAction): FilterSettings => {
     switch (a.type) {
-        case "updateCoilLengthPerHp": {
-            return { ...s, coilLengthPerHp: [Math.min(...a.coilLength), Math.max(...a.coilLength)] }
-        }
-        case "updateTotalCoilLength": {
-            return { ...s, totalCoilLength: [Math.min(...a.coilLength), Math.max(...a.coilLength)] }
-        }
         case "updateRange": {
             return updateRange(a.field, a.newRange, s)
         }
         case "updateCheckField": {
             return updateBooleanList(a.field, a.index, a.targetState, s)
+        }
+        case "updateTripartiteField": {
+            return updateTripart(a.field, s, a.newValue)
         }
         case "updateDependentVariable": {
             return { ...s, dependentVariable: a.newValue }
@@ -94,6 +89,14 @@ const updateRange = (key: RangeVariables, newRange: number[], settings: FilterSe
     }
     const newSettings = { ...settings}
     newSettings[key] = [Math.min(...newRange), Math.max(...newRange)]
+    return newSettings
+}
+
+const updateTripart = (key: TripartiteVariables, settings: FilterSettings, newValue: number | undefined) => {
+    const existingValue = settings[key]
+    if (existingValue === newValue) return settings
+    const newSettings = { ...settings }
+    newSettings[key] = newValue
     return newSettings
 }
 

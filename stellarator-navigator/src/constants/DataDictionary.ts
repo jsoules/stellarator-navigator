@@ -4,57 +4,83 @@ export const getEnumVals = (x: object) => {
     return Object.values(x).filter(v => isNaN(Number(v)))
 }
 
-export enum DependentVariables {
-    COIL_LENGTH_PER_HP = 'coilLengthPerHp',
+export enum KnownFields {
+    ID = "id",
+    COIL_LENGTH_PER_HP = "coilLengthPerHp",
     TOTAL_COIL_LENGTH = 'totalCoilLength',
-    MAX_KAPPA = 'maxKappa',
-    MAX_MEAN_SQUARED_CURVE = 'maxMeanSquaredCurve',
-    MIN_INTERCOIL_DIST = 'minIntercoilDist',
-    QA_ERROR = 'qaError',
-    ASPECT_RATIO = 'aspectRatio',
-    MINOR_RADIUS = 'minorRadius',
-    VOLUME = 'volume',
-    MIN_COIL_TO_SURFACE_DIST = 'minCoil2SurfaceDist'
-}
-
-// NOTE: I think putting categorical variables on the x-axis isn't going to be terribly informative, but we'll try it
-export enum IndependentVariables {
-    TOTAL_COIL_LENGTH = 'totalCoilLength',
-    COIL_LENGTH_PER_HP = 'coilLengthPerHp',
-    MIN_INTERCOIL_DIST = 'minIntercoilDist',
-    MIN_COIL_TO_SURFACE_DIST = 'minCoil2SurfaceDist',
-    QA_ERROR = 'qaError',
-    MAX_KAPPA = 'maxKappa',
-    MAX_MEAN_SQUARED_CURVE = 'maxMeanSquaredCurve',
-    ASPECT_RATIO = 'aspectRatio',
-    MINOR_RADIUS = 'minorRadius',
-    VOLUME = 'volume',
     MEAN_IOTA = 'meanIota',
     NC_PER_HP = 'ncPerHp',
     NFP = 'nfp',
     GLOBALIZATION_METHOD = 'globalizationMethod',
     N_FOURIER_COIL = 'nFourierCoil',
     NSURFACES = 'nSurfaces',
-}
-
-export enum ToggleableVariables {
-    NC_PER_HP = 'ncPerHp',
-    NFP = 'nfp',
-    MEAN_IOTA = 'meanIota',
-    N_SURFACES = 'nSurfaces'
-}
-
-export enum RangeVariables {
-    COIL_LENGTH_PER_HP = 'coilLengthPerHp',
-    TOTAL_COIL_LENGTH = 'totalCoilLength',
     MAX_KAPPA = 'maxKappa',
     MAX_MEAN_SQUARED_CURVE = 'maxMeanSquaredCurve',
     MIN_INTERCOIL_DIST = 'minIntercoilDist',
     QA_ERROR = 'qaError',
+    GRADIENT = 'gradient',
     ASPECT_RATIO = 'aspectRatio',
     MINOR_RADIUS = 'minorRadius',
     VOLUME = 'volume',
     MIN_COIL_TO_SURFACE_DIST = 'minCoil2SurfaceDist',
+}
+
+export enum DependentVariables {
+    COIL_LENGTH_PER_HP = KnownFields.COIL_LENGTH_PER_HP,
+    TOTAL_COIL_LENGTH = KnownFields.TOTAL_COIL_LENGTH,
+    MAX_KAPPA = KnownFields.MAX_KAPPA,
+    MAX_MEAN_SQUARED_CURVE = KnownFields.MAX_MEAN_SQUARED_CURVE,
+    MIN_INTERCOIL_DIST = KnownFields.MIN_INTERCOIL_DIST,
+    QA_ERROR = KnownFields.QA_ERROR,
+    ASPECT_RATIO = KnownFields.ASPECT_RATIO,
+    MINOR_RADIUS = KnownFields.MINOR_RADIUS,
+    VOLUME = KnownFields.VOLUME,
+    MIN_COIL_TO_SURFACE_DIST = KnownFields.MIN_COIL_TO_SURFACE_DIST
+}
+
+// NOTE: I think putting categorical variables on the x-axis isn't going to be terribly informative, but we'll try it
+export enum IndependentVariables {
+    TOTAL_COIL_LENGTH = KnownFields.TOTAL_COIL_LENGTH,
+    COIL_LENGTH_PER_HP = KnownFields.COIL_LENGTH_PER_HP,
+    MIN_INTERCOIL_DIST = KnownFields.MIN_INTERCOIL_DIST,
+    MIN_COIL_TO_SURFACE_DIST = KnownFields.MIN_COIL_TO_SURFACE_DIST,
+    QA_ERROR = KnownFields.QA_ERROR,
+    MAX_KAPPA = KnownFields.MAX_KAPPA,
+    MAX_MEAN_SQUARED_CURVE = KnownFields.MAX_MEAN_SQUARED_CURVE,
+    ASPECT_RATIO = KnownFields.ASPECT_RATIO,
+    MINOR_RADIUS = KnownFields.MINOR_RADIUS,
+    VOLUME = KnownFields.VOLUME,
+    MEAN_IOTA = KnownFields.MEAN_IOTA,
+    NC_PER_HP = KnownFields.NC_PER_HP,
+    NFP = KnownFields.NFP,
+    GLOBALIZATION_METHOD = KnownFields.GLOBALIZATION_METHOD,
+    N_FOURIER_COIL = KnownFields.N_FOURIER_COIL,
+    NSURFACES = KnownFields.NSURFACES,
+}
+
+export enum ToggleableVariables {
+    NC_PER_HP = KnownFields.NC_PER_HP,
+    NFP = KnownFields.NFP,
+    MEAN_IOTA = KnownFields.MEAN_IOTA,
+    N_SURFACES = KnownFields.NSURFACES
+}
+
+export enum RangeVariables {
+    COIL_LENGTH_PER_HP = KnownFields.COIL_LENGTH_PER_HP,
+    TOTAL_COIL_LENGTH = KnownFields.TOTAL_COIL_LENGTH,
+    MAX_KAPPA = KnownFields.MAX_KAPPA,
+    MAX_MEAN_SQUARED_CURVE = KnownFields.MAX_MEAN_SQUARED_CURVE,
+    MIN_INTERCOIL_DIST = KnownFields.MIN_INTERCOIL_DIST,
+    QA_ERROR = KnownFields.QA_ERROR,
+    ASPECT_RATIO = KnownFields.ASPECT_RATIO,
+    MINOR_RADIUS = KnownFields.MINOR_RADIUS,
+    VOLUME = KnownFields.VOLUME,
+    MIN_COIL_TO_SURFACE_DIST = KnownFields.MIN_COIL_TO_SURFACE_DIST,
+}
+
+export enum TripartiteVariables {
+    GLOBALIZATION_METHOD = KnownFields.GLOBALIZATION_METHOD,
+    N_FOURIER_COIL = KnownFields.N_FOURIER_COIL,
 }
 
 export const defaultDependentVariableValue = DependentVariables.QA_ERROR
@@ -107,13 +133,13 @@ export type FieldDescription = {
 }
 
 type FieldRecords = {
-    [name: string]: FieldDescription
+    [name in KnownFields]: FieldDescription
 }
 
 // TODO: Something about init-capping these in some contexts
 export const getLabel = (props: {name: string, labelType: 'short' | 'long' | 'plot'}) => {
     const { name, labelType } = props
-    const rec = Fields[name]
+    const rec = Fields[name as KnownFields]
     if (rec === undefined) {
         console.warn(`Attempt to request description for unknown field ${name}.`)
         return 'ERROR OCCURRED'
@@ -127,14 +153,14 @@ export const getLabel = (props: {name: string, labelType: 'short' | 'long' | 'pl
 export const getValuesFromBoolArray = (field: string, choices: boolean[]) => {
     if (choices.length === 0) return []
 
-    const vals = Fields[field].values ?? []
+    const vals = Fields[field as KnownFields].values ?? []
     if (vals.length !== choices.length ) {
         throw Error(`Boolean-to-values for Key ${field}: choices length ${choices.length} but values length ${vals.length}`)
     }
     return vals.filter((_, idx) => choices[idx])
 }
 
-// TODO: add sorting order for table
+// TODO: add sorting order field for table
 
 const METER_UNIT = "M"
 export const Fields: FieldRecords = {
@@ -348,10 +374,6 @@ export const Fields: FieldRecords = {
 }
 
 export const GlobalizationMethodNames = ["naive", "TuRBO"]
-
-export type ContinuousFields = 'maxKappa' | 'maxMeanSquaredCurve' | 'minIntercoilDist' | 'qaError' | 'aspectRatio' |
-                            'minorRadius' | 'volume' | 'minCoil2SurfaceDist' | 'coilLengthPerHp' | 'totalCoilLength'
-export type SelectionFields = 'globalizationMethod' | 'nFourierCoil'
 
 export enum CategoricalIndexedFields {
     MEAN_IOTA = 'meanIota',

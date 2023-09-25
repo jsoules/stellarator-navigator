@@ -1,15 +1,17 @@
 import { SelectChangeEvent } from '@mui/material'
-import { Fields, RangeVariables, ToggleableVariables } from '@snTypes/DataDictionary'
+import { Fields, RangeVariables, ToggleableVariables, TripartiteVariables } from '@snTypes/DataDictionary'
 import { FilterSettings } from '@snTypes/Types'
 import { FunctionComponent } from 'react'
 import CheckboxTemplate from './Checkboxes'
 import DependentVariableSelector from './DependentVariableSelector'
 import IndependentVariableSelector from './IndependentVariableSelector'
 import RangeSlider from './RangeSlider'
+import TripartDropdownSelector from './TripartDropdownSelector'
 
 
 type Callbacks = {
     handleRangeChange: (event: Event, field: RangeVariables, newValue: number | number[]) => void
+    handleTripartiteDropdownChange: (field: TripartiteVariables, event: SelectChangeEvent<number>) => void
     handleDependentVariableChange: (event: SelectChangeEvent) => void
     handleIndependentVariableChange: (event: SelectChangeEvent) => void
     handleCheckboxChange: (type: ToggleableVariables, index: number, targetState: boolean) => void
@@ -28,19 +30,15 @@ const SelectionControlPanel: FunctionComponent<Props> = (props: Props) => {
     const sliders = Object.values(RangeVariables).filter(rv => isNaN(Number(rv)))
         .map(rv => (<RangeSlider key={rv} field={rv} value={filterSettings[rv]} onChange={callbacks.handleRangeChange} />))
 
+    const tripartDropdowns = Object.values(TripartiteVariables).filter(rv => isNaN(Number(rv)))
+        .map(rv => (<TripartDropdownSelector key={rv} field={rv} value={filterSettings[rv] ?? -1} onChange={callbacks.handleTripartiteDropdownChange} />))
+
     return (
         <div style={{margin: 20, paddingLeft: 20, paddingRight: 20, paddingTop: 100}}>
+            <IndependentVariableSelector value={independentVariable} onChange={callbacks.handleIndependentVariableChange} />
+            <DependentVariableSelector value={dependentVariable} onChange={callbacks.handleDependentVariableChange} />
+            <hr style={{width: "50%" }} />
             {sliders}
-            {/* <RangeSlider field={RangeVariables.COIL_LENGTH_PER_HP} value={filterSettings[RangeVariables.COIL_LENGTH_PER_HP]} onChange={callbacks.handleRangeChange} />
-            <RangeSlider field={RangeVariables.TOTAL_COIL_LENGTH} value={filterSettings[RangeVariables.TOTAL_COIL_LENGTH]} onChange={callbacks.handleRangeChange} />
-            <RangeSlider field={RangeVariables.TOTAL_COIL_LENGTH} value={filterSettings[RangeVariables.TOTAL_COIL_LENGTH]} onChange={callbacks.handleRangeChange} />
-            <RangeSlider field={RangeVariables.TOTAL_COIL_LENGTH} value={filterSettings[RangeVariables.TOTAL_COIL_LENGTH]} onChange={callbacks.handleRangeChange} />
-            <RangeSlider field={RangeVariables.TOTAL_COIL_LENGTH} value={filterSettings[RangeVariables.TOTAL_COIL_LENGTH]} onChange={callbacks.handleRangeChange} />
-            <RangeSlider field={RangeVariables.TOTAL_COIL_LENGTH} value={filterSettings[RangeVariables.TOTAL_COIL_LENGTH]} onChange={callbacks.handleRangeChange} />
-            <RangeSlider field={RangeVariables.TOTAL_COIL_LENGTH} value={filterSettings[RangeVariables.TOTAL_COIL_LENGTH]} onChange={callbacks.handleRangeChange} />
-            <RangeSlider field={RangeVariables.TOTAL_COIL_LENGTH} value={filterSettings[RangeVariables.TOTAL_COIL_LENGTH]} onChange={callbacks.handleRangeChange} />
-            <RangeSlider field={RangeVariables.TOTAL_COIL_LENGTH} value={filterSettings[RangeVariables.TOTAL_COIL_LENGTH]} onChange={callbacks.handleRangeChange} />
-            <RangeSlider field={RangeVariables.TOTAL_COIL_LENGTH} value={filterSettings[RangeVariables.TOTAL_COIL_LENGTH]} onChange={callbacks.handleRangeChange} /> */}
             {/* TODO Unify the checkbox template thing by referencing values if it exists */}
             <CheckboxTemplate
                 type={ToggleableVariables.MEAN_IOTA}
@@ -51,9 +49,7 @@ const SelectionControlPanel: FunctionComponent<Props> = (props: Props) => {
             <CheckboxTemplate type={ToggleableVariables.NC_PER_HP} selections={ncPerHp} onChange={callbacks.handleCheckboxChange} />
             <CheckboxTemplate type={ToggleableVariables.NFP} selections={nfp} onChange={callbacks.handleCheckboxChange} />
             <CheckboxTemplate type={ToggleableVariables.N_SURFACES} selections={nSurfaces} onChange={callbacks.handleCheckboxChange} />
-            <hr />
-            <IndependentVariableSelector value={independentVariable} onChange={callbacks.handleIndependentVariableChange} />
-            <DependentVariableSelector value={dependentVariable} onChange={callbacks.handleDependentVariableChange} />
+            {tripartDropdowns}
         </div>
     )
 

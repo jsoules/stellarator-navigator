@@ -74,6 +74,24 @@
 
 [x] color-code based on nc/hp values, not seed values
 
+[x] UPDATED CONTROLS:
+
+    [x] Dropdown for globalization method (both, 0, 1)
+
+    [x] Dropdown for # fourier coils (both, 6, 16)
+
+    [x] Add a "de/select all" checkbox to the default checkbox template
+    
+    [x] Turn mean iota into checkboxes
+
+    [x] Checkboxes for n surfaces
+
+    [x] Sliders for max kappa, max msc, min icd, qa error, aspect ratio, minor radius, volume, min c2sd
+
+    [x] Unify sliders
+
+[x] Get rid of the "filterNc, filterNfp" stuff
+
 [ ] "show entire stellarator" checkbox --> AG will give the operation
 
 [ ] Revisit normalization for fields: should normalize across entire device, no?
@@ -98,23 +116,7 @@
 [ ] REDO THE DATABASE EXPORT WITH QA ROOTED
     [ ] THEN UPDATE THE LINE SETTING
 
-[ ] UPDATED CONTROLS:
-
-    [ ] Dropdown for globalization method (both, 0, 1)
-
-    [ ] Dropdown for # fourier coils (both, 6, 16)
-
-    [x] Add a "de/select all" checkbox to the default checkbox template
-    
-    [x] Turn mean iota into checkboxes
-
-    [x] Checkboxes for n surfaces
-
-    [x] Sliders for max kappa, max msc, min icd, qa error, aspect ratio, minor radius, volume, min c2sd
-
-    [x] Unify sliders
-
-[ ] Get rid of the "filterNc, filterNfp" stuff
+[ ] AVOID REFILTERING for different plots/table selections
 
 [ ] Toggle plot-splitting *** OOOH HARD?
 
@@ -123,16 +125,16 @@
 [ ] Improve filtering performance with large numbers of criteria!!
 
 [ ] Poincare thing:
-inside graphics/poincare is now the poincare plots (those scatter plots) in poincare{ID}_0.txt and poincare{ID}_1.txt
-the first file is the poincare plot at cylindrical angle=0 degrees and the second file is the poincare plot at cylindrical angle=pi/nfp/2
-first column is the ID of the dot (dots with the same ID should have the same colour)
-second and third columns are the (R, Z) positions of the dot
-next inside graphics/poincare are cross sections of surfaces in the same cylindrical angles angle=0 degrees and cylindrical angle=pi/nfp/2,
-with file names xs_{ID}_0.txt and xs_{ID}_1.txt.
-Columns 1 and 2 are the R and Z coordinates of the cross section for one surface.  Columns 2 and 3 are cross sections for two surfaces, etc...
-these cross sections should be plotted on top of the poincare plots, sort of like this:
-so the red lines are the sirface cross sections, superimposed on the poincare plot dots
-SEE SLACK MSG 9/21/23 15:47 ff
+    inside graphics/poincare is now the poincare plots (those scatter plots) in poincare{ID}_0.txt and poincare{ID}_1.txt
+    the first file is the poincare plot at cylindrical angle=0 degrees and the second file is the poincare plot at cylindrical angle=pi/nfp/2
+    first column is the ID of the dot (dots with the same ID should have the same colour)
+    second and third columns are the (R, Z) positions of the dot
+    next inside graphics/poincare are cross sections of surfaces in the same cylindrical angles angle=0 degrees and cylindrical angle=pi/nfp/2,
+    with file names xs_{ID}_0.txt and xs_{ID}_1.txt.
+    Columns 1 and 2 are the R and Z coordinates of the cross section for one surface.  Columns 2 and 3 are cross sections for two surfaces, etc...
+    these cross sections should be plotted on top of the poincare plots, sort of like this:
+    so the red lines are the sirface cross sections, superimposed on the poincare plot dots
+    SEE SLACK MSG 9/21/23 15:47 ff
 
 [ ] Another per-device plot: iota profile. it's in a database key, which contains a list of x-y vals. X is "normalized toroidal flux" (unitless)
     and y is rotational transform value also unitless. Horizontal line of "mean_iota" value for the device.

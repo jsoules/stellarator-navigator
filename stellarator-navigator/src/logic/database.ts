@@ -1,6 +1,5 @@
 import { CategoricalIndexedFields, Fields } from "@snTypes/DataDictionary"
 import { CategoricalIndexSet, NavigatorDatabase, NumericIndex, RecordDict, StellaratorRecord } from "@snTypes/Types"
-// import { meanIotaSentinelValue, meanIotaValidValues } from "@snTypes/ValidValues"
 import * as _rawData from "database.json"
 
 type RawData = {
@@ -10,7 +9,6 @@ type RawData = {
 }
 
 const rawData = _rawData as RawData
-
 
 // It's easier, and not even much less brittle, to just ignore the column names listed in the json file
 // and use the known values for the column names directly.

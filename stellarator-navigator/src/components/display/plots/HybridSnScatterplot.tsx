@@ -1,10 +1,10 @@
 import { Tol } from "@snDisplayComponents/Colormaps"
-import { filterNc, filterNfp } from "@snState/filter"
 import { StellaratorRecord } from "@snTypes/Types"
 import { ScaleLinear, ScaleLogarithmic, ScaleOrdinal, scaleOrdinal } from "d3"
 import { FunctionComponent } from "react"
 // import { onClickDot, onHoverDot, onHoverOff } from "./interactions"
-import { DependentVariables, IndependentVariables } from "@snTypes/DataDictionary"
+import { filterTo } from "@snState/filter"
+import { DependentVariables, IndependentVariables, ToggleableVariables } from "@snTypes/DataDictionary"
 import { onClickDot } from "./interactions"
 
 
@@ -63,7 +63,12 @@ const HybridSnScatterplot: FunctionComponent<ScatterplotProps> = (props: Scatter
     const color = scaleOrdinal()
         .domain(Array(_colors.length).fill(0).map((_, i) => `${i}`))
         .range(_colors) as ScaleOrdinal<string, string, never>
-    const filteredData = filterNc(filterNfp(data, nfpValue), ncPerHpValue)
+
+    const filters: {[key in ToggleableVariables]?: number | undefined} = {}
+    filters[ToggleableVariables.NFP] = nfpValue
+    filters[ToggleableVariables.NC_PER_HP] = ncPerHpValue
+    const filteredData = filterTo(data, filters)
+
     const dots = filteredData.map(rec => (
         <Dot key={`dot-${rec.id}`}
             rec={rec}
