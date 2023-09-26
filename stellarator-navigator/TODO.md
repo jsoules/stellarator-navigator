@@ -92,7 +92,7 @@
 
 [x] Get rid of the "filterNc, filterNfp" stuff
 
-[ ] "show entire stellarator" checkbox --> AG will give the operation
+[x] "show entire stellarator" checkbox --> AG will give the operation
 
 [ ] Revisit normalization for fields: should normalize across entire device, no?
 
@@ -116,9 +116,11 @@
 [ ] REDO THE DATABASE EXPORT WITH QA ROOTED
     [ ] THEN UPDATE THE LINE SETTING
 
-[ ] AVOID REFILTERING for different plots/table selections
-
 [ ] Toggle plot-splitting *** OOOH HARD?
+
+[ ] Expose ability for user to choose the color criterion
+
+[ ] AVOID REFILTERING for different plots/table selections
 
 [ ] Review range-change performance. Would drag-select be better from this perspective?
 
@@ -142,6 +144,11 @@
 [ ] Add new keys: elongation, shear (slope of best least-squares linear approx of iota_profile); maybe surface_type and message.
 
 [ ] Use database from permanent location of https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR/
+
+[ ] EXPLORE: When showing the full circuit, is performance improved by just copying the geometry directly rather than adding more objects?
+    (especially relevant for the surfaces)
+
+[ ] MORE PROOFING of the surface symmetries, ESPECIALLY for higher-period-count.
 
 
 QUERY OR DISTANT:

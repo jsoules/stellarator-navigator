@@ -21,7 +21,7 @@ const RangeSlider: FunctionComponent<Props> = (props: Props) => {
     const valueLabelFormat = fieldDesc.isLog ? (v: number) => `${(10 ** v).toExponential(3)}` : undefined
 
     const value = props.value ?? fieldDesc.range
-    const label = getLabel({name: field, labelType: 'long'})
+    const label = getLabel({name: field, labelType: 'full'})
 
     return (
         <Fragment>

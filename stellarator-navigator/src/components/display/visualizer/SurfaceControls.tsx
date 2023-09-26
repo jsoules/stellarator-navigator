@@ -1,25 +1,22 @@
 import { SelectChangeEvent } from "@mui/material"
 import { SupportedColorMap } from "@snComponents/display/Colormaps"
-import { SurfaceApiResponseObject } from "@snTypes/Types"
 import SurfaceCheckboxes from "@snVisualizer/SurfaceCheckboxes"
 import SurfaceColorMapSelector from "@snVisualizer/SurfaceColorMapSelector"
-import { Dispatch, FunctionComponent, SetStateAction, useCallback, useEffect } from "react"
+import { Dispatch, FunctionComponent, SetStateAction, useCallback } from "react"
+import ShowFullRingCheckbox from "./ShowFullRingCheckbox"
 
 type ModelProps = {
-    surfaces: SurfaceApiResponseObject
+    checksNeeded: boolean
     surfaceChecks: boolean[]
     setSurfaceChecks: Dispatch<SetStateAction<boolean[]>>
     colorMap: SupportedColorMap
     setColorMap: Dispatch<SetStateAction<SupportedColorMap>>
+    showFullRing: boolean
+    setShowFullRing: Dispatch<SetStateAction<boolean>>
 }
 
 const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
-    const { surfaces, surfaceChecks, setSurfaceChecks, colorMap, setColorMap } = props
-    const surfacesExist = (surfaces.surfacePoints ?? []).length > 0
-
-    useEffect(() => {
-        setSurfaceChecks(Array((surfaces.surfacePoints ?? []).length).fill(true))
-    }, [setSurfaceChecks, surfaces])
+    const { checksNeeded, surfaceChecks, setSurfaceChecks, colorMap, setColorMap, showFullRing, setShowFullRing } = props
 
     const handleCheckboxChange = useCallback((index: number, newState: boolean) => {
         if (index === -1) {
@@ -33,8 +30,8 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
 
     const handleColorMapChange = (evt: SelectChangeEvent<SupportedColorMap>) => setColorMap(evt.target.value as unknown as SupportedColorMap)
 
-    return surfacesExist
-        ? (
+    return checksNeeded
+        ? (<>
             <div style={{display: "flex"}}>
                 <div style={{flex: 1, padding: 20 }}>
                     <SurfaceCheckboxes selections={surfaceChecks} onChange={handleCheckboxChange} />
@@ -43,7 +40,11 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
                     <SurfaceColorMapSelector value={colorMap} onChange={handleColorMapChange} />
                 </div>
             </div>
-        )
+            <div style={{padding: 20}}>
+                <ShowFullRingCheckbox value={showFullRing} onChange={setShowFullRing} />
+            </div>
+            <hr style={{width: "75%"}}/>
+        </>)
         : <></>
 }
 

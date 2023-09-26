@@ -12,7 +12,7 @@ type Props = {
 const CheckboxTemplate: FunctionComponent<Props> = (props: Props) => {
     const { selections, onChange, type, labels } = props
     const id = `${type}-checkboxes`
-    const desc = getLabel({name: type, labelType: 'long'})
+    const desc = getLabel({name: type, labelType: 'full'})
     const checkCount = selections.filter(v => v).length
     const allChecked = checkCount === selections.length
     // TODO: line break in some reasonable way?

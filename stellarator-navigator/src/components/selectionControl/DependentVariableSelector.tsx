@@ -12,7 +12,7 @@ type Props = {
 const DependentVariableSelector: FunctionComponent<Props> = (props: Props) => {
     const { onChange } = props
     const items = dependentVariableDropdownConfig.map(item => {
-        return (<MenuItem key={item.key} value={item.fieldName}>{getLabel({name: item.fieldName, labelType: 'long'})}</MenuItem>)
+        return (<MenuItem key={item.key} value={item.fieldName}>{getLabel({name: item.fieldName, labelType: 'full'})}</MenuItem>)
     })
     
     return (

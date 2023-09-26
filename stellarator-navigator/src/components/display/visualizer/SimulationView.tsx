@@ -18,6 +18,7 @@ type Props = {
     surfaceChecks?: boolean[]
     coils?: Vec3[][]
     surfs?: SurfaceApiResponseObject
+    displayedPeriods?: number
 }
 
 type Positions = {
@@ -29,7 +30,7 @@ const scene = new THREE.Scene()
 scene.background = grayBackground
 
 const SimulationView: FunctionComponent<Props> = (props: Props) => {
-    const { width, height, canvasRef, coils, surfs, surfaceChecks, colorScheme } = props
+    const { width, height, canvasRef, coils, surfs, surfaceChecks, colorScheme, displayedPeriods } = props
     const canvas = canvasRef.current
 
     // TODO: Allow material customization (to get coil colors)
@@ -40,14 +41,14 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
     }, [coils])
 
     const surfaces = useMemo(() => {
-        const surfaces = surfs === undefined ? [] : makeSurfaces(surfs.surfacePoints)
+        const surfaces = surfs === undefined ? [] : makeSurfaces(surfs.surfacePoints, displayedPeriods)
         if (surfs !== undefined) {
             colorizeSurfaces(surfaces, surfs.pointValues, colorScheme)
         }
         // TODO: Does memoization break this?
         const surfaceMeshes = surfaces.map(s => new THREE.Mesh(s, fieldMaterial))
         return [...surfaceMeshes]
-    }, [colorScheme, surfs])
+    }, [colorScheme, displayedPeriods, surfs])
 
     const objects = useMemo(() => {
         const displayedSurfaces: THREE.Mesh<THREE.BufferGeometry, THREE.Material>[] = []

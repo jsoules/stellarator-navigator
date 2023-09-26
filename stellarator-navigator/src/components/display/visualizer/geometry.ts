@@ -25,7 +25,7 @@ const triangulateField = (width: number, height: number): number[] => {
 }
     
 
-export const makeSurfaces = (surfacePoints: Vec3Field[]) => {
+export const makeSurfaces = (surfacePoints: Vec3Field[], periods: number = 1) => {
     if (surfacePoints === undefined) return []
 
     // For each surface, create a BufferGeometry and add the
@@ -37,7 +37,7 @@ export const makeSurfaces = (surfacePoints: Vec3Field[]) => {
     const surfaces = surfacePoints.map((field) => {
         const surfaceGeometry = new THREE.BufferGeometry()
         const vertices = new Float32Array(field.flat().flat())
-        const indices = triangulateField(30, 30)
+        const indices = triangulateField(30 * periods, 30)
 
         surfaceGeometry.setIndex(indices)
         surfaceGeometry.setAttribute('position', new THREE.BufferAttribute( vertices, 3 ))

@@ -12,7 +12,7 @@ type Props = {
 const IndependentVariableSelector: FunctionComponent<Props> = (props: Props) => {
     const { onChange } = props
     const items = independentVariableDropdownConfig.map(item =>
-        <MenuItem key={item.key} value={item.fieldName}>{getLabel({name: item.fieldName, labelType: 'long'})}</MenuItem>
+        <MenuItem key={item.key} value={item.fieldName}>{getLabel({name: item.fieldName, labelType: 'full'})}</MenuItem>
     )
     
     return (

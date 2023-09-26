@@ -24,7 +24,7 @@ const MeanIotaSelector: FunctionComponent<Props> = (props: Props) => {
     return (
         <Fragment>
             <Typography id="mean-iota-selector" gutterBottom>
-                {getLabel({name: 'meanIota', labelType: 'long'})}
+                {getLabel({name: 'meanIota', labelType: 'full'})}
             </Typography>
             <FormControl fullWidth size="small">
                 <Select<string>

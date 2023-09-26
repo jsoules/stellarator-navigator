@@ -137,7 +137,7 @@ type FieldRecords = {
 }
 
 // TODO: Something about init-capping these in some contexts
-export const getLabel = (props: {name: string, labelType: 'short' | 'long' | 'plot'}) => {
+export const getLabel = (props: {name: string, labelType: 'short' | 'full' | 'plot'}) => {
     const { name, labelType } = props
     const rec = Fields[name as KnownFields]
     if (rec === undefined) {
