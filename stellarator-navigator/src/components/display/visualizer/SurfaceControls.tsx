@@ -43,7 +43,6 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
             <div style={{padding: 20}}>
                 <ShowFullRingCheckbox value={showFullRing} onChange={setShowFullRing} />
             </div>
-            <hr style={{width: "75%"}}/>
         </>)
         : <></>
 }

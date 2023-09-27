@@ -2,10 +2,12 @@ import { CategoricalIndexedFields, Fields } from "@snTypes/DataDictionary"
 import { CategoricalIndexSet, NavigatorDatabase, NumericIndex, RecordDict, StellaratorRecord } from "@snTypes/Types"
 import * as _rawData from "database.json"
 
+type fieldType = number | string | string[] | number[][]
+
 type RawData = {
     columns: string[],
     index: number[],
-    data: number[][]
+    data: fieldType[][]
 }
 
 const rawData = _rawData as RawData
@@ -32,11 +34,17 @@ const rawData = _rawData as RawData
 //  - 16    Nsurfaces
 //  - 17    volume
 //  - 18    min_coil2surface_dist
+//  - 19    elongation      number
+//  - 20    shear           number
+//  - 21    message         // one of "Naive, fine scan", "Naive, global scan", "TuRBO, fine scan", "TuRBO, global scan"
+//  - 22    iota_profile    // will be array of nSurfaces+1 pairs of numbers, i.e. number[][]
+//  - 23    surface_types   // array of nSurfaces + 1 length, each element's values one of "exact", "ls"
 // Also, the value in the "index" list corresponds to the ID (PK of rows) --
 // but we don't care about that one either, since that data is repeated in the actual records
 
 const data = rawData.data
 
+// I hope this works
 const dataList = data.map((row) => {
     return {
         id: row[12],
@@ -56,7 +64,12 @@ const dataList = data.map((row) => {
         aspectRatio: row[11],
         minorRadius: row[14],
         volume: row[17],
-        minCoil2SurfaceDist: row[18]
+        minCoil2SurfaceDist: row[18],
+        elongation: row[19],
+        shear: row[20],
+        message: row[21],
+        iotaProfile: row[22],
+        surfaceTypes: row[23]
     } as StellaratorRecord
 })
 

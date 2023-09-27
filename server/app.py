@@ -8,9 +8,11 @@ CORS(app)
 ## TODO: Use more robust path management
 
 INVALID_PATH_SENTINEL = "INVALID_TYPE"
-valid_endpoint_types = ['curves', 'surfaces', 'modB']
-graphics_types = ['surfaces', 'curves', 'modB',]
+valid_endpoint_types = ['curves', 'surfaces', 'modB', 'downloadPaths', 'nml', 'simsopt_serials']
+graphics_types = ['curves', 'surfaces', 'modB',]
 database_root = "../stellarator_database"
+
+NORMALIZE_SURFACES_PER_SURFACE = True
 
 @app.route('/')
 def index() -> str:
@@ -26,9 +28,11 @@ def get_coils(type: str, id: str):
             response = jsonify(fetch_curves(id))
         elif (type == 'surfaces'):
             response = jsonify(fetch_surfaces(id))
+        elif (type == 'downloadPaths'):
+            response = jsonify(fetch_download_paths(id))
         else:
-            # Can't happen--we already checked type above, but we
-            # prefer an explicit value test over an "else" assumption
+            # Can't happen--we already checked all known types above. But
+            # we prefer an explicit value test over an "else" assumption
             abort(500)
         return response
     except FileNotFoundError:
@@ -47,10 +51,10 @@ def make_file_path(id: str, type: str='curves') -> str:
     file_base = f"{type}{id}"
     if type == 'simsopt_serials':
         suffix = '.json'
+        file_base = f"serial{id}"
     if type == 'nml':
         suffix = id
         file_base = "input."
-        # return f"{database_root}/{dir}/{prefix}/input.{id}"
 
     return f"{database_root}/{dir}/{prefix}/{file_base}{suffix}"
 
@@ -59,6 +63,7 @@ def make_file_path(id: str, type: str='curves') -> str:
 # so that should be enough to ensure the data is safe
 def id_clean(id: str) -> bool:
     return id.isnumeric()
+
 
 def fetch_curves(id: str):
     path = make_file_path(id, type='curves')
@@ -82,11 +87,29 @@ def fetch_surfaces(id: str):
     # normalized_modB = np.array(Bs)
 
     tmp = modB.reshape((-1, 900))
-    nmb = tmp - np.min(tmp, axis=1, keepdims=True)
-    nmb = nmb / np.max(nmb, axis=1, keepdims=True)
+    if NORMALIZE_SURFACES_PER_SURFACE:
+        nmb = tmp - np.min(tmp, axis=1, keepdims=True)
+        nmb = nmb / np.max(nmb, axis=1, keepdims=True)
+    else:
+        # normalize per-device
+        nmb = tmp - np.min(tmp, keepdims=True)
+        nmb = nmb / np.max(nmb, keepdims=True)
     nmb = nmb.reshape((-1, 30, 30))
 
     normalized_modB = nmb
 
     return { "surfacePoints": surfs.tolist(), "pointValues": normalized_modB.tolist() }
+
+
+def fetch_download_paths(id: str):
+    vmec_path = make_file_path(id, 'nml')
+    simsopt_path = make_file_path(id, 'simsopt_serials')
+    # TODO: Remove this when we switch to the correct paths
+    # TODO: MUST ENSURE SAME ORIGIN--"download" property won't be honored cross-origin
+    tmp_public_root = 'https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR'
+    real_vmec_path = vmec_path.replace(database_root, tmp_public_root, 1)
+    real_simsopt_path = simsopt_path.replace(database_root, tmp_public_root, 1)
+    print(f"vmec path: {real_vmec_path} simsopt path: {real_simsopt_path}")
+
+    return { "vmecPath": real_vmec_path, "simsoptPath": real_simsopt_path }
 

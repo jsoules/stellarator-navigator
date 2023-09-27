@@ -92,26 +92,25 @@
 
 [x] Get rid of the "filterNc, filterNfp" stuff
 
+[x] Fix y-axis tickmarks and lines for log scale with smaller ranges
+
 [x] "show entire stellarator" checkbox --> AG will give the operation
 
-[ ] Revisit normalization for fields: should normalize across entire device, no?
+[x] (Performance is fine for full-circuit view)
 
-[ ] Reorg with index.js files to collect contents of small files
+[x] Add "open selected" button to the table
 
-[ ] add API endpoint for people to download the raw files from the simulations (coils, currents, nml) "download vmec" button to fetch the nml, expand later
+[x] add API endpoint for people to download the raw files
 
-[ ] Add "open selected" button to the table
+[x] Surface normalization: should normalize across entire device, not per-surface
+
+[x] Provide static instructions for loading the VMEC files after download (two-liner python script a la the one in "received")
 
 [ ] Give option to plot coil currents (found in the graphics/currents/ directory structure)
     
-    [ ] normalized across devices, showing absolute value
-        --> Need to precompute the correct coefficient (and probably hard-code it)
-
     [ ] normalized per device, following sign convention
 
 [ ] Consider automatically updating selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
-
-[x] Fix y-axis tickmarks and lines for log scale with smaller ranges
 
 [ ] REDO THE DATABASE EXPORT WITH QA ROOTED
     [ ] THEN UPDATE THE LINE SETTING
@@ -122,7 +121,7 @@
 
 [ ] AVOID REFILTERING for different plots/table selections
 
-[ ] Review range-change performance. Would drag-select be better from this perspective?
+[ ] Just implement drag-zoom already
 
 [ ] Improve filtering performance with large numbers of criteria!!
 
@@ -145,13 +144,20 @@
 
 [ ] Use database from permanent location of https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR/
 
-[ ] EXPLORE: When showing the full circuit, is performance improved by just copying the geometry directly rather than adding more objects?
-    (especially relevant for the surfaces)
+[ ] Figure out how to ensure the Javascript app is delivered from the same origin as the web server
+    & that the web server passes through requests to the underlying ceph filesystem... yikes?
+    --> OR have them just right-click it.
 
-[ ] MORE PROOFING of the surface symmetries, ESPECIALLY for higher-period-count.
+[ ] Fix out-of-bounds display of QA Error marked line
+
+[ ] BETTER RANGES FOR ELONGATION!
 
 
 QUERY OR DISTANT:
+
+[ ] MORE PROOFING of the surface symmetries, ESPECIALLY for higher-period-count.
+
+[-] Reorg with index.js files to collect contents of small files
 
 [?] Consider line-breaking of checkboxes for nc/nfp
 

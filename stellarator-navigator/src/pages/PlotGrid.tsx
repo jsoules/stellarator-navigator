@@ -1,5 +1,6 @@
 import { Grid } from "@mui/material"
 import { GridRowSelectionModel } from "@mui/x-data-grid"
+import OpenSelectedButton from "@snComponents/display/OpenSelected"
 import SnTable from "@snDisplayComponents/SnTable"
 import { computePerPlotDimensions, useAxes, useScales } from "@snPlots/PlotScaling"
 import SvgWrapper from "@snPlots/SvgWrapper"
@@ -97,9 +98,6 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
     const nfps = getSelectedNfps(filters)
     const [dims, colCount] = useMemo(() => computePerPlotDimensions(nfps.length, width - 2*internalMargin, height), [height, nfps.length, width])
 
-    // TODO: Filter data domain?
-    // const dataDomain = useMemo(() => [filters.totalCoilLength[0], filters.totalCoilLength[1]], [filters.totalCoilLength])
-
     useEffect(() => {
         const { targetNc, targetNfp } = rectifySelectedTable(activeNc, activeNfp, filters.ncPerHp, nfps)
         if (activeNc !== targetNc) {
@@ -150,6 +148,9 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
 
             <hr style={{width: "75%"}} />
             <SnTable records={allRecords} selectionHandler={selectionHandler} activeNfp={activeNfp} activeNc={activeNc} />
+            <div>
+                <OpenSelectedButton markedIds={marks} />
+            </div>
         </div>
     )
 }

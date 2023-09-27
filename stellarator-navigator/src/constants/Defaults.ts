@@ -18,6 +18,8 @@ export const initialNavigatorState: FilterSettings = {
     minorRadius: (Fields.minorRadius.range),
     volume: (Fields.volume.range),
     minCoil2SurfaceDist: (Fields.minCoil2SurfaceDist.range),
+    elongation: (Fields.elongation.range),
+    shear: (Fields.shear.range),
     globalizationMethod: undefined,
     nFourierCoil: undefined,
     //

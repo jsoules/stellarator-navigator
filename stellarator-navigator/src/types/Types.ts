@@ -17,6 +17,8 @@ export type FilterSettings = {
     minorRadius: number[],
     volume: number[],
     minCoil2SurfaceDist: number[],
+    elongation: number[],
+    shear: number[],
     globalizationMethod?: number,
     nFourierCoil?: number,
     dependentVariable: DependentVariables,
@@ -45,7 +47,6 @@ export type StellaratorRecord = {
     maxKappa: number,               // range 1.6 - 5.005, max curvature
     maxMeanSquaredCurve: number,    // range 1.05 - 5.005, ??
     minIntercoilDist: number,       // range epsilon-below-0.09 - 0.4, minimum distance between coils
-    // QA ERROR SQUARE ROOT ISSUE? WE SHOULD BE PLOTTING/DISPLAYING SQRT?
     qaError: number,                // stored in log10, -10.94 to -1.07, quasiasymmetry error (no unit)
     gradient: number,               // stored in log10, -12.74 to +12.12, arbitrary convergence measure (no unit)
     aspectRatio: number,            // range 2.5 - 20.03 (no unit)
@@ -53,6 +54,13 @@ export type StellaratorRecord = {
                                     // Note somewhere that this is scaled so that major radius is always 1
     volume: number,                 // range 0.049 - 2.42. Volume enclosed by outermost toroidal surface over which QA was optimized. (m^3)
     minCoil2SurfaceDist: number,    // range [0.0999, 0.61]. min distance between coil and outermost optimization surface. (m)
+    elongation: number,             // range [1, 321.4]. 
+    shear: number,                  // range [-1.02, 0.79].
+    // Weird ones
+    message: string,                // descriptor of analysis: as "[Naive | TuRBO], [global | fine] scan"
+    iotaProfile: number[][],        // array of nSurfaces+1 length, each element an (x, y) pair of numbers
+                                    // --> x = "normalized toroidal flux", y = rotational transform value (both unitless)
+    surfaceTypes: string[]          // array of nSurfaces+1 length, each element's values in ("exact", "ls")
     // OMITTED from underlying data:
     // constraint_success: boolean, // always true; confirm this in preprocessing.
 }
@@ -62,7 +70,6 @@ export type NavigatorDatabase = {
     list: StellaratorRecord[]
     byId: RecordDict
     allIdSet: Set<number>
-    // iotasIndex: {[key: number]: Set<number>}
     categoricalIndexes: CategoricalIndexSet
 }
 
@@ -111,4 +118,9 @@ export type ScalarField = number[][]
 export type SurfaceApiResponseObject = {
     surfacePoints: Vec3Field[],
     pointValues: ScalarField[]
+}
+
+export type DownloadPathsApiResponseObject = {
+    vmecPath: string,
+    simsoptPath: string
 }

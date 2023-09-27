@@ -1,10 +1,12 @@
+import HrBar from "@snComponents/HrBar"
 import { SupportedColorMap } from "@snComponents/display/Colormaps"
+import DownloadLinks from "@snComponents/display/visualizer/DownloadLinks"
 import SurfaceControls from "@snComponents/display/visualizer/SurfaceControls"
 import { useFullRingCoils, useFullRingSurface } from "@snComponents/display/visualizer/useFullRing"
 import { NavigatorContext } from "@snState/NavigatorContext"
 import RecordManifest from "@snVisualizer/RecordManifest"
 import SimulationView from "@snVisualizer/SimulationView"
-import { useCoils, useSurfaces } from "@snVisualizer/fetch3dData"
+import { useCoils, useDownloadPaths, useSurfaces } from "@snVisualizer/fetch3dData"
 import { FunctionComponent, useContext, useMemo, useRef, useState } from "react"
 
 type ModelProps = {
@@ -19,6 +21,7 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     const canvasRef = useRef(null)
     const numericId = typeof(id) === "number" ? id : parseInt(id)
     const rec = fetchRecords(new Set([numericId]))[0]
+    const downloadPaths = useDownloadPaths({ recordId: `${id}` })
     const baseCoils = useCoils({ recordId: `${id}` })
     const baseSurfs = useSurfaces({ recordId: `${id}` })
     const fullCoils = useFullRingCoils(baseCoils, rec.nfp)
@@ -57,7 +60,10 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
                     setShowFullRing={setShowFullRing}
                 />
             </div>
+            <HrBar />
             <RecordManifest rec={rec} />
+            <HrBar />
+            <DownloadLinks apiResponse={downloadPaths} />
         </div>
     )
 }

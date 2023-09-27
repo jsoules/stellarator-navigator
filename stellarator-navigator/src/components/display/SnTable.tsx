@@ -14,8 +14,9 @@ type SnTableProps = {
 const variableColumnsDefaultWidth = 110
 
 const fieldnames = Object.keys(Fields)
-const fixedWidthFields = fieldnames.filter(fn => Fields[fn as KnownFields].tableColumnWidth !== undefined)
-const varWidthFields = fieldnames.filter(fn => Fields[fn as KnownFields].tableColumnWidth === undefined)
+const displayed = fieldnames.filter(fn => Fields[fn as KnownFields].displayInTable)
+const fixedWidthFields = displayed.filter(fn => Fields[fn as KnownFields].tableColumnWidth !== undefined)
+const varWidthFields = displayed.filter(fn => Fields[fn as KnownFields].tableColumnWidth === undefined)
 
 const fixedWidthCols: GridColDef[] = fixedWidthFields.map(f => {
     const fieldDef = Fields[f as KnownFields]

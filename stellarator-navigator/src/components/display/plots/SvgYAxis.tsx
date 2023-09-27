@@ -29,7 +29,7 @@ const computeTicksToLabel = (allTicks: number[]) => {
 
     const allLabeledTicks = oomTransitions.map((v, i) => {
         const slice = allTicks.slice(v, oomTransitions[i + 1])
-        if (slice.length < 5) {
+        if (slice.length < 7) {
             return [v]
         }
         if (slice.length < 10) {
@@ -77,6 +77,7 @@ const useMarkedYLine = (canvasHeight: number, isLog: boolean, type: DependentVar
         if (mark === undefined) return undefined
         const markedValue = isLog ? 10 ** mark : mark
         const realizedY = canvasHeight - yScale(markedValue)
+        console.log(realizedY)
         return realizedY >= 0 ? realizedY : undefined
     }, [canvasHeight, isLog, type, yScale])
 }

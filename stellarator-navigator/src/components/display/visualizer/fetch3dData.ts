@@ -1,4 +1,4 @@
-import { SurfaceApiResponseObject, Vec3 } from "@snTypes/Types"
+import { DownloadPathsApiResponseObject, SurfaceApiResponseObject, Vec3 } from "@snTypes/Types"
 import { useEffect, useMemo, useState } from "react"
 
 type apiRequestProps = {
@@ -7,6 +7,7 @@ type apiRequestProps = {
 
 const CurvesEndpoint = "http://127.0.0.1:5000/api/curves/"
 const SurfacesEndpoint = "http://127.0.0.1:5000/api/surfaces/"
+const PathsEndpoint = "http://127.0.0.1:5000/api/downloadPaths/"
 
 
 export const useCoils = (props: apiRequestProps) => {
@@ -45,6 +46,33 @@ export const useSurfaces = (props: apiRequestProps) => {
                     pointValues: surfObj.pointValues
                 }
                 setResponse(surface)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }, [recordId])
+    return useMemo(() => response, [response])
+}
+
+
+export const useDownloadPaths = (props: apiRequestProps) => {
+    const { recordId } = props
+    const [ response, setResponse ] = useState({} as DownloadPathsApiResponseObject)
+
+    useEffect(() => {
+        fetch(`${PathsEndpoint}${recordId}`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`API endpoint did not return path data:\n${response.status} ${response.statusText}`)
+                }
+                return response.json()
+            })
+            .then((pathsObj) => {
+                const paths: DownloadPathsApiResponseObject = {
+                    vmecPath: pathsObj.vmecPath,
+                    simsoptPath: pathsObj.simsoptPath
+                }
+                setResponse(paths)
             })
             .catch((err) => {
                 console.log(err)

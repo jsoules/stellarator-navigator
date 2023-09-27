@@ -23,6 +23,11 @@ export enum KnownFields {
     MINOR_RADIUS = 'minorRadius',
     VOLUME = 'volume',
     MIN_COIL_TO_SURFACE_DIST = 'minCoil2SurfaceDist',
+    ELONGATION = 'elongation',
+    SHEAR = 'shear',
+    MESSAGE = 'message',
+    IOTA_PROFILE = "iotaProfile",
+    SURFACE_TYPES = "surfaceTypes",
 }
 
 export enum DependentVariables {
@@ -35,10 +40,11 @@ export enum DependentVariables {
     ASPECT_RATIO = KnownFields.ASPECT_RATIO,
     MINOR_RADIUS = KnownFields.MINOR_RADIUS,
     VOLUME = KnownFields.VOLUME,
-    MIN_COIL_TO_SURFACE_DIST = KnownFields.MIN_COIL_TO_SURFACE_DIST
+    MIN_COIL_TO_SURFACE_DIST = KnownFields.MIN_COIL_TO_SURFACE_DIST,
+    ELONGATION = KnownFields.ELONGATION,
+    SHEAR = KnownFields.SHEAR
 }
 
-// NOTE: I think putting categorical variables on the x-axis isn't going to be terribly informative, but we'll try it
 export enum IndependentVariables {
     TOTAL_COIL_LENGTH = KnownFields.TOTAL_COIL_LENGTH,
     COIL_LENGTH_PER_HP = KnownFields.COIL_LENGTH_PER_HP,
@@ -51,6 +57,9 @@ export enum IndependentVariables {
     MINOR_RADIUS = KnownFields.MINOR_RADIUS,
     VOLUME = KnownFields.VOLUME,
     MEAN_IOTA = KnownFields.MEAN_IOTA,
+    ELONGATION = KnownFields.ELONGATION,
+    SHEAR = KnownFields.SHEAR,
+    // NOTE: I think putting categorical variables on the x-axis isn't going to be terribly informative, but we'll try it
     NC_PER_HP = KnownFields.NC_PER_HP,
     NFP = KnownFields.NFP,
     GLOBALIZATION_METHOD = KnownFields.GLOBALIZATION_METHOD,
@@ -76,6 +85,8 @@ export enum RangeVariables {
     MINOR_RADIUS = KnownFields.MINOR_RADIUS,
     VOLUME = KnownFields.VOLUME,
     MIN_COIL_TO_SURFACE_DIST = KnownFields.MIN_COIL_TO_SURFACE_DIST,
+    ELONGATION = KnownFields.ELONGATION,
+    SHEAR = KnownFields.SHEAR,
 }
 
 export enum TripartiteVariables {
@@ -97,6 +108,8 @@ export const dependentVariableDropdownConfig: { key: number, fieldName: Dependen
     { key:  8, fieldName: DependentVariables.ASPECT_RATIO             },
     { key:  9, fieldName: DependentVariables.COIL_LENGTH_PER_HP       },
     { key: 10, fieldName: DependentVariables.TOTAL_COIL_LENGTH        },
+    { key: 11, fieldName: DependentVariables.ELONGATION               },
+    { key: 12, fieldName: DependentVariables.SHEAR                    },
 ]
 
 export const independentVariableDropdownConfig: { key: number, fieldName: IndependentVariables }[] = [
@@ -111,11 +124,13 @@ export const independentVariableDropdownConfig: { key: number, fieldName: Indepe
     { key:  9, fieldName: IndependentVariables.MINOR_RADIUS             },
     { key: 10, fieldName: IndependentVariables.VOLUME                   },
     { key: 11, fieldName: IndependentVariables.MEAN_IOTA                },
-    { key: 12, fieldName: IndependentVariables.NC_PER_HP                },
-    { key: 13, fieldName: IndependentVariables.NFP                      },
-    { key: 14, fieldName: IndependentVariables.GLOBALIZATION_METHOD     },
-    { key: 15, fieldName: IndependentVariables.N_FOURIER_COIL           },
-    { key: 16, fieldName: IndependentVariables.NSURFACES                },
+    { key: 12, fieldName: IndependentVariables.ELONGATION               },
+    { key: 13, fieldName: IndependentVariables.SHEAR                    },
+    { key: 14, fieldName: IndependentVariables.NC_PER_HP                },
+    { key: 15, fieldName: IndependentVariables.NFP                      },
+    { key: 16, fieldName: IndependentVariables.GLOBALIZATION_METHOD     },
+    { key: 17, fieldName: IndependentVariables.N_FOURIER_COIL           },
+    { key: 18, fieldName: IndependentVariables.NSURFACES                },
 ]
 
 export type FieldDescription = {
@@ -129,7 +144,8 @@ export type FieldDescription = {
     isLog: boolean,
     isCategorical: boolean,
     markedValue?: number,
-    tableColumnWidth?: number
+    tableColumnWidth?: number,
+    displayInTable: boolean
 }
 
 type FieldRecords = {
@@ -174,7 +190,8 @@ export const Fields: FieldRecords = {
         isLog: false,
         isCategorical: true,
         markedValue: undefined,
-        tableColumnWidth: 70
+        tableColumnWidth: 70,
+        displayInTable: true
     },
     'coilLengthPerHp': {
         shortLabel: "HP len",
@@ -187,7 +204,8 @@ export const Fields: FieldRecords = {
         isLog: false,
         isCategorical: true,
         markedValue: undefined,
-        tableColumnWidth: 80
+        tableColumnWidth: 80,
+        displayInTable: true
     },
     'totalCoilLength': {
         shortLabel: "Tot len",
@@ -200,7 +218,8 @@ export const Fields: FieldRecords = {
         isLog: false,
         isCategorical: true,
         markedValue: undefined,
-        tableColumnWidth: 80
+        tableColumnWidth: 80,
+        displayInTable: true
     },
     'meanIota': {
         // TODO: CONFIRM VERBIAGE ON THIS
@@ -214,7 +233,8 @@ export const Fields: FieldRecords = {
         isLog: false,
         isCategorical: true,
         markedValue: undefined,
-        tableColumnWidth: 90
+        tableColumnWidth: 90,
+        displayInTable: true
     },
     'ncPerHp': {
         shortLabel: "Coils/hp",
@@ -227,7 +247,8 @@ export const Fields: FieldRecords = {
         isLog: false,
         isCategorical: true,
         markedValue: undefined,
-        tableColumnWidth: 80
+        tableColumnWidth: 80,
+        displayInTable: true
     },
     'nfp': {
         shortLabel: "FPs",
@@ -240,7 +261,8 @@ export const Fields: FieldRecords = {
         isLog: false,
         isCategorical: true,
         markedValue: undefined,
-        tableColumnWidth: 50
+        tableColumnWidth: 50,
+        displayInTable: true
     },
     'globalizationMethod': {
         shortLabel: "Algo",
@@ -254,6 +276,7 @@ export const Fields: FieldRecords = {
         isCategorical: true,
         markedValue: undefined,
         tableColumnWidth: 65,
+        displayInTable: true
     },
     'nFourierCoil': {
         shortLabel: "Modes",
@@ -265,7 +288,8 @@ export const Fields: FieldRecords = {
         isLog: false,
         isCategorical: true,
         markedValue: undefined,
-        tableColumnWidth: 60
+        tableColumnWidth: 60,
+        displayInTable: true
     },
     'nSurfaces': {
         shortLabel: "Surfaces",
@@ -276,7 +300,8 @@ export const Fields: FieldRecords = {
         values: nSurfacesValidValues,
         isLog: false,
         isCategorical: true,
-        tableColumnWidth: 70
+        tableColumnWidth: 70,
+        displayInTable: true
     },
     'maxKappa': {
         shortLabel: "Max kappa",
@@ -287,7 +312,8 @@ export const Fields: FieldRecords = {
         range: [1.6, 5.005],
         isLog: false,
         isCategorical: false,
-        markedValue: 5
+        markedValue: 5,
+        displayInTable: true
     },
     'maxMeanSquaredCurve': {
         shortLabel: "Max MSC",
@@ -298,7 +324,8 @@ export const Fields: FieldRecords = {
         range: [1.05, 5.005],
         isLog: false,
         isCategorical: false,
-        markedValue: 5
+        markedValue: 5,
+        displayInTable: true
     },
     'minIntercoilDist': {
         shortLabel: "Min C-C dist",
@@ -309,17 +336,19 @@ export const Fields: FieldRecords = {
         range: [0.08, 0.4],
         isLog: false,
         isCategorical: false,
-        markedValue: 0.1
+        markedValue: 0.1,
+        displayInTable: true
     },
     'qaError': {
         shortLabel: "Sqrt(QA Err)",
         plotLabel: "Root of QA Error",
         fullLabel: "Root of Quasi-Axisymmtery (QA) Error",
         description: "Square root of quasi-Axisymmetry (QA) error, proxy for particle loss",
-        range: [-10.94, -1.07],
+        range: [-5.47, -0.535],
         isLog: true,
         isCategorical: false,
-        markedValue: -4.30
+        markedValue: -4.30,
+        displayInTable: true
     },
     'gradient': {
         shortLabel: "Gradient",
@@ -329,6 +358,7 @@ export const Fields: FieldRecords = {
         range: [-12.74, 12.12],
         isLog: true,
         isCategorical: false,
+        displayInTable: true
     },
     'aspectRatio': {
         shortLabel: "AR",
@@ -339,6 +369,7 @@ export const Fields: FieldRecords = {
         isLog: false,
         isCategorical: false,   // technically not categorical, but for our display purposes, might as well be
         tableColumnWidth: 30,
+        displayInTable: true
     },
     'minorRadius': {
         shortLabel: "Minor rad",
@@ -349,6 +380,7 @@ export const Fields: FieldRecords = {
         range: [0.04996, 0.363],
         isLog: false,
         isCategorical: false,
+        displayInTable: true
     },
     'volume': {
         shortLabel: "Vol",
@@ -359,6 +391,7 @@ export const Fields: FieldRecords = {
         range: [0.049, 2.42],
         isLog: false,
         isCategorical: false,
+        displayInTable: true
     },
     'minCoil2SurfaceDist': {
         shortLabel: "Min C-S dist",
@@ -369,7 +402,66 @@ export const Fields: FieldRecords = {
         range: [0.0999, 0.61],
         isLog: false,
         isCategorical: false,
-        markedValue: 0.1
+        markedValue: 0.1,
+        displayInTable: true
+    },
+    'elongation': {
+        shortLabel: "Elong",
+        plotLabel: "Elongation",
+        fullLabel: "Elongation",
+        description: "TKTK",
+        unit: "TKTK",
+        range: [1, 321.4],
+        isLog: false,
+        isCategorical: false,
+        // markedValue?: undefined,
+        displayInTable: true
+    },
+    'shear': {
+        shortLabel: "Shear",
+        plotLabel: "Shear",
+        fullLabel: "Shear",
+        description: "TKTK",
+        unit: "TKTK",
+        range: [-1.02, 0.79],
+        isLog: false,
+        isCategorical: false,
+        // markedValue?: undefined,
+        displayInTable: true
+    },
+    'message': {
+        shortLabel: "Msg",
+        plotLabel: "Message",
+        fullLabel: "Notes on method",
+        description: "Descriptor of analysis type",
+        range: [0, 1],
+        isLog: false,
+        isCategorical: true,
+        // tableColumnWidth: 0,
+        displayInTable: true
+    },
+    'iotaProfile': {
+        shortLabel: "i-prof",
+        plotLabel: "Iota profile",
+        fullLabel: "Iota profile",
+        description: "TKTK",
+        unit: "TKTK",
+        range: [0, 1],
+        isLog: false,
+        isCategorical: false,
+        tableColumnWidth: 0,
+        displayInTable: false
+    },
+    'surfaceTypes': {
+        shortLabel: "SurfTypes",
+        plotLabel: "Surface Types",
+        fullLabel: "Types of Surfaces",
+        description: "TKTK",
+        range: [0, 1],
+        isLog: false,
+        isCategorical: false,
+        tableColumnWidth: 0,
+        displayInTable: false
     }
 }
 
