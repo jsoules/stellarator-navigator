@@ -36,7 +36,6 @@ const SvgWrapper: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <div
-            className="Chart__wrapper"
             style={{ height: dims.height + plotGutterHorizontal, marginLeft: plotGutterVertical/2, marginRight: plotGutterVertical/2 }}
         >
             {/* DO THIS PROPERLY -- Label should be its own component at this point */}
