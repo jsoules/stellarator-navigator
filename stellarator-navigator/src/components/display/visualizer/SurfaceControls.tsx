@@ -1,7 +1,7 @@
 import { SelectChangeEvent } from "@mui/material"
+import SnCheckboxGroup from "@snComponents/SnCheckboxGroup"
 import SnSwitch from "@snComponents/SnSwitch"
 import { SupportedColorMap } from "@snComponents/display/Colormaps"
-import SurfaceCheckboxes from "@snVisualizer/SurfaceCheckboxes"
 import SurfaceColorMapSelector from "@snVisualizer/SurfaceColorMapSelector"
 import { Dispatch, FunctionComponent, SetStateAction, useCallback } from "react"
 
@@ -35,15 +35,21 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     return checksNeeded
         ? (<>
             <div style={{display: "flex"}}>
-                <div style={{flex: 1, padding: 20 }}>
-                    <SurfaceCheckboxes selections={surfaceChecks} onChange={handleCheckboxChange} />
+                {/* <div style={{flex: 1, paddingTop: 5, padding: "7 20 20 20" }}> */}
+                <div className="surfaceControlFlexSplitAlt">
+                    <SnCheckboxGroup
+                        desc="Surfaces to display"
+                        id="surfaceSelection"
+                        selections={surfaceChecks}
+                        onChange={handleCheckboxChange}
+                    />
                 </div>
-                <div style={{flex: 1, padding: 20 }}>
+                <div className="surfaceControlFlexSplit">
                     <SurfaceColorMapSelector value={colorMap} onChange={handleColorMapChange} />
                 </div>
             </div>
             <div style={{display: "flex"}}>
-                <div style={{flex: 1, padding: 20}}>
+                <div className="surfaceControlFlexSplit">
                     <SnSwitch 
                         header="Device display"
                         label="Show complete device?"
@@ -51,7 +57,7 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
                         handleChange={setShowFullRing}
                     />
                 </div>
-                <div style={{flex: 1, padding: 20}}>
+                <div className="surfaceControlFlexSplit">
                     <SnSwitch
                         header="Coil currents"
                         label="Color coils per currents?"

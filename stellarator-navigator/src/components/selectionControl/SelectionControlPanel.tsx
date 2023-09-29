@@ -2,7 +2,7 @@ import { SelectChangeEvent } from '@mui/material'
 import { Fields, RangeVariables, ToggleableVariables, TripartiteVariables } from '@snTypes/DataDictionary'
 import { FilterSettings } from '@snTypes/Types'
 import { FunctionComponent } from 'react'
-import CheckboxTemplate from './Checkboxes'
+import ToggleableVariableCheckboxGroup from './Checkboxes'
 import DependentVariableSelector from './DependentVariableSelector'
 import IndependentVariableSelector from './IndependentVariableSelector'
 import RangeSlider from './RangeSlider'
@@ -40,15 +40,15 @@ const SelectionControlPanel: FunctionComponent<Props> = (props: Props) => {
             <hr style={{width: "50%" }} />
             {sliders}
             {/* TODO Unify the checkbox template thing by referencing values if it exists */}
-            <CheckboxTemplate
+            <ToggleableVariableCheckboxGroup
                 type={ToggleableVariables.MEAN_IOTA}
                 selections={meanIota}
                 onChange={callbacks.handleCheckboxChange}
                 labels={(Fields[ToggleableVariables.MEAN_IOTA].values ?? []).map(i => `${i}`)}
             />
-            <CheckboxTemplate type={ToggleableVariables.NC_PER_HP} selections={ncPerHp} onChange={callbacks.handleCheckboxChange} />
-            <CheckboxTemplate type={ToggleableVariables.NFP} selections={nfp} onChange={callbacks.handleCheckboxChange} />
-            <CheckboxTemplate type={ToggleableVariables.N_SURFACES} selections={nSurfaces} onChange={callbacks.handleCheckboxChange} />
+            <ToggleableVariableCheckboxGroup type={ToggleableVariables.NC_PER_HP} selections={ncPerHp} onChange={callbacks.handleCheckboxChange} />
+            <ToggleableVariableCheckboxGroup type={ToggleableVariables.NFP} selections={nfp} onChange={callbacks.handleCheckboxChange} />
+            <ToggleableVariableCheckboxGroup type={ToggleableVariables.N_SURFACES} selections={nSurfaces} onChange={callbacks.handleCheckboxChange} />
             {tripartDropdowns}
         </div>
     )

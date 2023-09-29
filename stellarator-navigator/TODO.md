@@ -120,6 +120,8 @@
 
 [x] Fix out-of-bounds display of marked lines
 
+[x] Use consistent componenting for displayed-surfaces checkboxes as for elsewhere
+
 [ ] Consider automatically updating selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
 
 [ ] Give user ability to choose criteria for plot-splitting
@@ -155,7 +157,7 @@
 
 [ ] Rearrange layout of the model display page
 
-[ ] Use consistent componenting for displayed-surfaces checkboxes as for elsewhere
+[ ] Prefer CSS classes over setting "style" on elements
 
 
 QUERY OR DISTANT:

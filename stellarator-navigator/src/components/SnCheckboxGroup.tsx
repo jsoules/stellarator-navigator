@@ -1,16 +1,20 @@
 import { Checkbox, FormControlLabel, Typography } from "@mui/material"
 import { FunctionComponent } from "react"
 
-type Props = {
+type BaseProps = {
+    desc: string
+    id: string
     selections: boolean[]
     onChange: (i: number, targetState: boolean) => void
+    labels?: string[]
 }
 
 
-const SurfaceCheckboxes: FunctionComponent<Props> = (props: Props) => {
-    const { selections, onChange } = props
+const SnCheckboxGroup: FunctionComponent<BaseProps> = (props: BaseProps) => {
+    const { selections, onChange, desc, id, labels } = props
     const checkCount = selections.filter(v => v).length
     const allChecked = checkCount === selections.length
+    // TODO: line break in some reasonable way?
 
     const allCheckbox = selections.length > 1
         ? (
@@ -29,10 +33,10 @@ const SurfaceCheckboxes: FunctionComponent<Props> = (props: Props) => {
             </div>
         ) : (<></>)
 
-    return selections.length === 0 ? <></> :
-        (<div style={{paddingLeft: 8 }}>
-            <Typography id="SurfaceCheckboxes" fontWeight="bold">
-                Surfaces to display
+    return selections.length === 0 ? <></> : (
+        <div className="checkboxGroup" id={`${id}-checkboxes`}>
+            <Typography id={id} fontWeight="bold">
+                {desc}
             </Typography>
             { allCheckbox }
             {
@@ -46,7 +50,7 @@ const SurfaceCheckboxes: FunctionComponent<Props> = (props: Props) => {
                                     checked={v}
                                 />
                             }
-                            label={i + 1}
+                            label={labels ? labels[i] : i + 1}
                         />
                     </span>
                 ))
@@ -55,5 +59,4 @@ const SurfaceCheckboxes: FunctionComponent<Props> = (props: Props) => {
     )
 }
 
-
-export default SurfaceCheckboxes
+export default SnCheckboxGroup
