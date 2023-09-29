@@ -23,7 +23,7 @@ const SnCheckboxGroup: FunctionComponent<BaseProps> = (props: BaseProps) => {
                     label="(toggle all)"
                     control={
                         <Checkbox
-                            style={{ padding: 1, transform: 'scale(0.8)' }}
+                            className="checkboxItem"
                             onClick={() => onChange(-1, !allChecked)}
                             checked={allChecked}
                             indeterminate={(checkCount > 0) && !allChecked}
@@ -45,7 +45,7 @@ const SnCheckboxGroup: FunctionComponent<BaseProps> = (props: BaseProps) => {
                         <FormControlLabel
                             control={
                                 <Checkbox
-                                    style={{ padding: 1, transform: 'scale(0.8)' }}
+                                    className="checkboxItem"
                                     onClick={() => onChange(i, !v)}
                                     checked={v}
                                 />

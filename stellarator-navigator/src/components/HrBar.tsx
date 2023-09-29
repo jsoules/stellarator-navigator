@@ -9,7 +9,7 @@ const defaultWidth = "75%"
 const HrBar: FunctionComponent<Props> = (props: Props) => {
     const { width } = props
 
-    return <div style={{padding: 10}}>
+    return <div className="hrWrapper">
         <hr style={{width: width ?? defaultWidth}} />
     </div>
 }

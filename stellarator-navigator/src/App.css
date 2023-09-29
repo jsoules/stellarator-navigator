@@ -14,9 +14,34 @@
     display: inline-block;
 }
 
+.ControlPanelWrapper {
+    margin: 20px;
+    padding: 100px 20px 0px 20px;
+}
+
+.MainWindow {
+    position: absolute;
+    overflow: hidden;
+}
+
 .checkboxGroup {
     padding-left: 8px;
     padding-top: 15px;
+}
+
+/* !important isn't great style, but this will get overwritten by some MUI class styling otherwise */
+.checkboxItem {
+    padding: 1px !important;
+    transform: scale(0.8);
+}
+
+.sliderWrapper {
+    padding-left: 8px;
+}
+
+div .overviewTable {
+    height: 600px;
+    width: 100%;
 }
 
 .surfaceControlFlexSplit {
@@ -27,4 +52,30 @@
 .surfaceControlFlexSplitAlt {
     flex: 1;
     padding: 5px 20px 20px 20px;
+}
+
+div .hrWrapper {
+    padding: 10px;
+}
+
+div .dropdownWrapper {
+    padding-bottom: 10px;
+}
+
+div .codeSnippetWrapper {
+    border: 1px solid #7f7f7f;
+    margin: 10px 0px 10px 10px;
+    padding-left: 20px;
+}
+
+div .simulationViewWrapper {
+    padding: 10px;
+}
+
+div .flexWrapper {
+    display: flex;
+}
+
+div .indent {
+    padding-left: 20px;
 }

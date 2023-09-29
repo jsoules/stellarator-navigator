@@ -82,7 +82,7 @@ const SnTable: FunctionComponent<SnTableProps> = (props: SnTableProps) => {
     // Can we fix it? Should we maybe omit it?
 
     return (
-        <div style={{ height: 600, width: "100%" }}>
+        <div className="overviewTable">
             <DataGrid
                 columns={columns}
                 rows={rows}

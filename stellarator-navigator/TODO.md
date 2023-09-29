@@ -122,6 +122,8 @@
 
 [x] Use consistent componenting for displayed-surfaces checkboxes as for elsewhere
 
+[x] Prefer CSS classes over setting "style" on elements
+
 [ ] Consider automatically updating selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
 
 [ ] Give user ability to choose criteria for plot-splitting
@@ -156,8 +158,6 @@
     [ ] Import numpy files into Javascript directly
 
 [ ] Rearrange layout of the model display page
-
-[ ] Prefer CSS classes over setting "style" on elements
 
 
 QUERY OR DISTANT:

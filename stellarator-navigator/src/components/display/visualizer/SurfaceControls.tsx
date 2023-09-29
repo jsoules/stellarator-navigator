@@ -34,8 +34,7 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
 
     return checksNeeded
         ? (<>
-            <div style={{display: "flex"}}>
-                {/* <div style={{flex: 1, paddingTop: 5, padding: "7 20 20 20" }}> */}
+            <div className="flexWrapper">
                 <div className="surfaceControlFlexSplitAlt">
                     <SnCheckboxGroup
                         desc="Surfaces to display"
@@ -48,7 +47,7 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
                     <SurfaceColorMapSelector value={colorMap} onChange={handleColorMapChange} />
                 </div>
             </div>
-            <div style={{display: "flex"}}>
+            <div className="flexWrapper">
                 <div className="surfaceControlFlexSplit">
                     <SnSwitch 
                         header="Device display"

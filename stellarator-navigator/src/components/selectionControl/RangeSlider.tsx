@@ -15,10 +15,15 @@ const RangeSlider: FunctionComponent<Props> = (props: Props) => {
     }, [field, onChange])
     const fieldDesc = Fields[field]
     const marks = fieldDesc.values ? fieldDesc.values.map(v => { return {value: v, label: ""} }) : undefined
-    const step = marks ? null : (fieldDesc.range[1] - fieldDesc.range[0])/250
+    const step = marks ? null : (fieldDesc.range[1] - fieldDesc.range[0])/256
+    const changeScale = step === null ? 1 : Math.max(0, -1 * (Math.floor(Math.log10(step))))
 
     // const valueLabelFormat = fieldDesc.isLog ? (v: number) => `${10 ** v}` : (v: number) => `${v}`
-    const valueLabelFormat = fieldDesc.isLog ? (v: number) => `${(10 ** v).toExponential(3)}` : undefined
+    const valueLabelFormat = step === null
+        ? undefined
+        : fieldDesc.isLog
+            ? (v: number) => `${(10 ** v).toExponential(3)}`
+            : (v: number) => v.toFixed(changeScale)
 
     const value = props.value ?? fieldDesc.range
     const label = getLabel({name: field, labelType: 'full'})

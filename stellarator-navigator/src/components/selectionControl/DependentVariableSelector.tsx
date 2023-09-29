@@ -1,7 +1,7 @@
 
 import { FormControl, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material"
 import { DependentVariables, defaultDependentVariableValue, dependentVariableDropdownConfig, getLabel } from "@snTypes/DataDictionary"
-import { Fragment, FunctionComponent } from "react"
+import { FunctionComponent } from "react"
 
 
 type Props = {
@@ -16,7 +16,7 @@ const DependentVariableSelector: FunctionComponent<Props> = (props: Props) => {
     })
     
     return (
-        <Fragment>
+        <div className="dropdownWrapper">
             <Typography id="dependent-variable-selector" gutterBottom>
                 Dependent Variable in Plots
             </Typography>
@@ -28,7 +28,7 @@ const DependentVariableSelector: FunctionComponent<Props> = (props: Props) => {
                     {...items}
                 </Select>
             </FormControl>
-        </Fragment>
+        </div>
     )
 }
 

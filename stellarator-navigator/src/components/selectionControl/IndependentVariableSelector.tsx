@@ -16,7 +16,7 @@ const IndependentVariableSelector: FunctionComponent<Props> = (props: Props) => 
     )
     
     return (
-        <div style={{ paddingBottom: 10 }}>
+        <div className="dropdownWrapper">
             <Typography id="independent-variable-selector" gutterBottom>
                 Independent Variable in Plots
             </Typography>

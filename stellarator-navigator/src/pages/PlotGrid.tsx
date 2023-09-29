@@ -1,5 +1,6 @@
 import { Grid } from "@mui/material"
 import { GridRowSelectionModel } from "@mui/x-data-grid"
+import HrBar from "@snComponents/HrBar"
 import OpenSelectedButton from "@snComponents/display/OpenSelected"
 import SnTable from "@snDisplayComponents/SnTable"
 import { computePerPlotDimensions, useAxes, useScales } from "@snPlots/PlotScaling"
@@ -146,7 +147,7 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
             <div>Currently each plot is {dims.width} x {dims.height} with {nfps.length} ({colCount}) columns.</div>
             <div>Current filter settings return {allRecords.length} devices.</div>
 
-            <hr style={{width: "75%"}} />
+            <HrBar />
             <SnTable records={allRecords} selectionHandler={selectionHandler} activeNfp={activeNfp} activeNc={activeNc} />
             <div>
                 <OpenSelectedButton markedIds={marks} />

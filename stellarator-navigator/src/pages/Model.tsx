@@ -38,9 +38,9 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
 
     return (
         <div>
-            <div style={{padding: 10}}>
+            <div className="simulationViewWrapper">
                 <canvas ref={canvasRef} />
-                {/* TODO: Don't restrict this width/height to these values, do something smarter */}
+                {/* TODO: Don't restrict this width/height to these values? */}
                 <SimulationView
                     width={800}
                     height={640}

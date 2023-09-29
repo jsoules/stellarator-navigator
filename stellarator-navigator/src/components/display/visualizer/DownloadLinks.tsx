@@ -62,7 +62,7 @@ const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
     //                 </div>
     //             </div>
     //         </div>
-    return <div style={{paddingLeft: 20}}>
+    return <div className="indent">
         Right-click and "Save link as" to download:
         <ul>
             <li>
@@ -76,7 +76,7 @@ const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
         </ul>
         <div>
             <span>To load downloaded SIMSOPT data, execute the following Python script:</span>
-            <div style={{border: "1px solid #7f7f7f", marginLeft: 10, marginTop: 10, marginBottom: 10, paddingLeft: 20}}>
+            <div className="codeSnippetWrapper">
                 <SyntaxHighlighter children={codeSnippet} language="python" style={a11yLight} />
             </div>
         </div>

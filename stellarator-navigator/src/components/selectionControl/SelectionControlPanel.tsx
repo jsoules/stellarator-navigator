@@ -1,4 +1,5 @@
 import { SelectChangeEvent } from '@mui/material'
+import HrBar from '@snComponents/HrBar'
 import { Fields, RangeVariables, ToggleableVariables, TripartiteVariables } from '@snTypes/DataDictionary'
 import { FilterSettings } from '@snTypes/Types'
 import { FunctionComponent } from 'react'
@@ -34,10 +35,10 @@ const SelectionControlPanel: FunctionComponent<Props> = (props: Props) => {
         .map(rv => (<TripartDropdownSelector key={rv} field={rv} value={filterSettings[rv] ?? -1} onChange={callbacks.handleTripartiteDropdownChange} />))
 
     return (
-        <div style={{margin: 20, paddingLeft: 20, paddingRight: 20, paddingTop: 100}}>
+        <div className="ControlPanelWrapper">
             <IndependentVariableSelector value={independentVariable} onChange={callbacks.handleIndependentVariableChange} />
             <DependentVariableSelector value={dependentVariable} onChange={callbacks.handleDependentVariableChange} />
-            <hr style={{width: "50%" }} />
+            <HrBar />
             {sliders}
             {/* TODO Unify the checkbox template thing by referencing values if it exists */}
             <ToggleableVariableCheckboxGroup
