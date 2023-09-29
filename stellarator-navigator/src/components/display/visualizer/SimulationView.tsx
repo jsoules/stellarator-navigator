@@ -1,12 +1,12 @@
 import { SupportedColorMap } from '@snDisplayComponents/Colormaps'
-import { SurfaceApiResponseObject, Vec3 } from '@snTypes/Types'
+import { CoilApiResponseRecord, SurfaceApiResponseObject } from '@snTypes/Types'
 import { FunctionComponent, MutableRefObject, useEffect, useMemo } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import useSvCamera from './SvCamera'
 import useSvControls from './SvControls'
 import { ambientLight, spotlights } from './SvLighting'
-import { fieldMaterial, grayBackground, tubeMaterial } from './SvMaterials'
+import { fieldMaterial, getScaledTubeMaterial, grayBackground, tubeMaterial } from './SvMaterials'
 import useSvRenderer from './SvRenderer'
 import { colorizeSurfaces, makeSurfaces, makeTubes, usePositions } from './geometry'
 
@@ -16,9 +16,10 @@ type Props = {
     canvasRef: MutableRefObject<null | HTMLCanvasElement>
     colorScheme?: SupportedColorMap
     surfaceChecks?: boolean[]
-    coils?: Vec3[][]
+    coils?: CoilApiResponseRecord[]
     surfs?: SurfaceApiResponseObject
     displayedPeriods?: number
+    showCurrents?: boolean
 }
 
 type Positions = {
@@ -29,16 +30,20 @@ type Positions = {
 const scene = new THREE.Scene()
 scene.background = grayBackground
 
+
 const SimulationView: FunctionComponent<Props> = (props: Props) => {
-    const { width, height, canvasRef, coils, surfs, surfaceChecks, colorScheme, displayedPeriods } = props
+    const { width, height, canvasRef, coils, surfs, surfaceChecks, colorScheme, displayedPeriods, showCurrents } = props
     const canvas = canvasRef.current
 
     // TODO: Allow material customization (to get coil colors)
     const tubes = useMemo(() => {
-        const coilTubes = coils === undefined ? [] : makeTubes(coils)
-        const coilMeshes = coilTubes.map(c => new THREE.Mesh(c, tubeMaterial))
+        const coilTubes = coils === undefined ? [] : makeTubes(coils.map(r => r.coil))
+        const currents = coils === undefined ? [] : coils.map(r => r.current)
+        const coilMeshes = showCurrents
+            ? coilTubes.map((c, i) => new THREE.Mesh(c, getScaledTubeMaterial(currents[i], 'blueOrange')))
+            : coilTubes.map(c => new THREE.Mesh(c, tubeMaterial))
         return coilMeshes
-    }, [coils])
+    }, [coils, showCurrents])
 
     const surfaces = useMemo(() => {
         const surfaces = surfs === undefined ? [] : makeSurfaces(surfs.surfacePoints, displayedPeriods)
@@ -54,7 +59,7 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
         const displayedSurfaces: THREE.Mesh<THREE.BufferGeometry, THREE.Material>[] = []
         const definiteSurfaces = surfaces ?? []
         const definiteChecks = surfaceChecks ?? []
-        definiteChecks.forEach((v, idx) => {
+        surfaces.length > 0 && definiteChecks.forEach((v, idx) => {
             if (v) {
                 displayedSurfaces.push(definiteSurfaces[idx])
             }
@@ -62,7 +67,7 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
         return [...tubes, ...displayedSurfaces]
     }, [tubes, surfaces, surfaceChecks])
 
-    const focalPositions = usePositions(coils)
+    const focalPositions = usePositions(coils?.map(c => c.coil))
     const camera = useSvCamera(width, height)
     const controls = useSvControls(canvas, camera)
     const renderer = useSvRenderer(canvas, width, height)
@@ -98,7 +103,9 @@ const makeScene = (controls: OrbitControls | undefined, camera: THREE.Perspectiv
 
     scene.add(ambientLight)
     spots.forEach(s => scene.add(s))
-    objects.forEach(obj => scene.add(obj))
+    objects.forEach(obj => {
+        scene.add(obj)
+    })
     
     scene.add(camera)
 

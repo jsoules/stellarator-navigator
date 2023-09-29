@@ -8,21 +8,21 @@ export const useOnClickPlot = (setActiveNfp: Dispatch<SetStateAction<number>>, s
 }
 
 export const onHoverDot = (id: number) => {
-    console.log(`Hovered ${id}`)
+    console.log(`Hovered ${getStringId(id)}`)
 }
 
 export const onHoverOff = (id: number) => {
-    console.log(`Stopped hovering ${id}`)
+    console.log(`Stopped hovering ${getStringId(id)}`)
 }
 
 export const onClickDot = (id: number) => {
-    window.open(`/model/${id}`, "_blank", "noreferrer")
+    window.open(`/model/${getStringId(id)}`, "_blank", "noreferrer")
 }
 
 export const onOpenSelected = (ids?: Set<number>) => {
     const slowOpen = async (id: number) => {
-        console.log(`Opening ${id}`)
-        window.open(`/model/${id}`, "mozillaTab", "noreferrer")
+        console.log(`Opening ${getStringId(id)}`)
+        window.open(`/model/${getStringId(id)}`, "mozillaTab", "noreferrer")
         window.focus()
     }
     if (ids !== undefined) {
@@ -31,4 +31,9 @@ export const onOpenSelected = (ids?: Set<number>) => {
             await new Promise(_ => setTimeout(() => slowOpen(id), 250))
         })
     }
+}
+
+const idLength = 6
+const getStringId = (id: number): string => {
+    return `${id}`.padStart(idLength, '0')
 }

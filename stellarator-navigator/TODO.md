@@ -106,41 +106,38 @@
 
 [x] Provide static instructions for loading the VMEC files after download (two-liner python script a la the one in "received")
 
-[ ] Give option to plot coil currents (found in the graphics/currents/ directory structure)
+[x] REDO THE DATABASE EXPORT WITH QA ROOTED
+
+[x] Add new keys: elongation, shear (slope of best least-squares linear approx of iota_profile); maybe surface_type and message.
+
+[x] BETTER RANGES FOR ELONGATION!
+
+[x] Give option to plot coil currents (found in the graphics/currents/ directory structure)
     
-    [ ] normalized per device, following sign convention
+    [x] normalized per device, following sign convention --> good examples 034440, 034311, 167618
+
+[x] Slider component
+
+[x] Fix out-of-bounds display of marked lines
 
 [ ] Consider automatically updating selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
 
-[ ] REDO THE DATABASE EXPORT WITH QA ROOTED
-    [ ] THEN UPDATE THE LINE SETTING
+[ ] Give user ability to choose criteria for plot-splitting
 
-[ ] Toggle plot-splitting *** OOOH HARD?
-
-[ ] Expose ability for user to choose the color criterion
+[ ] Expose ability for user to choose the field to base dot coloration on
 
 [ ] AVOID REFILTERING for different plots/table selections
+    [ ] Don't hard-code the variable listed in the individual plots
+    [ ] Memoize the hierarchically divided groups at a higher level
 
 [ ] Just implement drag-zoom already
 
 [ ] Improve filtering performance with large numbers of criteria!!
 
-[ ] Poincare thing:
-    inside graphics/poincare is now the poincare plots (those scatter plots) in poincare{ID}_0.txt and poincare{ID}_1.txt
-    the first file is the poincare plot at cylindrical angle=0 degrees and the second file is the poincare plot at cylindrical angle=pi/nfp/2
-    first column is the ID of the dot (dots with the same ID should have the same colour)
-    second and third columns are the (R, Z) positions of the dot
-    next inside graphics/poincare are cross sections of surfaces in the same cylindrical angles angle=0 degrees and cylindrical angle=pi/nfp/2,
-    with file names xs_{ID}_0.txt and xs_{ID}_1.txt.
-    Columns 1 and 2 are the R and Z coordinates of the cross section for one surface.  Columns 2 and 3 are cross sections for two surfaces, etc...
-    these cross sections should be plotted on top of the poincare plots, sort of like this:
-    so the red lines are the sirface cross sections, superimposed on the poincare plot dots
-    SEE SLACK MSG 9/21/23 15:47 ff
+[ ] Add fetching & display of Poincare plots (PNGs)
 
 [ ] Another per-device plot: iota profile. it's in a database key, which contains a list of x-y vals. X is "normalized toroidal flux" (unitless)
     and y is rotational transform value also unitless. Horizontal line of "mean_iota" value for the device.
-
-[ ] Add new keys: elongation, shear (slope of best least-squares linear approx of iota_profile); maybe surface_type and message.
 
 [ ] Use database from permanent location of https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR/
 
@@ -148,9 +145,17 @@
     & that the web server passes through requests to the underlying ceph filesystem... yikes?
     --> OR have them just right-click it.
 
-[ ] Fix out-of-bounds display of QA Error marked line
+[ ] Show/hide for filters (i.e. tab in the control area)
 
-[ ] BETTER RANGES FOR ELONGATION!
+[ ] An "about this" landing page
+
+[ ] Bite the bullet and avoid needing the flask app
+    [ ] Precompute the changes for the graphics files
+    [ ] Import numpy files into Javascript directly
+
+[ ] Rearrange layout of the model display page
+
+[ ] Use consistent componenting for displayed-surfaces checkboxes as for elsewhere
 
 
 QUERY OR DISTANT:

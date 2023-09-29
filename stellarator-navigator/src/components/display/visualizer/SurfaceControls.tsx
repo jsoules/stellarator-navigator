@@ -1,14 +1,16 @@
 import { SelectChangeEvent } from "@mui/material"
+import SnSwitch from "@snComponents/SnSwitch"
 import { SupportedColorMap } from "@snComponents/display/Colormaps"
 import SurfaceCheckboxes from "@snVisualizer/SurfaceCheckboxes"
 import SurfaceColorMapSelector from "@snVisualizer/SurfaceColorMapSelector"
 import { Dispatch, FunctionComponent, SetStateAction, useCallback } from "react"
-import ShowFullRingCheckbox from "./ShowFullRingCheckbox"
 
 type ModelProps = {
     checksNeeded: boolean
     surfaceChecks: boolean[]
     setSurfaceChecks: Dispatch<SetStateAction<boolean[]>>
+    showCurrents: boolean
+    setShowCurrents: Dispatch<SetStateAction<boolean>>
     colorMap: SupportedColorMap
     setColorMap: Dispatch<SetStateAction<SupportedColorMap>>
     showFullRing: boolean
@@ -16,7 +18,7 @@ type ModelProps = {
 }
 
 const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
-    const { checksNeeded, surfaceChecks, setSurfaceChecks, colorMap, setColorMap, showFullRing, setShowFullRing } = props
+    const { checksNeeded, surfaceChecks, setSurfaceChecks, showCurrents, setShowCurrents, colorMap, setColorMap, showFullRing, setShowFullRing } = props
 
     const handleCheckboxChange = useCallback((index: number, newState: boolean) => {
         if (index === -1) {
@@ -40,8 +42,23 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
                     <SurfaceColorMapSelector value={colorMap} onChange={handleColorMapChange} />
                 </div>
             </div>
-            <div style={{padding: 20}}>
-                <ShowFullRingCheckbox value={showFullRing} onChange={setShowFullRing} />
+            <div style={{display: "flex"}}>
+                <div style={{flex: 1, padding: 20}}>
+                    <SnSwitch 
+                        header="Device display"
+                        label="Show complete device?"
+                        checked={showFullRing}
+                        handleChange={setShowFullRing}
+                    />
+                </div>
+                <div style={{flex: 1, padding: 20}}>
+                    <SnSwitch
+                        header="Coil currents"
+                        label="Color coils per currents?"
+                        checked={showCurrents}
+                        handleChange={setShowCurrents}
+                    />                    
+                </div>
             </div>
         </>)
         : <></>

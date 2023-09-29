@@ -1,4 +1,4 @@
-import { DownloadPathsApiResponseObject, SurfaceApiResponseObject, Vec3 } from "@snTypes/Types"
+import { CoilApiResponseRecord, DownloadPathsApiResponseObject, SurfaceApiResponseObject } from "@snTypes/Types"
 import { useEffect, useMemo, useState } from "react"
 
 type apiRequestProps = {
@@ -12,12 +12,13 @@ const PathsEndpoint = "http://127.0.0.1:5000/api/downloadPaths/"
 
 export const useCoils = (props: apiRequestProps) => {
     const { recordId } = props
-    const [ coils, setCoils ] = useState([])
+    const [ coils, setCoils ] = useState<CoilApiResponseRecord[]>([])
     useEffect(() => {
         fetch(`${CurvesEndpoint}${recordId}`)
             .then((response) => response.json())
             .then((coilData) => {
-                coilData.forEach((coil: Vec3[]) => coil.push(coil[0]))
+                // ensure the coils wrap, by pushing the first point of each loop onto the loop's end
+                coilData.forEach(((rec: CoilApiResponseRecord) => rec.coil.push(rec.coil[0])))
                 setCoils(coilData)
             })
             .catch((err) => {

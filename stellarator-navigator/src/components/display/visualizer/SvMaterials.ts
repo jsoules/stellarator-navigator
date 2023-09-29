@@ -16,7 +16,7 @@ export const tubeMaterial = new THREE.MeshPhongMaterial({ color: 0xe0e0e0 })
 export const redTubeMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000 })
 
 // We're not going to fuss over trying to cache the materials,
-// because we expect O(10) curves per device, so the savings
+// because we expect O(60) curves per device, so the savings
 // would likely be minimal
 export const getScaledTubeMaterial = (value: number, scheme: SupportedColorMap): THREE.MeshPhongMaterial => {
     const rgb = valueToRgbTriplet(value, scheme)

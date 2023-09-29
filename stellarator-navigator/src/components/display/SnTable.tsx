@@ -73,7 +73,9 @@ const SnTable: FunctionComponent<SnTableProps> = (props: SnTableProps) => {
             aspectRatio: r.aspectRatio.toFixed(1),
             minorRadius: r.minorRadius.toFixed(3),
             volume: r.volume.toFixed(5),
-            minCoil2SurfaceDist: r.minCoil2SurfaceDist.toFixed(5)
+            minCoil2SurfaceDist: r.minCoil2SurfaceDist.toFixed(5),
+            elongation: r.elongation.toFixed(4),
+            shear: r.shear.toFixed(5)
         }
     })
     // TODO: row selection feature slows down the UI something pretty fierce.

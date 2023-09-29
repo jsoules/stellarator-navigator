@@ -1,4 +1,4 @@
-import { ScalarField, SurfaceApiResponseObject, Vec3, Vec3Field } from '@snTypes/Types'
+import { CoilApiResponseRecord, ScalarField, SurfaceApiResponseObject, Vec3, Vec3Field } from '@snTypes/Types'
 import { MathNumericType, Matrix, cos, index, matrix, multiply, range, sin } from 'mathjs'
 import { useMemo } from 'react'
 
@@ -60,29 +60,33 @@ angleFractionsPerNfp.map((v, i) => {
  * plotted individually. If there were k coils in the input set, there will be
  * 2 * k * nfp coils in the resulting output.
  */
-export const useFullRingCoils = (inputCoils: Vec3[][], nfp: number) => {
-    // Each coil is represented as 160 points in x-y-z space making a loop.
-    // Step 1: convert our array of 3-vector 160-point loops into an array of N [coils] matrices,
-    // each 160 [point-count] x 3 [x,y,z]
+// export const useFullRingCoils = (inputCoils: Vec3[][], nfp: number) => {
+export const useFullRingCoils = (coilRecords: CoilApiResponseRecord[], nfp: number) => {
+    // Each coil is represented as 161 points in x-y-z space making a loop.
+    // Step 1: convert our array of 3-vector 161-point loops into an array of N [coils] matrices,
+    // each 161 [point-count] x 3 [x,y,z]
     const inputsAsMatrices = useMemo(() => 
-        inputCoils.map(item => (
-            matrix(item.map(pt => [...pt]))
-        )), [inputCoils])
+        coilRecords.map(record => (
+            matrix(record.coil.map(pt => [...pt]))
+        )), [coilRecords])
 
     // Step 2: apply transformations to matrix to create the missing coils
     return useMemo(() => {
         if (inputsAsMatrices.length === 0) return []
         const transforms = coilTransformMatrices[nfp]
-        // The mult would give us a list of transformed coils per base coil; flatten to put them all on equal footing
-        const realizedItemMatrices = transforms.map(t => inputsAsMatrices.map(obj => multiply(obj, t))).flat()
-        // Finally, convert the [2 * nfp * n-base-coil] result matrices--each of which is 160 (points) x 3 (x,y,z) --
-        // back into an array of 160 Vec3s.
-        const finalItems = realizedItemMatrices.map(itemMatrix => {
-            const pts = itemMatrix.valueOf() as MathNumericType[][]
-            return pts.map(v => [v[0], v[1], v[2]] as Vec3)
-        })
-        return finalItems as Vec3[][]
-    }, [inputsAsMatrices, nfp])
+        // The mult gives us a list of transformed coil groups based on the original input coil:
+        const realizedCoilMatrixSets = inputsAsMatrices.map(obj => transforms.map(t => multiply(obj, t)))
+        // For each of these groups, convert each of the [2 * nfp * ncPerHp] result matrices back into
+        // an array of 161 Vec3s, then wrap that back into a CoilApiResponseRecord so that it has the correct current.
+        // Finally, flatten the overall result and return.
+        const coilGroupsWithCurrents = realizedCoilMatrixSets.map((matrixGroup, groupIndex) =>
+            matrixGroup.map((coilMatrix) => {
+                const pts = (coilMatrix.valueOf() as MathNumericType[][]).map(v => [v[0], v[1], v[2]] as Vec3)
+                return { coil: pts, current: coilRecords[groupIndex].current } as CoilApiResponseRecord
+            })
+        )
+        return coilGroupsWithCurrents.flat() as CoilApiResponseRecord[]
+    }, [coilRecords, inputsAsMatrices, nfp])
 }
 
 /**

@@ -169,9 +169,9 @@ const blueOrange = (value: number): string => {
     // Specifically, full blue = -1 = azure = #007FFF,
     // full orange = 1 = #FF7F00.
     // So our midpoint will be #7F7F7F-gray.
-    const offset = Math.floor(128 * Math.abs(value))
-    const low = toPaddedRgb(Math.max(0, 127 - offset))
-    const high = toPaddedRgb(Math.min(255, 127 + offset))
+    const offset = 0.5 * Math.abs(value)
+    const low = toPaddedRgb(Math.max(0, 0.5 - offset))
+    const high = toPaddedRgb(Math.min(1, 0.5 + offset))
     return value === 0
         ? '#7f7f7f'
         : value < 0

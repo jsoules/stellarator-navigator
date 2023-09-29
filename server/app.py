@@ -8,8 +8,8 @@ CORS(app)
 ## TODO: Use more robust path management
 
 INVALID_PATH_SENTINEL = "INVALID_TYPE"
-valid_endpoint_types = ['curves', 'surfaces', 'modB', 'downloadPaths', 'nml', 'simsopt_serials']
-graphics_types = ['curves', 'surfaces', 'modB',]
+valid_endpoint_types = ['curves', 'surfaces', 'modB', 'downloadPaths', 'nml', 'simsopt_serials', 'currents']
+graphics_types = ['curves', 'currents', 'surfaces', 'modB',]
 database_root = "../stellarator_database"
 
 NORMALIZE_SURFACES_PER_SURFACE = True
@@ -20,7 +20,7 @@ def index() -> str:
 
 
 @app.route('/api/<type>/<id>')
-def get_coils(type: str, id: str):
+def get_data(type: str, id: str):
     if (not id_clean(id) or not (type in valid_endpoint_types)):
         abort(400)
     try:
@@ -37,7 +37,10 @@ def get_coils(type: str, id: str):
         return response
     except FileNotFoundError:
         abort(404)
-    except:
+    except Exception as e:
+        # print(e.args)
+        # print(e)
+
         abort(500)
 
 
@@ -69,8 +72,12 @@ def fetch_curves(id: str):
     path = make_file_path(id, type='curves')
     # * 10 to put the points into an order of magnitude that's more comfortable
     # for the 3D library
-    points = np.loadtxt(path).reshape((160, -1, 3)).transpose((1, 0, 2)) * 10
-    return points.tolist()
+    coils = np.loadtxt(path).reshape((160, -1, 3)).transpose((1, 0, 2)) * 10
+    currents_path = make_file_path(id, type='currents')
+    currents = np.loadtxt(currents_path)
+    currents = currents / np.max(np.abs(currents)) # normalize current values per device
+    response = [{'coil': coils[i].tolist(), 'current': currents[i]} for i in range(currents.shape[0])]
+    return response
 
 
 def fetch_surfaces(id: str):
@@ -109,7 +116,6 @@ def fetch_download_paths(id: str):
     tmp_public_root = 'https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR'
     real_vmec_path = vmec_path.replace(database_root, tmp_public_root, 1)
     real_simsopt_path = simsopt_path.replace(database_root, tmp_public_root, 1)
-    print(f"vmec path: {real_vmec_path} simsopt path: {real_simsopt_path}")
 
     return { "vmecPath": real_vmec_path, "simsoptPath": real_simsopt_path }
 

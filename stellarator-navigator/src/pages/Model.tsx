@@ -30,6 +30,7 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     const [surfaceChecks, setSurfaceChecks] = useState<boolean[]>(Array(rec.nSurfaces).fill(true))
     const [colorMap, setColorMap] = useState<SupportedColorMap>('plasma')
     const [showFullRing, setShowFullRing] = useState<boolean>(false)
+    const [showCurrents, setShowCurrents] = useState<boolean>(true)
 
     const surfacesExist = useMemo(() => baseSurfs.surfacePoints !== undefined && baseSurfs.surfacePoints.length !== 0, [baseSurfs])
     const coils = showFullRing ? fullCoils : baseCoils
@@ -49,11 +50,14 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
                     surfaceChecks={surfaceChecks}
                     colorScheme={colorMap}
                     displayedPeriods={showFullRing ? 2 * rec.nfp : 1}
+                    showCurrents={showCurrents}
                 />
                 <SurfaceControls
                     checksNeeded={surfacesExist}
                     surfaceChecks={surfaceChecks}
                     setSurfaceChecks={setSurfaceChecks}
+                    showCurrents={showCurrents}
+                    setShowCurrents={setShowCurrents}
                     colorMap={colorMap}
                     setColorMap={setColorMap}
                     showFullRing={showFullRing}

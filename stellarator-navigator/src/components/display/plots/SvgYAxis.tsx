@@ -11,6 +11,7 @@ type AxisProps = {
     dims: BoundedPlotDimensions
 }
 
+const markLineColor = "#1f77b4" // should be equivalent to the tableau blue that was the default
 
 const computeTicksToLabel = (allTicks: number[]) => {
     // For log scale, ticks will cluster at the upper ends of each order of magnitude.
@@ -76,9 +77,8 @@ const useMarkedYLine = (canvasHeight: number, isLog: boolean, type: DependentVar
         const mark = Fields[type].markedValue
         if (mark === undefined) return undefined
         const markedValue = isLog ? 10 ** mark : mark
-        const realizedY = canvasHeight - yScale(markedValue)
-        console.log(realizedY)
-        return realizedY >= 0 ? realizedY : undefined
+        const effectiveY = yScale(markedValue)
+        return effectiveY >= 0 ? canvasHeight - effectiveY : undefined
     }, [canvasHeight, isLog, type, yScale])
 }
 
@@ -90,7 +90,6 @@ const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
         `translate(-${dims.clipAvoidanceXOffset + dims.tickLength}, -${dims.clipAvoidanceYOffset})`,
         [dims.clipAvoidanceXOffset, dims.clipAvoidanceYOffset, dims.tickLength]
     )
-    const markLineColor = "#1f77b4" // should be equivalent to the tableau blue that was the default
     
     const yScale = useMemo(() => {
         return isLog
