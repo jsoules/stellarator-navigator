@@ -472,22 +472,3 @@ export enum CategoricalIndexedFields {
     NFOURIER = 'nFourierCoil',
     NSURFACES = 'nSurfaces'
 }
-
-// x qa_error:  0 means perfect QA on the volume --> Quasiasymmetry error (directly related to particle losses) (no unit) --> THIS SHOULD BE SQRT OF THE QUANTITY!
-// x coil_length_per_hp: length of coil used per half period (meters)
-// x total_coil_length: total coil length used to construct the coils (meters)
-// x mean_iota:
-// x max_kappa: max curvature in the coils of the device (we don't want this above 5 meters^-1) "max curvature" (1/meters)
-// x max_msc: maximum mean squared curvature of the coils (we don't want this above 5 meters^-2) "max mean squared curvature" (1/meters-squared)
-// x min_coil2coil_dist: minimum intercoil distance in meters (we don't want this below 10 cm) "minimum intercoil distance" (meters)
-// x nc_per_hp: number of discrete coils per half period of the device "coils per half period" (unitless)
-// x nfp: discrete rotational symmetry "Number of field periods" (unitless) 
-// x aspect_ratio: the aspect ratio of the device. (obvs) (unitless) (note it is using the VMEC definition)
-// x ID: ID number of the device. (obvs) (unitless)
-// x globalization_method: the global optimization algorithm I used to get that device, either 0 or 1. 0 = "naive" 1 = "TuRBO"
-// x minor_radius: the minor radius of the outermost surface "minor radius" (explain that this is scaled so major radius is always 1) (meters)
-// x Nfourier_coil: the number of Fourier modes used to represent each modular coil, either 6, or 16. (for plotting, some coils have 60 points, others have 160)
-// x Nsurfaces: number of surfaces on which quasisymmetry was optimized. --> Should correspond to the # of surfaces in the database
-// x volume: the volume enclosed by the outermost toroidal surface on which quasisymmetry was optimized. --> in meters cubed.
-// x min_coil2surface_dist: 
-// x gradient: norm of gradient at the final iteration of the optimization algorithm,  indication of how close we are to optimality --> arbitrary, part of optimizer

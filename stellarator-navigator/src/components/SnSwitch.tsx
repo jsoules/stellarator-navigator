@@ -13,7 +13,7 @@ const SnSwitch: FunctionComponent<SwitchProps> = (props: SwitchProps) => {
     const { checked, handleChange, header, label } = props
 
     return (
-        <div className="sliderWrapper">
+        <div className="switchWrapper">
             <Typography fontWeight="bold">
                 {header}
             </Typography>
@@ -22,7 +22,7 @@ const SnSwitch: FunctionComponent<SwitchProps> = (props: SwitchProps) => {
                     <Switch
                         checked={checked}
                         onChange={() => handleChange(!checked)}
-                        // size="small"
+                        size="small"
                     />
                 }
                 label={label}

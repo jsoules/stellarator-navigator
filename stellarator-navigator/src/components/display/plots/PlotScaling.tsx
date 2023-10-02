@@ -1,4 +1,4 @@
-import { DependentVariables, Fields, IndependentVariables, RangeVariables, defaultDependentVariableValue, defaultIndependentVariableValue, getEnumVals } from "@snTypes/DataDictionary"
+import { DependentVariables, Fields, IndependentVariables, RangeVariables, defaultDependentVariableValue, defaultIndependentVariableValue, getEnumVals, getLabel } from "@snTypes/DataDictionary"
 import { BoundedPlotDimensions, FilterSettings } from "@snTypes/Types"
 import { ScaleLinear, scaleLinear } from "d3"
 import { useMemo } from "react"
@@ -64,19 +64,23 @@ type axisProps = {
 export const useAxes = (props: axisProps) => {
     const { xScale, yScale, dependentVar, independentVar, dims, } = props
     const xAxis = useMemo(() => {
+        const axisLabel = getLabel({name: independentVar, labelType: 'plot'})
         return <SvgXAxis
                     dataDomain={xScale.domain()}
                     canvasRange={xScale.range()}
                     dims={dims}
-                    type={independentVar}
+                    axisLabel={axisLabel}
                 />
     }, [xScale, dims, independentVar])
 
     const yAxis = useMemo(() => {
+        const axisLabel = getLabel({name: dependentVar, labelType: 'plot'})
         return <SvgYAxis
                     dataRange={yScale.domain()} 
                     canvasRange={yScale.range()}
-                    type={dependentVar}
+                    axisLabel={axisLabel}
+                    isLog={Fields[dependentVar].isLog}
+                    markedValue={Fields[dependentVar].markedValue}
                     dims={dims}
                 />
     }, [dependentVar, yScale, dims])
@@ -85,7 +89,7 @@ export const useAxes = (props: axisProps) => {
 }
 
 
-// TODO: These will be tweaked
+// TODO: These may be tweaked
 export const plotGutterVertical = 15
 export const plotGutterHorizontal = 15
 const minPlotX = 250
@@ -98,7 +102,7 @@ const maxPlotAspect = 2.5
 // TODO: Add SvgYAxis (clipAvoidanceX, clipAvoidanceY, axisLabelOffset) and SvgXAxis (clipAvoidanceOffset) to this
 // and make them proportional to the other hard-coded values for consistent styling
 const fontPx = 10
-const baseDims = {
+export const baseDims = {
     marginTop: 30,
     marginRight: 20,
     marginBottom: 60,

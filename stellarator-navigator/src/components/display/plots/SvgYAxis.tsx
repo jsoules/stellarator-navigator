@@ -1,5 +1,4 @@
 
-import { DependentVariables, Fields, getLabel, } from "@snTypes/DataDictionary"
 import { BoundedPlotDimensions } from "@snTypes/Types"
 import { ScaleLinear, scaleLinear, scaleLog } from "d3"
 import { FunctionComponent, useMemo } from "react"
@@ -7,7 +6,9 @@ import { FunctionComponent, useMemo } from "react"
 type AxisProps = {
     dataRange: number[]
     canvasRange: number[]
-    type: DependentVariables
+    axisLabel: string
+    isLog: boolean
+    markedValue?: number
     dims: BoundedPlotDimensions
 }
 
@@ -72,20 +73,19 @@ const useTicks = (canvasHeight: number, pixelsPerTick: number, dataLow: number, 
 }
 
 
-const useMarkedYLine = (canvasHeight: number, isLog: boolean, type: DependentVariables, yScale: ScaleLinear<number, number, never>) => {
+const useMarkedYLine = (canvasHeight: number, isLog: boolean, yScale: ScaleLinear<number, number, never>, markedValue?: number) => {
     return useMemo(() => {
-        const mark = Fields[type].markedValue
+        const mark = markedValue
         if (mark === undefined) return undefined
-        const markedValue = isLog ? 10 ** mark : mark
-        const effectiveY = yScale(markedValue)
+        const _markedValue = isLog ? 10 ** mark : mark
+        const effectiveY = yScale(_markedValue)
         return effectiveY >= 0 ? canvasHeight - effectiveY : undefined
-    }, [canvasHeight, isLog, type, yScale])
+    }, [canvasHeight, isLog, markedValue, yScale])
 }
 
 
 const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
-    const { dataRange, canvasRange, type, dims } = props
-    const isLog = Fields[type].isLog
+    const { dataRange, canvasRange, axisLabel, isLog, markedValue, dims } = props
     const yAxisTransform = useMemo(() =>
         `translate(-${dims.clipAvoidanceXOffset + dims.tickLength}, -${dims.clipAvoidanceYOffset})`,
         [dims.clipAvoidanceXOffset, dims.clipAvoidanceYOffset, dims.tickLength]
@@ -102,7 +102,7 @@ const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
     }, [canvasRange])
 
     const ticks = useTicks(canvasHeight, dims.pixelsPerTick, dataRange[0], dataRange[1], yScale, isLog)
-    const markedLineY = useMarkedYLine(canvasHeight, isLog, type, yScale)
+    const markedLineY = useMarkedYLine(canvasHeight, isLog, yScale, markedValue)
 
     // The SVG construction is pretty hairy--consider functionalizing out at some point
     return (
@@ -140,7 +140,6 @@ const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
             })}
             {markedLineY && (
                 <g
-                
                     key={"markedLine"}
                     transform={`translate(${dims.tickLength + dims.clipAvoidanceXOffset}, ${markedLineY + dims.clipAvoidanceYOffset})`}
                 >
@@ -153,7 +152,7 @@ const SvgYAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
                     fontSize: `${1.5*dims.fontPx}px`,
                     textAnchor: "middle"
                 }} transform="rotate(-90)">
-                    {getLabel({name: type, labelType: 'plot'})}
+                    {axisLabel}
                 </text>
             </g>
         </g>

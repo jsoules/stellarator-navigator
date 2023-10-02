@@ -37,6 +37,11 @@
 
 .sliderWrapper {
     padding-left: 8px;
+    padding-top: 10px;
+}
+
+.switchWrapper {
+    padding-left: 8px;
 }
 
 div .overviewTable {
@@ -78,4 +83,20 @@ div .flexWrapper {
 
 div .indent {
     padding-left: 20px;
+}
+
+div .iotaProfileWrapper {
+    margin: 20px;
+}
+
+div .padded {
+    padding: 20px;
+}
+
+div .poincareContainer {
+    max-width: 1400px;
+}
+
+.poincareContainer img {
+    max-width: 100%;
 }

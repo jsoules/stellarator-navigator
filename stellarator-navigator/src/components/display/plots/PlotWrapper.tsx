@@ -2,8 +2,8 @@ import { DependentVariables, IndependentVariables } from "@snTypes/DataDictionar
 import { BoundedPlotDimensions, StellaratorRecord } from "@snTypes/Types"
 import { ScaleLinear } from "d3"
 import { FunctionComponent, useMemo, } from "react"
-import HybridSnScatterplot from "./HybridSnScatterplot"
 import { plotGutterHorizontal, plotGutterVertical } from "./PlotScaling"
+import SnScatterplot from "./SnScatterplot"
 
 type Props = {
     dims: BoundedPlotDimensions
@@ -26,7 +26,7 @@ type Props = {
 }
 
 
-const SvgWrapper: FunctionComponent<Props> = (props: Props) => {
+const PlotWrapper: FunctionComponent<Props> = (props: Props) => {
     const { dims, xAxis, yAxis, data, dependentVar, independentVar, highlightedSeries, markedIds, nfpValue, ncPerHpValue, xScale, yScale, clickHandler } = props
 
     const contentScaleTransform = useMemo(() =>
@@ -53,7 +53,7 @@ const SvgWrapper: FunctionComponent<Props> = (props: Props) => {
                 <g transform={contentScaleTransform} key="plot-content">
                     {xAxis}
                     {yAxis}
-                    <HybridSnScatterplot
+                    <SnScatterplot
                         key={`plot-${nfpValue}-${ncPerHpValue}`}
                         data={data}
                         dependentVar={dependentVar}
@@ -72,4 +72,4 @@ const SvgWrapper: FunctionComponent<Props> = (props: Props) => {
     )
 }
 
-export default SvgWrapper
+export default PlotWrapper

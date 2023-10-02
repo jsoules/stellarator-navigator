@@ -1,3 +1,4 @@
+import { getStringId } from "@snUtil/useResourcePath"
 import { Dispatch, SetStateAction, useCallback } from "react"
 
 export const useOnClickPlot = (setActiveNfp: Dispatch<SetStateAction<number>>, setActiveNc: Dispatch<SetStateAction<number | undefined>>) => {
@@ -31,9 +32,4 @@ export const onOpenSelected = (ids?: Set<number>) => {
             await new Promise(_ => setTimeout(() => slowOpen(id), 250))
         })
     }
-}
-
-const idLength = 6
-const getStringId = (id: number): string => {
-    return `${id}`.padStart(idLength, '0')
 }

@@ -1,6 +1,8 @@
 import HrBar from "@snComponents/HrBar"
 import { SupportedColorMap } from "@snComponents/display/Colormaps"
 import DownloadLinks from "@snComponents/display/visualizer/DownloadLinks"
+import IotaProfilePlot from "@snComponents/display/visualizer/IotaProfilePlot"
+import PoincarePlot from "@snComponents/display/visualizer/PoincarePlot"
 import SurfaceControls from "@snComponents/display/visualizer/SurfaceControls"
 import { useFullRingCoils, useFullRingSurface } from "@snComponents/display/visualizer/useFullRing"
 import { NavigatorContext } from "@snState/NavigatorContext"
@@ -64,6 +66,10 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
                     setShowFullRing={setShowFullRing}
                 />
             </div>
+            <HrBar />
+            <IotaProfilePlot iotaProfile={rec.iotaProfile} meanIota={rec.meanIota} width={500} height={500} />
+            <HrBar />
+            <PoincarePlot id={rec.id} />
             <HrBar />
             <RecordManifest rec={rec} />
             <HrBar />

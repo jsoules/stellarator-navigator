@@ -56,7 +56,7 @@ const Dot: FunctionComponent<dotProps> = (props: dotProps) => {
 }
 
 
-const HybridSnScatterplot: FunctionComponent<ScatterplotProps> = (props: ScatterplotProps) => {
+const SnScatterplot: FunctionComponent<ScatterplotProps> = (props: ScatterplotProps) => {
     const { colormap, data, xScale, yScale, height, markedIds, dependentVar, independentVar, nfpValue, ncPerHpValue } = props
     if (data === undefined || data.length === 0) return <></>
     const _colors = (colormap ?? Tol) as string[]
@@ -83,4 +83,4 @@ const HybridSnScatterplot: FunctionComponent<ScatterplotProps> = (props: Scatter
     return dots
 }
 
-export default HybridSnScatterplot
+export default SnScatterplot

@@ -63,6 +63,22 @@ const RecordManifest: FunctionComponent<recordProps> = (props: recordProps) => {
             <span className="manifestLabel">{getLabel({name: "minCoil2SurfaceDist", labelType: "full"})}:</span>
             <span>{rec.minCoil2SurfaceDist}</span>
         </div>
+        <div key="elongation">
+            <span className="manifestLabel">{getLabel({name: "elongation", labelType: "full"})}:</span>
+            <span>{rec.elongation}</span>
+        </div>
+        <div key="shear">
+            <span className="manifestLabel">{getLabel({name: "shear", labelType: "full"})}:</span>
+            <span>{rec.shear}</span>
+        </div>
+        <div key="message">
+            <span className="manifestLabel">{getLabel({name: "message", labelType: "full"})}:</span>
+            <span>{rec.message}</span>
+        </div>
+        <div key="surfaceTypes">
+            <span className="manifestLabel">{getLabel({name: "surfaceTypes", labelType: "full"})}:</span>
+            <span>{rec.surfaceTypes.join(", ")}</span>
+        </div>
         <div key="gradient">
             <span className="manifestLabel">{getLabel({name: "gradient", labelType: "full"})}:</span>
             <span>{(10 ** rec.gradient).toExponential(10)}</span>

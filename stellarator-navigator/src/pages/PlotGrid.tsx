@@ -4,7 +4,7 @@ import HrBar from "@snComponents/HrBar"
 import OpenSelectedButton from "@snComponents/display/OpenSelected"
 import SnTable from "@snDisplayComponents/SnTable"
 import { computePerPlotDimensions, useAxes, useScales } from "@snPlots/PlotScaling"
-import SvgWrapper from "@snPlots/SvgWrapper"
+import PlotWrapper from "@snPlots/PlotWrapper"
 import { useOnClickPlot } from "@snPlots/interactions"
 import { NavigatorContext } from "@snState/NavigatorContext"
 import { DependentVariables, IndependentVariables } from "@snTypes/DataDictionary"
@@ -64,7 +64,7 @@ const Row: FunctionComponent<RowProps> = (props: RowProps) => {
         {nfps.map(nfp => {
             return (
                 <Grid item xs={colSpan} key={`${nfp}`}>
-                    <SvgWrapper
+                    <PlotWrapper
                         key={`${nfp}-${nc}`}
                         data={data}
                         dependentVar={dependentVar}
@@ -149,7 +149,7 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
 
             <HrBar />
             <SnTable records={allRecords} selectionHandler={selectionHandler} activeNfp={activeNfp} activeNc={activeNc} />
-            <div>
+            <div className="padded">
                 <OpenSelectedButton markedIds={marks} />
             </div>
         </div>

@@ -28,7 +28,7 @@ const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
     const simsoptFile = simsoptPathParts.pop() ?? ""
     const simsoptPath = simsoptPathParts.join("/")
 
-    // return <div style={{paddingLeft: 20}}>
+    // return <div className="indent">
     //             <Tooltip
     //                 title="Download VMEC input file"
     //             >

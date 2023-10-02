@@ -1,6 +1,6 @@
 import { Slider, Typography } from "@mui/material"
 import { Fields, RangeVariables, getLabel } from "@snTypes/DataDictionary"
-import { Fragment, FunctionComponent, useCallback } from "react"
+import { FunctionComponent, useCallback } from "react"
 
 type Props = {
     field: RangeVariables,
@@ -18,7 +18,6 @@ const RangeSlider: FunctionComponent<Props> = (props: Props) => {
     const step = marks ? null : (fieldDesc.range[1] - fieldDesc.range[0])/256
     const changeScale = step === null ? 1 : Math.max(0, -1 * (Math.floor(Math.log10(step))))
 
-    // const valueLabelFormat = fieldDesc.isLog ? (v: number) => `${10 ** v}` : (v: number) => `${v}`
     const valueLabelFormat = step === null
         ? undefined
         : fieldDesc.isLog
@@ -29,8 +28,9 @@ const RangeSlider: FunctionComponent<Props> = (props: Props) => {
     const label = getLabel({name: field, labelType: 'full'})
 
     return (
-        <Fragment>
-            <Typography id="coil-length-per-hp-slider" gutterBottom>
+        <div className="sliderWrapper">
+            {/* TODO: Not sure I love the font weight options here... */}
+            <Typography id={`${label}-slider`} fontWeight="450" gutterBottom>
                 { label }
             </Typography>
             <Slider
@@ -45,14 +45,9 @@ const RangeSlider: FunctionComponent<Props> = (props: Props) => {
                 min={fieldDesc.range[0]}
                 max={fieldDesc.range[1]}
             />
-        </Fragment>
+        </div>
     )
 }
 
 
-
-// scale={calculateValue}
-
 export default RangeSlider
-
-  
