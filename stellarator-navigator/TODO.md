@@ -124,7 +124,17 @@
 
 [x] Prefer CSS classes over setting "style" on elements
 
-[ ] Consider automatically updating selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
+[x] Add fetching & display of Poincare plots (PNGs)
+
+[x] Another per-device plot: iota profile
+
+[x] Rearrange layout of the model display page
+
+[ ] Bite the bullet and avoid needing the flask app
+    [ ] Precompute the changes for the graphics files
+    [ ] Import numpy files into Javascript directly
+
+[ ] Use database from permanent location of https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR/
 
 [ ] Give user ability to choose criteria for plot-splitting
 
@@ -134,16 +144,7 @@
     [ ] Don't hard-code the variable listed in the individual plots
     [ ] Memoize the hierarchically divided groups at a higher level
 
-[ ] Just implement drag-zoom already
-
 [ ] Improve filtering performance with large numbers of criteria!!
-
-[ ] Add fetching & display of Poincare plots (PNGs)
-
-[ ] Another per-device plot: iota profile. it's in a database key, which contains a list of x-y vals. X is "normalized toroidal flux" (unitless)
-    and y is rotational transform value also unitless. Horizontal line of "mean_iota" value for the device.
-
-[ ] Use database from permanent location of https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR/
 
 [ ] Figure out how to ensure the Javascript app is delivered from the same origin as the web server
     & that the web server passes through requests to the underlying ceph filesystem... yikes?
@@ -153,11 +154,9 @@
 
 [ ] An "about this" landing page
 
-[ ] Bite the bullet and avoid needing the flask app
-    [ ] Precompute the changes for the graphics files
-    [ ] Import numpy files into Javascript directly
+[ ] Consider automatically updating selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
 
-[ ] Rearrange layout of the model display page
+[ ] Just implement drag-zoom already
 
 
 QUERY OR DISTANT:

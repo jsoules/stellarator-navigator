@@ -73,8 +73,22 @@ div .codeSnippetWrapper {
     padding-left: 20px;
 }
 
+div .simulationViewParent {
+    width: 100%
+}
+
 div .simulationViewWrapper {
     padding: 10px;
+}
+
+div .simulationViewWrapperLeft {
+    padding: 10px;
+    flex: 2;
+}
+
+div .simulationViewWrapperRight {
+    padding: 10px;
+    flex: 1;
 }
 
 div .flexWrapper {
@@ -94,9 +108,9 @@ div .padded {
 }
 
 div .poincareContainer {
-    max-width: 1400px;
+    margin: 10px;
 }
 
 .poincareContainer img {
-    max-width: 100%;
+    max-width: 98%;
 }

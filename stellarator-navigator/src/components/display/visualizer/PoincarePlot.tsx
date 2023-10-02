@@ -1,3 +1,4 @@
+// import { Typography } from "@mui/material"
 import useResourcePath, { KnownPathType, getStringId } from "@snUtil/useResourcePath"
 import { FunctionComponent } from "react"
 
@@ -10,7 +11,8 @@ const PoincarePlot: FunctionComponent<PoincarePlotProps> = (props: PoincarePlotP
     const path = useResourcePath(strId, KnownPathType.POINCARE)
     return (
         <div className="poincareContainer">
-            <img src={path} alt={`Poincare plot for device ${strId}`} />
+            {/* <Typography align="center" fontWeight="bold">Poincaré Plots</Typography> */}
+            <img src={path} alt={`Poincare plot for device ${strId}`} className="poincareContainer" />
         </div>
     )
 }

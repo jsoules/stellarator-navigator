@@ -462,7 +462,7 @@ export const Fields: FieldRecords = {
     }
 }
 
-export const GlobalizationMethodNames = ["naive", "TuRBO"]
+export const GlobalizationMethodNames = ["TuRBO", "naive"]
 
 export enum CategoricalIndexedFields {
     MEAN_IOTA = 'meanIota',
