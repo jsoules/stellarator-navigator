@@ -27,6 +27,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+**/public/graphics
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -53,6 +54,7 @@ pip-delete-this-directory.txt
 
 # Unit test / coverage reports
 htmlcov/
+**/coverage/
 .tox/
 .nox/
 .coverage

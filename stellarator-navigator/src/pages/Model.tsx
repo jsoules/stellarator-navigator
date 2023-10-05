@@ -9,7 +9,7 @@ import { NavigatorContext } from "@snState/NavigatorContext"
 import useWindowDimensions from "@snUtil/useWindowDimensions"
 import RecordManifest from "@snVisualizer/RecordManifest"
 import SimulationView from "@snVisualizer/SimulationView"
-import { useCoils, useDownloadPaths, useSurfaces } from "@snVisualizer/fetch3dData"
+import { useCoils_, useDownloadPaths, useSurfaces_ } from "@snVisualizer/fetch3dData"
 import { FunctionComponent, useContext, useMemo, useRef, useState } from "react"
 
 type ModelProps = {
@@ -25,8 +25,8 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     const numericId = typeof(id) === "number" ? id : parseInt(id)
     const rec = fetchRecords(new Set([numericId]))[0]
     const downloadPaths = useDownloadPaths({ recordId: `${id}` })
-    const baseCoils = useCoils({ recordId: `${id}` })
-    const baseSurfs = useSurfaces({ recordId: `${id}` })
+    const baseCoils = useCoils_({ recordId: `${id}` })
+    const baseSurfs = useSurfaces_({ recordId: `${id}` })
     const fullCoils = useFullRingCoils(baseCoils, rec.nfp)
     const fullSurfs = useFullRingSurface(baseSurfs, rec.nfp) // have to double because they're really half-periods
     
@@ -73,9 +73,9 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
                     />
                 </div>
                 <div style={{width: Math.floor(rw)}}>
-                    <IotaProfilePlot iotaProfile={rec.iotaProfile} meanIota={rec.meanIota} width={rw} height={rw} />
-                    <HrBar />
                     <RecordManifest rec={rec} />
+                    <HrBar />
+                    <IotaProfilePlot iotaProfile={rec.iotaProfile} meanIota={rec.meanIota} width={rw} height={rw} />
                 </div>
             </div>
             <HrBar />

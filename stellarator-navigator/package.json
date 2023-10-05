@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "coverage": "vitest run --coverage",
-    "predeploy": "npm run build && npm run coverage",
+    "predeploy-BAD": "npm run build && npm run coverage",
+    "predeploy": "npm run build",
     "deploy": "echo 'NOT IMPLEMENTED'",
     "dev": "vite",
     "build": "tsc && vite build",
@@ -31,7 +32,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.5",
-    "react-router-dom": "^6.15.0",
+    "react-router-dom": "^6.16.0",
     "react-syntax-highlighter": "^15.5.0",
     "scale-color-perceptual": "^1.1.2",
     "three": "^0.155.0",

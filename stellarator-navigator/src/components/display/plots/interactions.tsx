@@ -1,6 +1,8 @@
 import { getStringId } from "@snUtil/useResourcePath"
 import { Dispatch, SetStateAction, useCallback } from "react"
 
+const BASENAME = import.meta.env.BASE_URL
+
 export const useOnClickPlot = (setActiveNfp: Dispatch<SetStateAction<number>>, setActiveNc: Dispatch<SetStateAction<number | undefined>>) => {
     return useCallback((nfp: number, nc?: number) => {
         setActiveNfp(nfp)
@@ -17,13 +19,13 @@ export const onHoverOff = (id: number) => {
 }
 
 export const onClickDot = (id: number) => {
-    window.open(`/model/${getStringId(id)}`, "_blank", "noreferrer")
+    window.open(`${BASENAME}/model/${getStringId(id)}`, "_blank", "noreferrer")
 }
 
 export const onOpenSelected = (ids?: Set<number>) => {
     const slowOpen = async (id: number) => {
         console.log(`Opening ${getStringId(id)}`)
-        window.open(`/model/${getStringId(id)}`, "mozillaTab", "noreferrer")
+        window.open(`${BASENAME}/model/${getStringId(id)}`, "mozillaTab", "noreferrer")
         window.focus()
     }
     if (ids !== undefined) {

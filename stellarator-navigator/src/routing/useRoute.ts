@@ -2,6 +2,7 @@
 // (https://github.com/flatironinstitute/mcmc-monitor/blob/4bef724d9a02163ade5a110764cace24144a9f57/src/util/useRoute.ts)
 
 import { useCallback, useMemo } from "react"
+// import { NavigateFunction, useLocation, useNavigate } from "react-router-dom"
 import { useLocation, useNavigate } from "react-router-dom"
 
 export type Route = {
@@ -24,10 +25,14 @@ const isPlausibleRecordId = (id: string): boolean => {
 
 
 const redirectHome = (): Route => {
-    window.history.replaceState(null, "", "/")
+// const redirectHome = (navigate: NavigateFunction): Route => {
+    // window.history.replaceState(null, "", `${BASENAME}/`)
+    window.history.replaceState(null, "", `/`)
+    // navigate("/", { replace: true })
     return { page: "home" }
 }
 
+const BASENAME = import.meta.env.BASE_URL
 
 const useRoute = () => {
     const location = useLocation()
@@ -35,20 +40,23 @@ const useRoute = () => {
 
     const setRoute = useCallback((r: Route) => {
         if (r.page === 'home') {
-            navigate({...location, pathname: ''})
+            navigate({...location, pathname: `${BASENAME}`})
         }
         if (r.page === 'model') {
-            navigate({...location, pathname: `/model/${r.recordId}`})
+            navigate({...location, pathname: `${BASENAME}/model/${r.recordId}`})
         }
     }, [location, navigate])
 
     const route: Route = useMemo(() => {
-        if (location.pathname.startsWith('/model/')) {
+        console.log(`\tRouting for ${location.pathname}`)
+        if (location.pathname.startsWith(`/model/`)) {
             // URLs of form BASENAME/model/MODEL_ID
             const tokens = location.pathname.split('/')
             const recordId = tokens[2]
+            console.log(`Pathname ${location.pathname} token is ${recordId}`)
             if (!isPlausibleRecordId(recordId)) {
                 console.warn(`Requested record ID ${recordId} is invalid.`)
+                // return redirectHome(navigate)
                 return redirectHome()
             }
             return {
@@ -56,9 +64,10 @@ const useRoute = () => {
                 recordId: recordId
             }
         } else {
+            // return redirectHome(navigate)
             return redirectHome()
         }
-    }, [location])
+    }, [location.pathname])
 
     return { route, setRoute }
 }

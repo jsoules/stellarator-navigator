@@ -1,6 +1,6 @@
 import { coilLengthPerHpValidValues, meanIotaValidValues, nFourierCoilValidValues, nSurfacesValidValues, ncPerHpValidValues, nfpValidValues, totalCoilLengthValidValues } from "./ValidValues"
 
-export const getEnumVals = (x: object) => {
+export const getEnumVals = (x: object): string[] => {
     return Object.values(x).filter(v => isNaN(Number(v)))
 }
 

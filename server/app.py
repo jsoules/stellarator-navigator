@@ -12,7 +12,7 @@ valid_endpoint_types = ['curves', 'surfaces', 'modB', 'downloadPaths', 'nml', 's
 graphics_types = ['curves', 'currents', 'surfaces', 'modB',]
 database_root = "../stellarator_database"
 
-NORMALIZE_SURFACES_PER_SURFACE = True
+NORMALIZE_SURFACES_PER_SURFACE = False
 
 @app.route('/')
 def index() -> str:
@@ -86,12 +86,6 @@ def fetch_surfaces(id: str):
     # Again, multiply by 10 to put points in a more comfortable range for three.js
     surfs = np.loadtxt(s_path).reshape((30, 30, -1, 3)).transpose((2, 0, 1, 3)) * 10
     modB = np.loadtxt(m_path).reshape((30, 30, -1)).transpose((2, 0, 1))
-    # Bs = []
-    # for k in range(modB.shape[0]):
-    #     B = (modB[k, :, :] - np.min(modB[k, :, :]))
-    #     B = B / np.max(B)
-    #     Bs.append(B)
-    # normalized_modB = np.array(Bs)
 
     tmp = modB.reshape((-1, 900))
     if NORMALIZE_SURFACES_PER_SURFACE:

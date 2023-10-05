@@ -130,11 +130,25 @@
 
 [x] Rearrange layout of the model display page
 
-[ ] Bite the bullet and avoid needing the flask app
-    [ ] Precompute the changes for the graphics files
-    [ ] Import numpy files into Javascript directly
+[x] Bite the bullet and avoid needing the flask app
+    [x] Precompute the changes for the graphics files
 
-[ ] Use database from permanent location of https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR/
+[x] Use database from permanent location of https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR/
+    --> NOTE: That isn't actually the permanent location
+
+[ ] Big routing rewrite
+    [ ] static landing page
+    [ ] download database async
+    [ ] enable button to plotting page once database is set up
+    [ ] "loading" screens for components that make fetch requests
+    [ ] inject *data* into plotting components, *NOT* fetch that data internally
+
+
+[ ] DOWNLOAD COMPRESSED JSON!!
+
+[ ] Filter dots by radius
+    [ ] Probably happens *above* the plotting component level?
+    [ ] (Since we've already got the scales and everything)
 
 [ ] Give user ability to choose criteria for plot-splitting
 
