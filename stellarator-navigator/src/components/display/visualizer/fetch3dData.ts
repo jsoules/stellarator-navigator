@@ -1,91 +1,17 @@
 import { CoilApiResponseRecord, ScalarField, SurfaceApiResponseObject, Vec3, Vec3Field } from "@snTypes/Types"
 import useResourcePath, { KnownPathType } from "@snUtil/useResourcePath"
-// import { CoilApiResponseRecord, DownloadPathsApiResponseObject, SurfaceApiResponseObject } from "@snTypes/Types"
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react"
 
 type apiRequestProps = {
     recordId: string
 }
 
-// const CurvesEndpoint = "http://127.0.0.1:5000/api/curves/"
-// const SurfacesEndpoint = "http://127.0.0.1:5000/api/surfaces/"
-// const PathsEndpoint = "http://127.0.0.1:5000/api/downloadPaths/"
 
-
-// export const useCoils = (props: apiRequestProps) => {
-//     const { recordId } = props
-//     const [ coils, setCoils ] = useState<CoilApiResponseRecord[]>([])
-//     useEffect(() => {
-//         fetch(`${CurvesEndpoint}${recordId}`)
-//             .then((response) => response.json())
-//             .then((coilData) => {
-//                 // ensure the coils wrap, by pushing the first point of each loop onto the loop's end
-//                 coilData.forEach(((rec: CoilApiResponseRecord) => rec.coil.push(rec.coil[0])))
-//                 setCoils(coilData)
-//             })
-//             .catch((err) => {
-//                 console.log(err)
-//             })
-//     }, [recordId])
-//     return useMemo(() => coils, [coils])
-// }
-
-
-// export const useSurfaces = (props: apiRequestProps) => {
-//     const { recordId } = props
-//     const [ response, setResponse ] = useState({} as SurfaceApiResponseObject)
-
-//     useEffect(() => {
-//         fetch(`${SurfacesEndpoint}${recordId}`)
-//             .then((response) => {
-//                 if (!response.ok) {
-//                     throw new Error(`API endpoint did not return data:\n${response.status} ${response.statusText}`)
-//                 }
-//                 return response.json()
-//             })
-//             .then((surfObj) => {
-//                 const surface: SurfaceApiResponseObject = {
-//                     surfacePoints: surfObj.surfacePoints,
-//                     pointValues: surfObj.pointValues
-//                 }
-//                 setResponse(surface)
-//             })
-//             .catch((err) => {
-//                 console.log(err)
-//             })
-//     }, [recordId])
-
-//     return useMemo(() => response, [response])
-// }
-
-
+// TODO: This is no longer actually a web api call, might be appropriate to move the code
 export const useDownloadPaths = (props: apiRequestProps) => {
     const { recordId } = props
     const vmecPath = useResourcePath(recordId, KnownPathType.NML_VMEC)
     const simsoptPath = useResourcePath(recordId, KnownPathType.SIMSOPT)
-
-    // const [ response, setResponse ] = useState({} as DownloadPathsApiResponseObject)
-    // useEffect(() => {
-    //     fetch(`${PathsEndpoint}${recordId}`)
-    //         .then((response) => {
-    //             if (!response.ok) {
-    //                 throw new Error(`API endpoint did not return path data:\n${response.status} ${response.statusText}`)
-    //             }
-    //             return response.json()
-    //         })
-    //         .then((pathsObj) => {
-    //             const paths: DownloadPathsApiResponseObject = {
-    //                 vmecPath: pathsObj.vmecPath,
-    //                 simsoptPath: pathsObj.simsoptPath
-    //             }
-    //             setResponse(paths)
-    //         })
-    //         .catch((err) => {
-    //             console.log(err)
-    //         })
-    // }, [recordId])
-    // useEffect(() => setResponse({vmecPath: 'bad', simsoptPath: 'bad'}), [])
-    // return useMemo(() => response, [response])
     
     return useMemo(() => ({ vmecPath, simsoptPath }), [vmecPath, simsoptPath])
 }
@@ -108,7 +34,6 @@ const fetchData = async <T>(path: string, setResult: Dispatch<SetStateAction<T>>
         throw new Error(`API endpoint response parsing error.`)
     }
 
-    console.log(`Path is ${path} response is type ${typeof parsedResponse}`)
     setResult(parsedResponse)
 }
 
