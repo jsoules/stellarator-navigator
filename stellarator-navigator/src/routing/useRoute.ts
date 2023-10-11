@@ -26,8 +26,8 @@ const isPlausibleRecordId = (id: string): boolean => {
 
 const redirectHome = (): Route => {
 // const redirectHome = (navigate: NavigateFunction): Route => {
-    // window.history.replaceState(null, "", `${BASENAME}/`)
-    window.history.replaceState(null, "", `/`)
+    window.history.replaceState(null, "", `${BASENAME}/`)
+    // window.history.replaceState(null, "", `/`)
     // navigate("/", { replace: true })
     return { page: "home" }
 }
@@ -48,12 +48,10 @@ const useRoute = () => {
     }, [location, navigate])
 
     const route: Route = useMemo(() => {
-        console.log(`\tRouting for ${location.pathname}`)
         if (location.pathname.startsWith(`/model/`)) {
             // URLs of form BASENAME/model/MODEL_ID
             const tokens = location.pathname.split('/')
             const recordId = tokens[2]
-            console.log(`Pathname ${location.pathname} token is ${recordId}`)
             if (!isPlausibleRecordId(recordId)) {
                 console.warn(`Requested record ID ${recordId} is invalid.`)
                 // return redirectHome(navigate)

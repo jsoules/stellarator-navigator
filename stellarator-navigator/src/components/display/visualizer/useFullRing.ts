@@ -62,17 +62,17 @@ angleFractionsPerNfp.map((v, i) => {
  */
 // export const useFullRingCoils = (inputCoils: Vec3[][], nfp: number) => {
 export const useFullRingCoils = (coilRecords: CoilApiResponseRecord[], nfp: number) => {
-    // Each coil is represented as 161 points in x-y-z space making a loop.
-    // Step 1: convert our array of 3-vector 161-point loops into an array of N [coils] matrices,
-    // each 161 [point-count] x 3 [x,y,z]
-    const inputsAsMatrices = useMemo(() => 
-        coilRecords.map(record => (
-            matrix(record.coil.map(pt => [...pt]))
-        )), [coilRecords])
-
-    // Step 2: apply transformations to matrix to create the missing coils
     return useMemo(() => {
-        if (inputsAsMatrices.length === 0) return []
+        if (coilRecords === undefined || coilRecords.length === 0) return []
+        if (coilRecords.some(c => c.coil === undefined || c.coil.length === 0)) return []
+
+        // Each coil is represented as 161 points in x-y-z space making a loop.
+        // Step 1: convert our array of 3-vector 161-point loops into an array of N [coils] matrices,
+        // each 161 [point-count] x 3 [x,y,z]
+        const inputsAsMatrices = coilRecords.map(record => 
+            matrix(record.coil.map(pt => [...pt]))
+        )
+        // Step 2: apply transformations to matrix to create the missing coils
         const transforms = coilTransformMatrices[nfp]
         // The mult gives us a list of transformed coil groups based on the original input coil:
         const realizedCoilMatrixSets = inputsAsMatrices.map(obj => transforms.map(t => multiply(obj, t)))
@@ -86,7 +86,7 @@ export const useFullRingCoils = (coilRecords: CoilApiResponseRecord[], nfp: numb
             })
         )
         return coilGroupsWithCurrents.flat() as CoilApiResponseRecord[]
-    }, [coilRecords, inputsAsMatrices, nfp])
+    }, [coilRecords, nfp])
 }
 
 /**

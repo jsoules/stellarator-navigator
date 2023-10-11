@@ -5,6 +5,7 @@ import * as THREE from "three"
 
 
 export const makeTubes = (coils: Vec3[][]): THREE.TubeGeometry[] => {
+    if (coils === undefined || coils.length === 0) return []
     return coils.map(coil => {
         const points = coil.map(c => new THREE.Vector3(...c))
         const curve = new THREE.CatmullRomCurve3(points)
@@ -27,6 +28,7 @@ const triangulateField = (width: number, height: number): number[] => {
 
 export const makeSurfaces = (surfacePoints: Vec3Field[], periods: number = 1) => {
     if (surfacePoints === undefined) return []
+    if (surfacePoints.length === 0) return []
 
     // For each surface, create a BufferGeometry and add the
     // 30 x 30 x [x, y, z] data to that geometry as "known vertices".
@@ -51,7 +53,8 @@ export const makeSurfaces = (surfacePoints: Vec3Field[], periods: number = 1) =>
 
 
 export const colorizeSurfaces = (surfaces: THREE.BufferGeometry[], scalars: ScalarField[], colormap: SupportedColorMap = 'viridis') => {
-    if (scalars === undefined) return []
+    if (scalars === undefined || surfaces === undefined) return []
+    if (scalars.length === 0 || surfaces.length === 0) return []
 
     surfaces.forEach((s, idx) => {
         const vertexColors = new Float32Array((scalars[idx].flat().map(v => valueToRgbTriplet(v, colormap))).flat())

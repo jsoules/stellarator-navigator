@@ -28,6 +28,7 @@ share/python-wheels/
 *.egg
 MANIFEST
 **/public/graphics
+**/publicX/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

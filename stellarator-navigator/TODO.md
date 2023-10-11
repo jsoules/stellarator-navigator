@@ -136,13 +136,18 @@
 [x] Use database from permanent location of https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR/
     --> NOTE: That isn't actually the permanent location
 
+[ ] Write up instructions for preprocessing data files, incl. in-memory database
+    [ ] Latter should have the appropriate fields log-scaled, do JSONified output, and zip the result
+    [ ] Rest of data: rsync it, delete the poincare directory, and run process_files.py
+    [ ] Build this project (using appropriate basename in vite.config.ts). rsync dist/index.html and dist/assets/ to
+        the server.
+
 [ ] Big routing rewrite
     [ ] static landing page
     [ ] download database async
     [ ] enable button to plotting page once database is set up
     [ ] "loading" screens for components that make fetch requests
     [ ] inject *data* into plotting components, *NOT* fetch that data internally
-
 
 [ ] DOWNLOAD COMPRESSED JSON!!
 
