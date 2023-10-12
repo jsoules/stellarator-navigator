@@ -5,12 +5,13 @@ import IotaProfilePlot from "@snComponents/display/visualizer/IotaProfilePlot"
 import PoincarePlot from "@snComponents/display/visualizer/PoincarePlot"
 import SurfaceControls from "@snComponents/display/visualizer/SurfaceControls"
 import { useFullRingCoils, useFullRingSurface } from "@snComponents/display/visualizer/useFullRing"
-import { NavigatorContext } from "@snState/NavigatorContext"
+import useRecord from "@snState/useRecord"
+import { useDownloadPaths } from "@snUtil/useResourcePath"
 import useWindowDimensions from "@snUtil/useWindowDimensions"
 import RecordManifest from "@snVisualizer/RecordManifest"
 import SimulationView from "@snVisualizer/SimulationView"
-import { useCoils_, useDownloadPaths, useSurfaces_ } from "@snVisualizer/fetch3dData"
-import { FunctionComponent, useContext, useMemo, useRef, useState } from "react"
+import { useCoils, useSurfaces } from "@snVisualizer/fetch3dData"
+import { FunctionComponent, useMemo, useRef, useState } from "react"
 
 type ModelProps = {
     id: number | string
@@ -20,13 +21,11 @@ type ModelProps = {
 
 const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     const { id } = props
-    const { fetchRecords } = useContext(NavigatorContext)
     const canvasRef = useRef(null)
-    const numericId = typeof(id) === "number" ? id : parseInt(id)
-    const rec = fetchRecords(new Set([numericId]))[0]
+    const rec = useRecord(id)
     const downloadPaths = useDownloadPaths({ recordId: `${id}` })
-    const baseCoils = useCoils_({ recordId: `${id}` })
-    const baseSurfs = useSurfaces_({ recordId: `${id}` })
+    const baseCoils = useCoils({ recordId: `${id}` })
+    const baseSurfs = useSurfaces({ recordId: `${id}` })
     const fullCoils = useFullRingCoils(baseCoils, rec.nfp)
     const fullSurfs = useFullRingSurface(baseSurfs, rec.nfp) // have to double because they're really half-periods
     

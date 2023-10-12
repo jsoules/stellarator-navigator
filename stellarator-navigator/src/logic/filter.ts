@@ -1,6 +1,5 @@
 import { Fields, RangeVariables, ToggleableVariables, TripartiteVariables, getValuesFromBoolArray } from "@snTypes/DataDictionary"
 import { CategoricalIndexSet, FilterSettings, NavigatorDatabase, StellaratorRecord } from "@snTypes/Types"
-import database from "./database"
 
 
 export const projectRecords = (selection: Set<number>, database: NavigatorDatabase) => {
@@ -26,27 +25,27 @@ export const intersect = (...sets: Set<number>[]): Set<number> => {
 }
 
 
-const applyFilterToState = (filters: FilterSettings, updateSelection: React.Dispatch<React.SetStateAction<Set<number>>>) => {
-    const set = applyFiltersToSet(filters, database.allIdSet)
+const applyFilterToState = (filters: FilterSettings, database: NavigatorDatabase, updateSelection: React.Dispatch<React.SetStateAction<Set<number>>>) => {
+    const set = applyFiltersToSet(filters, database, database.allIdSet)
     updateSelection(set)
 }
 
 
 // TODO: DEBOUNCE?
-export const applyFiltersToSet = (filters: FilterSettings, set?: Set<number>): Set<number> => {
-    const boolSets = booleanFilters.map(b => {
+const applyFiltersToSet = (filters: FilterSettings, database: NavigatorDatabase, set?: Set<number>): Set<number> => {
+    const boolSets = makeBooleanFilters(database).map(b => {
         const { key, callback } = b
         const choices = filters[key]
         return callback(choices)
     })
-    const selectionSets = selectionFilters.map(f => {
+    const selectionSets = makeSelectionFilters(database).map(f => {
         const { key, callback } = f
         const val = filters[key as TripartiteVariables]
         return callback(val)
     })
     const allSets = [set, ...boolSets, ...selectionSets].filter(s => s !== undefined) as Set<number>[]
     const indexIntersectionSet = intersect(...allSets)
-    // Okay maybe repeatedly projecting and re-set-ifying isn't ideal but
+    // Repeatedly projecting and re-set-ifying isn't ideal but
     const materializedRows = projectRecords(indexIntersectionSet, database)
     const rangeTests = rangeFilters.map(r => {
         const { key, callback } = r
@@ -67,13 +66,13 @@ const makeBooleanFilter = (key: ToggleableVariables, db: NavigatorDatabase) => {
         const vals = getValuesFromBoolArray(key, choices)
         const idx = db.categoricalIndexes[key as unknown as keyof CategoricalIndexSet]
         const sets = vals.map(v => idx[v])
-        const union = new Set(sets.reduce((curr: number[], newSet) => { return [...curr, ...newSet] }, []))
+        const union = new Set(sets.reduce((curr: number[], newSet) => { return [...curr, ...(newSet ?? [])] }, []))
         return union
     }
     return {key, callback}
 }
 const booleanFields: ToggleableVariables[] = [ToggleableVariables.MEAN_IOTA, ToggleableVariables.NFP, ToggleableVariables.NC_PER_HP, ToggleableVariables.N_SURFACES]
-export const booleanFilters = booleanFields.map(f => makeBooleanFilter(f, database))
+const makeBooleanFilters = (database: NavigatorDatabase) => booleanFields.map(f => makeBooleanFilter(f, database))
 
 
 const makeRangeFilter = (key: RangeVariables) => {
@@ -91,7 +90,7 @@ const makeRangeFilter = (key: RangeVariables) => {
     }
     return {key, callback}
 }
-export const rangeFilters = Object.values(RangeVariables).filter(rv => isNaN(Number(rv))).map(f => makeRangeFilter(f as RangeVariables))
+const rangeFilters = Object.values(RangeVariables).filter(rv => isNaN(Number(rv))).map(f => makeRangeFilter(f as RangeVariables))
 
 
 const makeSelectionFilter = (key: TripartiteVariables, db: NavigatorDatabase) => {
@@ -105,7 +104,7 @@ const makeSelectionFilter = (key: TripartiteVariables, db: NavigatorDatabase) =>
     }
     return {key, callback}
 }
-export const selectionFilters = Object.values(TripartiteVariables).filter(v => isNaN(Number(v))).map(f => makeSelectionFilter(f as TripartiteVariables, database))
+const makeSelectionFilters = (database: NavigatorDatabase) => Object.values(TripartiteVariables).filter(v => isNaN(Number(v))).map(f => makeSelectionFilter(f as TripartiteVariables, database))
 
 
 export const filterTo = (records: StellaratorRecord[], filters: { [key in ToggleableVariables]?: number }) => {

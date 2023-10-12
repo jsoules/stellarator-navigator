@@ -60,5 +60,9 @@
     }
   },
   "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [{ "path": "./tsconfig.node.json" }],
+  /* Avoid watching the universe */
+  "watchOptions": {
+    "excludeDirectories": ["**/public/graphics", "**/public/records", "**/publicX"]
+  }
 }

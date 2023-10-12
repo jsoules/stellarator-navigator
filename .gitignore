@@ -28,6 +28,7 @@ share/python-wheels/
 *.egg
 MANIFEST
 **/public/graphics
+**/public/records
 **/publicX/
 
 # PyInstaller
@@ -44,7 +45,7 @@ database-old/
 stellarator_database/
 received/
 notes.py
-data_19072023.pkl
+*pkl
 database.json.2023.09.17
 *gz
 *tar

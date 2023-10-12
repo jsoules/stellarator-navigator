@@ -139,8 +139,14 @@
 [ ] Write up instructions for preprocessing data files, incl. in-memory database
     [ ] Latter should have the appropriate fields log-scaled, do JSONified output, and zip the result
     [ ] Rest of data: rsync it, delete the poincare directory, and run process_files.py
+    [ ] For deployment, need to switch: - base variable in vite.config.ts; basePath in useResourcePath.ts; redirectHome implementation in useRoute.ts; onClickDot in interactions.tsx
     [ ] Build this project (using appropriate basename in vite.config.ts). rsync dist/index.html and dist/assets/ to
         the server.
+        - `yarn build`
+        - `chmod 755 dist/*`
+        - `rsync -vahP --delete dist/assets/ workstation:/mnt/home/jsoules/public_www/test/assets/`
+        - `rsync -vahP dist/index.html workstation:/mnt/home/jsoules/public_www/test/`
+
 
 [ ] Big routing rewrite
     [ ] static landing page
@@ -150,6 +156,8 @@
     [ ] inject *data* into plotting components, *NOT* fetch that data internally
 
 [ ] DOWNLOAD COMPRESSED JSON!!
+    [ ] Bunch of second-order stuff related to downloading individual records, making sure we correctly handle when we don't have data for the model view
+    [ ] Talk w/ Dylan to test downloading from available pub-www directories
 
 [ ] Filter dots by radius
     [ ] Probably happens *above* the plotting component level?
@@ -174,6 +182,8 @@
 [ ] An "about this" landing page
 
 [ ] Consider automatically updating selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
+
+[ ] Try to fix the whole "open selected" button thing; or at least unify the interaction
 
 [ ] Just implement drag-zoom already
 
