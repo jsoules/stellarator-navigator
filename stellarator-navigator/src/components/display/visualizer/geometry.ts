@@ -6,6 +6,7 @@ import * as THREE from "three"
 
 export const makeTubes = (coils: Vec3[][]): THREE.TubeGeometry[] => {
     if (coils === undefined || coils.length === 0) return []
+    if (coils.some(c => c === undefined)) return []
     return coils.map(coil => {
         const points = coil.map(c => new THREE.Vector3(...c))
         const curve = new THREE.CatmullRomCurve3(points)
