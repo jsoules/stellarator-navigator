@@ -3,7 +3,7 @@ import { useMemo } from "react"
 
 // TODO: move to a config file? Read from viteconfig?
 // const basePath = "https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR/"
-const basePath = "https://users.flatironinstitute.org/~jsoules/test/" // FIXME
+const basePath = "https://users.flatironinstitute.org/~jsoules/QUASR/" // FIXME
 // const basePath = "http://localhost:5173/" // FIXME
 const idLength = 6
 
