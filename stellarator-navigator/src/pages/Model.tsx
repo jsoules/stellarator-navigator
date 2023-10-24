@@ -6,12 +6,13 @@ import PoincarePlot from "@snComponents/display/visualizer/PoincarePlot"
 import SurfaceControls from "@snComponents/display/visualizer/SurfaceControls"
 import { useFullRingCoils, useFullRingSurface } from "@snComponents/display/visualizer/useFullRing"
 import useRecord from "@snState/useRecord"
+import { defaultEmptyRecord } from "@snTypes/Defaults"
 import { useDownloadPaths } from "@snUtil/useResourcePath"
 import useWindowDimensions from "@snUtil/useWindowDimensions"
 import RecordManifest from "@snVisualizer/RecordManifest"
 import SimulationView from "@snVisualizer/SimulationView"
 import { useCoils, useSurfaces } from "@snVisualizer/fetch3dData"
-import { FunctionComponent, useMemo, useRef, useState } from "react"
+import { FunctionComponent, useEffect, useMemo, useRef, useState } from "react"
 
 type ModelProps = {
     id: number | string
@@ -35,6 +36,7 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     const [showCurrents, setShowCurrents] = useState<boolean>(true)
 
     const surfacesExist = useMemo(() => baseSurfs.surfacePoints !== undefined && baseSurfs.surfacePoints.length !== 0, [baseSurfs])
+    useEffect(() => setSurfaceChecks(Array(rec.nSurfaces || 1).fill(true)), [rec?.nSurfaces])
     const coils = showFullRing ? fullCoils : baseCoils
     const surfs = showFullRing ? fullSurfs : baseSurfs
 
@@ -43,8 +45,9 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     const lw = useMemo(() => Math.max(0, (2 * width / 3) - 80), [width])
     const rw = useMemo(() => Math.max(0, (width / 3) - 40), [width])
 
-    return (
-        <div className="simulationViewParent">
+    return rec === defaultEmptyRecord
+        ? <div></div>
+        : (<div className="simulationViewParent">
             <div className="flexWrapper simulationViewParent">
                 <div style={{width: Math.floor(lw + 40)}} className="simulationViewWrapper">
                     <canvas ref={canvasRef} />

@@ -144,9 +144,8 @@
         the server.
         - `yarn build`
         - `chmod 755 dist/*`
-        - `rsync -vahP --delete dist/assets/ workstation:/mnt/home/jsoules/public_www/test/assets/`
-        - `rsync -vahP dist/index.html workstation:/mnt/home/jsoules/public_www/test/`
-
+        - `rsync -vahP --delete dist/assets/ workstation:/mnt/home/jsoules/public_www/QUASR/assets/`
+        - `rsync -vahP dist/index.html workstation:/mnt/home/jsoules/public_www/QUASR/`
 
 [ ] Big routing rewrite
     [ ] static landing page
@@ -186,6 +185,8 @@
 [ ] Try to fix the whole "open selected" button thing; or at least unify the interaction
 
 [ ] Just implement drag-zoom already
+
+[ ] Does the database even need to be a context thing any more?
 
 
 QUERY OR DISTANT:

@@ -51,7 +51,7 @@ export const defaultEmptyRecord: StellaratorRecord = {
     nfp: 0,
     globalizationMethod: 0,
     nFourierCoil: 0,
-    nSurfaces: 0,
+    nSurfaces: 1,
     maxKappa: 0,
     maxMeanSquaredCurve: 0,
     minIntercoilDist: 0,

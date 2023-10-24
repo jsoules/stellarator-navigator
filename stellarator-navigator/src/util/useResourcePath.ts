@@ -74,7 +74,7 @@ const useResourcePath = (id: string, type: KnownPathType) => {
 
     return useMemo(() => {
         return type === KnownPathType.DATABASE
-            // ? 'https://users.flatironinstitute.org/~jsoules/test/database.json'
+            // ? 'https://users.flatironinstitute.org/~jsoules/QUASR/database.json'
             ? `${basePath}database.json.gz`
             : `${basePath}${graphicsPart}${typeDirectory}/${binPrefix}/${fileBase}${suffix}`
     }, [binPrefix, fileBase, graphicsPart, suffix, type, typeDirectory])

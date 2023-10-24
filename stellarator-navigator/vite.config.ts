@@ -4,6 +4,11 @@ import tsconfigPaths from "vite-tsconfig-paths"
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), tsconfigPaths()],
-//   base: "/~jsoules/QUASR"
+    plugins: [react(), tsconfigPaths()],
+  //   base: "/~jsoules/QUASR"
+    server: {
+        watch: {
+            ignored: ['**/public/**']
+        }
+    }
 })
