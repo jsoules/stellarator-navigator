@@ -1,4 +1,4 @@
-// import { Button, Tooltip } from '@mui/material'
+import { Button, Tooltip } from '@mui/material'
 import { DownloadPathsApiResponseObject } from "@snTypes/Types"
 import { FunctionComponent } from "react"
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter"
@@ -28,59 +28,59 @@ const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
     const simsoptFile = simsoptPathParts.pop() ?? ""
     const simsoptPath = simsoptPathParts.join("/")
 
-    // return <div className="indent">
-    //             <Tooltip
-    //                 title="Download VMEC input file"
-    //             >
-    //                 <Button
-    //                     variant="contained"
-    //                     size="small"
-    //                     style={{margin: 20}}
-    //                     onClick={() => document.getElementById("vmec_download")?.click()}
-    //                 >
-    //                     Download VMEC
-    //                 </Button>
-    //             </Tooltip>
-    //             <a id="vmec_download" href={`${vmecPath}/${vmecFile}`} download={vmecFile} style={{display: "none"}} />
-    //             <Tooltip
-    //                 title="Download SIMSOPT coils, magnetic axis, and surface serializations"
-    //             >
-    //                 <Button
-    //                     variant="contained"
-    //                     size="small"
-    //                     style={{margin: 20}}
-    //                     onClick={() => document.getElementById("simsopt_download")?.click()}
-    //                 >
-    //                     Download SIMSOPT
-    //                 </Button>
-    //             </Tooltip>
-    //             <a id="simsopt_download" href={`${simsoptPath}/${simsoptFile}`} download={`${simsoptFile}`} style={{display: "none"}} />
-    //             <div>
-    //                 <span>To load downloaded SIMSOPT data, execute the following Python script:</span>
-    //                 <div style={{border: "1px solid #7f7f7f", margin: 10}}>
-    //                     <SyntaxHighlighter children={codeSnippet} language="python" style={a11yLight} />
-    //                 </div>
-    //             </div>
-    //         </div>
     return <div className="indent">
-        Right-click and "Save link as" to download:
-        <ul>
-            <li>
-                <a id="vmec_download" href={`${vmecPath}/${vmecFile}`} download={vmecFile}> VMEC input file</a>
-            </li>
-            <li>
-                <a id="simsopt_download" href={`${simsoptPath}/${simsoptFile}`} download={`${simsoptFile}`}>
-                    SIMSOPT coils, magnetic axis, and surface serializations
-                </a>
-            </li>
-        </ul>
-        <div>
-            <span>To load downloaded SIMSOPT data, execute the following Python script:</span>
-            <div className="codeSnippetWrapper">
-                <SyntaxHighlighter children={codeSnippet} language="python" style={a11yLight} />
+                <Tooltip
+                    title="Download VMEC input file"
+                >
+                    <Button
+                        variant="contained"
+                        size="small"
+                        style={{margin: 20}}
+                        onClick={() => document.getElementById("vmec_download")?.click()}
+                    >
+                        Download VMEC
+                    </Button>
+                </Tooltip>
+                <a id="vmec_download" href={`${vmecPath}/${vmecFile}`} download={vmecFile} style={{display: "none"}} />
+                <Tooltip
+                    title="Download SIMSOPT coils, magnetic axis, and surface serializations"
+                >
+                    <Button
+                        variant="contained"
+                        size="small"
+                        style={{margin: 20}}
+                        onClick={() => document.getElementById("simsopt_download")?.click()}
+                    >
+                        Download SIMSOPT
+                    </Button>
+                </Tooltip>
+                <a id="simsopt_download" href={`${simsoptPath}/${simsoptFile}`} download={`${simsoptFile}`} style={{display: "none"}} />
+                <div>
+                    <span>To load downloaded SIMSOPT data, execute the following Python script:</span>
+                    <div style={{border: "1px solid #7f7f7f", margin: 10}}>
+                        <SyntaxHighlighter children={codeSnippet} language="python" style={a11yLight} />
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
+    // return <div className="indent">
+    //     Right-click and "Save link as" to download:
+    //     <ul>
+    //         <li>
+    //             <a id="vmec_download" href={`${vmecPath}/${vmecFile}`} download={vmecFile}> VMEC input file</a>
+    //         </li>
+    //         <li>
+    //             <a id="simsopt_download" href={`${simsoptPath}/${simsoptFile}`} download={`${simsoptFile}`}>
+    //                 SIMSOPT coils, magnetic axis, and surface serializations
+    //             </a>
+    //         </li>
+    //     </ul>
+    //     <div>
+    //         <span>To load downloaded SIMSOPT data, execute the following Python script:</span>
+    //         <div className="codeSnippetWrapper">
+    //             <SyntaxHighlighter children={codeSnippet} language="python" style={a11yLight} />
+    //         </div>
+    //     </div>
+    // </div>
 
 }
 

@@ -1,4 +1,5 @@
 import numpy as np
+# import pandas # required for the pickle to load correctly
 import pickle
 
 input_file_name = '../../stellarator_database/database.pkl'

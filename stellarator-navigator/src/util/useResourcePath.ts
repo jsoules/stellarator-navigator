@@ -5,7 +5,8 @@ import { useMemo } from "react"
 // const basePath = "https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR/"
 // TODO: SWITCH BASE PATH BASED ON DEPLOYMENT STATUS
 // const basePath = "https://users.flatironinstitute.org/~jsoules/QUASR/" // FIXME
-const basePath = "http://localhost:5173/" // FIXME
+const basePath = "https://users.flatironinstitute.org/~jsoules/test/" // FIXME
+// const basePath = "http://localhost:5173/" // FIXME
 const idLength = 6
 
 

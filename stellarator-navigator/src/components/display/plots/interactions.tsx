@@ -19,8 +19,8 @@ export const onHoverOff = (id: number) => {
 }
 
 export const onClickDot = (id: number) => {
-    // window.open(`${BASENAME}/model/${getStringId(id)}`, "_blank", "noreferrer")
-    window.open(`model/${getStringId(id)}`, "_blank", "noreferrer")
+    window.open(`${BASENAME}/model/${getStringId(id)}`, "_blank", "noreferrer")
+    // window.open(`model/${getStringId(id)}`, "_blank", "noreferrer")
 }
 
 export const onOpenSelected = (ids?: Set<number>) => {

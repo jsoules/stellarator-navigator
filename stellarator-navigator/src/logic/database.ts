@@ -136,8 +136,8 @@ const useDatabase = () => {
     const databasePath = useResourcePath('000', KnownPathType.DATABASE)
     const [rawData, setRawData] = useState<RawData | undefined>(undefined)
     useEffect(() => {
-        // fetchData<RawData | undefined>(databasePath, setRawData, true)
-        fetchData<RawData | undefined>(databasePath, setRawData)
+        fetchData<RawData | undefined>(databasePath, setRawData, true)
+        // fetchData<RawData | undefined>(databasePath, setRawData)
     }, [databasePath])
 
     return useMemo(() => {
