@@ -83,7 +83,7 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
             <HrBar />
             <PoincarePlot id={rec.id} />
             <HrBar />
-            <DownloadLinks apiResponse={downloadPaths} />
+            <DownloadLinks dataPaths={downloadPaths} />
         </div>
     )
 }

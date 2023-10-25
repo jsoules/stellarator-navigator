@@ -6,7 +6,7 @@ import python from "react-syntax-highlighter/dist/esm/languages/hljs/python"
 import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/hljs"
 
 type Props = {
-    apiResponse?: DownloadPathsApiResponseObject
+    dataPaths?: DownloadPathsApiResponseObject
 }
 
 SyntaxHighlighter.registerLanguage('python', python)
@@ -17,14 +17,15 @@ const codeSnippet =
 [surfaces, axis, coils] = load(f'NAME_OF_FILE_YOU_DOWNLOADED.json')`
 
 const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
-    const { apiResponse } = props
-    if (apiResponse === undefined || apiResponse.vmecPath === undefined || apiResponse.simsoptPath === undefined) return <></>
+    const { dataPaths } = props
+    if (dataPaths === undefined || dataPaths.vmecPath === undefined || dataPaths.simsoptPath === undefined) return <></>
 
-    // NOTE: The following won't actually work on the local filesystem, but should do fine as long as you're returning a valid endpoint.
-    const vmecPathParts = apiResponse.vmecPath.split("/")
+    // We have to do some fussy path-munging in order to construct the forced-download link correctly--otherwise
+    // the browser will suggest saving the file according to its full path, not just its file name.
+    const vmecPathParts = dataPaths.vmecPath.split("/")
     const vmecFile = vmecPathParts.pop() ?? ""
     const vmecPath = vmecPathParts.join("/")
-    const simsoptPathParts = apiResponse.simsoptPath.split("/")
+    const simsoptPathParts = dataPaths.simsoptPath.split("/")
     const simsoptFile = simsoptPathParts.pop() ?? ""
     const simsoptPath = simsoptPathParts.join("/")
 
@@ -62,6 +63,7 @@ const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
                     </div>
                 </div>
             </div>
+    // This is retained as a links-only implementation, just in case we need to roll back to it.
     // return <div className="indent">
     //     Right-click and "Save link as" to download:
     //     <ul>
