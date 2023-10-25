@@ -5,8 +5,8 @@ export const getEnumVals = (x: object): string[] => {
 }
 
 export enum KnownFields {
-    ID = "id",
-    COIL_LENGTH_PER_HP = "coilLengthPerHp",
+    ID = 'id',
+    COIL_LENGTH_PER_HP = 'coilLengthPerHp',
     TOTAL_COIL_LENGTH = 'totalCoilLength',
     MEAN_IOTA = 'meanIota',
     NC_PER_HP = 'ncPerHp',
@@ -26,8 +26,8 @@ export enum KnownFields {
     ELONGATION = 'elongation',
     SHEAR = 'shear',
     MESSAGE = 'message',
-    IOTA_PROFILE = "iotaProfile",
-    SURFACE_TYPES = "surfaceTypes",
+    IOTA_PROFILE = 'iotaProfile',
+    SURFACE_TYPES = 'surfaceTypes',
 }
 
 export enum DependentVariables {

@@ -136,11 +136,30 @@
 [x] Use database from permanent location of https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR/
     --> NOTE: That isn't actually the permanent location
 
+[x] DOWNLOAD COMPRESSED JSON!!
+    [x] Bunch of second-order stuff related to downloading individual records, making sure we correctly handle when we don't have data for the model view
+    [x] Talk w/ Dylan to test downloading from available pub-www directories
+
+[x] Figure out how to ensure the Javascript app is delivered from the same origin as the web server
+
 [ ] Write up instructions for preprocessing data files, incl. in-memory database
     [ ] Latter should have the appropriate fields log-scaled, do JSONified output, and zip the result
     [ ] Rest of data: rsync it, delete the poincare directory, and run process_files.py
+    [ ] For deployment, need to switch:
+        - `base` variable in `vite.config.ts`
+        - `basePath` in `useResourcePath.ts`
+        - `redirectHome` implementation in `useRoute.ts`
+        - `onClickDot` in `interactions.tsx`
+        - `useDatabase` hook in `database.ts` needs to expect UNCOMPRESSED file for local mode and COMPRESSED file (`true` parameter) for remote
+        - rename `public` directory to `publicX` to avoid packaging a bunch of files!
     [ ] Build this project (using appropriate basename in vite.config.ts). rsync dist/index.html and dist/assets/ to
         the server.
+        - `yarn build`
+        - `chmod 755 dist/*`
+        - `rsync -vahP --delete dist/assets/ workstation:/mnt/home/jsoules/public_www/QUASR/assets/`
+        - `rsync -vahP dist/index.html workstation:/mnt/home/jsoules/public_www/QUASR/`
+        - one-liner FOR TEST DEV:
+        - `yarn build && chmod 755 dist/* && rsync -vahP --delete dist/assets/ workstation:/mnt/home/jsoules/public_www/test/assets/ && rsync -vahP dist/index.html workstation:/mnt/home/jsoules/public_www/test/`
 
 [ ] Big routing rewrite
     [ ] static landing page
@@ -148,8 +167,6 @@
     [ ] enable button to plotting page once database is set up
     [ ] "loading" screens for components that make fetch requests
     [ ] inject *data* into plotting components, *NOT* fetch that data internally
-
-[ ] DOWNLOAD COMPRESSED JSON!!
 
 [ ] Filter dots by radius
     [ ] Probably happens *above* the plotting component level?
@@ -165,17 +182,17 @@
 
 [ ] Improve filtering performance with large numbers of criteria!!
 
-[ ] Figure out how to ensure the Javascript app is delivered from the same origin as the web server
-    & that the web server passes through requests to the underlying ceph filesystem... yikes?
-    --> OR have them just right-click it.
-
 [ ] Show/hide for filters (i.e. tab in the control area)
 
 [ ] An "about this" landing page
 
 [ ] Consider automatically updating selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
 
+[ ] Try to fix the whole "open selected" button thing; or at least unify the interaction
+
 [ ] Just implement drag-zoom already
+
+[ ] Does the database even need to be a context thing any more?
 
 
 QUERY OR DISTANT:

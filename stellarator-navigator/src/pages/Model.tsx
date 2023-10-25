@@ -5,12 +5,14 @@ import IotaProfilePlot from "@snComponents/display/visualizer/IotaProfilePlot"
 import PoincarePlot from "@snComponents/display/visualizer/PoincarePlot"
 import SurfaceControls from "@snComponents/display/visualizer/SurfaceControls"
 import { useFullRingCoils, useFullRingSurface } from "@snComponents/display/visualizer/useFullRing"
-import { NavigatorContext } from "@snState/NavigatorContext"
+import useRecord from "@snState/useRecord"
+import { defaultEmptyRecord } from "@snTypes/Defaults"
+import { useDownloadPaths } from "@snUtil/useResourcePath"
 import useWindowDimensions from "@snUtil/useWindowDimensions"
 import RecordManifest from "@snVisualizer/RecordManifest"
 import SimulationView from "@snVisualizer/SimulationView"
-import { useCoils_, useDownloadPaths, useSurfaces_ } from "@snVisualizer/fetch3dData"
-import { FunctionComponent, useContext, useMemo, useRef, useState } from "react"
+import { useCoils, useSurfaces } from "@snVisualizer/fetch3dData"
+import { FunctionComponent, useEffect, useMemo, useRef, useState } from "react"
 
 type ModelProps = {
     id: number | string
@@ -20,13 +22,11 @@ type ModelProps = {
 
 const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     const { id } = props
-    const { fetchRecords } = useContext(NavigatorContext)
     const canvasRef = useRef(null)
-    const numericId = typeof(id) === "number" ? id : parseInt(id)
-    const rec = fetchRecords(new Set([numericId]))[0]
+    const rec = useRecord(id)
     const downloadPaths = useDownloadPaths({ recordId: `${id}` })
-    const baseCoils = useCoils_({ recordId: `${id}` })
-    const baseSurfs = useSurfaces_({ recordId: `${id}` })
+    const baseCoils = useCoils({ recordId: `${id}` })
+    const baseSurfs = useSurfaces({ recordId: `${id}` })
     const fullCoils = useFullRingCoils(baseCoils, rec.nfp)
     const fullSurfs = useFullRingSurface(baseSurfs, rec.nfp) // have to double because they're really half-periods
     
@@ -36,6 +36,7 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     const [showCurrents, setShowCurrents] = useState<boolean>(true)
 
     const surfacesExist = useMemo(() => baseSurfs.surfacePoints !== undefined && baseSurfs.surfacePoints.length !== 0, [baseSurfs])
+    useEffect(() => setSurfaceChecks(Array(rec.nSurfaces || 1).fill(true)), [rec?.nSurfaces])
     const coils = showFullRing ? fullCoils : baseCoils
     const surfs = showFullRing ? fullSurfs : baseSurfs
 
@@ -44,8 +45,9 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     const lw = useMemo(() => Math.max(0, (2 * width / 3) - 80), [width])
     const rw = useMemo(() => Math.max(0, (width / 3) - 40), [width])
 
-    return (
-        <div className="simulationViewParent">
+    return rec === defaultEmptyRecord
+        ? <div></div>
+        : (<div className="simulationViewParent">
             <div className="flexWrapper simulationViewParent">
                 <div style={{width: Math.floor(lw + 40)}} className="simulationViewWrapper">
                     <canvas ref={canvasRef} />
@@ -81,7 +83,7 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
             <HrBar />
             <PoincarePlot id={rec.id} />
             <HrBar />
-            <DownloadLinks apiResponse={downloadPaths} />
+            <DownloadLinks dataPaths={downloadPaths} />
         </div>
     )
 }

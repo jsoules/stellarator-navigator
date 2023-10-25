@@ -3,7 +3,9 @@ import { useMemo } from "react"
 
 // TODO: move to a config file? Read from viteconfig?
 // const basePath = "https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR/"
-const basePath = "https://users.flatironinstitute.org/~jsoules/QUASR/" // FIXME
+// TODO: SWITCH BASE PATH BASED ON DEPLOYMENT STATUS
+// const basePath = "https://users.flatironinstitute.org/~jsoules/QUASR/" // FIXME
+const basePath = "https://users.flatironinstitute.org/~jsoules/test/" // FIXME
 // const basePath = "http://localhost:5173/" // FIXME
 const idLength = 6
 
@@ -15,7 +17,9 @@ export enum KnownPathType {
     NML_VMEC = "nml",
     SIMSOPT = "simsopt_serials",
     CURRENTS = "currents",
-    POINCARE = "poincare"
+    POINCARE = "poincare",
+    DATABASE = "database",
+    RECORD = "record"
 }
 
 enum GraphicsType {
@@ -57,6 +61,11 @@ const useResourcePath = (id: string, type: KnownPathType) => {
             fileBase = "input."
             suffix = `${id}`
             break
+        case KnownPathType.RECORD:
+            typeDirectory = 'records'
+            fileBase = `${id}`
+            suffix = '.json'
+            break
         default:
             typeDirectory = `${type}`
             fileBase = `${type}${id}`
@@ -65,8 +74,20 @@ const useResourcePath = (id: string, type: KnownPathType) => {
     }
 
     return useMemo(() => {
-        return `${basePath}${graphicsPart}${typeDirectory}/${binPrefix}/${fileBase}${suffix}`
-    }, [binPrefix, fileBase, graphicsPart, suffix, typeDirectory])
+        return type === KnownPathType.DATABASE
+            // ? 'https://users.flatironinstitute.org/~jsoules/QUASR/database.json'
+            ? `${basePath}database.json.gz`
+            : `${basePath}${graphicsPart}${typeDirectory}/${binPrefix}/${fileBase}${suffix}`
+    }, [binPrefix, fileBase, graphicsPart, suffix, type, typeDirectory])
+}
+
+
+export const useDownloadPaths = (props: { recordId: string }) => {
+    const { recordId } = props
+    const vmecPath = useResourcePath(recordId, KnownPathType.NML_VMEC)
+    const simsoptPath = useResourcePath(recordId, KnownPathType.SIMSOPT)
+    
+    return useMemo(() => ({ vmecPath, simsoptPath }), [vmecPath, simsoptPath])
 }
 
 
