@@ -45,7 +45,7 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
 
     return rec === defaultEmptyRecord
         ? <div></div>
-        : (<div className="simulationViewParent">
+        : (<div className="simulationViewParent ForceLightMode">
             <div className="flexWrapper simulationViewParent">
                 <div style={{width: Math.floor(lw + 40)}} className="simulationViewWrapper">
                     <canvas ref={canvasRef} />

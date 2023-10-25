@@ -194,6 +194,8 @@
 
 [ ] Does the database even need to be a context thing any more?
 
+[ ] Change default camera distance so that the whole figure is in the window (this should just be trig)
+
 
 QUERY OR DISTANT:
 

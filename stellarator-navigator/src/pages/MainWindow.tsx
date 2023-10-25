@@ -34,7 +34,7 @@ const MainWindow: FunctionComponent = () => {
 
     return (
         
-        <div className="MainWindow" style={{width: effectiveWidth, height: effectiveHeight}}>
+        <div className="MainWindow ForceLightMode" style={{width: effectiveWidth, height: effectiveHeight}}>
             <Splitter
                 width={width - splitterWidthRolloff}
                 height={effectiveHeight}
