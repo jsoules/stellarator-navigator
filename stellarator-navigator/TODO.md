@@ -136,6 +136,12 @@
 [x] Use database from permanent location of https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR/
     --> NOTE: That isn't actually the permanent location
 
+[x] DOWNLOAD COMPRESSED JSON!!
+    [x] Bunch of second-order stuff related to downloading individual records, making sure we correctly handle when we don't have data for the model view
+    [x] Talk w/ Dylan to test downloading from available pub-www directories
+
+[x] Figure out how to ensure the Javascript app is delivered from the same origin as the web server
+
 [ ] Write up instructions for preprocessing data files, incl. in-memory database
     [ ] Latter should have the appropriate fields log-scaled, do JSONified output, and zip the result
     [ ] Rest of data: rsync it, delete the poincare directory, and run process_files.py
@@ -162,10 +168,6 @@
     [ ] "loading" screens for components that make fetch requests
     [ ] inject *data* into plotting components, *NOT* fetch that data internally
 
-[x] DOWNLOAD COMPRESSED JSON!!
-    [x] Bunch of second-order stuff related to downloading individual records, making sure we correctly handle when we don't have data for the model view
-    [x] Talk w/ Dylan to test downloading from available pub-www directories
-
 [ ] Filter dots by radius
     [ ] Probably happens *above* the plotting component level?
     [ ] (Since we've already got the scales and everything)
@@ -179,10 +181,6 @@
     [ ] Memoize the hierarchically divided groups at a higher level
 
 [ ] Improve filtering performance with large numbers of criteria!!
-
-[ ] Figure out how to ensure the Javascript app is delivered from the same origin as the web server
-    & that the web server passes through requests to the underlying ceph filesystem... yikes?
-    --> OR have them just right-click it.
 
 [ ] Show/hide for filters (i.e. tab in the control area)
 
