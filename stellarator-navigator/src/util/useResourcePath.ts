@@ -4,9 +4,11 @@ import { useMemo } from "react"
 // TODO: move to a config file? Read from viteconfig?
 // const basePath = "https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR/"
 // TODO: SWITCH BASE PATH BASED ON DEPLOYMENT STATUS
-const basePath = "https://users.flatironinstitute.org/~jsoules/QUASR/" // FIXME
+// const basePath = "https://users.flatironinstitute.org/~jsoules/QUASR/" // FIXME
 // const basePath = "https://users.flatironinstitute.org/~jsoules/test/" // FIXME
-// const basePath = "http://localhost:5173/" // FIXME
+const BASENAME = import.meta.env.BASE_URL
+const basePath = BASENAME === '/' ? "http://localhost:5173/"
+                    : `https://users.flatironinstitute.org${BASENAME}/`
 const idLength = 6
 
 

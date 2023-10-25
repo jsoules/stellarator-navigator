@@ -19,9 +19,12 @@ export const onHoverOff = (id: number) => {
 }
 
 export const onClickDot = (id: number) => {
-    // use BASENAME version for deployments, without for local
-    window.open(`${BASENAME}/model/${getStringId(id)}`, "_blank", "noreferrer")
-    // window.open(`model/${getStringId(id)}`, "_blank", "noreferrer")
+    // TODO FIXME once routing is set up right
+    if (BASENAME === '/') {
+        window.open(`model/${getStringId(id)}`, "_blank", "noreferrer")
+    } else {
+        window.open(`${BASENAME}/model/${getStringId(id)}`, "_blank", "noreferrer")
+    }
 }
 
 export const onOpenSelected = (ids?: Set<number>) => {

@@ -27,8 +27,11 @@ const isPlausibleRecordId = (id: string): boolean => {
 const redirectHome = (): Route => {
 // const redirectHome = (navigate: NavigateFunction): Route => {
     // TODO NOTE: Need to switch these two lines; use the BASENAME version for deployments, the empty for local/dev mode.
-    window.history.replaceState(null, "", `${BASENAME}/`)
-    // window.history.replaceState(null, "", `/`)
+    if (BASENAME === '/') {
+        window.history.replaceState(null, "", `/`)
+    } else {
+        window.history.replaceState(null, "", `${BASENAME}/`)
+    }
     // navigate("/", { replace: true })
     return { page: "home" }
 }

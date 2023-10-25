@@ -131,13 +131,18 @@ const makeDatabase = (rawData: RawData) => {
     return database
 }
 
+const BASENAME = import.meta.env.BASE_URL
 
 const useDatabase = () => {
     const databasePath = useResourcePath('000', KnownPathType.DATABASE)
     const [rawData, setRawData] = useState<RawData | undefined>(undefined)
     useEffect(() => {
-        fetchData<RawData | undefined>(databasePath, setRawData, true)
-        // fetchData<RawData | undefined>(databasePath, setRawData)
+        // TODO: Key this off an actual mode flag, not the basename variable
+        if (BASENAME === '/') {
+            fetchData<RawData | undefined>(databasePath, setRawData)
+        } else {
+            fetchData<RawData | undefined>(databasePath, setRawData, true)
+        }
     }, [databasePath])
 
     return useMemo(() => {
