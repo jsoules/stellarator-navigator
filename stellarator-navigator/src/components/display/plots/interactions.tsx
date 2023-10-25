@@ -19,6 +19,7 @@ export const onHoverOff = (id: number) => {
 }
 
 export const onClickDot = (id: number) => {
+    // use BASENAME version for deployments, without for local
     window.open(`${BASENAME}/model/${getStringId(id)}`, "_blank", "noreferrer")
     // window.open(`model/${getStringId(id)}`, "_blank", "noreferrer")
 }

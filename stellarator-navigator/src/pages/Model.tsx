@@ -18,8 +18,6 @@ type ModelProps = {
     id: number | string
 }
 
-// TODO: NEED TO PROVIDE A DEFAULT RECORD FOR IF THE LOOKUP FAILS SO WE DON'T GET ERRORS
-
 const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     const { id } = props
     const canvasRef = useRef(null)
@@ -28,7 +26,7 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     const baseCoils = useCoils({ recordId: `${id}` })
     const baseSurfs = useSurfaces({ recordId: `${id}` })
     const fullCoils = useFullRingCoils(baseCoils, rec.nfp)
-    const fullSurfs = useFullRingSurface(baseSurfs, rec.nfp) // have to double because they're really half-periods
+    const fullSurfs = useFullRingSurface(baseSurfs, rec.nfp)
     
     const [surfaceChecks, setSurfaceChecks] = useState<boolean[]>(Array(rec.nSurfaces).fill(true))
     const [colorMap, setColorMap] = useState<SupportedColorMap>('plasma')

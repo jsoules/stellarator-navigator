@@ -4,8 +4,8 @@ import { useMemo } from "react"
 // TODO: move to a config file? Read from viteconfig?
 // const basePath = "https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR/"
 // TODO: SWITCH BASE PATH BASED ON DEPLOYMENT STATUS
-// const basePath = "https://users.flatironinstitute.org/~jsoules/QUASR/" // FIXME
-const basePath = "https://users.flatironinstitute.org/~jsoules/test/" // FIXME
+const basePath = "https://users.flatironinstitute.org/~jsoules/QUASR/" // FIXME
+// const basePath = "https://users.flatironinstitute.org/~jsoules/test/" // FIXME
 // const basePath = "http://localhost:5173/" // FIXME
 const idLength = 6
 
@@ -69,13 +69,11 @@ const useResourcePath = (id: string, type: KnownPathType) => {
         default:
             typeDirectory = `${type}`
             fileBase = `${type}${id}`
-            // suffix = '.txt'
             suffix = '.json'
     }
 
     return useMemo(() => {
         return type === KnownPathType.DATABASE
-            // ? 'https://users.flatironinstitute.org/~jsoules/QUASR/database.json'
             ? `${basePath}database.json.gz`
             : `${basePath}${graphicsPart}${typeDirectory}/${binPrefix}/${fileBase}${suffix}`
     }, [binPrefix, fileBase, graphicsPart, suffix, type, typeDirectory])
