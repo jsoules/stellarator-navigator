@@ -8,6 +8,8 @@ import { useLocation, useNavigate } from "react-router-dom"
 export type Route = {
     page: 'home'
 } | {
+    page: 'overview'
+} | {
     page: 'model',
     recordId: string
 }
@@ -46,6 +48,9 @@ const useRoute = () => {
         if (r.page === 'home') {
             navigate({...location, pathname: `${BASENAME}`})
         }
+        if (r.page === 'overview') {
+            navigate({...location, pathname: `${BASENAME}/overview`})
+        }
         if (r.page === 'model') {
             navigate({...location, pathname: `${BASENAME}/model/${r.recordId}`})
         }
@@ -65,6 +70,8 @@ const useRoute = () => {
                 page: 'model',
                 recordId: recordId
             }
+        } else if (location.pathname.startsWith('/overview')) {
+            return { page: 'overview' }
         } else {
             // return redirectHome(navigate)
             return redirectHome()
