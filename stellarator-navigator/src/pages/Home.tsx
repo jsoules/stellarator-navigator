@@ -12,19 +12,21 @@ const Home: FunctionComponent = () => {
     // TODO: Margin, more styling, etc.
     const { database } = useContext(NavigatorContext)
     const { route } = useRoute()
+    const ready = database !== initialDatabase
+    const buttonString = ready ? "Launch Navigator" : "Loading Navigator..."
     const button = useMemo(() => (
         <span>
             <Button
                 variant="contained"
                 style={{margin: 20}}
-                aria-label="Launch Navigator"
-                disabled={database === initialDatabase}
+                aria-label={buttonString}
+                disabled={!ready}
                 onClick={() => document.getElementById("launch")?.click()}
             >
-                Launch Navigator
+                {buttonString}
             </Button>
         </span>
-    ), [database])
+    ), [buttonString, ready])
 
     if (route.page === 'model') {
         return <Model id={route.recordId} />
@@ -56,7 +58,7 @@ const Home: FunctionComponent = () => {
                         including an interactive 3-D model and Poincaré plots.
                    </div>
                     <div className="homeButton">
-                        <Tooltip title="Launch navigator">
+                        <Tooltip title={buttonString}>
                             {button}
                         </Tooltip>
                         <a id="launch" href={"/overview"} style={{display: "none"}}/>
