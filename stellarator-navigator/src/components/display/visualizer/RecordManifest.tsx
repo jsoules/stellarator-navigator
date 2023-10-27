@@ -67,10 +67,6 @@ const RecordManifest: FunctionComponent<recordProps> = (props: recordProps) => {
             <span className="manifestLabel">{getLabel({name: "elongation", labelType: "full"})}:</span>
             <span>{rec.elongation}</span>
         </div>
-        <div key="shear">
-            <span className="manifestLabel">{getLabel({name: "shear", labelType: "full"})}:</span>
-            <span>{rec.shear}</span>
-        </div>
         <div key="message">
             <span className="manifestLabel">{getLabel({name: "message", labelType: "full"})}:</span>
             <span>{rec.message}</span>

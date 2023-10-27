@@ -5,6 +5,66 @@
   text-align: center;
 } */
 
+div.ForceLightMode {
+    background-color: #FFFFFF;
+    color: #000000;
+}
+
+.MainWindow {
+    position: absolute;
+    overflow: hidden;
+}
+
+.homeBase {
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.homeBase h1, .homeBase h2 {
+    padding-top: 2vh;
+    text-align: center;
+}
+
+.homeImage {
+    flex: 3;
+    padding-left: 40px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.homeImage img {
+    max-width: 90%;
+}
+
+.homeCopy {
+    flex: 2;
+    margin-left: 40px;
+    margin-right: 40px;
+    padding-top: 5%;
+    font-size: larger;
+}
+
+.homeCopy div {
+    max-width: 600px;
+    padding-top: 30px;
+}
+
+.homeButton {
+    margin-top: 5%;
+    text-align: center;
+}
+
+.authorship {
+    font-size: small;
+    font-style: italic;
+    padding-top: 40px;
+}
+
+.checkboxGroup {
+    padding-left: 8px;
+    padding-top: 15px;
+}
+
 .manifestLabel {
     padding-top: 0px;
     padding-left: 20px;
@@ -17,21 +77,6 @@
 .ControlPanelWrapper {
     margin: 20px;
     padding: 100px 20px 0px 20px;
-}
-
-.ForceLightMode {
-    background-color: #ffffff;
-    color: #000000;
-}
-
-.MainWindow {
-    position: absolute;
-    overflow: hidden;
-}
-
-.checkboxGroup {
-    padding-left: 8px;
-    padding-top: 15px;
 }
 
 /* !important isn't great style, but this will get overwritten by some MUI class styling otherwise */
@@ -49,8 +94,8 @@
     padding-left: 8px;
 }
 
-div .overviewTable {
-    height: 600px;
+.overviewTable {
+    height: 500px;
     width: 100%;
 }
 
@@ -64,55 +109,55 @@ div .overviewTable {
     padding: 5px 20px 20px 20px;
 }
 
-div .hrWrapper {
+.hrWrapper {
     padding: 10px;
 }
 
-div .dropdownWrapper {
+.dropdownWrapper {
     padding-bottom: 10px;
 }
 
-div .codeSnippetWrapper {
+.codeSnippetWrapper {
     border: 1px solid #7f7f7f;
     margin: 10px 0px 10px 10px;
     padding-left: 20px;
 }
 
-div .simulationViewParent {
+.simulationViewParent {
     width: 100%
 }
 
-div .simulationViewWrapper {
+.simulationViewWrapper {
     padding: 10px;
 }
 
-div .simulationViewWrapperLeft {
+.simulationViewWrapperLeft {
     padding: 10px;
     flex: 2;
 }
 
-div .simulationViewWrapperRight {
+.simulationViewWrapperRight {
     padding: 10px;
     flex: 1;
 }
 
-div .flexWrapper {
+.flexWrapper {
     display: flex;
 }
 
-div .indent {
+.indent {
     padding-left: 20px;
 }
 
-div .iotaProfileWrapper {
+.iotaProfileWrapper {
     margin: 20px;
 }
 
-div .padded {
+.padded {
     padding: 20px;
 }
 
-div .poincareContainer {
+.poincareContainer {
     margin: 10px;
 }
 

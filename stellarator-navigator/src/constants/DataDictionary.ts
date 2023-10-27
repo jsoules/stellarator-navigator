@@ -42,7 +42,7 @@ export enum DependentVariables {
     VOLUME = KnownFields.VOLUME,
     MIN_COIL_TO_SURFACE_DIST = KnownFields.MIN_COIL_TO_SURFACE_DIST,
     ELONGATION = KnownFields.ELONGATION,
-    SHEAR = KnownFields.SHEAR
+    // SHEAR = KnownFields.SHEAR
 }
 
 export enum IndependentVariables {
@@ -58,7 +58,7 @@ export enum IndependentVariables {
     VOLUME = KnownFields.VOLUME,
     MEAN_IOTA = KnownFields.MEAN_IOTA,
     ELONGATION = KnownFields.ELONGATION,
-    SHEAR = KnownFields.SHEAR,
+    // SHEAR = KnownFields.SHEAR,
     // NOTE: I think putting categorical variables on the x-axis isn't going to be terribly informative, but we'll try it
     NC_PER_HP = KnownFields.NC_PER_HP,
     NFP = KnownFields.NFP,
@@ -86,7 +86,7 @@ export enum RangeVariables {
     VOLUME = KnownFields.VOLUME,
     MIN_COIL_TO_SURFACE_DIST = KnownFields.MIN_COIL_TO_SURFACE_DIST,
     ELONGATION = KnownFields.ELONGATION,
-    SHEAR = KnownFields.SHEAR,
+    // SHEAR = KnownFields.SHEAR,
 }
 
 export enum TripartiteVariables {
@@ -109,7 +109,7 @@ export const dependentVariableDropdownConfig: { key: number, fieldName: Dependen
     { key:  9, fieldName: DependentVariables.COIL_LENGTH_PER_HP       },
     { key: 10, fieldName: DependentVariables.TOTAL_COIL_LENGTH        },
     { key: 11, fieldName: DependentVariables.ELONGATION               },
-    { key: 12, fieldName: DependentVariables.SHEAR                    },
+    // { key: 12, fieldName: DependentVariables.SHEAR                    },
 ]
 
 export const independentVariableDropdownConfig: { key: number, fieldName: IndependentVariables }[] = [
@@ -125,7 +125,7 @@ export const independentVariableDropdownConfig: { key: number, fieldName: Indepe
     { key: 10, fieldName: IndependentVariables.VOLUME                   },
     { key: 11, fieldName: IndependentVariables.MEAN_IOTA                },
     { key: 12, fieldName: IndependentVariables.ELONGATION               },
-    { key: 13, fieldName: IndependentVariables.SHEAR                    },
+    // { key: 13, fieldName: IndependentVariables.SHEAR                    },
     { key: 14, fieldName: IndependentVariables.NC_PER_HP                },
     { key: 15, fieldName: IndependentVariables.NFP                      },
     { key: 16, fieldName: IndependentVariables.GLOBALIZATION_METHOD     },
@@ -253,7 +253,7 @@ export const Fields: FieldRecords = {
     'nfp': {
         shortLabel: "FPs",
         plotLabel: "FP Count",
-        fullLabel: "Number of Field Periods",
+        fullLabel: "Number of Field Periods (NFP)",
         description: "Count of field periods",
         unit: undefined,
         range: [1, 5],
@@ -342,7 +342,7 @@ export const Fields: FieldRecords = {
     'qaError': {
         shortLabel: "Sqrt(QA Err)",
         plotLabel: "Root of QA Error",
-        fullLabel: "Root of Quasi-Axisymmtery (QA) Error",
+        fullLabel: "Root of Quasi-Axisymmetry (QA) Error",
         description: "Square root of quasi-Axisymmetry (QA) error, proxy for particle loss",
         range: [-5.47, -0.535],
         isLog: true,
