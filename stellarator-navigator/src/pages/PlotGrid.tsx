@@ -97,7 +97,7 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
 
     // Compute dimensions
     const nfps = getSelectedNfps(filters)
-    const [dims, colCount] = useMemo(() => computePerPlotDimensions(nfps.length, width - 2*internalMargin, height), [height, nfps.length, width])
+    const [dims] = useMemo(() => computePerPlotDimensions(nfps.length, width - 2*internalMargin, height), [height, nfps.length, width])
 
     useEffect(() => {
         const { targetNc, targetNfp } = rectifySelectedTable(activeNc, activeNfp, filters.ncPerHp, nfps)
@@ -144,7 +144,6 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
             <Grid container>
                 {rows}
             </Grid>
-            <div>Currently each plot is {dims.width} x {dims.height} with {nfps.length} ({colCount}) columns.</div>
             <div>Current filter settings return {allRecords.length} devices.</div>
 
             <HrBar />

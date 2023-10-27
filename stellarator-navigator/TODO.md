@@ -142,15 +142,19 @@
 
 [x] Figure out how to ensure the Javascript app is delivered from the same origin as the web server
 
-[ ] Write up instructions for preprocessing data files, incl. in-memory database
+[x] An "about this" landing page
+
+[x] don't hard-code width/height for canvas in Model.tsx --> worry about this later
+
+[-] Write up instructions for preprocessing data files, incl. in-memory database
     [ ] Latter should have the appropriate fields log-scaled, do JSONified output, and zip the result
     [ ] Rest of data: rsync it, delete the poincare directory, and run process_files.py
     [ ] For deployment, need to switch:
         - `base` variable in `vite.config.ts`
-        - `basePath` in `useResourcePath.ts`
-        - `redirectHome` implementation in `useRoute.ts`
-        - `onClickDot` in `interactions.tsx`
-        - `useDatabase` hook in `database.ts` needs to expect UNCOMPRESSED file for local mode and COMPRESSED file (`true` parameter) for remote
+        - `basePath` in `useResourcePath.ts` (NO LONGER NEEDED)
+        - `redirectHome` implementation in `useRoute.ts` (NO LONGER NEEDED)
+        - `onClickDot` in `interactions.tsx` (NO LONGER NEEDED)
+        - `useDatabase` hook in `database.ts` needs to expect UNCOMPRESSED file for local mode and COMPRESSED file (`true` parameter) for remote (NO LONGER NEEDED)
         - rename `public` directory to `publicX` to avoid packaging a bunch of files!
     [ ] Build this project (using appropriate basename in vite.config.ts). rsync dist/index.html and dist/assets/ to
         the server.
@@ -184,8 +188,6 @@
 
 [ ] Show/hide for filters (i.e. tab in the control area)
 
-[ ] An "about this" landing page
-
 [ ] Consider automatically updating selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
 
 [ ] Try to fix the whole "open selected" button thing; or at least unify the interaction
@@ -196,6 +198,8 @@
 
 [ ] Change default camera distance so that the whole figure is in the window (this should just be trig)
 
+[ ] Figure out a smarter way to right-size the table in the overview page
+
 
 QUERY OR DISTANT:
 
@@ -204,8 +208,6 @@ QUERY OR DISTANT:
 [-] Reorg with index.js files to collect contents of small files
 
 [?] Consider line-breaking of checkboxes for nc/nfp
-
-[?] don't hard-code width/height for canvas in Model.tsx --> worry about this later
 
 [?] Confirm acceptable performance with the row selection features in the table
 

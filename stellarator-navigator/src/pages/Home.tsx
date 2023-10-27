@@ -1,12 +1,13 @@
 import { Button, Tooltip } from '@mui/material'
 import { NavigatorContext } from "@snState/NavigatorContext"
 import { initialDatabase } from "@snTypes/Defaults"
-import imgUrl from 'assets/sample-038911.png'
+import imgUrl from 'assets/sample-197168.png'
 import { FunctionComponent, useContext, useMemo } from "react"
 import useRoute from 'routing/useRoute'
 import Model from './Model'
 import Overview from './Overview'
 
+const BASENAME = import.meta.env.BASE_URL
 
 const Home: FunctionComponent = () => {
     // TODO: Margin, more styling, etc.
@@ -61,7 +62,7 @@ const Home: FunctionComponent = () => {
                         <Tooltip title={buttonString}>
                             {button}
                         </Tooltip>
-                        <a id="launch" href={"/overview"} style={{display: "none"}}/>
+                        <a id="launch" href={BASENAME === '/' ? "/overview" : `${BASENAME}/overview`} style={{display: "none"}}/>
                     </div>
                 </div>
             </div>

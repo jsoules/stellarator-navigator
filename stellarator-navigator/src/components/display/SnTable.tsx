@@ -43,7 +43,6 @@ const varWidthCols: GridColDef[] = varWidthFields.map(f => {
     }
 })
 
-// TODO: improve hardcoding of field names
 
 const SnTable: FunctionComponent<SnTableProps> = (props: SnTableProps) => {
     const { records, selectionHandler, activeNfp, activeNc } = props
@@ -75,11 +74,9 @@ const SnTable: FunctionComponent<SnTableProps> = (props: SnTableProps) => {
             volume: r.volume.toFixed(5),
             minCoil2SurfaceDist: r.minCoil2SurfaceDist.toFixed(5),
             elongation: r.elongation.toFixed(4),
-            shear: r.shear.toFixed(5)
+            // shear: r.shear.toFixed(5)
         }
     })
-    // TODO: row selection feature slows down the UI something pretty fierce.
-    // Can we fix it? Should we maybe omit it?
 
     return (
         <div className="overviewTable">
