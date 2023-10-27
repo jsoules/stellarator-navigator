@@ -57,7 +57,12 @@ div.ForceLightMode {
 .authorship {
     font-size: small;
     font-style: italic;
-    padding-top: 40px;
+    padding-top: 10px;
+    max-width: 50%;
+}
+
+.authorship div {
+    padding-top: 15px;
 }
 
 .checkboxGroup {

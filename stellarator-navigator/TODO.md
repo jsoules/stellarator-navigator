@@ -200,6 +200,10 @@
 
 [ ] Figure out a smarter way to right-size the table in the overview page
 
+[ ] surfaces to 60 x 60? (See test branch)
+
+[ ] Note that horizontal line for non-QA error corresponds to Earth's background magnetic field
+
 
 QUERY OR DISTANT:
 
