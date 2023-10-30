@@ -88,10 +88,12 @@ const useIotaContent = (data: number[][], canvasHeight: number, xScale: LinearSc
 
 const IotaProfilePlot: FunctionComponent<Props> = (props: Props) => {
     const { iotaProfile, width, height, meanIota } = props
-    const { xRange, yRange } = getRanges(iotaProfile)
-    const xSpan = xRange[1] - xRange[0]
+    // const { xRange, yRange } = getRanges(iotaProfile)
+    // const xSpan = xRange[1] - xRange[0]
+    const { yRange } = getRanges(iotaProfile)
     const ySpan = yRange[1] - yRange[0]
-    const broadXrange = useMemo(() => [Math.max(0, xRange[0] - xSpan * .2), xRange[1] + xSpan * .2], [xRange, xSpan])
+    // const broadXrange = useMemo(() => [Math.max(0, xRange[0] - xSpan * .2), xRange[1] + xSpan * .2], [xRange, xSpan])
+    const broadXrange = useMemo(() => [0, 1], [])
     const broadYrange = useMemo(() => [Math.max(0, yRange[0] - ySpan * .2), yRange[1] + ySpan * .2], [yRange, ySpan])
     const boundedDims = useMemo(() => ({
         ...baseDims,
