@@ -363,7 +363,7 @@ export const Fields: FieldRecords = {
     'aspectRatio': {
         shortLabel: "AR",
         plotLabel: "Aspect ratio",
-        fullLabel: "Aspect ratio",
+        fullLabel: "Aspect ratio (AR)",
         description: "The aspect ratio of the device, computed using the VMEC definition",
         range: [2.5, 20.03],
         isLog: false,

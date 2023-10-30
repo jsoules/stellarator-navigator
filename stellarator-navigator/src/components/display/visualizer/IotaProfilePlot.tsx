@@ -91,8 +91,8 @@ const IotaProfilePlot: FunctionComponent<Props> = (props: Props) => {
     const { xRange, yRange } = getRanges(iotaProfile)
     const xSpan = xRange[1] - xRange[0]
     const ySpan = yRange[1] - yRange[0]
-    const broadXrange = useMemo(() => [xRange[0] - xSpan * .2, xRange[1] + xSpan * .2], [xRange, xSpan])
-    const broadYrange = useMemo(() => [yRange[0] - ySpan * .2, yRange[1] + ySpan * .2], [yRange, ySpan])
+    const broadXrange = useMemo(() => [Math.max(0, xRange[0] - xSpan * .2), xRange[1] + xSpan * .2], [xRange, xSpan])
+    const broadYrange = useMemo(() => [Math.max(0, yRange[0] - ySpan * .2), yRange[1] + ySpan * .2], [yRange, ySpan])
     const boundedDims = useMemo(() => ({
         ...baseDims,
         height,
