@@ -166,11 +166,15 @@
         - `yarn build && chmod 755 dist/* && rsync -vahP --delete dist/assets/ workstation:/mnt/home/jsoules/public_www/test/assets/ && rsync -vahP dist/index.html workstation:/mnt/home/jsoules/public_www/test/`
 
 [ ] Big routing rewrite
-    [ ] static landing page
-    [ ] download database async
-    [ ] enable button to plotting page once database is set up
+    [ ] static landing page -->
+        [ ] NEW PLAN: This is going to be the same *page* but render one of two
+            different child components based on whether we've completed the database
+            load and clicked the Launch button.
+    [x] download database async
+        [ ] --> DON'T download the database async if you're hitting a model/ page!
     [ ] "loading" screens for components that make fetch requests
-    [ ] inject *data* into plotting components, *NOT* fetch that data internally
+    [x] inject *data* into plotting components, *NOT* fetch that data internally
+        [ ] Okay this is half-done; we need to wrap up the fetch hooks into one hook
 
 [ ] Filter dots by radius
     [ ] Probably happens *above* the plotting component level?
