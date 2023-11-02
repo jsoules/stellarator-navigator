@@ -11,7 +11,6 @@ export enum KnownFields {
     MEAN_IOTA = 'meanIota',
     NC_PER_HP = 'ncPerHp',
     NFP = 'nfp',
-    GLOBALIZATION_METHOD = 'globalizationMethod',
     N_FOURIER_COIL = 'nFourierCoil',
     NSURFACES = 'nSurfaces',
     MAX_KAPPA = 'maxKappa',
@@ -23,10 +22,11 @@ export enum KnownFields {
     MINOR_RADIUS = 'minorRadius',
     VOLUME = 'volume',
     MIN_COIL_TO_SURFACE_DIST = 'minCoil2SurfaceDist',
-    ELONGATION = 'elongation',
-    SHEAR = 'shear',
+    MEAN_ELONGATION = 'meanElongation',
+    MAX_ELONGATION = 'maxElongation',
     MESSAGE = 'message',
     IOTA_PROFILE = 'iotaProfile',
+    TF_PROFILE = 'tfProfile',
     SURFACE_TYPES = 'surfaceTypes',
 }
 
@@ -41,8 +41,8 @@ export enum DependentVariables {
     MINOR_RADIUS = KnownFields.MINOR_RADIUS,
     VOLUME = KnownFields.VOLUME,
     MIN_COIL_TO_SURFACE_DIST = KnownFields.MIN_COIL_TO_SURFACE_DIST,
-    ELONGATION = KnownFields.ELONGATION,
-    // SHEAR = KnownFields.SHEAR
+    MEAN_ELONGATION = KnownFields.MEAN_ELONGATION,
+    MAX_ELONGATION = KnownFields.MAX_ELONGATION
 }
 
 export enum IndependentVariables {
@@ -57,12 +57,11 @@ export enum IndependentVariables {
     MINOR_RADIUS = KnownFields.MINOR_RADIUS,
     VOLUME = KnownFields.VOLUME,
     MEAN_IOTA = KnownFields.MEAN_IOTA,
-    ELONGATION = KnownFields.ELONGATION,
-    // SHEAR = KnownFields.SHEAR,
+    MEAN_ELONGATION = KnownFields.MEAN_ELONGATION,
+    MAX_ELONGATION = KnownFields.MAX_ELONGATION,
     // NOTE: I think putting categorical variables on the x-axis isn't going to be terribly informative, but we'll try it
     NC_PER_HP = KnownFields.NC_PER_HP,
     NFP = KnownFields.NFP,
-    GLOBALIZATION_METHOD = KnownFields.GLOBALIZATION_METHOD,
     N_FOURIER_COIL = KnownFields.N_FOURIER_COIL,
     NSURFACES = KnownFields.NSURFACES,
 }
@@ -85,12 +84,11 @@ export enum RangeVariables {
     MINOR_RADIUS = KnownFields.MINOR_RADIUS,
     VOLUME = KnownFields.VOLUME,
     MIN_COIL_TO_SURFACE_DIST = KnownFields.MIN_COIL_TO_SURFACE_DIST,
-    ELONGATION = KnownFields.ELONGATION,
-    // SHEAR = KnownFields.SHEAR,
+    MEAN_ELONGATION = KnownFields.MEAN_ELONGATION,
+    MAX_ELONGATION = KnownFields.MAX_ELONGATION
 }
 
 export enum TripartiteVariables {
-    GLOBALIZATION_METHOD = KnownFields.GLOBALIZATION_METHOD,
     N_FOURIER_COIL = KnownFields.N_FOURIER_COIL,
 }
 
@@ -108,8 +106,8 @@ export const dependentVariableDropdownConfig: { key: number, fieldName: Dependen
     { key:  8, fieldName: DependentVariables.ASPECT_RATIO             },
     { key:  9, fieldName: DependentVariables.COIL_LENGTH_PER_HP       },
     { key: 10, fieldName: DependentVariables.TOTAL_COIL_LENGTH        },
-    { key: 11, fieldName: DependentVariables.ELONGATION               },
-    // { key: 12, fieldName: DependentVariables.SHEAR                    },
+    { key: 11, fieldName: DependentVariables.MEAN_ELONGATION          },
+    { key: 12, fieldName: DependentVariables.MAX_ELONGATION           },
 ]
 
 export const independentVariableDropdownConfig: { key: number, fieldName: IndependentVariables }[] = [
@@ -124,11 +122,10 @@ export const independentVariableDropdownConfig: { key: number, fieldName: Indepe
     { key:  9, fieldName: IndependentVariables.MINOR_RADIUS             },
     { key: 10, fieldName: IndependentVariables.VOLUME                   },
     { key: 11, fieldName: IndependentVariables.MEAN_IOTA                },
-    { key: 12, fieldName: IndependentVariables.ELONGATION               },
-    // { key: 13, fieldName: IndependentVariables.SHEAR                    },
+    { key: 12, fieldName: IndependentVariables.MEAN_ELONGATION          },
+    { key: 13, fieldName: IndependentVariables.MAX_ELONGATION           },
     { key: 14, fieldName: IndependentVariables.NC_PER_HP                },
     { key: 15, fieldName: IndependentVariables.NFP                      },
-    { key: 16, fieldName: IndependentVariables.GLOBALIZATION_METHOD     },
     { key: 17, fieldName: IndependentVariables.N_FOURIER_COIL           },
     { key: 18, fieldName: IndependentVariables.NSURFACES                },
 ]
@@ -264,25 +261,11 @@ export const Fields: FieldRecords = {
         tableColumnWidth: 50,
         displayInTable: true
     },
-    'globalizationMethod': {
-        shortLabel: "Algo",
-        plotLabel: "Optimization algorithm",
-        fullLabel: "Global optimization algorithm",
-        description: "Global optimization algorithm used to generate the device",
-        unit: undefined,
-        range: [0, 1],
-        values: [0, 1],
-        isLog: false,
-        isCategorical: true,
-        markedValue: undefined,
-        tableColumnWidth: 65,
-        displayInTable: true
-    },
     'nFourierCoil': {
         shortLabel: "Modes",
         plotLabel: "Fourier mode count",
-        fullLabel: "Number of Fourier modes",
-        description: "Number of fourier modes used to reprsent each modular coil",
+        fullLabel: "Number of Fourier modes per coil",
+        description: "Number of fourier modes used to represent each modular coil",
         range: [6, 16],
         values: nFourierCoilValidValues,
         isLog: false,
@@ -405,23 +388,23 @@ export const Fields: FieldRecords = {
         markedValue: 0.1,
         displayInTable: true
     },
-    'elongation': {
-        shortLabel: "Elng",
-        plotLabel: "Elongation",
-        fullLabel: "Elongation (elliptical axis ratio)",
-        description: "Ratio of major to minor axis of an ellipse fitted to an innermost magnetic surface",
-        range: [1, 321.4],
+    'meanElongation': {
+        shortLabel: "AvgElng",
+        plotLabel: "Mean Elongation",
+        fullLabel: "Mean Elongation (elliptical axis ratio)",
+        description: "Ratio of major to minor axis of an ellipse fitted to an innermost magnetic surface (mean)",
+        range: [1, 44],
         isLog: false,
         isCategorical: false,
         // markedValue?: undefined,
         displayInTable: true
     },
-    'shear': {
-        shortLabel: "Shear",
-        plotLabel: "Shear",
-        fullLabel: "Shear",
-        description: "The slope of a line closest (in a least-squares sense) to the rotational transform profile, where the independent variable is normalized toroidal flux",
-        range: [-1.02, 0.79],
+    'maxElongation': {
+        shortLabel: "MxElng",
+        plotLabel: "Max Elongation",
+        fullLabel: "Max Elongation (elliptical axis ratio)",
+        description: "Maximum ratio of major to m inor axis of an ellipse fitted to an innermost magnetic surface",
+        range: [1, 146],
         isLog: false,
         isCategorical: false,
         // markedValue?: undefined,
@@ -442,8 +425,19 @@ export const Fields: FieldRecords = {
         shortLabel: "i-prof",
         plotLabel: "Iota profile",
         fullLabel: "Iota profile",
-        description: "Rotational transform with respect to normalized toroidal flux (as (# of surfaces + 1) x-y pairs)",
+        description: "Rotational transform with respect to normalized toroidal flux (# of surfaces + 1 values)",
         range: [0, 1],
+        isLog: false,
+        isCategorical: false,
+        tableColumnWidth: 0,
+        displayInTable: false
+    },
+    'tfProfile': {
+        shortLabel: "tf-prof",
+        plotLabel: "TF profile",
+        fullLabel: "Toroidal Flux profile",
+        description: "Normalized toroidal flux (# of surfaces + 1 values)",
+        range: [0, 1.5],
         isLog: false,
         isCategorical: false,
         tableColumnWidth: 0,
@@ -462,13 +456,10 @@ export const Fields: FieldRecords = {
     }
 }
 
-export const GlobalizationMethodNames = ["TuRBO", "naive"]
-
 export enum CategoricalIndexedFields {
     MEAN_IOTA = 'meanIota',
     NC_PER_HP = 'ncPerHp',
     NFP = 'nfp',
-    GLOBALIZATION_METHOD = 'globalizationMethod',
     NFOURIER = 'nFourierCoil',
     NSURFACES = 'nSurfaces'
 }

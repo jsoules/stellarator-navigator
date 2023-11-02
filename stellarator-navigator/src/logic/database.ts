@@ -5,7 +5,7 @@ import { fetchData } from "@snUtil/fetchData"
 import useResourcePath, { KnownPathType } from "@snUtil/useResourcePath"
 import { useEffect, useMemo, useState } from "react"
 
-export type fieldType = number | string | string[] | number[][]
+export type fieldType = number | string | string[] | number[]
 
 type RawData = {
     columns: string[],
@@ -20,7 +20,6 @@ export enum RawFields {
     MEAN_IOTA              = 'mean_iota',
     NC_PER_HP              = 'nc_per_hp',
     NFP                    = 'nfp',
-    GLOBALIZATION_METHOD   = 'globalization_method',
     N_FOURIER_COIL         = 'Nfourier_coil',
     NSURFACES              = 'Nsurfaces',
     MAX_KAPPA              = 'max_kappa',
@@ -32,10 +31,11 @@ export enum RawFields {
     MINOR_RADIUS           = 'minor_radius',
     VOLUME                 = 'volume',
     MIN_COIL_TO_SURFACE_DIST = 'min_coil2surface_dist',
-    ELONGATION             = 'elongation',
-    SHEAR                  = 'shear',
+    MEAN_ELONGATION        = 'mean_elongation',
+    MAX_ELONGATION         = 'max_elongation',
     MESSAGE                = 'message',       // one of "Naive, fine scan", "Naive, global scan", "TuRBO, fine scan", "TuRBO, global scan"
-    IOTA_PROFILE           = 'iota_profile',  // will be array of nSurfaces+1 pairs of numbers, i.e. number[][]
+    IOTA_PROFILE           = 'iota_profile',  // array of nSurfaces+1 numbers
+    TF_PROFILE             = 'tf_profile',    // array of nSurfaces+1 numbers
     SURFACE_TYPES          = 'surface_types', // array of nSurfaces + 1 length, each element's values one of "exact", "ls"
 }
 
@@ -57,21 +57,20 @@ const recordJig: jigRow[] = [
     { raw: RawFields.MIN_INTERCOIL_DIST,       order:  6, objectField: KnownFields.MIN_INTERCOIL_DIST       },
     { raw: RawFields.NC_PER_HP,                order:  7, objectField: KnownFields.NC_PER_HP                },
     { raw: RawFields.NFP,                      order:  8, objectField: KnownFields.NFP                      },
-    // "constraint_success" omitted; it is always true, and occupies position 9                             //
-    { raw: RawFields.GRADIENT,                 order: 10, objectField: KnownFields.GRADIENT                 },
-    { raw: RawFields.ASPECT_RATIO,             order: 11, objectField: KnownFields.ASPECT_RATIO             },
-    { raw: RawFields.ID,                       order: 12, objectField: KnownFields.ID                       },
-    { raw: RawFields.GLOBALIZATION_METHOD,     order: 13, objectField: KnownFields.GLOBALIZATION_METHOD     },
-    { raw: RawFields.MINOR_RADIUS,             order: 14, objectField: KnownFields.MINOR_RADIUS             },
-    { raw: RawFields.N_FOURIER_COIL,           order: 15, objectField: KnownFields.N_FOURIER_COIL           },
-    { raw: RawFields.NSURFACES,                order: 16, objectField: KnownFields.NSURFACES                },
-    { raw: RawFields.VOLUME,                   order: 17, objectField: KnownFields.VOLUME                   },
-    { raw: RawFields.MIN_COIL_TO_SURFACE_DIST, order: 18, objectField: KnownFields.MIN_COIL_TO_SURFACE_DIST },
-    { raw: RawFields.ELONGATION,               order: 19, objectField: KnownFields.ELONGATION               },
-    { raw: RawFields.SHEAR,                    order: 20, objectField: KnownFields.SHEAR                    },
-    { raw: RawFields.MESSAGE,                  order: 21, objectField: KnownFields.MESSAGE                  },
-    { raw: RawFields.IOTA_PROFILE,             order: 22, objectField: KnownFields.IOTA_PROFILE             },
-    { raw: RawFields.SURFACE_TYPES,            order: 23, objectField: KnownFields.SURFACE_TYPES            },
+    { raw: RawFields.GRADIENT,                 order:  9, objectField: KnownFields.GRADIENT                 },
+    { raw: RawFields.ASPECT_RATIO,             order: 10, objectField: KnownFields.ASPECT_RATIO             },
+    { raw: RawFields.ID,                       order: 11, objectField: KnownFields.ID                       },
+    { raw: RawFields.MINOR_RADIUS,             order: 12, objectField: KnownFields.MINOR_RADIUS             },
+    { raw: RawFields.N_FOURIER_COIL,           order: 13, objectField: KnownFields.N_FOURIER_COIL           },
+    { raw: RawFields.NSURFACES,                order: 14, objectField: KnownFields.NSURFACES                },
+    { raw: RawFields.VOLUME,                   order: 15, objectField: KnownFields.VOLUME                   },
+    { raw: RawFields.MIN_COIL_TO_SURFACE_DIST, order: 16, objectField: KnownFields.MIN_COIL_TO_SURFACE_DIST },
+    { raw: RawFields.MEAN_ELONGATION,          order: 17, objectField: KnownFields.MEAN_ELONGATION          },
+    { raw: RawFields.MAX_ELONGATION,           order: 18, objectField: KnownFields.MAX_ELONGATION           },
+    { raw: RawFields.MESSAGE,                  order: 19, objectField: KnownFields.MESSAGE                  },
+    { raw: RawFields.IOTA_PROFILE,             order: 20, objectField: KnownFields.IOTA_PROFILE             },
+    { raw: RawFields.TF_PROFILE,               order: 21, objectField: KnownFields.TF_PROFILE               },
+    { raw: RawFields.SURFACE_TYPES,            order: 22, objectField: KnownFields.SURFACE_TYPES            },
 ]
 
 export const makeRecordFromObject = (rawRecord: rawObject): StellaratorRecord => {
@@ -100,7 +99,6 @@ const makeDatabase = (rawData: RawData) => {
         'meanIota': {},
         'ncPerHp': {},
         'nfp': {},
-        'globalizationMethod': {},
         'nFourierCoil': {},
         'nSurfaces': {}
     }
@@ -131,14 +129,11 @@ const makeDatabase = (rawData: RawData) => {
     return database
 }
 
-const BASENAME = import.meta.env.BASE_URL
-
 const useDatabase = () => {
     const databasePath = useResourcePath('000', KnownPathType.DATABASE)
     const [rawData, setRawData] = useState<RawData | undefined>(undefined)
     useEffect(() => {
-        // TODO: Key this off an actual mode flag, not the basename variable
-        if (BASENAME === '/') {
+        if (import.meta.env.DEV) {
             fetchData<RawData | undefined>(databasePath, setRawData)
         } else {
             fetchData<RawData | undefined>(databasePath, setRawData, true)

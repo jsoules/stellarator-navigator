@@ -1,6 +1,6 @@
 import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid'
 import { filterTo } from '@snState/filter'
-import { Fields, GlobalizationMethodNames, KnownFields, ToggleableVariables } from '@snTypes/DataDictionary'
+import { Fields, KnownFields, ToggleableVariables } from '@snTypes/DataDictionary'
 import { StellaratorRecord } from '@snTypes/Types'
 import { FunctionComponent } from 'react'
 
@@ -61,7 +61,6 @@ const SnTable: FunctionComponent<SnTableProps> = (props: SnTableProps) => {
             meanIota: r.meanIota,
             ncPerHp: r.ncPerHp,
             nfp: r.nfp,
-            globalizationMethod: GlobalizationMethodNames[r.globalizationMethod],
             nFourierCoil: r.nFourierCoil,
             nSurfaces: r.nSurfaces,
             maxKappa: r.maxKappa.toFixed(5),
@@ -73,8 +72,8 @@ const SnTable: FunctionComponent<SnTableProps> = (props: SnTableProps) => {
             minorRadius: r.minorRadius.toFixed(3),
             volume: r.volume.toFixed(5),
             minCoil2SurfaceDist: r.minCoil2SurfaceDist.toFixed(5),
-            elongation: r.elongation.toFixed(4),
-            // shear: r.shear.toFixed(5)
+            meanElongation: r.meanElongation.toFixed(4),
+            maxElongation: r.maxElongation.toFixed(4),
         }
     })
 

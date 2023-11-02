@@ -1,6 +1,7 @@
 import { CoilApiResponseRecord, ScalarField, SurfaceApiResponseObject, Vec3, Vec3Field } from '@snTypes/Types'
 import { MathNumericType, Matrix, cos, index, matrix, multiply, range, sin } from 'mathjs'
 import { useMemo } from 'react'
+import { SURFACE_SIDE_RESOLUTION } from './geometry'
 
 const coilTransformMatrices: {[key: number]: Matrix[]} = {}
 const surfaceTransformMatrices: {[key: number]: Matrix[]} = {}
@@ -123,10 +124,11 @@ export const useFullRingSurface = (inputSurfaceObject: SurfaceApiResponseObject,
         const sSymmetricMatrices = surfaceMatrices.map(s => multiply(s, S))
         // For each surface/shell, we have a 900x3 matrix, just need to reverse by the
         // outer index.
-        const forwardIndex = index(range(900, 1800, 1), range(0, 3))
-        const reverseIndex = index(range(899, -1, -1), range(0, 3))
+        const resolution_sq = SURFACE_SIDE_RESOLUTION ** 2
+        const forwardIndex = index(range(resolution_sq, 2*resolution_sq, 1), range(0, 3))
+        const reverseIndex = index(range(resolution_sq - 1, -1, -1), range(0, 3))
         return surfaceMatrices.map((s, i) => {
-            const destinationMatrix = matrix().resize([1800, 3])
+            const destinationMatrix = matrix().resize([2 * resolution_sq, 3])
             destinationMatrix.subset(forwardIndex, s)
             destinationMatrix.subset(reverseIndex, sSymmetricMatrices[i])
             return destinationMatrix

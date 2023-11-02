@@ -17,9 +17,8 @@ export const initialNavigatorState: FilterSettings = {
     minorRadius: (Fields.minorRadius.range),
     volume: (Fields.volume.range),
     minCoil2SurfaceDist: (Fields.minCoil2SurfaceDist.range),
-    elongation: (Fields.elongation.range),
-    shear: (Fields.shear.range),
-    globalizationMethod: undefined,
+    meanElongation: (Fields.meanElongation.range),
+    maxElongation: (Fields.maxElongation.range),
     nFourierCoil: undefined,
     //
     dependentVariable: DependentVariables.QA_ERROR,
@@ -34,7 +33,6 @@ export const initialDatabase: NavigatorDatabase = {
         [CategoricalIndexedFields.MEAN_IOTA]: {},
         [CategoricalIndexedFields.NC_PER_HP]: {},
         [CategoricalIndexedFields.NFP]: {},
-        [CategoricalIndexedFields.GLOBALIZATION_METHOD]: {},
         [CategoricalIndexedFields.NFOURIER]: {},
         [CategoricalIndexedFields.NSURFACES]: {}
     },
@@ -49,7 +47,6 @@ export const defaultEmptyRecord: StellaratorRecord = {
     meanIota: 0,
     ncPerHp: 0,
     nfp: 1,
-    globalizationMethod: 0,
     nFourierCoil: 0,
     nSurfaces: 1,
     maxKappa: 0,
@@ -61,9 +58,10 @@ export const defaultEmptyRecord: StellaratorRecord = {
     minorRadius: 0,
     volume: 0,
     minCoil2SurfaceDist: 0,
-    elongation: 0,
-    shear: 0,
+    meanElongation: 0,
+    maxElongation: 0,
     message: "",
     iotaProfile: [],
+    tfProfile: [],
     surfaceTypes: []
 }

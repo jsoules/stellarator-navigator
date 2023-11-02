@@ -1,6 +1,6 @@
 
 import { FormControl, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material"
-import { Fields, GlobalizationMethodNames, KnownFields, TripartiteVariables, getLabel } from "@snTypes/DataDictionary"
+import { Fields, TripartiteVariables, getLabel } from "@snTypes/DataDictionary"
 import { FunctionComponent, useCallback } from "react"
 import { defaultTripartiteBothState } from "./SelectionControlCallbacks"
 
@@ -14,7 +14,7 @@ type Props = {
 const TripartDropdownSelector: FunctionComponent<Props> = (props: Props) => {
     const { field, value, onChange } = props
     const vals = (Fields[field].values) ?? []
-    const labels = ((field as unknown as KnownFields) === KnownFields.GLOBALIZATION_METHOD) ? GlobalizationMethodNames : vals
+    const labels = vals
     const cb = useCallback((evt: SelectChangeEvent<number>) => onChange(field, evt), [field, onChange])
 
     const bothItem = <MenuItem key={-1} value={defaultTripartiteBothState}>Any</MenuItem>

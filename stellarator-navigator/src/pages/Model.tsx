@@ -31,7 +31,8 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     const [surfaceChecks, setSurfaceChecks] = useState<boolean[]>(Array(rec.nSurfaces).fill(true))
     const [colorMap, setColorMap] = useState<SupportedColorMap>('plasma')
     const [showFullRing, setShowFullRing] = useState<boolean>(false)
-    const [showCurrents, setShowCurrents] = useState<boolean>(true)
+    // TODO: Temporarily defaulted to False & disabled control while an irregularity in the data is updated
+    const [showCurrents, setShowCurrents] = useState<boolean>(false)
 
     const surfacesExist = useMemo(() => baseSurfs.surfacePoints !== undefined && baseSurfs.surfacePoints.length !== 0, [baseSurfs])
     useEffect(() => setSurfaceChecks(Array(rec.nSurfaces || 1).fill(true)), [rec?.nSurfaces])
@@ -75,7 +76,7 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
                 <div style={{width: Math.floor(rw)}}>
                     <RecordManifest rec={rec} />
                     <HrBar />
-                    <IotaProfilePlot iotaProfile={rec.iotaProfile} meanIota={rec.meanIota} width={rw} height={rw} />
+                    <IotaProfilePlot iotaProfile={rec.iotaProfile} tfProfile={rec.tfProfile} meanIota={rec.meanIota} width={rw} height={rw} />
                 </div>
             </div>
             <HrBar />

@@ -3,13 +3,14 @@ import { ScalarField, Vec3, Vec3Field } from "@snTypes/Types"
 import { useMemo } from "react"
 import * as THREE from "three"
 
+export const SURFACE_SIDE_RESOLUTION = 60
 
 export const makeTubes = (coils: Vec3[][]): THREE.TubeGeometry[] => {
     if (coils === undefined || coils.length === 0) return []
     if (coils.some(c => c === undefined)) return []
     return coils.map(coil => {
         const points = coil.map(c => new THREE.Vector3(...c))
-        const curve = new THREE.CatmullRomCurve3(points)
+        const curve = new THREE.CatmullRomCurve3(points, true)
         // path, # tube segments, radius, # radial segments, whether to close the loop
         return new THREE.TubeGeometry(curve, 161, 0.2, 13, true)
     })
@@ -40,7 +41,7 @@ export const makeSurfaces = (surfacePoints: Vec3Field[], periods: number = 1) =>
     const surfaces = surfacePoints.map((field) => {
         const surfaceGeometry = new THREE.BufferGeometry()
         const vertices = new Float32Array(field.flat().flat())
-        const indices = triangulateField(30 * periods, 30)
+        const indices = triangulateField(SURFACE_SIDE_RESOLUTION * periods, SURFACE_SIDE_RESOLUTION)
 
         surfaceGeometry.setIndex(indices)
         surfaceGeometry.setAttribute('position', new THREE.BufferAttribute( vertices, 3 ))
@@ -115,6 +116,8 @@ export const usePositions = (coils?: Vec3[][]) => {
     // but I'm concerned about substantively-equal-but-referentially-distinct
     // repeated calls, which I'm attempting to cut off here.
     const extremePts = useBoundingBox(coils ? coils.flat() : [])
+    const xSpan = (extremePts.xmax - extremePts.xmin)
+    const ySpan = (extremePts.ymax - extremePts.ymin)
     const centerX = (extremePts.xmin + extremePts.xmax)/2
     const centerY = (extremePts.ymin + extremePts.ymax)/2
     const centerZ = (extremePts.zmin + extremePts.zmax)/2
@@ -123,5 +126,5 @@ export const usePositions = (coils?: Vec3[][]) => {
     const center = useMemo(() => new THREE.Vector3(centerX, centerY, centerZ), [centerX, centerY, centerZ])
     const zOffset = useMemo(() => new THREE.Vector3(0, 0, zSpan), [zSpan])
 
-    return useMemo(() => { return { center, zOffset }}, [center, zOffset])
+    return useMemo(() => { return { center, zOffset, xSpan, ySpan }}, [center, xSpan, ySpan, zOffset])
 }

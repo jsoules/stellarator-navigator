@@ -146,6 +146,10 @@
 
 [x] don't hard-code width/height for canvas in Model.tsx --> worry about this later
 
+[x] Figure out the weird notch in the coils of e.g. 206669 --> added "closed: true" to catmullrom3 geometry call
+
+[x] Change default camera distance so that the whole figure is in the window (this should just be trig)
+
 [-] Write up instructions for preprocessing data files, incl. in-memory database
     [ ] Latter should have the appropriate fields log-scaled, do JSONified output, and zip the result
     [ ] Rest of data: rsync it, delete the poincare directory, and run process_files.py
@@ -165,8 +169,12 @@
         - one-liner FOR TEST DEV:
         - `yarn build && chmod 755 dist/* && rsync -vahP --delete dist/assets/ workstation:/mnt/home/jsoules/public_www/test/assets/ && rsync -vahP dist/index.html workstation:/mnt/home/jsoules/public_www/test/`
 
+[ ] Rewrite fetching to use TanStack Query/React Query for caching
+    [ ] Remove database as "context" element and replace with updating state in home component
+    [ ] NOTE: Since react-router loaders exist outside the react loop, DO NOT USE QUERY HOOKS--needs to be raw queryClient calls
+
 [ ] Big routing rewrite
-    [ ] static landing page -->
+    [-] static landing page -->
         [ ] NEW PLAN: This is going to be the same *page* but render one of two
             different child components based on whether we've completed the database
             load and clicked the Launch button.
@@ -179,6 +187,7 @@
 [ ] Filter dots by radius
     [ ] Probably happens *above* the plotting component level?
     [ ] (Since we've already got the scales and everything)
+    [ ] ALTERNATIVELY --  figure out how to use Canvas instead of SVG to get around the size limits
 
 [ ] Give user ability to choose criteria for plot-splitting
 
@@ -188,9 +197,7 @@
     [ ] Don't hard-code the variable listed in the individual plots
     [ ] Memoize the hierarchically divided groups at a higher level
 
-[ ] Improve filtering performance with large numbers of criteria!!
-
-[ ] Show/hide for filters (i.e. tab in the control area)
+[ ] Show/hide filters controls (i.e. tab in the control area)
 
 [ ] Consider automatically updating selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
 
@@ -198,15 +205,13 @@
 
 [ ] Just implement drag-zoom already
 
-[ ] Does the database even need to be a context thing any more?
-
-[ ] Change default camera distance so that the whole figure is in the window (this should just be trig)
-
 [ ] Figure out a smarter way to right-size the table in the overview page
 
 [ ] surfaces to 60 x 60? (See test branch)
 
 [ ] Note that horizontal line for non-QA error corresponds to Earth's background magnetic field
+
+[ ] Fix triangulation? Address repeats? etc. for 
 
 
 QUERY OR DISTANT:
