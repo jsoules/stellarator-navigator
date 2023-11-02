@@ -211,6 +211,8 @@
 
 [ ] Note that horizontal line for non-QA error corresponds to Earth's background magnetic field
 
+[ ] Fix triangulation? Address repeats? etc. for 
+
 
 QUERY OR DISTANT:
 

@@ -19,10 +19,10 @@ const RecordManifest: FunctionComponent<recordProps> = (props: recordProps) => {
             <span className="manifestLabel">Length (m):</span>
             <span>{rec.totalCoilLength} ({rec.coilLengthPerHp} per half-period)</span>
         </div>
-        <div key="hyperparameters">
+        {/* <div key="hyperparameters">
             <span className="manifestLabel">Hyperparameters:</span>
             <span>{rec.nFourierCoil} Fourier modes over {rec.nSurfaces} surfaces</span>
-        </div>
+        </div> */}
         <div key="qaError">
             <span className="manifestLabel">{getLabel({name: "qaError", labelType: "plot"})}:</span>
             <span>{(10 ** rec.qaError).toExponential(10)}</span>
@@ -71,14 +71,14 @@ const RecordManifest: FunctionComponent<recordProps> = (props: recordProps) => {
             <span className="manifestLabel">{getLabel({name: "maxElongation", labelType: "full"})}:</span>
             <span>{rec.maxElongation}</span>
         </div>
-        <div key="message">
+        {/* <div key="message">
             <span className="manifestLabel">{getLabel({name: "message", labelType: "full"})}:</span>
             <span>{rec.message}</span>
-        </div>
-        <div key="surfaceTypes">
+        </div> */}
+        {/* <div key="surfaceTypes">
             <span className="manifestLabel">{getLabel({name: "surfaceTypes", labelType: "full"})}:</span>
             <span>{rec.surfaceTypes.join(", ")}</span>
-        </div>
+        </div> */}
         <div key="gradient">
             <span className="manifestLabel">{getLabel({name: "gradient", labelType: "full"})}:</span>
             <span>{(10 ** rec.gradient).toExponential(10)}</span>

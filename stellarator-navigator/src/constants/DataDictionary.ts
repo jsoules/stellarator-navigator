@@ -264,8 +264,8 @@ export const Fields: FieldRecords = {
     'nFourierCoil': {
         shortLabel: "Modes",
         plotLabel: "Fourier mode count",
-        fullLabel: "Number of Fourier modes",
-        description: "Number of fourier modes used to reprsent each modular coil",
+        fullLabel: "Number of Fourier modes per coil",
+        description: "Number of fourier modes used to represent each modular coil",
         range: [6, 16],
         values: nFourierCoilValidValues,
         isLog: false,
