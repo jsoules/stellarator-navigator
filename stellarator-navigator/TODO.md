@@ -146,6 +146,10 @@
 
 [x] don't hard-code width/height for canvas in Model.tsx --> worry about this later
 
+[x] Figure out the weird notch in the coils of e.g. 206669 --> added "closed: true" to catmullrom3 geometry call
+
+[x] Change default camera distance so that the whole figure is in the window (this should just be trig)
+
 [-] Write up instructions for preprocessing data files, incl. in-memory database
     [ ] Latter should have the appropriate fields log-scaled, do JSONified output, and zip the result
     [ ] Rest of data: rsync it, delete the poincare directory, and run process_files.py
@@ -200,8 +204,6 @@
 [ ] Try to fix the whole "open selected" button thing; or at least unify the interaction
 
 [ ] Just implement drag-zoom already
-
-[ ] Change default camera distance so that the whole figure is in the window (this should just be trig)
 
 [ ] Figure out a smarter way to right-size the table in the overview page
 

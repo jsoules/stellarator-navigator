@@ -10,7 +10,7 @@ export const makeTubes = (coils: Vec3[][]): THREE.TubeGeometry[] => {
     if (coils.some(c => c === undefined)) return []
     return coils.map(coil => {
         const points = coil.map(c => new THREE.Vector3(...c))
-        const curve = new THREE.CatmullRomCurve3(points)
+        const curve = new THREE.CatmullRomCurve3(points, true)
         // path, # tube segments, radius, # radial segments, whether to close the loop
         return new THREE.TubeGeometry(curve, 161, 0.2, 13, true)
     })
@@ -116,6 +116,8 @@ export const usePositions = (coils?: Vec3[][]) => {
     // but I'm concerned about substantively-equal-but-referentially-distinct
     // repeated calls, which I'm attempting to cut off here.
     const extremePts = useBoundingBox(coils ? coils.flat() : [])
+    const xSpan = (extremePts.xmax - extremePts.xmin)
+    const ySpan = (extremePts.ymax - extremePts.ymin)
     const centerX = (extremePts.xmin + extremePts.xmax)/2
     const centerY = (extremePts.ymin + extremePts.ymax)/2
     const centerZ = (extremePts.zmin + extremePts.zmax)/2
@@ -124,5 +126,5 @@ export const usePositions = (coils?: Vec3[][]) => {
     const center = useMemo(() => new THREE.Vector3(centerX, centerY, centerZ), [centerX, centerY, centerZ])
     const zOffset = useMemo(() => new THREE.Vector3(0, 0, zSpan), [zSpan])
 
-    return useMemo(() => { return { center, zOffset }}, [center, zOffset])
+    return useMemo(() => { return { center, zOffset, xSpan, ySpan }}, [center, xSpan, ySpan, zOffset])
 }

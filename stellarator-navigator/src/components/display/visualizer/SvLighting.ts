@@ -1,9 +1,11 @@
 import * as THREE from 'three';
 
-export const ambientLight = new THREE.AmbientLight( 0xe0e0e0, 1.0 )
+export const ambientLight = new THREE.AmbientLight( 0xe0e0e0, 2.0 )
 export const spotlights = [
     new THREE.SpotLight( 0xffffff, 5000 ),
-    new THREE.SpotLight( 0xffffff, 5000 )
+    new THREE.SpotLight( 0xffffff, 5000 ),
+    // new THREE.PointLight( 0xffffff, 10 )
+    // NOTE: Spotlights had been at 5000 intensity, +/- 50 units from Z axis--in case we want to roll back to that
 ]
 
 // const addThreePointLights = (camera: THREE.PerspectiveCamera, test: boolean = false, extentX: number, extentY: number, extentZ: number) => {

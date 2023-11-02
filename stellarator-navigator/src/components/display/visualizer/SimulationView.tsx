@@ -24,7 +24,9 @@ type Props = {
 
 type Positions = {
     center: THREE.Vector3,
-    zOffset: THREE.Vector3
+    zOffset: THREE.Vector3,
+    xSpan: number,
+    ySpan: number
 }
 
 const scene = new THREE.Scene()
@@ -35,7 +37,6 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
     const { width, height, canvasRef, coils, surfs, surfaceChecks, colorScheme, displayedPeriods, showCurrents } = props
     const canvas = canvasRef.current
 
-    // TODO: Allow material customization (to get coil colors)
     const tubes = useMemo(() => {
         const coilTubes = coils === undefined ? [] : makeTubes(coils.map(r => r.coil))
         const currents = coils === undefined ? [] : coils.map(r => r.current)
@@ -50,7 +51,6 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
         if (surfs !== undefined) {
             colorizeSurfaces(surfaces, surfs.pointValues, colorScheme)
         }
-        // TODO: Does memoization break this?
         const surfaceMeshes = surfaces.map(s => new THREE.Mesh(s, fieldMaterial))
         return [...surfaceMeshes]
     }, [colorScheme, displayedPeriods, surfs])
@@ -85,18 +85,29 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
 }
 
 
-const updatePositions = (camera: THREE.PerspectiveCamera, controls: OrbitControls | undefined, positions: Positions, spots: THREE.SpotLight[] ) => {
+type Light = THREE.SpotLight | THREE.PointLight
+const zUnit = new THREE.Vector3(0, 0, -1)
+const updatePositions = (camera: THREE.PerspectiveCamera, controls: OrbitControls | undefined, positions: Positions, spots: Light[] ) => {
     if (!camera) return
     if (!controls) return
     controls.target.copy(positions.center)
-    camera.position.copy(positions.center).addScaledVector(positions.zOffset, -1.5)
+    // We'd like to position the camera so the full width of the largest span (x or y) is in view. Since the camera's field-of-view
+    // is 60 degrees, it will see 2 * sin(30) * Z in the x & y directions. But 2 sin(30 degrees) = 1.
+    // So with W being the max of (xspan, yspan), set:
+    //   camera z-position = center - zOffset/2 - W
+    // because:
+    //   - zOffset/2 puts us even with the lowest observed point, and
+    //   - if W = 2 sin(30) * Z --> Z = W, and we put the camera in the negative Z direction.
+    // However, since the geometries we actually work with put the x/y extrema closer to the Z-center, the above gives a bit too much
+    // margin--especially when drawing into a non-square viewport. So use 0.25*Zspan instead of 0.5.
+    camera.position.copy(positions.center).addScaledVector(positions.zOffset, -0.25).addScaledVector(zUnit, Math.max(positions.xSpan, positions.ySpan))
     // TODO: some more sophisticated logic for spotlighting?
     spots[0].position.copy(positions.center).setZ(-50)
     spots[1].position.copy(positions.center).setZ(50)
 }
 
 
-const makeScene = (controls: OrbitControls | undefined, camera: THREE.PerspectiveCamera, spots: THREE.SpotLight[], objects: THREE.Mesh[], renderer: THREE.WebGLRenderer) => {
+const makeScene = (controls: OrbitControls | undefined, camera: THREE.PerspectiveCamera, spots: Light[], objects: THREE.Mesh[], renderer: THREE.WebGLRenderer) => {
     if (!controls) return
 
     scene.clear()
