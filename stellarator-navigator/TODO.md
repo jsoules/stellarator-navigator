@@ -150,6 +150,10 @@
 
 [x] Change default camera distance so that the whole figure is in the window (this should just be trig)
 
+[x] Fix triangulation? Address repeats? etc. for 
+
+[ ] FIX PERMISSIONS
+
 [-] Write up instructions for preprocessing data files, incl. in-memory database
     [ ] Latter should have the appropriate fields log-scaled, do JSONified output, and zip the result
     [ ] Rest of data: rsync it, delete the poincare directory, and run process_files.py
@@ -210,8 +214,6 @@
 [ ] surfaces to 60 x 60? (See test branch)
 
 [ ] Note that horizontal line for non-QA error corresponds to Earth's background magnetic field
-
-[ ] Fix triangulation? Address repeats? etc. for 
 
 
 QUERY OR DISTANT:

@@ -14,7 +14,7 @@ SyntaxHighlighter.registerLanguage('python', python)
 const codeSnippet =
 `from simsopt._core import load
 # replace "NAME_OF_FILE_YOU_DOWNLOADED" with the name you gave the file
-[surfaces, axis, coils] = load(f'NAME_OF_FILE_YOU_DOWNLOADED.json')`
+[surfaces, coils] = load(f'NAME_OF_FILE_YOU_DOWNLOADED.json')`
 
 const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
     const { dataPaths } = props

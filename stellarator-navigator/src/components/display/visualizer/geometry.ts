@@ -16,17 +16,25 @@ export const makeTubes = (coils: Vec3[][]): THREE.TubeGeometry[] => {
     })
 }
 
-
 const triangulateField = (width: number, height: number): number[] => {
     return Array(height - 1).fill(0).map((_, h) => {
       return Array(width - 1).fill(0).map((__, w) => {
         const rowOffset = width * h
         const x = rowOffset + w
+        // we need to make clear to the system that this surface actually is a tube.
+        // Without the "width - 2" check, we connect a flat surface where the first and
+        // last vertices happen to occupy the same physical space, but there is no surface
+        // connecting them: this creates a sharp seam which should be rounded.
+        // It's "-2" because we don't actually care about the repeated point in the data.
+        // If that repeated point should ever go away, we'd want to make this -1 instead.
+        if (w === width - 2) {
+            return [x, rowOffset, x+width, rowOffset, rowOffset+width, x+width]
+        }
         return [x, x+1, x+width, x+1, x+width + 1, x+width]
       })
     }).flat().flat()
 }
-    
+
 
 export const makeSurfaces = (surfacePoints: Vec3Field[], periods: number = 1) => {
     if (surfacePoints === undefined) return []
