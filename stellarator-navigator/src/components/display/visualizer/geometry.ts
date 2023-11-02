@@ -3,6 +3,7 @@ import { ScalarField, Vec3, Vec3Field } from "@snTypes/Types"
 import { useMemo } from "react"
 import * as THREE from "three"
 
+export const SURFACE_SIDE_RESOLUTION = 60
 
 export const makeTubes = (coils: Vec3[][]): THREE.TubeGeometry[] => {
     if (coils === undefined || coils.length === 0) return []
@@ -40,7 +41,7 @@ export const makeSurfaces = (surfacePoints: Vec3Field[], periods: number = 1) =>
     const surfaces = surfacePoints.map((field) => {
         const surfaceGeometry = new THREE.BufferGeometry()
         const vertices = new Float32Array(field.flat().flat())
-        const indices = triangulateField(30 * periods, 30)
+        const indices = triangulateField(SURFACE_SIDE_RESOLUTION * periods, SURFACE_SIDE_RESOLUTION)
 
         surfaceGeometry.setIndex(indices)
         surfaceGeometry.setAttribute('position', new THREE.BufferAttribute( vertices, 3 ))

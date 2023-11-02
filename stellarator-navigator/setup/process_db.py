@@ -2,11 +2,17 @@ import numpy as np
 # import pandas # required for the pickle to load correctly
 import pickle
 
-input_file_name = '../../stellarator_database/database.pkl'
+input_file_name = 'database_full.pkl'
 output_file_name = 'database.json'
 
 with open(input_file_name, "rb") as file:
     data = pickle.load(file)
+
+# DROP FIELDS WE DON'T CARE ABOUT--shrink the file size
+fields_to_drop = ["constraint_success", "run_ID", "shear", "well",
+                  "volume_profile", "LgradBstar", "currents",
+                  "min_coil2axis_dist", "axis_Rc", "axis_Zs"]
+data = data.drop(columns=fields_to_drop)
 
 fields_to_log_scale = ["qa_error", "gradient"]
 for field in fields_to_log_scale:
@@ -15,7 +21,7 @@ data["qa_error"] = data["qa_error"].transform(lambda x: x/2) # we actually want 
 
 data.to_json(output_file_name, orient='split', double_precision=10)
 
-# Okay, when the database loads separately, we can no longer look up individual records from context.
+# When the database loads separately, we can no longer look up individual records from a Context.
 # Solution: include per-record json strings for the records in the database, under a 'records/' directory,
 # following the usual naming convention.
 
@@ -46,3 +52,7 @@ for _, row in data.iterrows():
 #     dist_cnt = len(np.unique(data[field]))
 #     print(f"\tField: {field}\n{minval} - {maxval} (range {valrng})\nwith {dist_cnt} distinct values")
 # [my_range(field) for field in fields]
+# data["max_tf"] = [max(row) for row in data["tf_profile"]]
+# data["tf_len"] = [len(row) for row in data["tf_profile"]]
+# data["iota_len"] = [len(row) for row in data["iota_profile"]]
+

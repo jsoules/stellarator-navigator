@@ -5,6 +5,9 @@ from collections import deque
 
 ## TODO: command-line arguments to suppress display of "output file exists and is newer" messages
 
+SURFACE_DIMENSION = 60
+MAGNIFICATION_FACTOR = 10
+
 def convert_file(file: os.DirEntry[str], path: str):
     if (not file.name.endswith('txt')):
         return
@@ -34,7 +37,7 @@ def convert_file(file: os.DirEntry[str], path: str):
 
 
 def convert_coils(full_file_path: str):
-    coils = np.loadtxt(full_file_path).reshape((160, -1, 3)).transpose((1, 0, 2)) * 10
+    coils = np.loadtxt(full_file_path).reshape((160, -1, 3)).transpose((1, 0, 2)) * MAGNIFICATION_FACTOR
     return coils.tolist()
 
 
@@ -45,8 +48,8 @@ def convert_currents(full_file_path: str):
 
 
 def convert_modB(full_file_path: str, normalize_surfaces_per_surface: bool = False):
-    modB = np.loadtxt(full_file_path).reshape((30, 30, -1)).transpose((2, 0, 1))
-    tmp = modB.reshape((-1, 900))
+    modB = np.loadtxt(full_file_path).reshape((SURFACE_DIMENSION, SURFACE_DIMENSION, -1)).transpose((2, 0, 1))
+    tmp = modB.reshape((-1, SURFACE_DIMENSION ** 2))
     if normalize_surfaces_per_surface:
         normalized_modB = tmp - np.min(tmp, axis=1, keepdims=True)
         normalized_modB = normalized_modB / np.max(normalized_modB, axis=1, keepdims=True)
@@ -54,13 +57,13 @@ def convert_modB(full_file_path: str, normalize_surfaces_per_surface: bool = Fal
         # normalize per-device
         normalized_modB = tmp - np.min(tmp, keepdims=True)
         normalized_modB = normalized_modB / np.max(normalized_modB, keepdims=True)
-    normalized_modB = normalized_modB.reshape((-1, 30, 30))
+    normalized_modB = normalized_modB.reshape((-1, SURFACE_DIMENSION, SURFACE_DIMENSION))
     return normalized_modB.tolist()
 
 
 def convert_surfaces(full_file_path: str):
-    # Again, multiply by 10 to put points in a more comfortable range for three.js
-    surfs = np.loadtxt(full_file_path).reshape((30, 30, -1, 3)).transpose((2, 0, 1, 3)) * 10
+    # Again, magnify to put points in a more comfortable range for three.js
+    surfs = np.loadtxt(full_file_path).reshape((SURFACE_DIMENSION, SURFACE_DIMENSION, -1, 3)).transpose((2, 0, 1, 3)) * MAGNIFICATION_FACTOR
     return surfs.tolist()
 
 

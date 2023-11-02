@@ -17,9 +17,8 @@ export type FilterSettings = {
     minorRadius: number[],
     volume: number[],
     minCoil2SurfaceDist: number[],
-    elongation: number[],
-    shear: number[],
-    globalizationMethod?: number,
+    meanElongation: number[],
+    maxElongation: number[],
     nFourierCoil?: number,
     dependentVariable: DependentVariables,
     independentVariable: IndependentVariables,
@@ -40,7 +39,6 @@ export type StellaratorRecord = {
     meanIota: number,               // range 0.1 - 0.9
     ncPerHp: number,                // range 1-13, coil count per half-period
     nfp: number,                    // range 1-5, field period count
-    globalizationMethod: number,    // 0 = "naive", 1 = "TuRBO"
     nFourierCoil: number,           // 6 or 16. (Number of Fourier modes used in coil simulation)
     nSurfaces: number,              // # of surfaces over which QA was optimized. (1-7). Shld correspond to surface data.
     // Globally unique(ish)/continuous fields
@@ -54,15 +52,14 @@ export type StellaratorRecord = {
                                     // Note somewhere that this is scaled so that major radius is always 1
     volume: number,                 // range 0.049 - 2.42. Volume enclosed by outermost toroidal surface over which QA was optimized. (m^3)
     minCoil2SurfaceDist: number,    // range [0.0999, 0.61]. min distance between coil and outermost optimization surface. (m)
-    elongation: number,             // range [1, 321.4]. 
-    shear: number,                  // range [-1.02, 0.79].
+    meanElongation: number,         // range [1, 44]. 
+    maxElongation: number,          // range [1, 146].
     // Weird ones
     message: string,                // descriptor of analysis: as "[Naive | TuRBO], [global | fine] scan"
-    iotaProfile: number[][],        // array of nSurfaces+1 length, each element an (x, y) pair of numbers
-                                    // --> x = "normalized toroidal flux", y = rotational transform value (both unitless)
+    iotaProfile: number[],          // array of nSurfaces+2 length, each element a rotational transform value (y-axis of iota profile plot)
+    tfProfile: number[],            // array of nSurfaces+2 length, each element a normalized toriodal flux value (x-axis of iota profile plot)
+                                    // both are unitless and tfProfile should be constrained to lie on (0, 1)
     surfaceTypes: string[]          // array of nSurfaces+1 length, each element's values in ("exact", "ls")
-    // OMITTED from underlying data:
-    // constraint_success: boolean, // always true; confirm this in preprocessing.
 }
 export type RecordDict = { [key: number]: StellaratorRecord }
 

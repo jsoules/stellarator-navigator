@@ -75,7 +75,7 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
                 <div style={{width: Math.floor(rw)}}>
                     <RecordManifest rec={rec} />
                     <HrBar />
-                    <IotaProfilePlot iotaProfile={rec.iotaProfile} meanIota={rec.meanIota} width={rw} height={rw} />
+                    <IotaProfilePlot iotaProfile={rec.iotaProfile} tfProfile={rec.tfProfile} meanIota={rec.meanIota} width={rw} height={rw} />
                 </div>
             </div>
             <HrBar />

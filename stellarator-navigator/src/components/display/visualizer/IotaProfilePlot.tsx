@@ -7,7 +7,8 @@ import SvgYAxis from "../plots/SvgYAxis"
 
 
 type Props = {
-    iotaProfile: number[][],
+    iotaProfile: number[],
+    tfProfile: number[],
     meanIota: number,
     width: number,
     height: number,
@@ -15,12 +16,9 @@ type Props = {
 }
 
 
-const getRanges = (ip: number[][]) => {
-    const xs = ip.map(record => record[0])
-    const ys = ip.map(record => record[1])
-    const xRange = [Math.min(...xs), Math.max(...xs)]
-    const yRange = [Math.min(...ys), Math.max(...ys)]
-    return { xRange, yRange }
+const getRange = (dataSeries: number[]) => {
+    const range = [Math.min(...dataSeries), Math.max(...dataSeries)]
+    return { range }
 }
 
 const fontPx = 10
@@ -45,12 +43,12 @@ const useTitleGroup = (width: number) => {
 
 
 type LinearScale = ScaleLinear<number, number, never>
-const useIotaContent = (data: number[][], canvasHeight: number, xScale: LinearScale, yScale: LinearScale) => {
+const useIotaContent = (iotaProf: number[], tfProf: number[], canvasHeight: number, xScale: LinearScale, yScale: LinearScale) => {
 
     const dots = useMemo(() => (
-        data.map((v, i) => {
-            const x = xScale(v[0])
-            const y = yScale(v[1])
+        tfProf.map((v, i) => {
+            const x = xScale(v)
+            const y = yScale(iotaProf[i])
             return <circle
                 key={`dot-${i}`}
                 cx={x}
@@ -59,8 +57,9 @@ const useIotaContent = (data: number[][], canvasHeight: number, xScale: LinearSc
                 r="4"
             />
         })
-    ), [canvasHeight, data, xScale, yScale])
+    ), [canvasHeight, iotaProf, tfProf, xScale, yScale])
 
+    const data = tfProf.map((v, i) => [v, iotaProf[i]])
     const {slope, intercept} = useBestFitLine(data)
     const line = useMemo(() => {
         const nativeX1 = xScale.domain()[0]
@@ -87,14 +86,14 @@ const useIotaContent = (data: number[][], canvasHeight: number, xScale: LinearSc
 
 
 const IotaProfilePlot: FunctionComponent<Props> = (props: Props) => {
-    const { iotaProfile, width, height, meanIota } = props
+    const { iotaProfile, tfProfile, width, height, meanIota } = props
     // const { xRange, yRange } = getRanges(iotaProfile)
     // const xSpan = xRange[1] - xRange[0]
-    const { yRange } = getRanges(iotaProfile)
-    const ySpan = yRange[1] - yRange[0]
+    const { range } = getRange(iotaProfile)
+    const ySpan = range[1] - range[0]
     // const broadXrange = useMemo(() => [Math.max(0, xRange[0] - xSpan * .2), xRange[1] + xSpan * .2], [xRange, xSpan])
     const broadXrange = useMemo(() => [0, 1], [])
-    const broadYrange = useMemo(() => [Math.max(0, yRange[0] - ySpan * .2), yRange[1] + ySpan * .2], [yRange, ySpan])
+    const broadYrange = useMemo(() => [Math.max(0, range[0] - ySpan * .2), range[1] + ySpan * .2], [range, ySpan])
     const boundedDims = useMemo(() => ({
         ...baseDims,
         height,
@@ -139,8 +138,7 @@ const IotaProfilePlot: FunctionComponent<Props> = (props: Props) => {
                 <g transform={contentScaleTransform}>
                     {xAxis}
                     {yAxis}
-                    {/* N DOTS PLUS A LINE */}
-                    {useIotaContent(iotaProfile, boundedDims.boundedHeight, xScale, yScale)}
+                    {useIotaContent(iotaProfile, tfProfile, boundedDims.boundedHeight, xScale, yScale)}
                 </g>
             </svg>
         </div>)
