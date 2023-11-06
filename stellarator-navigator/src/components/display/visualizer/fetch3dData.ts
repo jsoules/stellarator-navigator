@@ -1,5 +1,5 @@
 import { nonExtantRecordId } from "@snTypes/Defaults"
-import { CoilApiResponseRecord, ScalarField, SurfaceApiResponseObject, Vec3, Vec3Field } from "@snTypes/Types"
+import { CoilRecord, ScalarField, SurfaceObject, Vec3, Vec3Field } from "@snTypes/Types"
 import { fetchData } from "@snUtil/fetchData"
 import makeResourcePath, { KnownPathType } from "@snUtil/makeResourcePath"
 import { useEffect, useMemo, useState } from "react"
@@ -65,7 +65,7 @@ export const useSurfaces = (props: apiRequestProps) => {
     const surfaces = useFetchedSurfaces(recordId)
     const modBs = useFetchedModB(recordId)
     return useMemo(() => (
-        { surfacePoints: surfaces, pointValues: modBs } as SurfaceApiResponseObject
+        { surfacePoints: surfaces, pointValues: modBs } as SurfaceObject
     ), [surfaces, modBs])
 }
 
@@ -75,6 +75,6 @@ export const useCoils = (props: apiRequestProps) => {
     const coils = useFetchedCoils(recordId)
     const currents = useFetchedCurrents(recordId)
     return useMemo(() => (currents.map(
-                (current, idx) => ({ coil: coils[idx], current })) as CoilApiResponseRecord[]
+                (current, idx) => ({ coil: coils[idx], current })) as CoilRecord[]
     ), [currents, coils])
 }

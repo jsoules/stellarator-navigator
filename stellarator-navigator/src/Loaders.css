@@ -1,5 +1,5 @@
 .barSpinner, .ringChaseSpinner {
-    color: darkblue;
+    color: #1976d2;
     display: inline-block;
     position: relative;
     width: 80px;
@@ -81,7 +81,7 @@
     position: absolute;
     width: 6px;
     height: 6px;
-    background: darkblue;
+    background: #1976d2;
     border-radius: 50%;
     animation: ringChaseSpinner 1.2s linear infinite;
   }

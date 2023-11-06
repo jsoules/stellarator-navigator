@@ -4,14 +4,14 @@ import DownloadLinks from "@snComponents/display/visualizer/DownloadLinks"
 import IotaProfilePlot from "@snComponents/display/visualizer/IotaProfilePlot"
 import PoincarePlot from "@snComponents/display/visualizer/PoincarePlot"
 import SurfaceControls from "@snComponents/display/visualizer/SurfaceControls"
-import { useFullRingCoils, useFullRingSurface } from "@snComponents/display/visualizer/useFullRing"
-import useRecord from "@snState/useRecord"
+import Spinner from "@snComponents/general/Spinner"
 import { defaultEmptyRecord } from "@snTypes/Defaults"
 import { getStringId } from "@snUtil/makeResourcePath"
 import useWindowDimensions from "@snUtil/useWindowDimensions"
 import RecordManifest from "@snVisualizer/RecordManifest"
 import SimulationView from "@snVisualizer/SimulationView"
-import { useCoils, useSurfaces } from "@snVisualizer/fetch3dData"
+import useModel from "querying/useModel"
+import useRecord from "querying/useRecord"
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from "react"
 
 type ModelProps = {
@@ -23,22 +23,16 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     const stringId = getStringId(id)
     const canvasRef = useRef(null)
     const rec = useRecord(id)
-    const baseCoils = useCoils({ recordId: stringId })
-    const baseSurfs = useSurfaces({ recordId: stringId })
-    const fullCoils = useFullRingCoils(baseCoils, rec.nfp)
-    const fullSurfs = useFullRingSurface(baseSurfs, rec.nfp)
+    const { baseCoils, baseSurfs, fullCoils, fullSurfs, surfaceCount } = useModel(stringId, rec?.nfp ?? 1)
     
-    const [surfaceChecks, setSurfaceChecks] = useState<boolean[]>(Array(rec.nSurfaces).fill(true))
     const [colorMap, setColorMap] = useState<SupportedColorMap>('plasma')
     const [showFullRing, setShowFullRing] = useState<boolean>(false)
     // TODO: Temporarily defaulted to False & disabled control while an irregularity in the data is updated
     const [showCurrents, setShowCurrents] = useState<boolean>(false)
-
-    const surfacesExist = useMemo(() => baseSurfs.surfacePoints !== undefined && baseSurfs.surfacePoints.length !== 0, [baseSurfs])
+    const [surfaceChecks, setSurfaceChecks] = useState<boolean[]>(Array(rec?.nSurfaces || 1).fill(true))
     useEffect(() => setSurfaceChecks(Array(rec.nSurfaces || 1).fill(true)), [rec?.nSurfaces])
-    const coils = showFullRing ? fullCoils : baseCoils
-    const surfs = showFullRing ? fullSurfs : baseSurfs
 
+    // TODO: Consider de-memoizing this, it surely doesn't need it
     const downloadLinks = useMemo(() => <DownloadLinks id={stringId} />, [stringId])
     const poincarePlot = useMemo(() => <PoincarePlot id={stringId}/>, [stringId])
 
@@ -46,25 +40,35 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     const lw = useMemo(() => Math.max(0, (2 * width / 3) - 80), [width])
     const rw = useMemo(() => Math.max(0, (width / 3) - 40), [width])
 
+    const viewer = useMemo(() => {
+        // TODO: Fix this so it's not breaking hook rules
+        const ifAvail = (
+            <>
+                <SimulationView
+                    width={lw}
+                    height={0.8 * lw}
+                    canvasRef={canvasRef}
+                    coils={showFullRing ? fullCoils : baseCoils}
+                    surfs={showFullRing ? fullSurfs : baseSurfs}
+                    surfaceChecks={surfaceChecks}
+                    colorScheme={colorMap}
+                    displayedPeriods={showFullRing ? 2 * rec.nfp : 1}
+                    showCurrents={showCurrents}
+                />
+            </>
+        )
+        return (baseCoils.length === 0 || baseSurfs === undefined || baseSurfs.incomplete) ? <Spinner /> : ifAvail
+    }, [baseCoils, baseSurfs, colorMap, fullCoils, fullSurfs, lw, rec.nfp, showCurrents, showFullRing, surfaceChecks])
+
     return rec === defaultEmptyRecord
         ? <div></div>
         : (<div className="simulationViewParent ForceLightMode">
             <div className="flexWrapper simulationViewParent">
                 <div style={{width: Math.floor(lw + 40)}} className="simulationViewWrapper">
                     <canvas ref={canvasRef} />
-                    <SimulationView
-                        width={lw}
-                        height={0.8 * lw}
-                        canvasRef={canvasRef}
-                        coils={coils}
-                        surfs={surfs}
-                        surfaceChecks={surfaceChecks}
-                        colorScheme={colorMap}
-                        displayedPeriods={showFullRing ? 2 * rec.nfp : 1}
-                        showCurrents={showCurrents}
-                    />
+                    {viewer}
                     <SurfaceControls
-                        checksNeeded={surfacesExist}
+                        checksNeeded={surfaceCount > 1}
                         surfaceChecks={surfaceChecks}
                         setSurfaceChecks={setSurfaceChecks}
                         showCurrents={showCurrents}

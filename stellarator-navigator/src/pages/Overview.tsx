@@ -18,7 +18,6 @@ type OverviewProps = {
 }
 
 const Overview: FunctionComponent<OverviewProps> = (props: OverviewProps) => {
-    // console.log(`Linter happiness: ${props !== undefined}`)
     const { records, dispatch, filterSettings } = props
     const {width, height} = useWindowDimensions()
     const callbacks = useFilterCallbacks(dispatch)

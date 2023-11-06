@@ -29,7 +29,7 @@ const queryFn = async <T>(path: string, isCompressed?: boolean) => {
         throw new Error(`API endpoint response parsing error from ${path}`)
     }
 
-    return parsedResponse
+    return parsedResponse as T
 }
 
 export default queryFn

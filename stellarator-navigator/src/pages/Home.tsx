@@ -1,10 +1,7 @@
 import NavigatorReducer from '@snState/NavigatorReducer'
-import { RawData, makeDatabase } from '@snState/database'
 import applyFilterToState, { projectRecords } from '@snState/filter'
 import { initialDatabase, initialNavigatorState } from "@snTypes/Defaults"
-import makeResourcePath, { KnownPathType } from '@snUtil/makeResourcePath'
-import { useQuery } from '@tanstack/react-query'
-import queryFn from 'querying/queryFn'
+import useDatabase from 'querying/useDatabase'
 import { FunctionComponent, useEffect, useMemo, useReducer, useState } from "react"
 import useRoute from 'routing/useRoute'
 import About from './About'
@@ -15,27 +12,9 @@ import Overview from './Overview'
 const Home: FunctionComponent = () => {
     // TODO: Margin, more styling, etc.
     const [showOverview, setShowOverview] = useState<boolean>(false)
-
+    
     // TODO: pull the logic out, it's too long
-    // DATABASE SETUP LOGIC
-    const databasePath = makeResourcePath('', KnownPathType.DATABASE)
-    const { data: rawDatabase, error } = useQuery({
-        queryKey: ['database'],
-        queryFn: () => queryFn(databasePath, !import.meta.env.DEV),
-    })
-    // TODO: Replace this with more sophisticated error--should bubble to routing
-    if (error) {
-        throw error
-    }
-    // TODO: Confirm this is in fact honoring the memoization
-    // (I think it is not)
-    // (alas)
-    const database = useMemo(() => {
-        if (!rawDatabase) {
-            return initialDatabase
-        }
-        return makeDatabase(rawDatabase as RawData)
-    }, [rawDatabase])
+    const database = useDatabase()
     // DATABASE FILTER LOGIC
     const [filterSettings, filterSettingDispatch] = useReducer(NavigatorReducer, initialNavigatorState)
     const [selection, updateSelection] = useState(new Set<number>())
