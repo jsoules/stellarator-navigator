@@ -1,4 +1,4 @@
-import { getStringId } from "@snUtil/useResourcePath"
+import { getStringId } from "@snUtil/makeResourcePath"
 import { Dispatch, SetStateAction, useCallback } from "react"
 
 const BASENAME = import.meta.env.BASE_URL

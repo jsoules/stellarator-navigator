@@ -1,5 +1,5 @@
 // import { Typography } from "@mui/material"
-import { KnownPathType, makeResourcePath } from "@snUtil/useResourcePath"
+import makeResourcePath, { KnownPathType } from "@snUtil/makeResourcePath"
 import { FunctionComponent } from "react"
 
 type PoincarePlotProps = {

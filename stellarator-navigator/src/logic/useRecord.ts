@@ -1,7 +1,7 @@
 import { defaultEmptyRecord } from '@snTypes/Defaults'
 import { StellaratorRecord } from '@snTypes/Types'
 import { fetchData } from '@snUtil/fetchData'
-import useResourcePath, { KnownPathType, getStringId } from '@snUtil/useResourcePath'
+import makeResourcePath, { KnownPathType, getStringId } from '@snUtil/makeResourcePath'
 import { useEffect, useState } from 'react'
 import { makeRecordFromObject, rawObject } from './database'
 
@@ -11,7 +11,7 @@ const useRecord = (id: string | number) => {
     const stringId = getStringId(id)
     const [rawRecord, setRawRecord] = useState<fetched>({isDummy: true})
     const [record, setRecord] = useState<StellaratorRecord>(defaultEmptyRecord)
-    const recordPath = useResourcePath(stringId, KnownPathType.RECORD)
+    const recordPath = makeResourcePath(stringId, KnownPathType.RECORD)
     useEffect(() => {
         fetchData<object>(recordPath, setRawRecord)
     }, [recordPath])

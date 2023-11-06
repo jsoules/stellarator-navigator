@@ -1,5 +1,4 @@
 import { getEnumVals } from "@snTypes/DataDictionary"
-import { useMemo } from "react"
 
 // TODO: move to a config file? Read from viteconfig?
 // const basePath = "https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR/"
@@ -38,12 +37,7 @@ export const getStringId = (id: number | string): string => {
 }
 
 
-const useResourcePath = (id: string, type: KnownPathType) => {
-    return useMemo(() => makeResourcePath(id, type), [id, type])
-}
-
-
-export const makeResourcePath = (id: string, type: KnownPathType) => {
+const makeResourcePath = (id: string, type: KnownPathType) => {
     const graphicsTypes = getEnumVals(GraphicsType)
     const graphicsPart = graphicsTypes.includes(type) ? 'graphics/' : ''
     const binPrefix = id.substring(0, 3)
@@ -84,14 +78,4 @@ export const makeResourcePath = (id: string, type: KnownPathType) => {
         : `${basePath}${graphicsPart}${typeDirectory}/${binPrefix}/${fileBase}${suffix}`
 }
 
-
-export const useDownloadPaths = (props: { recordId: string }) => {
-    const { recordId } = props
-    const vmecPath = useResourcePath(recordId, KnownPathType.NML_VMEC)
-    const simsoptPath = useResourcePath(recordId, KnownPathType.SIMSOPT)
-    
-    return useMemo(() => ({ vmecPath, simsoptPath }), [vmecPath, simsoptPath])
-}
-
-
-export default useResourcePath
+export default makeResourcePath

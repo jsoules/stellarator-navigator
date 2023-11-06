@@ -2,7 +2,7 @@ import NavigatorReducer from '@snState/NavigatorReducer'
 import { RawData, makeDatabase } from '@snState/database'
 import applyFilterToState, { projectRecords } from '@snState/filter'
 import { initialDatabase, initialNavigatorState } from "@snTypes/Defaults"
-import { KnownPathType, makeResourcePath } from '@snUtil/useResourcePath'
+import makeResourcePath, { KnownPathType } from '@snUtil/makeResourcePath'
 import { useQuery } from '@tanstack/react-query'
 import queryFn from 'querying/queryFn'
 import { FunctionComponent, useEffect, useMemo, useReducer, useState } from "react"

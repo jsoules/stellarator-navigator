@@ -1,5 +1,5 @@
 import { Button, Tooltip } from '@mui/material'
-import { KnownPathType, makeResourcePath } from "@snUtil/useResourcePath"
+import makeResourcePath, { KnownPathType } from "@snUtil/makeResourcePath"
 import { FunctionComponent } from "react"
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter"
 import python from "react-syntax-highlighter/dist/esm/languages/hljs/python"
