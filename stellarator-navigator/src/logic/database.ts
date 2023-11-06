@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from "react"
 
 export type fieldType = number | string | string[] | number[]
 
-type RawData = {
+export type RawData = {
     columns: string[],
     index: number[],
     data: fieldType[][]
@@ -85,7 +85,7 @@ const makeRecordFromRow = (row: fieldType[]): StellaratorRecord => {
     return record as StellaratorRecord
 }
 
-const makeDatabase = (rawData: RawData) => {
+export const makeDatabase = (rawData: RawData) => {
     const data = rawData.data
     const dataList = data.map((row) => makeRecordFromRow(row))
 

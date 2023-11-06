@@ -33,12 +33,17 @@ enum GraphicsType {
 }
 
 
-export const getStringId = (id: number): string => {
+export const getStringId = (id: number | string): string => {
     return `${id}`.padStart(idLength, '0')
 }
 
 
 const useResourcePath = (id: string, type: KnownPathType) => {
+    return useMemo(() => makeResourcePath(id, type), [id, type])
+}
+
+
+export const makeResourcePath = (id: string, type: KnownPathType) => {
     const graphicsTypes = getEnumVals(GraphicsType)
     const graphicsPart = graphicsTypes.includes(type) ? 'graphics/' : ''
     const binPrefix = id.substring(0, 3)
@@ -74,11 +79,9 @@ const useResourcePath = (id: string, type: KnownPathType) => {
             suffix = '.json'
     }
 
-    return useMemo(() => {
-        return type === KnownPathType.DATABASE
-            ? `${basePath}database.json.gz`
-            : `${basePath}${graphicsPart}${typeDirectory}/${binPrefix}/${fileBase}${suffix}`
-    }, [binPrefix, fileBase, graphicsPart, suffix, type, typeDirectory])
+    return type === KnownPathType.DATABASE
+        ? `${basePath}database.json.gz`
+        : `${basePath}${graphicsPart}${typeDirectory}/${binPrefix}/${fileBase}${suffix}`
 }
 
 

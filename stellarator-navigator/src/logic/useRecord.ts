@@ -8,7 +8,7 @@ import { makeRecordFromObject, rawObject } from './database'
 type fetched = rawObject | {isDummy?: boolean}
 
 const useRecord = (id: string | number) => {
-    const stringId = typeof id === "string" ? id.padStart(6, '0') : getStringId(id)
+    const stringId = getStringId(id)
     const [rawRecord, setRawRecord] = useState<fetched>({isDummy: true})
     const [record, setRecord] = useState<StellaratorRecord>(defaultEmptyRecord)
     const recordPath = useResourcePath(stringId, KnownPathType.RECORD)

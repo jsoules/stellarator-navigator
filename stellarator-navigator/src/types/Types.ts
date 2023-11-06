@@ -121,8 +121,3 @@ export type SurfaceApiResponseObject = {
     surfacePoints: Vec3Field[],
     pointValues: ScalarField[]
 }
-
-export type DownloadPathsApiResponseObject = {
-    vmecPath: string,
-    simsoptPath: string
-}

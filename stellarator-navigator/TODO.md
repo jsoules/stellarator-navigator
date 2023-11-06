@@ -215,6 +215,9 @@
 
 [ ] Note that horizontal line for non-QA error corresponds to Earth's background magnetic field
 
+[ ] rewrite resource path finding to funnel everything consistently through getStringId and
+    make sure calling components don't make assumptions (esp. Model and its subcomponents)
+
 
 QUERY OR DISTANT:
 

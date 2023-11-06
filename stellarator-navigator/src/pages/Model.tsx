@@ -7,7 +7,7 @@ import SurfaceControls from "@snComponents/display/visualizer/SurfaceControls"
 import { useFullRingCoils, useFullRingSurface } from "@snComponents/display/visualizer/useFullRing"
 import useRecord from "@snState/useRecord"
 import { defaultEmptyRecord } from "@snTypes/Defaults"
-import { useDownloadPaths } from "@snUtil/useResourcePath"
+import { getStringId } from "@snUtil/useResourcePath"
 import useWindowDimensions from "@snUtil/useWindowDimensions"
 import RecordManifest from "@snVisualizer/RecordManifest"
 import SimulationView from "@snVisualizer/SimulationView"
@@ -20,11 +20,11 @@ type ModelProps = {
 
 const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     const { id } = props
+    const stringId = getStringId(id)
     const canvasRef = useRef(null)
     const rec = useRecord(id)
-    const downloadPaths = useDownloadPaths({ recordId: `${id}` })
-    const baseCoils = useCoils({ recordId: `${id}` })
-    const baseSurfs = useSurfaces({ recordId: `${id}` })
+    const baseCoils = useCoils({ recordId: stringId })
+    const baseSurfs = useSurfaces({ recordId: stringId })
     const fullCoils = useFullRingCoils(baseCoils, rec.nfp)
     const fullSurfs = useFullRingSurface(baseSurfs, rec.nfp)
     
@@ -39,6 +39,8 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     const coils = showFullRing ? fullCoils : baseCoils
     const surfs = showFullRing ? fullSurfs : baseSurfs
 
+    const downloadLinks = useMemo(() => <DownloadLinks id={stringId} />, [stringId])
+    const poincarePlot = useMemo(() => <PoincarePlot id={stringId}/>, [stringId])
 
     const { width } = useWindowDimensions()
     const lw = useMemo(() => Math.max(0, (2 * width / 3) - 80), [width])
@@ -80,9 +82,9 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
                 </div>
             </div>
             <HrBar />
-            <PoincarePlot id={rec.id} />
+            {poincarePlot}
             <HrBar />
-            <DownloadLinks dataPaths={downloadPaths} />
+            {downloadLinks}
         </div>
     )
 }
