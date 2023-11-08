@@ -158,6 +158,8 @@
     [x] Remove database as "context" element and replace with updating state in home component
     [x] NOTE: okay to use useQuery but see blog post for how to handle this along with react-router loaders
 
+[x] surfaces to 60 x 60? (See test branch)
+
 [ ] Big routing rewrite
     [-] static landing page -->
         [ ] NEW PLAN: This is going to be the same *page* but render one of two
@@ -210,8 +212,6 @@
 [ ] Just implement drag-zoom already
 
 [ ] Figure out a smarter way to right-size the table in the overview page
-
-[ ] surfaces to 60 x 60? (See test branch)
 
 [ ] Note that horizontal line for non-QA error corresponds to Earth's background magnetic field
 
