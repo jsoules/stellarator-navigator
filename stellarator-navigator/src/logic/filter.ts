@@ -2,7 +2,8 @@ import { Fields, RangeVariables, ToggleableVariables, TripartiteVariables, getVa
 import { CategoricalIndexSet, FilterSettings, NavigatorDatabase, StellaratorRecord } from "@snTypes/Types"
 
 
-export const projectRecords = (selection: Set<number>, database: NavigatorDatabase) => {
+export const projectRecords = (selection: Set<number>, database: NavigatorDatabase | undefined) => {
+    if (database === undefined) return []
     const projection: StellaratorRecord[] = []
     selection.forEach(s => projection.push(database.byId[s]))
     return projection

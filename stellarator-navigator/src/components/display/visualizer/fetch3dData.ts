@@ -1,7 +1,7 @@
 import { nonExtantRecordId } from "@snTypes/Defaults"
-import { CoilApiResponseRecord, ScalarField, SurfaceApiResponseObject, Vec3, Vec3Field } from "@snTypes/Types"
+import { CoilRecord, ScalarField, SurfaceObject, Vec3, Vec3Field } from "@snTypes/Types"
 import { fetchData } from "@snUtil/fetchData"
-import useResourcePath, { KnownPathType } from "@snUtil/useResourcePath"
+import makeResourcePath, { KnownPathType } from "@snUtil/makeResourcePath"
 import { useEffect, useMemo, useState } from "react"
 
 type apiRequestProps = {
@@ -11,7 +11,7 @@ type apiRequestProps = {
 
 const useFetchedCoils = (id: string) => {
     const [coilResponse, setCoilResponse] = useState<Vec3[][]>([])
-    const coilPath = useResourcePath(id, KnownPathType.COILS)
+    const coilPath = makeResourcePath(id, KnownPathType.COILS)
     useEffect(() => {
         if (id !== nonExtantRecordId) {
             fetchData<Vec3[][]>(coilPath, setCoilResponse)
@@ -26,7 +26,7 @@ const useFetchedCoils = (id: string) => {
 
 const useFetchedCurrents = (id: string) => {
     const [currentsResponse, setCurrentsResponse] = useState<number[]>([])
-    const currentsPath = useResourcePath(id, KnownPathType.CURRENTS)
+    const currentsPath = makeResourcePath(id, KnownPathType.CURRENTS)
     useEffect(() => {
         if (id !== nonExtantRecordId) {
             fetchData<number[]>(currentsPath, setCurrentsResponse)
@@ -38,7 +38,7 @@ const useFetchedCurrents = (id: string) => {
 
 const useFetchedSurfaces = (id: string) => {
     const [surfaceResponse, setSurfaceResponse] = useState<Vec3Field[]>([])
-    const surfacesPath = useResourcePath(id, KnownPathType.SURFACES)
+    const surfacesPath = makeResourcePath(id, KnownPathType.SURFACES)
     useEffect(() => {
         if (id !== nonExtantRecordId) {
             fetchData<Vec3Field[]>(surfacesPath, setSurfaceResponse)
@@ -50,7 +50,7 @@ const useFetchedSurfaces = (id: string) => {
 
 const useFetchedModB = (id: string) => {
     const [modbResponse, setModbResponse] = useState<ScalarField[]>([])
-    const modbPath = useResourcePath(id, KnownPathType.MODB)
+    const modbPath = makeResourcePath(id, KnownPathType.MODB)
     useEffect(() => {
         if (id !== nonExtantRecordId) {
             fetchData<ScalarField[]>(modbPath, setModbResponse)
@@ -65,7 +65,7 @@ export const useSurfaces = (props: apiRequestProps) => {
     const surfaces = useFetchedSurfaces(recordId)
     const modBs = useFetchedModB(recordId)
     return useMemo(() => (
-        { surfacePoints: surfaces, pointValues: modBs } as SurfaceApiResponseObject
+        { surfacePoints: surfaces, pointValues: modBs } as SurfaceObject
     ), [surfaces, modBs])
 }
 
@@ -75,6 +75,6 @@ export const useCoils = (props: apiRequestProps) => {
     const coils = useFetchedCoils(recordId)
     const currents = useFetchedCurrents(recordId)
     return useMemo(() => (currents.map(
-                (current, idx) => ({ coil: coils[idx], current })) as CoilApiResponseRecord[]
+                (current, idx) => ({ coil: coils[idx], current })) as CoilRecord[]
     ), [currents, coils])
 }

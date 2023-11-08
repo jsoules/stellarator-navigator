@@ -112,17 +112,13 @@ export type Vec3Field = Vec3[][]
 
 export type ScalarField = number[][]
 
-export type CoilApiResponseRecord = {
+export type CoilRecord = {
     coil: Vec3[],
     current: number
 }
 
-export type SurfaceApiResponseObject = {
+export type SurfaceObject = {
     surfacePoints: Vec3Field[],
-    pointValues: ScalarField[]
-}
-
-export type DownloadPathsApiResponseObject = {
-    vmecPath: string,
-    simsoptPath: string
+    pointValues: ScalarField[],
+    incomplete: boolean
 }

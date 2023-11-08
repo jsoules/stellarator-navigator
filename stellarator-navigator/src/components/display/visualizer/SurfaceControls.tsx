@@ -31,22 +31,25 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     }, [setSurfaceChecks, surfaceChecks])
 
     const handleColorMapChange = (evt: SelectChangeEvent<SupportedColorMap>) => setColorMap(evt.target.value as unknown as SupportedColorMap)
-
-    return checksNeeded
-        ? (<>
-            <div className="flexWrapper">
-                <div className="surfaceControlFlexSplitAlt">
-                    <SnCheckboxGroup
-                        desc="Surfaces to display"
-                        id="surfaceSelection"
-                        selections={surfaceChecks}
-                        onChange={handleCheckboxChange}
-                    />
-                </div>
-                <div className="surfaceControlFlexSplit">
-                    <SurfaceColorMapSelector value={colorMap} onChange={handleColorMapChange} />
-                </div>
+    const surfacePart = (
+        <div className="flexWrapper">
+            <div className="surfaceControlFlexSplitAlt">
+                <SnCheckboxGroup
+                    desc="Surfaces to display"
+                    id="surfaceSelection"
+                    selections={surfaceChecks}
+                    onChange={handleCheckboxChange}
+                />
             </div>
+            <div className="surfaceControlFlexSplit">
+                <SurfaceColorMapSelector value={colorMap} onChange={handleColorMapChange} />
+            </div>
+        </div>
+    )
+
+    return (
+        <>
+            {checksNeeded && surfacePart}
             <div className="flexWrapper">
                 <div className="surfaceControlFlexSplit">
                     <SnSwitch 
@@ -66,8 +69,8 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
                     /> */}
                 </div>
             </div>
-        </>)
-        : <></>
+        </>
+    )
 }
 
 export default Model

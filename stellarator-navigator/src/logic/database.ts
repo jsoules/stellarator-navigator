@@ -1,13 +1,9 @@
 import { CategoricalIndexedFields, Fields, KnownFields } from "@snTypes/DataDictionary"
-import { initialDatabase } from "@snTypes/Defaults"
 import { CategoricalIndexSet, NavigatorDatabase, NumericIndex, RecordDict, StellaratorRecord } from "@snTypes/Types"
-import { fetchData } from "@snUtil/fetchData"
-import useResourcePath, { KnownPathType } from "@snUtil/useResourcePath"
-import { useEffect, useMemo, useState } from "react"
 
 export type fieldType = number | string | string[] | number[]
 
-type RawData = {
+export type RawData = {
     columns: string[],
     index: number[],
     data: fieldType[][]
@@ -85,7 +81,7 @@ const makeRecordFromRow = (row: fieldType[]): StellaratorRecord => {
     return record as StellaratorRecord
 }
 
-const makeDatabase = (rawData: RawData) => {
+export const makeDatabase = (rawData: RawData) => {
     const data = rawData.data
     const dataList = data.map((row) => makeRecordFromRow(row))
 
@@ -128,22 +124,3 @@ const makeDatabase = (rawData: RawData) => {
 
     return database
 }
-
-const useDatabase = () => {
-    const databasePath = useResourcePath('000', KnownPathType.DATABASE)
-    const [rawData, setRawData] = useState<RawData | undefined>(undefined)
-    useEffect(() => {
-        if (import.meta.env.DEV) {
-            fetchData<RawData | undefined>(databasePath, setRawData)
-        } else {
-            fetchData<RawData | undefined>(databasePath, setRawData, true)
-        }
-    }, [databasePath])
-
-    return useMemo(() => {
-        if (rawData === undefined) return initialDatabase
-        return makeDatabase(rawData)
-    }, [rawData])
-}
-
-export default useDatabase

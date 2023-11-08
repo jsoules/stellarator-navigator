@@ -1,5 +1,5 @@
 import { SupportedColorMap } from '@snDisplayComponents/Colormaps'
-import { CoilApiResponseRecord, SurfaceApiResponseObject } from '@snTypes/Types'
+import { CoilRecord, SurfaceObject } from '@snTypes/Types'
 import { FunctionComponent, MutableRefObject, useEffect, useMemo } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
@@ -16,8 +16,8 @@ type Props = {
     canvasRef: MutableRefObject<null | HTMLCanvasElement>
     colorScheme?: SupportedColorMap
     surfaceChecks?: boolean[]
-    coils?: CoilApiResponseRecord[]
-    surfs?: SurfaceApiResponseObject
+    coils?: CoilRecord[]
+    surfs?: SurfaceObject
     displayedPeriods?: number
     showCurrents?: boolean
 }

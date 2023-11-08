@@ -1,12 +1,12 @@
 import { Button, Tooltip } from '@mui/material'
-import { DownloadPathsApiResponseObject } from "@snTypes/Types"
+import makeResourcePath, { KnownPathType } from "@snUtil/makeResourcePath"
 import { FunctionComponent } from "react"
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter"
 import python from "react-syntax-highlighter/dist/esm/languages/hljs/python"
 import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/hljs"
 
 type Props = {
-    dataPaths?: DownloadPathsApiResponseObject
+    id: string
 }
 
 SyntaxHighlighter.registerLanguage('python', python)
@@ -17,17 +17,18 @@ const codeSnippet =
 [surfaces, coils] = load(f'NAME_OF_FILE_YOU_DOWNLOADED.json')`
 
 const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
-    const { dataPaths } = props
-    if (dataPaths === undefined || dataPaths.vmecPath === undefined || dataPaths.simsoptPath === undefined) return <></>
+    const { id } = props
+    const vmecPath = makeResourcePath(id, KnownPathType.NML_VMEC)
+    const simsoptPath = makeResourcePath(id, KnownPathType.SIMSOPT)
 
     // We have to do some fussy path-munging in order to construct the forced-download link correctly--otherwise
     // the browser will suggest saving the file according to its full path, not just its file name.
-    const vmecPathParts = dataPaths.vmecPath.split("/")
+    const vmecPathParts = vmecPath.split("/")
     const vmecFile = vmecPathParts.pop() ?? ""
-    const vmecPath = vmecPathParts.join("/")
-    const simsoptPathParts = dataPaths.simsoptPath.split("/")
+    const vmecPathFinal = vmecPathParts.join("/")
+    const simsoptPathParts = simsoptPath.split("/")
     const simsoptFile = simsoptPathParts.pop() ?? ""
-    const simsoptPath = simsoptPathParts.join("/")
+    const simsoptPathFinal = simsoptPathParts.join("/")
 
     return <div className="indent">
                 <Tooltip
@@ -42,7 +43,7 @@ const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
                         Download VMEC
                     </Button>
                 </Tooltip>
-                <a id="vmec_download" href={`${vmecPath}/${vmecFile}`} download={vmecFile} style={{display: "none"}} />
+                <a id="vmec_download" href={`${vmecPathFinal}/${vmecFile}`} download={vmecFile} style={{display: "none"}} />
                 <Tooltip
                     title="Download SIMSOPT coils, magnetic axis, and surface serializations"
                 >
@@ -55,7 +56,7 @@ const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
                         Download SIMSOPT
                     </Button>
                 </Tooltip>
-                <a id="simsopt_download" href={`${simsoptPath}/${simsoptFile}`} download={`${simsoptFile}`} style={{display: "none"}} />
+                <a id="simsopt_download" href={`${simsoptPathFinal}/${simsoptFile}`} download={`${simsoptFile}`} style={{display: "none"}} />
                 <div>
                     <span>To load downloaded SIMSOPT data, execute the following Python script:</span>
                     <div style={{border: "1px solid #7f7f7f", margin: 10}}>
@@ -68,10 +69,10 @@ const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
     //     Right-click and "Save link as" to download:
     //     <ul>
     //         <li>
-    //             <a id="vmec_download" href={`${vmecPath}/${vmecFile}`} download={vmecFile}> VMEC input file</a>
+    //             <a id="vmec_download" href={`${vmecPathFinal}/${vmecFile}`} download={vmecFile}> VMEC input file</a>
     //         </li>
     //         <li>
-    //             <a id="simsopt_download" href={`${simsoptPath}/${simsoptFile}`} download={`${simsoptFile}`}>
+    //             <a id="simsopt_download" href={`${simsoptPathFinal}/${simsoptFile}`} download={`${simsoptFile}`}>
     //                 SIMSOPT coils, magnetic axis, and surface serializations
     //             </a>
     //         </li>
@@ -83,7 +84,6 @@ const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
     //         </div>
     //     </div>
     // </div>
-
 }
 
 export default DownloadLinks

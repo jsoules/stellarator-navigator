@@ -5,7 +5,7 @@ import { FunctionComponent } from "react"
 
 export type SpinnerProps = {
     
-    Type?: 'ringChase' | 'bar'
+    Type?: 'ringChaseSpinner' | 'barSpinner'
 }
 
 const Spinner: FunctionComponent<SpinnerProps> = (props: SpinnerProps) => {

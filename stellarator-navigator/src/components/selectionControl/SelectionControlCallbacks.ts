@@ -16,15 +16,6 @@ const _handleRangeChange = (dispatch: NavigatorDispatch, field: RangeVariables, 
     dispatch(update)
 }
 
-// export const handleMeanIotaChg = (dispatch: NavigatorDispatch, event: SelectChangeEvent<string>) => {
-//     // const update: NavigatorStateAction = {
-//     //     type: 'updateMeanIota',
-//     //     newIota: parseFloat(event.target.value)
-//     // }
-//     // dispatch(update)
-//     return
-// }
-
 export const handleDependentVariableChg = (dispatch: NavigatorDispatch, event: SelectChangeEvent) => {
     const update: NavigatorStateAction = {
         type: 'updateDependentVariable',

@@ -6,15 +6,15 @@ import SnTable from "@snDisplayComponents/SnTable"
 import { computePerPlotDimensions, useAxes, useScales } from "@snPlots/PlotScaling"
 import PlotWrapper from "@snPlots/PlotWrapper"
 import { useOnClickPlot } from "@snPlots/interactions"
-import { NavigatorContext } from "@snState/NavigatorContext"
 import { DependentVariables, IndependentVariables } from "@snTypes/DataDictionary"
 import { BoundedPlotDimensions, FilterSettings, StellaratorRecord } from "@snTypes/Types"
 import { ScaleLinear } from "d3"
-import { FunctionComponent, useContext, useEffect, useMemo, useState } from "react"
+import { FunctionComponent, useEffect, useMemo, useState } from "react"
 
 type Props = {
     filters: FilterSettings
     selectionHandler: (model: GridRowSelectionModel) => void
+    selectedRecords: StellaratorRecord[]
     width: number
     height: number
 }
@@ -86,14 +86,10 @@ const Row: FunctionComponent<RowProps> = (props: RowProps) => {
 
 const internalMargin = 20
 const PlotGrid: FunctionComponent<Props> = (props: Props) => {
-    const { filters, selectionHandler, width, height } = props
+    const { filters, selectionHandler, selectedRecords, width, height } = props
     const [activeNfp, setActiveNfp] = useState(1)
     const [activeNc, setActiveNc] = useState<number | undefined>(undefined)
     const plotClickHandler = useOnClickPlot(setActiveNfp, setActiveNc)
-
-    // Fetch data
-    const { fetchRecords, selection } = useContext(NavigatorContext)
-    const allRecords = useMemo(() => fetchRecords(selection), [fetchRecords, selection])
 
     // Compute dimensions
     const nfps = getSelectedNfps(filters)
@@ -123,7 +119,7 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
     const rows = (ncs.length === 0 ? [undefined] : ncs).map(
         nc => <Row
             key={`row-${nc}`}
-            data={allRecords}
+            data={selectedRecords}
             dependentVar={filters.dependentVariable}
             independentVar={filters.independentVariable}
             dims={dims}
@@ -144,10 +140,10 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
             <Grid container>
                 {rows}
             </Grid>
-            <div>Current filter settings return {allRecords.length} devices.</div>
+            <div>Current filter settings return {selectedRecords.length} devices.</div>
 
             <HrBar />
-            <SnTable records={allRecords} selectionHandler={selectionHandler} activeNfp={activeNfp} activeNc={activeNc} />
+            <SnTable records={selectedRecords} selectionHandler={selectionHandler} activeNfp={activeNfp} activeNc={activeNc} />
             <div className="padded">
                 <OpenSelectedButton markedIds={marks} />
             </div>
