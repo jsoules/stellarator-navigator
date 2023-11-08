@@ -188,7 +188,7 @@
         - `rsync -vahP --delete dist/assets/ workstation:/mnt/home/jsoules/public_www/QUASR/assets/`
         - `rsync -vahP dist/index.html workstation:/mnt/home/jsoules/public_www/QUASR/`
         - one-liner FOR TEST DEV:
-        - `yarn build && chmod 755 dist/* && rsync -vahP --delete dist/assets/ workstation:/mnt/home/jsoules/public_www/test/assets/ && rsync -vahP dist/index.html workstation:/mnt/home/jsoules/public_www/test`
+        - `yarn build && chmod 755 dist/* && rsync -vahP --delete dist/assets/ workstation:/mnt/home/jsoules/public_www/test/assets/ && rsync -vahP dist/index.html workstation:/mnt/home/jsoules/public_www/test/`
 
 [ ] Filter dots by radius
     [ ] Probably happens *above* the plotting component level?
