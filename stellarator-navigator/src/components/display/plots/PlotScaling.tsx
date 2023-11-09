@@ -66,10 +66,12 @@ export const useAxes = (props: axisProps) => {
     const xAxis = useMemo(() => {
         const axisLabel = getLabel({name: independentVar, labelType: 'plot'})
         return <SvgXAxis
-                    dataDomain={xScale.domain()}
+                    dataRange={xScale.domain()}
                     canvasRange={xScale.range()}
                     dims={dims}
                     axisLabel={axisLabel}
+                    isLog={false}
+                    isY={false}
                 />
     }, [xScale, dims, independentVar])
 
@@ -82,6 +84,7 @@ export const useAxes = (props: axisProps) => {
                     isLog={Fields[dependentVar].isLog}
                     markedValue={Fields[dependentVar].markedValue}
                     dims={dims}
+                    isY={true}
                 />
     }, [dependentVar, yScale, dims])
 

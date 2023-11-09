@@ -1,7 +1,7 @@
 import { Grid } from "@mui/material"
 import { GridRowSelectionModel } from "@mui/x-data-grid"
-import HrBar from "@snComponents/HrBar"
 import OpenSelectedButton from "@snComponents/display/OpenSelected"
+import HrBar from "@snComponents/general/HrBar"
 import SnTable from "@snDisplayComponents/SnTable"
 import { computePerPlotDimensions, useAxes, useScales } from "@snPlots/PlotScaling"
 import PlotWrapper from "@snPlots/PlotWrapper"

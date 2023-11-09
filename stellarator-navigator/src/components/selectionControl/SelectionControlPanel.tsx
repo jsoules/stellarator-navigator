@@ -1,5 +1,5 @@
 import { SelectChangeEvent } from '@mui/material'
-import HrBar from '@snComponents/HrBar'
+import HrBar from '@snComponents/general/HrBar'
 import { Fields, RangeVariables, ToggleableVariables, TripartiteVariables } from '@snTypes/DataDictionary'
 import { FilterSettings } from '@snTypes/Types'
 import { FunctionComponent } from 'react'

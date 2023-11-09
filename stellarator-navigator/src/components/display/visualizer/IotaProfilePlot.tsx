@@ -113,10 +113,12 @@ const IotaProfilePlot: FunctionComponent<Props> = (props: Props) => {
     }, [boundedDims.boundedHeight, broadYrange])
 
     const xAxis = useMemo(() => <SvgXAxis
-                                    dataDomain={xScale.domain()}
+                                    dataRange={xScale.domain()}
                                     canvasRange={xScale.range()}
                                     dims={boundedDims}
                                     axisLabel="Normalized toroidal flux"
+                                    isLog={false}
+                                    isY={false}
                                 />,
         [boundedDims, xScale])
     const yAxis = useMemo(() => <SvgYAxis
@@ -126,6 +128,7 @@ const IotaProfilePlot: FunctionComponent<Props> = (props: Props) => {
                                     isLog={false}
                                     markedValue={meanIota}
                                     dims={boundedDims}
+                                    isY={true}
                                 />,
         [boundedDims, meanIota, yScale])
     return (

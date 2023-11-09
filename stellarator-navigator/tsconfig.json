@@ -41,6 +41,9 @@
             "components/*",
             "pages/*"
         ],
+        "@snGeneralComponents/*": [
+            "components/general/*",
+        ],
         "@snDisplayComponents/*": [
             "components/display/*"
         ],
@@ -56,7 +59,10 @@
         "@snState/*": [
             "logic/*",
             "state/*"
-        ]
+        ],
+        "@snQuerying/*": [
+            "querying/*"
+        ],
     }
   },
   "include": ["src"],
