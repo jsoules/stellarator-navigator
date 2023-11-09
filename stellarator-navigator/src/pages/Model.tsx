@@ -1,17 +1,10 @@
-import HrBar from "@snComponents/HrBar"
 import { SupportedColorMap } from "@snComponents/display/Colormaps"
-import DownloadLinks from "@snComponents/display/visualizer/DownloadLinks"
-import IotaProfilePlot from "@snComponents/display/visualizer/IotaProfilePlot"
-import PoincarePlot from "@snComponents/display/visualizer/PoincarePlot"
-import SurfaceControls from "@snComponents/display/visualizer/SurfaceControls"
-import Spinner from "@snComponents/general/Spinner"
+import { HrBar, Spinner } from "@snGeneralComponents/index"
+import { useModel, useRecord } from "@snQuerying/index"
 import { defaultEmptyRecord } from "@snTypes/Defaults"
 import { getStringId } from "@snUtil/makeResourcePath"
 import useWindowDimensions from "@snUtil/useWindowDimensions"
-import RecordManifest from "@snVisualizer/RecordManifest"
-import SimulationView from "@snVisualizer/SimulationView"
-import useModel from "querying/useModel"
-import useRecord from "querying/useRecord"
+import { DownloadLinks, IotaProfilePlot, PoincarePlot, RecordManifest, SimulationView, SurfaceControls } from "@snVisualizer/index"
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from "react"
 import { useParams } from "react-router"
 
@@ -42,7 +35,8 @@ const Model: FunctionComponent = () => {
     const rw = useMemo(() => Math.max(0, (width / 3) - 40), [width])
 
     const viewer = useMemo(() => {
-        // TODO: Fix this so it's not breaking hook rules
+        // TODO: Can we avoid rendering a SimulationView with no data, without
+        // breaking the changing-number-of-hooks rules?
         const ifAvail = (
             <>
                 <SimulationView
@@ -70,11 +64,10 @@ const Model: FunctionComponent = () => {
         ? <div></div>
         : (<div className="simulationViewParent ForceLightMode">
             <div className="flexWrapper simulationViewParent">
-                {/* <div style={{width: 400, height: 300}}>
-                    <Spinner Type='barSpinner'/>
-                </div> */}
                 <div style={{width: Math.floor(lw + 40)}} className="simulationViewWrapper">
-                    <canvas ref={canvasRef} />
+                    <canvas ref={canvasRef}
+                        title="Click and drag to rotate the camera; right-click, shift-click, or ctrl-click and drag to pan."
+                    />
                     {viewer}
                     <SurfaceControls
                         checksNeeded={surfaceCount > 0}

@@ -1,33 +1,9 @@
-// adapted from https://2019.wattenberger.com/blog/react-and-d3
-
-import { BoundedPlotDimensions } from "@snTypes/Types"
-import { scaleLinear } from "d3"
 import { FunctionComponent, useMemo } from "react"
+import { AxisDescriptor, DescribeAxis } from "./AxisGeometry"
 
-type AxisProps = {
-    dataDomain: number[],
-    canvasRange: number[],
-    axisLabel: string,
-    dims: BoundedPlotDimensions
-}
-
-const SvgXAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
-    const { dataDomain, canvasRange, dims, axisLabel } = props
-    
-    const ticks = useMemo(() => {
-        const xScale = scaleLinear()
-            .domain(dataDomain)
-            .range(canvasRange)
-        const width = canvasRange[1] - canvasRange[0]
-        const pixelsPerTick = 30
-        const targetTickCount = Math.max(1, Math.floor(width / pixelsPerTick))
-
-        return xScale.ticks(targetTickCount)
-            .map(value => ({
-                value,
-                xOffset: xScale(value)
-            }))
-    }, [canvasRange, dataDomain])
+const SvgXAxis: FunctionComponent<AxisDescriptor> = (props: AxisDescriptor) => {
+    const { canvasRange, dims, axisLabel } = props
+    const { ticks } = DescribeAxis(props)
 
     const transform = useMemo(() => `translate(-${dims.clipAvoidanceXOffset}, ${dims.boundedHeight})`, [dims.clipAvoidanceXOffset, dims.boundedHeight])
 
@@ -43,10 +19,10 @@ const SvgXAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
                 fill="none"
                 stroke="currentColor"
             />
-            {ticks.map(({ value, xOffset }) => (
+            {ticks.map(({ value, offset, label }) => (
                 <g
                     key={`xtick-${value}`}
-                    transform={`translate(${xOffset + dims.clipAvoidanceXOffset}, 0)`}
+                    transform={`translate(${offset + dims.clipAvoidanceXOffset}, 0)`}
                 >
                     <line
                         y2={`${dims.tickLength}`}
@@ -59,8 +35,7 @@ const SvgXAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
                             textAnchor: "middle",
                             transform: `translateY(${2 * dims.fontPx}px)`
                     }}>
-                        {/* TODO -- Format to limit decimals/digit count */}
-                        { value }
+                        { label }
                     </text>
                 </g>
             ))}
@@ -71,7 +46,6 @@ const SvgXAxis: FunctionComponent<AxisProps> = (props: AxisProps) => {
                     transform: `translateY(${4 * dims.fontPx}px)`
                 }}>
                     {axisLabel}
-                    {}
                 </text>
             </g>
         </g>
