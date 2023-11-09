@@ -13,13 +13,14 @@ import SimulationView from "@snVisualizer/SimulationView"
 import useModel from "querying/useModel"
 import useRecord from "querying/useRecord"
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from "react"
+import { useParams } from "react-router"
 
-type ModelProps = {
-    id: number | string
-}
-
-const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
-    const { id } = props
+const Model: FunctionComponent = () => {
+    const params = useParams()
+    const id = params.modelId
+    if (id === undefined) {
+        throw Error(`Can't happen: modelId parameter not set in ${JSON.stringify(params)}`)
+    }
     const stringId = getStringId(id)
     const canvasRef = useRef(null)
     const rec = useRecord(id)

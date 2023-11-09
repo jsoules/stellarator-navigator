@@ -1,5 +1,8 @@
+import NavigatorReducer from "@snState/NavigatorReducer"
 import { Fields, RangeVariables, ToggleableVariables, TripartiteVariables, getValuesFromBoolArray } from "@snTypes/DataDictionary"
+import { initialNavigatorState } from "@snTypes/Defaults"
 import { CategoricalIndexSet, FilterSettings, NavigatorDatabase, StellaratorRecord } from "@snTypes/Types"
+import { useEffect, useMemo, useReducer, useState } from "react"
 
 
 export const projectRecords = (selection: Set<number>, database: NavigatorDatabase | undefined) => {
@@ -17,7 +20,7 @@ const _intersect = (shortest: Set<number>, ...rest: Set<number>[]): Set<number> 
 }
 
 
-export const intersect = (...sets: Set<number>[]): Set<number> => {
+const intersect = (...sets: Set<number>[]): Set<number> => {
     const minLength = Math.min(...sets.map(s => s.size))
     const shortestSetIdx = sets.findIndex(s => s.size === minLength)
     const shortest = sets[shortestSetIdx]
@@ -119,4 +122,15 @@ export const filterTo = (records: StellaratorRecord[], filters: { [key in Toggle
 }
 
 
-export default applyFilterToState
+const useFiltering = (database: NavigatorDatabase) => {
+    const [filterSettings, filterSettingDispatch] = useReducer(NavigatorReducer, initialNavigatorState)
+    const [selection, updateSelection] = useState(new Set<number>())
+    
+    useEffect(() => applyFilterToState(filterSettings, database, updateSelection), [database, filterSettings])
+    const records = useMemo(() => projectRecords(selection, database), [database, selection])
+
+    return { records, filterSettings, filterSettingDispatch }
+}
+
+
+export default useFiltering

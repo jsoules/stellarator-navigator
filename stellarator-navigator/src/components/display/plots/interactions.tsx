@@ -30,7 +30,7 @@ export const onClickDot = (id: number) => {
 export const onOpenSelected = (ids?: Set<number>) => {
     const slowOpen = async (id: number) => {
         console.log(`Opening ${getStringId(id)}`)
-        window.open(`${BASENAME}/model/${getStringId(id)}`, "mozillaTab", "noreferrer")
+        onClickDot(id)
         window.focus()
     }
     if (ids !== undefined) {

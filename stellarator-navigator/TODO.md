@@ -161,15 +161,17 @@
 [x] surfaces to 60 x 60? (See test branch)
 
 [ ] Big routing rewrite
-    [-] static landing page -->
-        [ ] NEW PLAN: This is going to be the same *page* but render one of two
+    [x] static landing page -->
+        [x] NEW PLAN: This is going to be the same *page* but render one of two
             different child components based on whether we've completed the database
             load and clicked the Launch button.
     [x] download database async
         [x] --> DON'T download the database async if you're hitting a model/ page!
-    [ ] "loading" screens for components that make fetch requests
+    [x] "loading" screens for components that make fetch requests
     [x] inject *data* into plotting components, *NOT* fetch that data internally
-        [ ] Okay this is half-done; we need to wrap up the fetch hooks into one hook
+        [x] Okay this is half-done; we need to wrap up the fetch hooks into one hook
+    [x] Use loaders to prefetch --> I'm not going to bother; I'm happy with the data loading situation
+        and the changes that could be made just seem like needless complexity.
 
 [-] Write up instructions for preprocessing data files, incl. in-memory database
     [ ] Latter should have the appropriate fields log-scaled, do JSONified output, and zip the result
@@ -218,10 +220,14 @@
 [ ] rewrite resource path finding to funnel everything consistently through getStringId and
     make sure calling components don't make assumptions (esp. Model and its subcomponents)
 
+[ ] Improve styling for error pages
+
+[ ] Replace favicon in index.html
+
 
 QUERY OR DISTANT:
 
-[ ] MORE PROOFING of the surface symmetries, ESPECIALLY for higher-period-count.
+[x] MORE PROOFING of the surface symmetries, ESPECIALLY for higher-period-count.
 
 [-] Reorg with index.js files to collect contents of small files
 
