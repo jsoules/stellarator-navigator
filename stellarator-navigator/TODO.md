@@ -160,7 +160,7 @@
 
 [x] surfaces to 60 x 60? (See test branch)
 
-[ ] Big routing rewrite
+[x] Big routing rewrite
     [x] static landing page -->
         [x] NEW PLAN: This is going to be the same *page* but render one of two
             different child components based on whether we've completed the database
@@ -223,6 +223,8 @@
 [ ] Improve styling for error pages
 
 [ ] Replace favicon in index.html
+
+[ ] Trim font references/try to reduce code size
 
 
 QUERY OR DISTANT:

@@ -18,6 +18,7 @@ import './Loaders.css'
 
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
 
+// eslint-disable-next-line react-refresh/only-export-components
 const BASENAME = import.meta.env.BASE_URL
 
 const router = createBrowserRouter(

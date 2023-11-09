@@ -1,6 +1,7 @@
 import { getStringId } from "@snUtil/makeResourcePath"
 import { Dispatch, SetStateAction, useCallback } from "react"
 
+// eslint-disable-next-line react-refresh/only-export-components
 const BASENAME = import.meta.env.BASE_URL
 
 export const useOnClickPlot = (setActiveNfp: Dispatch<SetStateAction<number>>, setActiveNc: Dispatch<SetStateAction<number | undefined>>) => {
