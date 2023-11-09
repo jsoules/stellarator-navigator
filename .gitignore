@@ -47,6 +47,7 @@ received/
 notes.py
 *pkl
 database.json.2023.09.17
+test-db.json
 *gz
 *tar
 *BAK
