@@ -1,9 +1,10 @@
 import { Grid } from "@mui/material"
 import { GridRowSelectionModel } from "@mui/x-data-grid"
 import OpenSelectedButton from "@snComponents/display/OpenSelected"
+import CanvasPlotWrapper from "@snComponents/display/plots/CanvasPlotWrapper"
 import HrBar from "@snComponents/general/HrBar"
 import SnTable from "@snDisplayComponents/SnTable"
-import { computePerPlotDimensions, useAxes, useScales } from "@snPlots/PlotScaling"
+import { computePerPlotDimensions, useAxes, useCanvasAxes, useScales } from "@snPlots/PlotScaling"
 import PlotWrapper from "@snPlots/PlotWrapper"
 import { useOnClickPlot } from "@snPlots/interactions"
 import { DependentVariables, IndependentVariables } from "@snTypes/DataDictionary"
@@ -84,6 +85,39 @@ const Row: FunctionComponent<RowProps> = (props: RowProps) => {
     </Grid>
 }
 
+type CanvasRowProps = RowProps & {
+    canvasXAxis: () => void
+    canvasYAxis: (ctxt: CanvasRenderingContext2D) => void
+}
+
+const CanvasRow: FunctionComponent<CanvasRowProps> = (props: CanvasRowProps) => {
+    const { data, colSpan, nfps, nc, dependentVar, independentVar, xScale, yScale, canvasXAxis, canvasYAxis, dims, markedIds, clickHandler } = props
+
+    return <Grid container item>
+        {nfps.map(nfp => {
+            return (
+                <Grid item xs={colSpan} key={`${nfp}`}>
+                    <CanvasPlotWrapper
+                        key={`${nfp}-${nc}`}
+                        data={data}
+                        dependentVar={dependentVar}
+                        independentVar={independentVar}
+                        xScale={xScale}
+                        yScale={yScale}
+                        canvasXAxis={canvasXAxis}
+                        canvasYAxis={canvasYAxis}
+                        dims={dims}
+                        markedIds={markedIds}
+                        nfpValue={nfp}
+                        ncPerHpValue={nc}
+                        clickHandler={clickHandler}
+                    />
+                </Grid>
+            )
+        })}
+    </Grid>
+}
+
 const internalMargin = 20
 const PlotGrid: FunctionComponent<Props> = (props: Props) => {
     const { filters, selectionHandler, selectedRecords, width, height } = props
@@ -135,10 +169,40 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
         />
     )
 
+    const [canvasXAxis, canvasYAxis] = useCanvasAxes({
+        xScale, yScale,
+        dependentVar: filters.dependentVariable, independentVar: filters.independentVariable,
+        dims
+    })
+
+    const canvasRows = (ncs.length === 0 ? [undefined] : ncs).map(
+        nc => <CanvasRow
+            key={`row-${nc}`}
+            data={selectedRecords}
+            dependentVar={filters.dependentVariable}
+            independentVar={filters.independentVariable}
+            dims={dims}
+            xScale={xScale}
+            yScale={yScale}
+            xAxis={xAxis}
+            yAxis={yAxis}
+            nfps={nfps}
+            markedIds={marks}
+            colSpan={0}
+            nc={nc}
+            clickHandler={plotClickHandler}
+            canvasXAxis={canvasXAxis as () => void}
+            canvasYAxis={canvasYAxis}
+        />
+    )
+
     return (
         <div style={{ margin: internalMargin }}>
             <Grid container>
                 {rows}
+            </Grid>
+            <Grid container>
+                {canvasRows}
             </Grid>
             <div>Current filter settings return {selectedRecords.length} devices.</div>
 

@@ -195,6 +195,12 @@
     [ ] Probably happens *above* the plotting component level?
     [ ] (Since we've already got the scales and everything)
     [ ] ALTERNATIVELY --  figure out how to use Canvas instead of SVG to get around the size limits
+    [ ] --> I think we can draw the axes in a context2d, draw the dots in webgl, and copy from
+        the webgl canvas into the context2d canvas. It'll be tough but worth it.
+    [ ] --> context2d canvas gets the drawing for any overlay select.
+    [ ] --> Need a mapping and inverse-mapping matrix, sigh.
+    [ ] --> webgl will need a couple passes, small dots and bigger dots, as well as
+        per-point color scheme, but that is all in the tutorials
 
 [ ] Give user ability to choose criteria for plot-splitting
 
