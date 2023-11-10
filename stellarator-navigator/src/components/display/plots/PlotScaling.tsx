@@ -1,7 +1,8 @@
 import { DependentVariables, Fields, IndependentVariables, RangeVariables, defaultDependentVariableValue, defaultIndependentVariableValue, getEnumVals, getLabel } from "@snTypes/DataDictionary"
 import { BoundedPlotDimensions, FilterSettings } from "@snTypes/Types"
 import { ScaleLinear, scaleLinear } from "d3"
-import { useMemo } from "react"
+import { useCallback, useMemo } from "react"
+import CanvasYAxis from "./CanvasYAxis"
 import SvgXAxis from "./SvgXAxis"
 import SvgYAxis from "./SvgYAxis"
 
@@ -59,6 +60,30 @@ type axisProps = {
     dependentVar: DependentVariables
     independentVar: IndependentVariables
     dims: BoundedPlotDimensions
+}
+
+export const useCanvasAxes = (props: axisProps) => {
+    const { yScale, dependentVar, independentVar, dims, } = props
+    const xAxis = useCallback(() => {
+        const axisLabel = getLabel({name: independentVar, labelType: 'plot'})
+        // TODO SOME X DRAWING
+        console.log(`TODO: X axis thingy with label ${axisLabel}`)
+    }, [independentVar])
+
+    const yAxis = useCallback((c: CanvasRenderingContext2D) => {
+        const axisLabel = getLabel({name: dependentVar, labelType: 'plot'})
+        CanvasYAxis({
+            dataRange: yScale.domain(), 
+            canvasRange: yScale.range(),
+            axisLabel,
+            isLog: Fields[dependentVar].isLog,
+            markedValue: Fields[dependentVar].markedValue,
+            dims,
+            isY: true
+        }, c)
+    }, [dependentVar, dims, yScale])
+
+    return [xAxis, yAxis]
 }
 
 export const useAxes = (props: axisProps) => {
