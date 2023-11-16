@@ -1,7 +1,8 @@
 import { DependentVariables, Fields, IndependentVariables, RangeVariables, defaultDependentVariableValue, defaultIndependentVariableValue, getEnumVals, getLabel } from "@snTypes/DataDictionary"
-import { BoundedPlotDimensions, FilterSettings } from "@snTypes/Types"
+import { BoundedPlotDimensions, DataGeometry, FilterSettings } from "@snTypes/Types"
 import { ScaleLinear, scaleLinear } from "d3"
 import { useCallback, useMemo } from "react"
+import CanvasXAxis from "./CanvasXAxis"
 import CanvasYAxis from "./CanvasYAxis"
 import SvgXAxis from "./SvgXAxis"
 import SvgYAxis from "./SvgYAxis"
@@ -22,14 +23,21 @@ type useScalesProps = {
     dimsIn: BoundedPlotDimensions
 }
 
-export const useScales = (props: useScalesProps) => {
-    const { filters, dimsIn } = props
+
+export const useDataGeometry = (filters: FilterSettings): DataGeometry => {
     const independentVar = filters?.independentVariable ?? defaultIndependentVariableValue
     const dependentVar = filters?.dependentVariable ?? defaultDependentVariableValue
     const rangeVals = getEnumVals(RangeVariables)
 
-    const { low: iLow, high: iHigh } = getExtrema(filters, independentVar, rangeVals.includes(independentVar))
-    const { low: dLow, high: dHigh } = getExtrema(filters, dependentVar, rangeVals.includes(dependentVar))
+    const { low: xmin, high: xmax } = getExtrema(filters, independentVar, rangeVals.includes(independentVar))
+    const { low: ymin, high: ymax } = getExtrema(filters, dependentVar, rangeVals.includes(dependentVar))
+    return useMemo(() => ({ xmin, xmax, ymin, ymax }), [xmax, xmin, ymax, ymin])
+}
+
+
+export const useScales = (props: useScalesProps) => {
+    const { filters, dimsIn } = props
+    const { xmin: iLow, xmax: iHigh, ymin: dLow, ymax: dHigh } = useDataGeometry(filters)
 
     const dataDomain = useMemo(() => {
         return [iLow, iHigh]
@@ -63,12 +71,19 @@ type axisProps = {
 }
 
 export const useCanvasAxes = (props: axisProps) => {
-    const { yScale, dependentVar, independentVar, dims, } = props
-    const xAxis = useCallback(() => {
+    const { xScale, yScale, dependentVar, independentVar, dims, } = props
+    const xAxis = useCallback((c: CanvasRenderingContext2D) => {
         const axisLabel = getLabel({name: independentVar, labelType: 'plot'})
-        // TODO SOME X DRAWING
-        console.log(`TODO: X axis thingy with label ${axisLabel}`)
-    }, [independentVar])
+        CanvasXAxis({
+            dataRange: xScale.domain(),
+            canvasRange: xScale.range(),
+            axisLabel,
+            isLog: false,
+            isY: false,
+            markedValue: undefined,
+            dims
+        }, c)
+    }, [dims, independentVar, xScale])
 
     const yAxis = useCallback((c: CanvasRenderingContext2D) => {
         const axisLabel = getLabel({name: dependentVar, labelType: 'plot'})
