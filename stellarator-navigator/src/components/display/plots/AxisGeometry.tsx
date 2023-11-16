@@ -14,6 +14,13 @@ export type AxisDescriptor = {
 }
 
 
+export type TickDescriptor = {
+    value: number,
+    offset: number,
+    label: string,
+    majorTick: boolean
+}
+
 type TicksData = {
     canvasSpan: number
     pixelsPerTick: number
@@ -77,7 +84,7 @@ const computeTicksToLabel = (allTicks: number[]) => {
 }
 
 
-const computeTicks = (props: TicksData) => {
+const computeTicks = (props: TicksData): TickDescriptor[] => {
     const { scale, canvasSpan, isLog, isY } = props
     const baseTicks = getBaseTicks(props)
     const fixedDigits = isLog ? 1 : getFixedDigits(props, baseTicks.length)

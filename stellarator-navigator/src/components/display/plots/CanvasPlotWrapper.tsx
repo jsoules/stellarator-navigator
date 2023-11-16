@@ -1,26 +1,17 @@
-import { DependentVariables, IndependentVariables } from "@snTypes/DataDictionary"
-import { BoundedPlotDimensions, StellaratorRecord } from "@snTypes/Types"
-import { ScaleLinear } from "d3"
-// import { FunctionComponent, useEffect, useMemo, useRef, } from "react"
+import { BoundedPlotDimensions, DataGeometry } from "@snTypes/Types"
 import { FunctionComponent, useEffect, useRef, } from "react"
+import useOffscreenScatterplot from "./OffscreenScatterplot"
 import { plotGutterHorizontal, plotGutterVertical } from "./PlotScaling"
 
 type Props = {
     dims: BoundedPlotDimensions
-    data: StellaratorRecord[]
-    dependentVar: DependentVariables
-    independentVar: IndependentVariables
-    xScale: ScaleLinear<number, number, never>
-    yScale: ScaleLinear<number, number, never>
+    data: number[][]
     highlightedSeries?: number
     colorMap?: string[]
-    xAxis?: JSX.Element
-    yAxis?: JSX.Element
-    canvasXAxis: () => void
+    canvasXAxis: (ctxt: CanvasRenderingContext2D) => void
     canvasYAxis: (ctxt: CanvasRenderingContext2D) => void
-    // This is technically a logic concern, however we'd like to use it to label the plots.
-    // If we keep the logic internal, we can ensure that being passed wrong data does not
-    // result in a plot which is incorrectly labeled.
+    canvasPlotLabel: (ctxt: CanvasRenderingContext2D) => void
+    geometry: DataGeometry
     markedIds?: Set<number>
     nfpValue: number
     ncPerHpValue?: number
@@ -29,32 +20,25 @@ type Props = {
 
 
 const CanvasPlotWrapper: FunctionComponent<Props> = (props: Props) => {
-    const { dims, canvasYAxis, canvasXAxis, nfpValue, ncPerHpValue } = props
+    const { dims, canvasYAxis, canvasXAxis, canvasPlotLabel, data, geometry } = props
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
-
-    // const contentScaleTransform = useMemo(() =>
-    //     `translate(${dims.marginLeft},${dims.marginTop})`,
-    //     [dims.marginLeft, dims.marginTop]
-    // )
+    const offscreenCanvas = useOffscreenScatterplot({width: dims.boundedWidth, height: dims.boundedHeight, data, geometry })
 
     useEffect(() => {
+        // TODO: NEED TO ATTACH A CLICK HANDLER TO THE CANVAS ELEMENT
+        // TODO: AND ALSO WRITE A DRAG HANDLER FOR DRAG-ZOOM
         const ctxt = canvasRef.current?.getContext("2d")
         if (!canvasRef.current || !ctxt) return
         ctxt.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
-        // Do title --> TODO: extract this and pass in a la the x and y axes?
+
+        canvasPlotLabel(ctxt)
         ctxt.save()
-        ctxt.font = `${1.7*dims.fontPx}px sans-serif`
-        ctxt.textAlign = "center"
-        const mid = dims.marginLeft + dims.boundedWidth / 2
-        const y = 1.7*dims.fontPx
-        ctxt.fillText(`NFP = ${nfpValue}; NC/HP = ${ncPerHpValue ?? 'All'}`, mid, y)
-        ctxt.restore()
-        ctxt.save()
-        ctxt.translate(dims.marginLeft, dims.marginTop)
-        canvasXAxis()
+        ctxt.translate(dims.marginLeft, dims.marginRight)
+        canvasXAxis(ctxt)
         canvasYAxis(ctxt)
+        ctxt.drawImage(offscreenCanvas, 0, 0)
         ctxt.restore()
-    }, [canvasXAxis, canvasYAxis, dims.boundedWidth, dims.fontPx, dims.marginLeft, dims.marginTop, ncPerHpValue, nfpValue])
+    }, [canvasPlotLabel, canvasXAxis, canvasYAxis, dims.marginLeft, dims.marginRight, offscreenCanvas])
 
     return (
         <div
@@ -62,14 +46,6 @@ const CanvasPlotWrapper: FunctionComponent<Props> = (props: Props) => {
         >
             {/* TODO -- add accessibility by providing fallback content inside the (non-singelton) canvas tag */}
             <canvas ref={canvasRef} width={dims.width} height={dims.height}></canvas>
-            {/* DO THIS PROPERLY -- Label should be its own component at this point */}
-            {/* <svg width={dims.width} height={dims.height} onClick={() => clickHandler(nfpValue, ncPerHpValue)}>
-                <g transform={contentScaleTransform} key="plot-content">
-                    {xAxis}
-                    {yAxis}
-                    SCATTERPLOT --> this is where we care about the content-scale transform probably
-                </g>
-            </svg> */}
       </div>
     )
 }

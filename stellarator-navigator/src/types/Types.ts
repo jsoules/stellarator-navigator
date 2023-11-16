@@ -106,6 +106,13 @@ export type BoundedPlotDimensions = PlotDimensions & {
     axisLabelOffset: number
 }
 
+export type DataGeometry = {
+    xmin: number,
+    xmax: number,
+    ymin: number,
+    ymax: number
+}
+
 export type Vec3 = [number, number, number]
 
 export type Vec3Field = Vec3[][]

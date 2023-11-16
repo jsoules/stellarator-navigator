@@ -26,7 +26,7 @@ const TripartDropdownSelector: FunctionComponent<Props> = (props: Props) => {
     
     return (
         <div className="dropdownWrapper">
-            <Typography id="independent-variable-selector" gutterBottom>
+            <Typography id="independent-variable-selector" gutterBottom fontWeight="bold">
                 {getLabel({name: field, labelType: 'full'})}
             </Typography>
             <FormControl fullWidth size="small">
