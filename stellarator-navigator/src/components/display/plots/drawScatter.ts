@@ -1,32 +1,60 @@
 import { DataGeometry } from "@snTypes/Types"
-// import { mat4, vec4 } from "gl-matrix"
 import { mat4 } from "gl-matrix"
 
 type OffscreenScatterProps = {
     glCtxt: WebGLRenderingContext
-    geometry: DataGeometry // TODO
-    data: number[][] // TODO: should be multiple series of x, y pairs, sorted per intended color.
+    geometry: DataGeometry
+    colorList: number[][]
+    data: number[][] // Should be multiple series of x, y pairs, sorted per intended color.
 }
 
 
 type ProgramInfo = {
-    program: null,
+    program: WebGLProgram,
     attribLocations: {
         dotPosition: number
+        colorPosition: number
     },
     uniformLocations: {
-        dataToNormalMatrix: WebGLUniformLocation,
-        // COLORS LOOKUP TABLE?
+        dataToNormalMatrix: WebGLUniformLocation | null,
     }
 }
 
 
 type BufferSet = {
     position: WebGLBuffer
+    color: WebGLBuffer
 }
 
 
 type shaderTypes = WebGLRenderingContextBase["VERTEX_SHADER"] | WebGLRenderingContextBase["FRAGMENT_SHADER"]
+
+
+// Vertex shader: called per vertex of the shape.
+const vertexShaderSrc = `
+attribute vec4 aDotPosition;
+attribute vec4 aColor;
+varying vec4 vColor;
+uniform mat4 uProjectionMatrix;
+
+void main() {
+    gl_Position = uProjectionMatrix * aDotPosition;
+    vColor = aColor;
+    gl_PointSize = 4.0;
+}
+`
+
+
+// Fragment shader: called once for each pixel on each shape,
+// after processing by vertex shader.
+const fragmentShaderSrc = `
+precision mediump float;
+varying vec4 vColor;
+void main() {
+    gl_FragColor = vColor;
+}
+`
+
 
 
 const loadShader = (gl: WebGLRenderingContext, shaderType: shaderTypes, source: string) => {
@@ -76,39 +104,38 @@ const createProgram = (glCtxt: WebGLRenderingContext, vertexShaderSrc: string, f
 }
 
 
-const initBuffers = (glCtxt: WebGLRenderingContext): BufferSet => {
-    const positionBuffer = initPositionBuffer(glCtxt)
-    if (positionBuffer === null) {
-        throw Error("Error allocating positionBuffer")
+const initBuffers = (glCtxt: WebGLRenderingContext, data: number[][], colorVecs: number[][]): BufferSet => {
+    const positionBuffer = glCtxt.createBuffer()
+    const colorBuffer = glCtxt.createBuffer()
+    if (positionBuffer === null || colorBuffer === null) {
+        throw Error("Error allocating buffers.")
     }
+    glCtxt.bindBuffer(glCtxt.ARRAY_BUFFER, positionBuffer)
+    glCtxt.bufferData(glCtxt.ARRAY_BUFFER, new Float32Array(data.flat()), glCtxt.STATIC_DRAW)
+
+    
+    // incidentally, the "fill(0)" shouldn't be required: you can iterate over an array of empty elements
+    // just as easily as an array of 0s. But some versions of TypeScript linter don't like it & want to
+    // "optimize out" the empty array.
+    const flatColors = data.map((series, idx) => new Array(series.length).fill(0).map(() => colorVecs[idx])).flat(2)
+    glCtxt.bindBuffer(glCtxt.ARRAY_BUFFER, colorBuffer)
+    glCtxt.bufferData(glCtxt.ARRAY_BUFFER, new Float32Array(flatColors), glCtxt.STATIC_DRAW)
 
     return {
-        position: positionBuffer
+        position: positionBuffer,
+        color: colorBuffer
     }
-}
-
-
-const initPositionBuffer = (glCtxt: WebGLRenderingContext) => {
-    const positionBuffer = glCtxt.createBuffer()
-    glCtxt.bindBuffer(glCtxt.ARRAY_BUFFER, positionBuffer)
-
-    return positionBuffer
-}
-
-
-const feedPositionBuffer = (glCtxt: WebGLRenderingContext, positions: number[]) => {
-    glCtxt.bufferData(glCtxt.ARRAY_BUFFER, new Float32Array(positions), glCtxt.STATIC_DRAW)
 }
 
 
 // Loads data from the position buffer into the webgl program internal buffer.
 const setPositionAttribute = (gl: WebGLRenderingContext, buffers: BufferSet, programInfo: ProgramInfo) => {
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position)
     const numComponents = 2 // 2 values per iteration
     const type = gl.FLOAT
     const normalize = false
     const stride = 0
     const offset = 0
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position)
     gl.vertexAttribPointer(
         programInfo.attribLocations.dotPosition,
         numComponents,
@@ -121,7 +148,14 @@ const setPositionAttribute = (gl: WebGLRenderingContext, buffers: BufferSet, pro
 }
 
 
-const draw = (gl: WebGLRenderingContext, programInfo: ProgramInfo, buffers: BufferSet, dataToNormalMatrix: mat4, vertexCount: number) => {
+const setColorAttribute = (gl: WebGLRenderingContext, buffers: BufferSet, programInfo: ProgramInfo) => {
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.color)
+    gl.vertexAttribPointer(programInfo.attribLocations.colorPosition, 4, gl.FLOAT, false, 0, 0)
+    gl.enableVertexAttribArray(programInfo.attribLocations.colorPosition)
+}
+
+
+const draw = (gl: WebGLRenderingContext, buffers: BufferSet, programInfo: ProgramInfo, dataToNormalMatrix: mat4, vertexCount: number) => {
     gl.clearColor(0.0, 0.0, 0.0, 0.0) // clear to transparent (don't want to hide the canvas background)
     gl.clearDepth(1.0)
     gl.enable(gl.DEPTH_TEST)
@@ -131,6 +165,7 @@ const draw = (gl: WebGLRenderingContext, programInfo: ProgramInfo, buffers: Buff
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
     setPositionAttribute(gl, buffers, programInfo)
+    setColorAttribute(gl, buffers, programInfo)
     gl.useProgram(programInfo.program)
 
     gl.uniformMatrix4fv(programInfo.uniformLocations.dataToNormalMatrix, false, dataToNormalMatrix)
@@ -145,16 +180,16 @@ const draw = (gl: WebGLRenderingContext, programInfo: ProgramInfo, buffers: Buff
 
 
 
-// Following webgl tutorial from mozilla:
 // https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Adding_2D_content_to_a_WebGL_context
-// TODO: MEMOIZE SOMETHING ALREADY
 const drawScatter = (props: OffscreenScatterProps) => {
-    const { glCtxt, geometry, data } = props
+    const { glCtxt, geometry, data, colorList } = props
 
     if (data === undefined) {
         console.log(`Data is undefined.`)
         return
     }
+
+    const colorVecs = colorList.map(c => [c[0], c[1], c[2], 1.0])
 
     const projectionMatrix = mat4.create()
     mat4.ortho(projectionMatrix, geometry.xmin, geometry.xmax, geometry.ymin, geometry.ymax, -1, 1)
@@ -163,35 +198,14 @@ const drawScatter = (props: OffscreenScatterProps) => {
     // const firstPt = vec4.fromValues(data[0][0], data[0][1], 0, 0)
     // const projectedFirstPt = vec4.create()
     // vec4.transformMat4(projectedFirstPt, firstPt, projectionMatrix)
-    // console.log(`First point ${firstPt} projected to ${projectedFirstPt}; data series has ${data.flat().length/2} elements`)
-
-    // Vertex shader: called per vertex of the shape.
-    const vertexShaderSrc = `
-    attribute vec4 aDotPosition;
-    uniform mat4 uProjectionMatrix;
-
-    void main() {
-        gl_Position = uProjectionMatrix * aDotPosition;
-        gl_PointSize = 4.0;
-    }
-    `
-
-    // Fragment shader: called once for each pixel on each shape,
-    // after processing by vertex shader.
-    // gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); --> just applies uniform red.
-    // We would want to do a lookup or something against the vertex category I think?
-    const fragmentShaderSrc = `
-    void main() {
-        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-    }
-    `
 
     const shaderProgram = createProgram(glCtxt, vertexShaderSrc, fragmentShaderSrc)
 
-    const programInfo = {
+    const programInfo: ProgramInfo = {
         program: shaderProgram,
         attribLocations: {
-            dotPosition: glCtxt.getAttribLocation(shaderProgram, "aDotPosition")
+            dotPosition: glCtxt.getAttribLocation(shaderProgram, "aDotPosition"),
+            colorPosition: glCtxt.getAttribLocation(shaderProgram, "aColor")
         },
         uniformLocations: {
             dataToNormalMatrix: glCtxt.getUniformLocation(shaderProgram, "uProjectionMatrix"),
@@ -201,11 +215,11 @@ const drawScatter = (props: OffscreenScatterProps) => {
         throw Error(`Program error (syntax?): Failed to allocate one of the uniformLocations.\n${JSON.stringify(programInfo)}`)
     }
 
-    const buffers = initBuffers(glCtxt)
+    const buffers = initBuffers(glCtxt, data, colorVecs)
+    const vertexCount = data.reduce((t: number, c) => t + c.length, 0)
+    console.log(`Rendering ${vertexCount} vertices.`)
 
-    // TODO: Flattening for now b/c we aren't ready to apply colors
-    feedPositionBuffer(glCtxt, data.flat())
-    draw(glCtxt, programInfo as unknown as ProgramInfo, buffers, projectionMatrix, data.flat().length/2)
+    draw(glCtxt, buffers, programInfo, projectionMatrix, vertexCount)
 
     // TODO: NEED TO ADD SIZE FOR SELECTED DATA ELEMENTS
     // This probably comes in as a separate index--keep the business logic out of this file

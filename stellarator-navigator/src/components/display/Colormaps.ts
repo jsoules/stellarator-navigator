@@ -90,7 +90,7 @@ export const valueToRgbTriplet = (value: number, scheme: SupportedColorMap = 'vi
         return ([0, 0, 0])
     }
     const rgbHex = getRgbValue(value, scheme)
-    return convertHexToRgb(rgbHex)
+    return convertHexToRgb3Vec(rgbHex)
 }
 
 
@@ -128,7 +128,7 @@ const toPaddedRgb = (v: number): string => {
 }
 
 
-const convertHexToRgb = (hex: string): number[] => {
+export const convertHexToRgb3Vec = (hex: string): number[] => {
     // assume 6-digit hex with leading sharp, e.g. '#00ff00'
     const rStr = hex.substring(1, 3)
     const gStr = hex.substring(3, 5)

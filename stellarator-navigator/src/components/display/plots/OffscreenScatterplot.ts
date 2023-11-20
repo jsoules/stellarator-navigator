@@ -7,12 +7,13 @@ type ScatterData = {
     width: number,
     height: number,
     data: number[][],
-    geometry: DataGeometry
+    geometry: DataGeometry,
+    colorList: number[][]
 }
 
 
 const useOffscreenScatterplot = (props: ScatterData) => {
-    const { width, height, data, geometry } = props
+    const { width, height, data, geometry, colorList } = props
     const offscreen = useMemo(() => new OffscreenCanvas(width, height), [height, width])
 
     useEffect(() => {
@@ -21,9 +22,9 @@ const useOffscreenScatterplot = (props: ScatterData) => {
             console.log(`Unable to instantiate webgl context.`)
             return
         }
-        drawScatter({ glCtxt: gl, geometry, data })
+        drawScatter({ glCtxt: gl, geometry, colorList, data })
 
-    }, [offscreen, data, geometry])
+    }, [offscreen, data, geometry, colorList])
 
     return offscreen
 }
