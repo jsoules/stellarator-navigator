@@ -1,5 +1,6 @@
+import { Tol, convertHexToRgb3Vec } from "@snDisplayComponents/Colormaps"
 import { BoundedPlotDimensions, DataGeometry } from "@snTypes/Types"
-import { FunctionComponent, useEffect, useRef, } from "react"
+import { FunctionComponent, useEffect, useMemo, useRef, } from "react"
 import useOffscreenScatterplot from "./OffscreenScatterplot"
 import { plotGutterHorizontal, plotGutterVertical } from "./PlotScaling"
 
@@ -20,9 +21,12 @@ type Props = {
 
 
 const CanvasPlotWrapper: FunctionComponent<Props> = (props: Props) => {
-    const { dims, canvasYAxis, canvasXAxis, canvasPlotLabel, data, geometry } = props
+    const { dims, data, colorMap, canvasYAxis, canvasXAxis, canvasPlotLabel, geometry } = props
+    const colorList = useMemo(() => (colorMap ?? Tol).map(c => convertHexToRgb3Vec(c)), [colorMap])
+    
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
-    const offscreenCanvas = useOffscreenScatterplot({width: dims.boundedWidth, height: dims.boundedHeight, data, geometry })
+    const offscreenCanvas = useOffscreenScatterplot({width: dims.boundedWidth, height: dims.boundedHeight, data, geometry, colorList })
+
 
     useEffect(() => {
         // TODO: NEED TO ATTACH A CLICK HANDLER TO THE CANVAS ELEMENT
