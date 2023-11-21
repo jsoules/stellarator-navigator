@@ -37,10 +37,10 @@ const CanvasPlotWrapper: FunctionComponent<Props> = (props: Props) => {
         ctxt.translate(dims.marginLeft, dims.marginRight)
         canvasXAxis(ctxt)
         canvasYAxis(ctxt)
-        // ctxt.drawImage(offscreenCanvas, 0, 0)
         if (scatterCtxt !== null) {
             loadData(data)
-            drawScatter({glCtxt: scatterCtxt, data })
+            const vertexCount = data.reduce((t: number, c) => t + c.length, 0)
+            drawScatter({glCtxt: scatterCtxt, vertexCount })
             ctxt.drawImage(scatterCtxt.canvas, -dotMargin, -dotMargin)
         }
         ctxt.restore()

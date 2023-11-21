@@ -1,5 +1,4 @@
 import { DataGeometry } from "@snTypes/Types"
-// import { mat4, vec3 } from "gl-matrix"
 import { mat4 } from "gl-matrix"
 import { dotMargin } from "./drawScatter"
 
@@ -26,35 +25,6 @@ export type BufferSet = {
 type shaderTypes = WebGLRenderingContextBase["VERTEX_SHADER"] | WebGLRenderingContextBase["FRAGMENT_SHADER"]
 
 
-// v1--just dots
-// // Vertex shader: called per vertex of the shape.
-// const vertexShaderSrc = `
-// attribute vec4 aDotPosition;
-// attribute vec4 aColor;
-// varying vec4 vColor;
-// uniform mat4 uProjectionMatrix;
-
-// void main() {
-//     gl_Position = uProjectionMatrix * aDotPosition;
-//     vColor = aColor;
-//     gl_PointSize = 4.0;
-// }
-// `
-
-
-// // Fragment shader: called once for each pixel on each shape,
-// // after processing by vertex shader.
-// const fragmentShaderSrc = `
-// precision mediump float;
-// varying vec4 vColor;
-// void main() {
-//     gl_FragColor = vColor;
-// }
-// `
-
-
-// v2 -- try to do circles
-// - changed pointsize to 8 (8x8 square) from which we'll strip;
 // note that we still need to configure this for size highlights.
 // Vertex shader: called per vertex of the shape.
 const vertexShaderSrc = `
@@ -246,20 +216,6 @@ const initProgram = (glCtxt: WebGLRenderingContext | null) => {
     glCtxt.useProgram(programInfo.program)
     const configureCanvas = (colorList: number[][], geometry: DataGeometry, width: number, height: number) => {
         const colorVecs = colorList.map(c => [c[0], c[1], c[2], 1.0])
-
-        // // all right, we'll do it live.
-        // const dataWidth     = geometry.xmax - geometry.xmin
-        // const dataHeight    = geometry.ymax - geometry.ymin
-        // const viewWExMargin = 2 - xMarginFactor
-        // const viewHExMargin = 2 - yMarginFactor
-        // const xRatio        = viewWExMargin / dataWidth
-        // const yRatio        = viewHExMargin / dataHeight
-        // const xOffset       = (-1 * geometry.xmin * xRatio) + xMarginFactor/2 - 1
-        // const yOffset       = (-1 * geometry.ymin * yRatio) + yMarginFactor/2 - 1
-        // const projectionMatrix = mat4.fromValues(xRatio,       0, 0, 0,
-        //                                               0,  yRatio, 0, 0,
-        //                                               0,       0, 0, 0,
-        //                                         xOffset, yOffset, 0, 1)
         
         // We want to add a margin (of some known pixel value) to each side of the canvas, so that dots on the edge
         // don't get cut off in drawing. Problem is our "ortho" matrix doesn't know that, and will just map to
@@ -297,135 +253,3 @@ const initProgram = (glCtxt: WebGLRenderingContext | null) => {
 }
 
 export default initProgram
-
-
-
-// FOR CIRCLES
-// SEE https://webglfundamentals.org/webgl/lessons/webgl-qna-the-fastest-way-to-draw-many-circles.html
-// twgl is a reference to https://twgljs.org/
-
-// function main() {
-//     const gl = document.querySelector('canvas').getContext('webgl');
-//     const ext = gl.getExtension('ANGLE_instanced_arrays');
-//     if (!ext) {
-//       return alert('need ANGLE_instanced_arrays');
-//     }
-//     twgl.addExtensionsToContext(gl);
-    
-//     const vs = `
-//     attribute float id;
-//     attribute vec4 position;
-//     attribute vec2 texcoord;
-    
-//     uniform float time;
-    
-//     varying vec2 v_texcoord;
-//     varying vec4 v_color;
-    
-//     void main() {
-//       float o = id + time;
-//       gl_Position = position + vec4(
-//           vec2(
-//                fract(o * 0.1373),
-//                fract(o * 0.5127)) * 2.0 - 1.0,
-//           0, 0);
-          
-//       v_texcoord = texcoord;
-//       v_color = vec4(fract(vec3(id) * vec3(0.127, 0.373, 0.513)), 1);
-//     }`;
-    
-//     const fs = `
-//     precision mediump float;
-//     varying vec2 v_texcoord;
-//     varying vec4 v_color;
-    
-//     float circle(in vec2 st, in float radius) {
-//       vec2 dist = st - vec2(0.5);
-//       return 1.0 - smoothstep(
-//          radius - (radius * 0.01),
-//          radius +(radius * 0.01),
-//          dot(dist, dist) * 4.0);
-//     }
-    
-//     void main() {
-//       if (circle(v_texcoord, 1.0) < 0.5) {
-//         discard;
-//       }
-//       gl_FragColor = v_color;
-//     }
-//     `; 
-    
-//     // compile shaders, link program, look up locations
-//     const programInfo = twgl.createProgramInfo(gl, [vs, fs]);
-  
-//     const maxCount = 250000;
-//     const ids = new Float32Array(maxCount);
-//     for (let i = 0; i < ids.length; ++i) {
-//       ids[i] = i;
-//     }
-//     const x = 16 / 300 * 2;
-//     const y = 16 / 150 * 2;
-    
-//     const bufferInfo = twgl.createBufferInfoFromArrays(gl, {
-//       position: {
-//         numComponents: 2,
-//         data: [
-//          -x, -y,
-//           x, -y,
-//          -x,  y,
-//          -x,  y,
-//           x, -y,
-//           x,  y,
-//        ],
-//       },
-//       texcoord: [
-//           0, 1,
-//           1, 1,
-//           0, 0,
-//           0, 0,
-//           1, 1,
-//           1, 0,    
-//       ],
-//       id: {
-//         numComponents: 1,
-//         data: ids,
-//         divisor: 1,
-//       }
-//     });
-//     twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
-    
-//     const fpsElem = document.querySelector('#fps');
-//     const countElem = document.querySelector('#count');
-    
-//     let count;  
-//     function getCount() {
-//       count = Math.min(maxCount, parseInt(countElem.value));
-//     }
-    
-//     countElem.addEventListener('input', getCount);
-//     getCount();
-    
-//     const maxHistory = 60;
-//     const fpsHistory = new Array(maxHistory).fill(0);
-//     let historyNdx = 0;
-//     let historyTotal = 0;
-    
-//     let then = 0;
-//     function render(now) {
-//       const deltaTime = now - then;
-//       then = now;
-      
-//       historyTotal += deltaTime - fpsHistory[historyNdx];
-//       fpsHistory[historyNdx] = deltaTime;
-//       historyNdx = (historyNdx + 1) % maxHistory;
-      
-//       fpsElem.textContent = (1000 / (historyTotal / maxHistory)).toFixed(1);
-      
-//       gl.useProgram(programInfo.program);
-//       twgl.setUniforms(programInfo, {time: now * 0.001});
-//       ext.drawArraysInstancedANGLE(gl.TRIANGLES, 0, 6, count);
-//       requestAnimationFrame(render);
-//     }
-//     requestAnimationFrame(render);
-//   }
-//   main();
