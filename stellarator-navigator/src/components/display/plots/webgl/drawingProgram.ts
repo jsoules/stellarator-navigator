@@ -1,27 +1,23 @@
 import { DataGeometry } from "@snTypes/Types"
+// import { mat4, vec3 } from "gl-matrix"
 import { mat4 } from "gl-matrix"
-
-type OffscreenScatterProps = {
-    glCtxt: WebGLRenderingContext
-    geometry: DataGeometry
-    colorList: number[][]
-    data: number[][] // Should be multiple series of x, y pairs, sorted per intended color.
-}
+import { dotMargin } from "./drawScatter"
 
 
-type ProgramInfo = {
+export type ProgramInfo = {
     program: WebGLProgram,
     attribLocations: {
         dotPosition: number
-        colorPosition: number
+        dotColor: number
     },
     uniformLocations: {
         dataToNormalMatrix: WebGLUniformLocation | null,
+        stdToScreen: WebGLUniformLocation | null,
     }
 }
 
 
-type BufferSet = {
+export type BufferSet = {
     position: WebGLBuffer
     color: WebGLBuffer
 }
@@ -30,17 +26,60 @@ type BufferSet = {
 type shaderTypes = WebGLRenderingContextBase["VERTEX_SHADER"] | WebGLRenderingContextBase["FRAGMENT_SHADER"]
 
 
+// v1--just dots
+// // Vertex shader: called per vertex of the shape.
+// const vertexShaderSrc = `
+// attribute vec4 aDotPosition;
+// attribute vec4 aColor;
+// varying vec4 vColor;
+// uniform mat4 uProjectionMatrix;
+
+// void main() {
+//     gl_Position = uProjectionMatrix * aDotPosition;
+//     vColor = aColor;
+//     gl_PointSize = 4.0;
+// }
+// `
+
+
+// // Fragment shader: called once for each pixel on each shape,
+// // after processing by vertex shader.
+// const fragmentShaderSrc = `
+// precision mediump float;
+// varying vec4 vColor;
+// void main() {
+//     gl_FragColor = vColor;
+// }
+// `
+
+
+// v2 -- try to do circles
+// - changed pointsize to 8 (8x8 square) from which we'll strip;
+// note that we still need to configure this for size highlights.
 // Vertex shader: called per vertex of the shape.
 const vertexShaderSrc = `
+uniform mat4 uProjectionMatrix;
+uniform vec2 uStdToScreen;
 attribute vec4 aDotPosition;
 attribute vec4 aColor;
 varying vec4 vColor;
-uniform mat4 uProjectionMatrix;
+varying vec2 vScreenPos;
+varying float vRadius;
 
 void main() {
-    gl_Position = uProjectionMatrix * aDotPosition;
     vColor = aColor;
-    gl_PointSize = 4.0;
+    gl_Position = uProjectionMatrix * aDotPosition;
+
+    // pos -> window-coordinates
+    vScreenPos = uStdToScreen + (gl_Position.xy * uStdToScreen);
+    
+    // And one last little trick: the dots are a little smaller
+    // than expected because the overall canvas is larger than
+    // the visible part that gets copied. Technically we should
+    // divide by the lesser of ([width, height] - margin)/[w, h]
+    // but it's probably fine to just make it a little bit bigger.
+    gl_PointSize = 8.0 + 1.0;
+    vRadius = gl_PointSize * 0.5;
 }
 `
 
@@ -50,7 +89,10 @@ void main() {
 const fragmentShaderSrc = `
 precision mediump float;
 varying vec4 vColor;
+varying vec2 vScreenPos;
+varying float vRadius;
 void main() {
+    if (distance(gl_FragCoord.xy, vScreenPos) > vRadius) discard;
     gl_FragColor = vColor;
 }
 `
@@ -104,27 +146,65 @@ const createProgram = (glCtxt: WebGLRenderingContext, vertexShaderSrc: string, f
 }
 
 
-const initBuffers = (glCtxt: WebGLRenderingContext, data: number[][], colorVecs: number[][]): BufferSet => {
+const initBuffers = (glCtxt: WebGLRenderingContext): BufferSet => {
     const positionBuffer = glCtxt.createBuffer()
     const colorBuffer = glCtxt.createBuffer()
     if (positionBuffer === null || colorBuffer === null) {
         throw Error("Error allocating buffers.")
     }
-    glCtxt.bindBuffer(glCtxt.ARRAY_BUFFER, positionBuffer)
-    glCtxt.bufferData(glCtxt.ARRAY_BUFFER, new Float32Array(data.flat()), glCtxt.STATIC_DRAW)
-
-    
-    // incidentally, the "fill(0)" shouldn't be required: you can iterate over an array of empty elements
-    // just as easily as an array of 0s. But some versions of TypeScript linter don't like it & want to
-    // "optimize out" the empty array.
-    const flatColors = data.map((series, idx) => new Array(series.length).fill(0).map(() => colorVecs[idx])).flat(2)
-    glCtxt.bindBuffer(glCtxt.ARRAY_BUFFER, colorBuffer)
-    glCtxt.bufferData(glCtxt.ARRAY_BUFFER, new Float32Array(flatColors), glCtxt.STATIC_DRAW)
 
     return {
         position: positionBuffer,
         color: colorBuffer
     }
+}
+
+
+const makeProgramInfo = (shaderProgram: WebGLProgram, glCtxt: WebGLRenderingContext) => {
+    const programInfo: ProgramInfo = {
+        program: shaderProgram,
+        attribLocations: {
+            dotPosition: glCtxt.getAttribLocation(shaderProgram, "aDotPosition"),
+            dotColor: glCtxt.getAttribLocation(shaderProgram, "aColor")
+        },
+        uniformLocations: {
+            dataToNormalMatrix: glCtxt.getUniformLocation(shaderProgram, "uProjectionMatrix"),
+            stdToScreen: glCtxt.getUniformLocation(shaderProgram, "uStdToScreen")
+        }
+    }
+    if (programInfo.uniformLocations.dataToNormalMatrix === null || programInfo.uniformLocations.stdToScreen === null) {
+        throw Error(`Program error (syntax?): Failed to allocate one of the uniformLocations.\n${JSON.stringify(programInfo)}`)
+    }
+
+    return programInfo
+}
+
+
+const populateData = (glCtxt: WebGLRenderingContext, data: number[][], colorVecs: number[][], buffers: BufferSet) => {
+    const flatData = data.flat()
+    // if (flatData.length < 37) {
+    //     console.log(`FlatData report:\n,${flatData.map((v, i) => `${v}${i % 2 === 1 ? '\n' : ''}`)}`)
+    // }
+    glCtxt.bindBuffer(glCtxt.ARRAY_BUFFER, buffers.position)
+    glCtxt.bufferData(glCtxt.ARRAY_BUFFER, new Float32Array(flatData), glCtxt.STATIC_DRAW)
+
+    // incidentally, the "fill(0)" shouldn't be required: you can iterate over an array of empty elements
+    // just as easily as an array of 0s. But some versions of TypeScript linter don't like it & want to
+    // "optimize out" the empty array.
+
+    // length/2 because it's a flattened list of both x and y coordinates.
+    const flatColors = data.map((series, idx) => new Array(series.length/2).fill(0).map(() => colorVecs[idx])).flat(2)
+    // if (flatColors.length < 73) {
+    //     console.log(`FlatColors report:\n,${flatColors.map((c, i) => `${c}${i % 4 === 3 ? '\n' : ''}`)}`)
+    // }
+    glCtxt.bindBuffer(glCtxt.ARRAY_BUFFER, buffers.color)
+    glCtxt.bufferData(glCtxt.ARRAY_BUFFER, new Float32Array(flatColors), glCtxt.STATIC_DRAW)
+}
+
+
+const readyData = (glCtxt: WebGLRenderingContext, buffers: BufferSet, programInfo: ProgramInfo) => {
+    setPositionAttribute(glCtxt, buffers, programInfo)
+    setColorAttribute(glCtxt, buffers, programInfo)
 }
 
 
@@ -150,83 +230,74 @@ const setPositionAttribute = (gl: WebGLRenderingContext, buffers: BufferSet, pro
 
 const setColorAttribute = (gl: WebGLRenderingContext, buffers: BufferSet, programInfo: ProgramInfo) => {
     gl.bindBuffer(gl.ARRAY_BUFFER, buffers.color)
-    gl.vertexAttribPointer(programInfo.attribLocations.colorPosition, 4, gl.FLOAT, false, 0, 0)
-    gl.enableVertexAttribArray(programInfo.attribLocations.colorPosition)
+    gl.vertexAttribPointer(programInfo.attribLocations.dotColor, 4, gl.FLOAT, false, 0, 0)
+    gl.enableVertexAttribArray(programInfo.attribLocations.dotColor)
 }
 
 
-const draw = (gl: WebGLRenderingContext, buffers: BufferSet, programInfo: ProgramInfo, dataToNormalMatrix: mat4, vertexCount: number) => {
-    gl.clearColor(0.0, 0.0, 0.0, 0.0) // clear to transparent (don't want to hide the canvas background)
-    gl.clearDepth(1.0)
-    gl.enable(gl.DEPTH_TEST)
-    gl.depthFunc(gl.LEQUAL)
-
-    // clears canvas before drawing
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-
-    setPositionAttribute(gl, buffers, programInfo)
-    setColorAttribute(gl, buffers, programInfo)
-    gl.useProgram(programInfo.program)
-
-    gl.uniformMatrix4fv(programInfo.uniformLocations.dataToNormalMatrix, false, dataToNormalMatrix)
-    // TODO: update color per vertex (...via lookup table? Or is indirection slower than just using memory?)
-
-    {
-        const offset = 0
-        gl.drawArrays(gl.POINTS, offset, vertexCount)
-    }
-}
-
-
-
-
-// https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Adding_2D_content_to_a_WebGL_context
-const drawScatter = (props: OffscreenScatterProps) => {
-    const { glCtxt, geometry, data, colorList } = props
-
-    if (data === undefined) {
-        console.log(`Data is undefined.`)
-        return
-    }
-
-    const colorVecs = colorList.map(c => [c[0], c[1], c[2], 1.0])
-
-    const projectionMatrix = mat4.create()
-    mat4.ortho(projectionMatrix, geometry.xmin, geometry.xmax, geometry.ymin, geometry.ymax, -1, 1)
-
-    // // double-checking
-    // const firstPt = vec4.fromValues(data[0][0], data[0][1], 0, 0)
-    // const projectedFirstPt = vec4.create()
-    // vec4.transformMat4(projectedFirstPt, firstPt, projectionMatrix)
-
+const initProgram = (glCtxt: WebGLRenderingContext | null) => {
+    if (glCtxt === null) return () => () => {}
     const shaderProgram = createProgram(glCtxt, vertexShaderSrc, fragmentShaderSrc)
 
-    const programInfo: ProgramInfo = {
-        program: shaderProgram,
-        attribLocations: {
-            dotPosition: glCtxt.getAttribLocation(shaderProgram, "aDotPosition"),
-            colorPosition: glCtxt.getAttribLocation(shaderProgram, "aColor")
-        },
-        uniformLocations: {
-            dataToNormalMatrix: glCtxt.getUniformLocation(shaderProgram, "uProjectionMatrix"),
+    const programInfo = makeProgramInfo(shaderProgram, glCtxt)
+    const buffers = initBuffers(glCtxt)
+    // TODO: NEED TO ADD SIZE ARRAY
+
+    glCtxt.useProgram(programInfo.program)
+    const configureCanvas = (colorList: number[][], geometry: DataGeometry, width: number, height: number) => {
+        const colorVecs = colorList.map(c => [c[0], c[1], c[2], 1.0])
+
+        // // all right, we'll do it live.
+        // const dataWidth     = geometry.xmax - geometry.xmin
+        // const dataHeight    = geometry.ymax - geometry.ymin
+        // const viewWExMargin = 2 - xMarginFactor
+        // const viewHExMargin = 2 - yMarginFactor
+        // const xRatio        = viewWExMargin / dataWidth
+        // const yRatio        = viewHExMargin / dataHeight
+        // const xOffset       = (-1 * geometry.xmin * xRatio) + xMarginFactor/2 - 1
+        // const yOffset       = (-1 * geometry.ymin * yRatio) + yMarginFactor/2 - 1
+        // const projectionMatrix = mat4.fromValues(xRatio,       0, 0, 0,
+        //                                               0,  yRatio, 0, 0,
+        //                                               0,       0, 0, 0,
+        //                                         xOffset, yOffset, 0, 1)
+        
+        // We want to add a margin (of some known pixel value) to each side of the canvas, so that dots on the edge
+        // don't get cut off in drawing. Problem is our "ortho" matrix doesn't know that, and will just map to
+        // (-1, 1) x (-1, 1). Figuring out what the matrix really should be is tricky; so instead we want to
+        // set a fake data range that keeps the same centers for the x, y series, but extends them so that
+        // the actual data range covers only the visible portion of the canvas.
+        // e.g. if our margin takes up 10% of the total width and the x-variable runs from 60 - 120,
+        // then we want to set a fake data range centered at 90 and with width (60/0.9 = 66-bar),
+        // so from 57ish to 123ish.
+        const xMarginFactor = (2 * dotMargin)/width
+        const yMarginFactor = (2 * dotMargin)/height
+        const visibleXOverFull = 1 - xMarginFactor
+        const visibleYOverFull = 1 - yMarginFactor
+        const dataXSpan = geometry.xmax - geometry.xmin
+        const dataXMid  = geometry.xmin + dataXSpan/2
+        const dataYSpan = geometry.ymax - geometry.ymin
+        const dataYMid  = geometry.ymin + dataYSpan/2
+        const targetHalfSpanX = (dataXSpan/2)/visibleXOverFull
+        const targetHalfSpanY = (dataYSpan/2)/visibleYOverFull
+
+        const projectionMatrix = mat4.create()
+        mat4.ortho(projectionMatrix, dataXMid - targetHalfSpanX, dataXMid + targetHalfSpanX, dataYMid - targetHalfSpanY, dataYMid + targetHalfSpanY, 0, 1)
+        glCtxt.uniformMatrix4fv(programInfo.uniformLocations.dataToNormalMatrix, false, projectionMatrix)
+        glCtxt.uniform2fv(programInfo.uniformLocations.stdToScreen, [0.5*width + dotMargin, 0.5*height + dotMargin])
+
+        const loadData = (data: number[][]) => {
+            populateData(glCtxt, data, colorVecs, buffers)
+            readyData(glCtxt, buffers, programInfo)
         }
+
+        return loadData
     }
-    if (programInfo.uniformLocations.dataToNormalMatrix === null) {
-        throw Error(`Program error (syntax?): Failed to allocate one of the uniformLocations.\n${JSON.stringify(programInfo)}`)
-    }
 
-    const buffers = initBuffers(glCtxt, data, colorVecs)
-    const vertexCount = data.reduce((t: number, c) => t + c.length, 0)
-    console.log(`Rendering ${vertexCount} vertices.`)
-
-    draw(glCtxt, buffers, programInfo, projectionMatrix, vertexCount)
-
-    // TODO: NEED TO ADD SIZE FOR SELECTED DATA ELEMENTS
-    // This probably comes in as a separate index--keep the business logic out of this file
-    // EJMollinelli tutorial covers this
+    return configureCanvas
 }
 
-export default drawScatter
+export default initProgram
+
 
 
 // FOR CIRCLES

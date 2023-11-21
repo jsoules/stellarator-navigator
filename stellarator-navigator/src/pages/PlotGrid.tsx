@@ -1,8 +1,11 @@
 import { Grid } from "@mui/material"
 import { GridRowSelectionModel } from "@mui/x-data-grid"
+import { Tol, convertHexToRgb3Vec } from "@snComponents/display/Colormaps"
 import OpenSelectedButton from "@snComponents/display/OpenSelected"
 import CanvasPlotLabel from "@snComponents/display/plots/CanvasPlotLabel"
 import CanvasPlotWrapper from "@snComponents/display/plots/CanvasPlotWrapper"
+import { resizeCanvas } from "@snComponents/display/plots/webgl/drawScatter"
+import initProgram from "@snComponents/display/plots/webgl/drawingProgram"
 import HrBar from "@snComponents/general/HrBar"
 import SnTable from "@snDisplayComponents/SnTable"
 import { computePerPlotDimensions, useAxes, useCanvasAxes, useDataGeometry, useScales } from "@snPlots/PlotScaling"
@@ -10,7 +13,7 @@ import PlotWrapper from "@snPlots/PlotWrapper"
 import { useOnClickPlot } from "@snPlots/interactions"
 import projectData from "@snState/projection"
 import { DependentVariables, IndependentVariables, ToggleableVariables } from "@snTypes/DataDictionary"
-import { BoundedPlotDimensions, DataGeometry, FilterSettings, StellaratorRecord } from "@snTypes/Types"
+import { BoundedPlotDimensions, FilterSettings, StellaratorRecord } from "@snTypes/Types"
 import { ScaleLinear } from "d3"
 import { FunctionComponent, useCallback, useEffect, useMemo, useState } from "react"
 
@@ -91,30 +94,39 @@ type CanvasRowProps = RowProps & {
     canvasXAxis: (ctxt: CanvasRenderingContext2D) => void
     canvasYAxis: (ctxt: CanvasRenderingContext2D) => void
     canvasPlotLabel: (ctxt: CanvasRenderingContext2D) => void
-    geometry: DataGeometry
     dims: BoundedPlotDimensions
     realData: number[][][]
+    scatterCtxt: WebGLRenderingContext | null
+    loadData: (data: number[][]) => void
 }
 
 const CanvasRow: FunctionComponent<CanvasRowProps> = (props: CanvasRowProps) => {
-    const { realData, colSpan, nfps, nc, geometry, canvasXAxis, canvasYAxis, canvasPlotLabel, dims, markedIds, clickHandler } = props
+    const { realData, colSpan, nfps, nc, canvasXAxis, canvasYAxis, canvasPlotLabel, dims, markedIds, clickHandler, scatterCtxt, loadData } = props
 
     return <Grid container item>
-        {nfps.map((nfp, i) => {
+        {nfps.map((nfp) => {
+            // TODO: OBVIOUSLY NOT THIS
+            const ifNc: number[][] = new Array(realData[nfp - 1].length).fill(0).map(() => [])
+            if (nc !== undefined) {
+                ifNc[nc - 1] = realData[nfp - 1][nc - 1]
+            }
+            const reallyRealData = nc === undefined ? realData[nfp - 1] : ifNc
+
             return (
                 <Grid item xs={colSpan} key={`${nfp}`}>
                     <CanvasPlotWrapper
                         key={`${nfp}-${nc}`}
-                        data={realData[i]}
+                        data={reallyRealData}
                         dims={dims}
                         canvasXAxis={canvasXAxis}
                         canvasYAxis={canvasYAxis}
                         canvasPlotLabel={canvasPlotLabel}
-                        geometry={geometry}
                         markedIds={markedIds}
                         nfpValue={nfp}
                         ncPerHpValue={nc}
                         clickHandler={clickHandler}
+                        scatterCtxt={scatterCtxt}
+                        loadData={loadData}
                     />
                 </Grid>
             )
@@ -195,6 +207,18 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
     }
     const { data: canvasData } = projectData(projectionCriteria)
 
+    // TODO: Do refactor this all out somewhere else
+    // TODO: Do something about cutting off at the right margin--give it a little bit more space without messing up the scale
+    const offscreenCanvas = useMemo(() => new OffscreenCanvas(10, 10), [])
+    const webglCtxt = useMemo(() => offscreenCanvas.getContext("webgl"), [offscreenCanvas])
+    resizeCanvas({ctxt: webglCtxt, width: dims.boundedWidth, height: dims.boundedHeight})
+    // TODO: Allow changing color palette
+    const colorList = useMemo(() => (Tol).map(c => convertHexToRgb3Vec(c)), [])
+    const configureCanvas = useMemo(() => initProgram(webglCtxt), [webglCtxt])
+    const loadData = useMemo(() => configureCanvas(colorList, dataGeometry, dims.boundedWidth, dims.boundedHeight),
+        [configureCanvas, colorList, dataGeometry, dims.boundedWidth, dims.boundedHeight])
+    
+
     const canvasRows = (ncs.length === 0 ? [undefined] : ncs).map(
         nc => <CanvasRow
             key={`row-${nc}`}
@@ -216,8 +240,9 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
             canvasYAxis={canvasYAxis}
             canvasPlotLabel={canvasPlotLabel}
             realData={canvasData[0]}
-            geometry={dataGeometry}
             dims={dims}
+            scatterCtxt={webglCtxt}
+            loadData={loadData}
         />
     )
 
