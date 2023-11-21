@@ -1,8 +1,7 @@
-import { Tol, convertHexToRgb3Vec } from "@snDisplayComponents/Colormaps"
-import { BoundedPlotDimensions, DataGeometry } from "@snTypes/Types"
-import { FunctionComponent, useEffect, useMemo, useRef, } from "react"
-import useOffscreenScatterplot from "./OffscreenScatterplot"
+import { BoundedPlotDimensions } from "@snTypes/Types"
+import { FunctionComponent, useEffect, useRef, } from "react"
 import { plotGutterHorizontal, plotGutterVertical } from "./PlotScaling"
+import drawScatter, { dotMargin } from "./webgl/drawScatter"
 
 type Props = {
     dims: BoundedPlotDimensions
@@ -12,21 +11,19 @@ type Props = {
     canvasXAxis: (ctxt: CanvasRenderingContext2D) => void
     canvasYAxis: (ctxt: CanvasRenderingContext2D) => void
     canvasPlotLabel: (ctxt: CanvasRenderingContext2D) => void
-    geometry: DataGeometry
     markedIds?: Set<number>
     nfpValue: number
     ncPerHpValue?: number
     clickHandler: (nfp: number, nc?: number) => void
+    scatterCtxt: WebGLRenderingContext | null
+    loadData: (data: number[][]) => void
 }
 
 
 const CanvasPlotWrapper: FunctionComponent<Props> = (props: Props) => {
-    const { dims, data, colorMap, canvasYAxis, canvasXAxis, canvasPlotLabel, geometry } = props
-    const colorList = useMemo(() => (colorMap ?? Tol).map(c => convertHexToRgb3Vec(c)), [colorMap])
+    const { dims, data, canvasYAxis, canvasXAxis, canvasPlotLabel, scatterCtxt, loadData } = props
     
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
-    const offscreenCanvas = useOffscreenScatterplot({width: dims.boundedWidth, height: dims.boundedHeight, data, geometry, colorList })
-
 
     useEffect(() => {
         // TODO: NEED TO ATTACH A CLICK HANDLER TO THE CANVAS ELEMENT
@@ -40,9 +37,14 @@ const CanvasPlotWrapper: FunctionComponent<Props> = (props: Props) => {
         ctxt.translate(dims.marginLeft, dims.marginRight)
         canvasXAxis(ctxt)
         canvasYAxis(ctxt)
-        ctxt.drawImage(offscreenCanvas, 0, 0)
+        // ctxt.drawImage(offscreenCanvas, 0, 0)
+        if (scatterCtxt !== null) {
+            loadData(data)
+            drawScatter({glCtxt: scatterCtxt, data })
+            ctxt.drawImage(scatterCtxt.canvas, -dotMargin, -dotMargin)
+        }
         ctxt.restore()
-    }, [canvasPlotLabel, canvasXAxis, canvasYAxis, dims.marginLeft, dims.marginRight, offscreenCanvas])
+    }, [canvasPlotLabel, canvasXAxis, canvasYAxis, data, dims.marginLeft, dims.marginRight, loadData, scatterCtxt])
 
     return (
         <div
