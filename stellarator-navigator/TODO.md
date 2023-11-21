@@ -218,6 +218,16 @@
 
 [ ] Just implement drag-zoom already
 
+[ ] Add custom size to selected dots/devices
+
+[ ] Filter more responsibly
+
+[ ] Click handler for canvas!
+
+[ ] Strip out unused junk in CanvasPlotWrapper etc. props
+
+[ ] Improve accessibility by providing descriptive text inside canvas element in CanvasPlotWrapper
+
 [ ] Figure out a smarter way to right-size the table in the overview page
 
 [ ] Note that horizontal line for non-QA error corresponds to Earth's background magnetic field
