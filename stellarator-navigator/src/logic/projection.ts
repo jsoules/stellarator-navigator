@@ -10,8 +10,11 @@ import { StellaratorRecord } from "@snTypes/Types"
 // Higher-order groupings might be possible, but we won't implement that until it's requested.
 type categorizationCriteria = {
     fineSplit?: ToggleableVariables
+    fineSplitVals?: number[]
     medSplit?: ToggleableVariables
+    medSplitVals?: number[]
     coarseSplit?: ToggleableVariables
+    coarseSplitVals?: number[]
 }
 
 
@@ -25,36 +28,51 @@ export type ProjectionCriteria = categorizationCriteria & {
 
 type ProjectedData = {
     data: number[][][][]
-    selectedIndices: number[]
+    selected: boolean[][][][]
 }
 
 
-const defaultFieldKey = 'Any'
-
+export const defaultFieldKey = 'Any'
+const makeDefaultedList = (p: {baseList: number[] | undefined, defaultToAll?: boolean, fieldName?: ToggleableVariables | undefined}) => {
+    if (p.baseList === undefined || p.baseList.length === 0) {
+        return p.defaultToAll
+            ? Fields[p.fieldName as unknown as KnownFields]?.values ?? [defaultFieldKey]
+            : [defaultFieldKey]
+    }
+    return p.baseList
+}
 
 const makeLookups = (c: categorizationCriteria) => {
-    const { fineSplit, medSplit, coarseSplit } = c
+    // const { fineSplit, medSplit, coarseSplit } = c
+    const { fineSplit, } = c
 
     const fineKeys:   {[key: string]: number} = {}
     const medKeys:    {[key: string]: number} = {}
     const coarseKeys: {[key: string]: number} = {}
 
-    if (fineSplit !== undefined && (fineSplit === medSplit || fineSplit === coarseSplit)) {
-        throw Error(`Data partition criteria must be distinct, but finest criterion ${fineSplit} matches one of middle ${medSplit} or coarse ${coarseSplit}`)
-    }
-    if (medSplit !== undefined && medSplit === coarseSplit) {
-        throw Error(`Data partition criteria must be distinct, but mid-level criterion ${medSplit} matches coarsest criterion ${coarseSplit}`)
-    }
+    // Need to decide if you actually want to enforce this
+    // if (fineSplit !== undefined && (fineSplit === medSplit || fineSplit === coarseSplit)) {
+    //     throw Error(`Data partition criteria must be distinct, but finest criterion ${fineSplit} matches one of middle ${medSplit} or coarse ${coarseSplit}`)
+    // }
+    // if (medSplit !== undefined && medSplit === coarseSplit) {
+    //     throw Error(`Data partition criteria must be distinct, but mid-level criterion ${medSplit} matches coarsest criterion ${coarseSplit}`)
+    // }
 
-    const fineVals   = Fields[fineSplit   as unknown as KnownFields]?.values ?? [defaultFieldKey]
-    const medVals    = Fields[medSplit    as unknown as KnownFields]?.values ?? [defaultFieldKey]
-    const coarseVals = Fields[coarseSplit as unknown as KnownFields]?.values ?? [defaultFieldKey]
+    // Coloration depends on fine-split. So we have to keep all possible values to get the right number of lists
+    // so that the colors don't change when the selections do.
+    const fineVals   = Fields[fineSplit as unknown as KnownFields]?.values ?? [defaultFieldKey]
+    const medVals    = makeDefaultedList({ baseList: c.medSplitVals })  // TODO: REMOVE THE UNUSED PARAMETERS FROM MAKEDEFAULTEDLIST
+    const coarseVals = makeDefaultedList({ baseList: c.coarseSplitVals })
+
+    // const fineVals   = Fields[fineSplit   as unknown as KnownFields]?.values ?? [defaultFieldKey]
+    // const medVals    = Fields[medSplit    as unknown as KnownFields]?.values ?? [defaultFieldKey]
+    // const coarseVals = Fields[coarseSplit as unknown as KnownFields]?.values ?? [defaultFieldKey]
 
     fineVals.forEach((v, i) => fineKeys[`${v}`] = i)
     medVals.forEach((v, i) => medKeys[`${v}`] = i)
     coarseVals.forEach((v, i) => coarseKeys[`${v}`] = i)
 
-    console.log(`generated fine keys ${JSON.stringify(fineKeys)}, med keys ${JSON.stringify(medKeys)}, coarse keys ${JSON.stringify(coarseKeys)}`)
+    // console.log(`generated fine keys ${JSON.stringify(fineKeys)}, med keys ${JSON.stringify(medKeys)}, coarse keys ${JSON.stringify(coarseKeys)}`)
 
     return {fineKeys, medKeys, coarseKeys}
 }
@@ -76,6 +94,10 @@ const projectData = (props: ProjectionCriteria): ProjectedData => {
         .map(() => new Array(Object.keys(medKeys).length).fill(0)
             .map(() => new Array(Object.keys(fineKeys).length).fill(0)
                 .map(() => [] as number[])))
+    const selected: boolean[][][][] = new Array(Object.keys(coarseKeys).length).fill(0)
+    .map(() => new Array(Object.keys(medKeys).length).fill(0)
+        .map(() => new Array(Object.keys(fineKeys).length).fill(0)
+            .map(() => [] as boolean[])))
 
     // Precondition: We assume that every row is actually supposed to be there, and we just need to slot
     // them into the right place. Filtering of out-of-scope values should have already taken place.
@@ -86,12 +108,13 @@ const projectData = (props: ProjectionCriteria): ProjectedData => {
         const coarseIdx = (coarseSplit ? coarseKeys[record[coarseSplit]] : 0) ?? 0
         buckets[coarseIdx][medIdx][fineIdx].push((record[xVar]))
         buckets[coarseIdx][medIdx][fineIdx].push((record[yVar]))
+        selected[coarseIdx][medIdx][fineIdx].push(markedIds?.has(record.id) || false)
         if (markedIds && record.id in markedIds) {
             // TODO: Handle marked IDs properly
             console.log(`Found marked id at index ${id}`)
         }
     })
-    return { data: buckets, selectedIndices: [] }
+    return { data: buckets, selected }
 }
 
 

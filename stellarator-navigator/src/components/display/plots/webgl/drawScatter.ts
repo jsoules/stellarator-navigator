@@ -38,7 +38,7 @@ const draw = (gl: WebGLRenderingContext, vertexCount: number) => {
 const drawScatter = (props: OffscreenScatterProps) => {
     const { glCtxt, vertexCount } = props
 
-    console.log(`Rendering ${vertexCount} vertices.`)
+    // console.log(`Rendering ${vertexCount} vertices.`)
     draw(glCtxt, vertexCount)
 }
 

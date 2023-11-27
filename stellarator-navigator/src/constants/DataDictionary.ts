@@ -234,7 +234,7 @@ export const Fields: FieldRecords = {
         displayInTable: true
     },
     'ncPerHp': {
-        shortLabel: "Coils/hp",
+        shortLabel: "NC/HP",
         plotLabel: "Coils per HP",
         fullLabel: "Coil count per half-period (NC per HP)",
         description: "Coil count per half-period",
@@ -248,7 +248,7 @@ export const Fields: FieldRecords = {
         displayInTable: true
     },
     'nfp': {
-        shortLabel: "FPs",
+        shortLabel: "NFP",
         plotLabel: "FP Count",
         fullLabel: "Number of Field Periods (NFP)",
         description: "Count of field periods",
@@ -258,7 +258,7 @@ export const Fields: FieldRecords = {
         isLog: false,
         isCategorical: true,
         markedValue: undefined,
-        tableColumnWidth: 50,
+        tableColumnWidth: 75,
         displayInTable: true
     },
     'nFourierCoil': {

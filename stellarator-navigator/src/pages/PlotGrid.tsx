@@ -2,20 +2,21 @@ import { Grid } from "@mui/material"
 import { GridRowSelectionModel } from "@mui/x-data-grid"
 import { Tol, convertHexToRgb3Vec } from "@snComponents/display/Colormaps"
 import OpenSelectedButton from "@snComponents/display/OpenSelected"
-import CanvasPlotLabel from "@snComponents/display/plots/CanvasPlotLabel"
+import CanvasPlotLabel, { CanvasPlotLabelCallbackType } from "@snComponents/display/plots/CanvasPlotLabel"
 import CanvasPlotWrapper from "@snComponents/display/plots/CanvasPlotWrapper"
 import { resizeCanvas } from "@snComponents/display/plots/webgl/drawScatter"
 import initProgram from "@snComponents/display/plots/webgl/drawingProgram"
 import HrBar from "@snComponents/general/HrBar"
 import SnTable from "@snDisplayComponents/SnTable"
-import { computePerPlotDimensions, useAxes, useCanvasAxes, useDataGeometry, useScales } from "@snPlots/PlotScaling"
-import PlotWrapper from "@snPlots/PlotWrapper"
+import { computePerPlotDimensions, useCanvasAxes, useDataGeometry, useScales } from "@snPlots/PlotScaling"
 import { useOnClickPlot } from "@snPlots/interactions"
 import projectData from "@snState/projection"
-import { DependentVariables, IndependentVariables, ToggleableVariables } from "@snTypes/DataDictionary"
+import { ToggleableVariables } from "@snTypes/DataDictionary"
 import { BoundedPlotDimensions, FilterSettings, StellaratorRecord } from "@snTypes/Types"
-import { ScaleLinear } from "d3"
+import { nfpValidValues } from "@snTypes/ValidValues"
 import { FunctionComponent, useCallback, useEffect, useMemo, useState } from "react"
+
+const internalMargin = 20
 
 type Props = {
     filters: FilterSettings
@@ -28,7 +29,8 @@ type Props = {
 
 const getSelectedNfps = (filters: FilterSettings): number[] => {
     const _nfps = (filters.nfp.map((v, i) => (v ? i + 1 : void {}))).filter(x => x !== undefined) as unknown as number[]
-    const nfps = _nfps.length === 0 ? [1, 2, 3, 4, 5] : _nfps
+    if (_nfps === undefined) throw Error("UNDEFINED NFPS IN getSelectedNfps")
+    const nfps = _nfps.length === 0 ? nfpValidValues : _nfps
     return nfps
 }
 
@@ -47,76 +49,31 @@ const rectifySelectedTable = (activeNc: number | undefined, activeNfp: number, n
 }
 
 
-type RowProps = {
-    data: StellaratorRecord[]
-    dependentVar: DependentVariables
-    independentVar: IndependentVariables
-    dims: BoundedPlotDimensions
-    xScale: ScaleLinear<number, number, never>
-    yScale: ScaleLinear<number, number, never>
-    xAxis?: JSX.Element
-    yAxis?: JSX.Element
-    nfps: number[]
-    nc?: number
-    markedIds?: Set<number>
+type CanvasRowProps = {
     colSpan: number
+    markedIds?: Set<number> // FIXME
+    nfps: number[]  // FIXME
+    nc?: number     // FIXME
     clickHandler: (nfp: number, nc?: number) => void
-}
-
-const Row: FunctionComponent<RowProps> = (props: RowProps) => {
-    const { data, dependentVar, independentVar, dims, xScale, yScale, xAxis, yAxis, nfps, nc, markedIds, colSpan, clickHandler } = props
-
-    return <Grid container item>
-        {nfps.map(nfp => {
-            return (
-                <Grid item xs={colSpan} key={`${nfp}`}>
-                    <PlotWrapper
-                        key={`${nfp}-${nc}`}
-                        data={data}
-                        dependentVar={dependentVar}
-                        independentVar={independentVar}
-                        xScale={xScale}
-                        yScale={yScale}
-                        xAxis={xAxis}
-                        yAxis={yAxis}
-                        dims={dims}
-                        markedIds={markedIds}
-                        nfpValue={nfp}
-                        ncPerHpValue={nc}
-                        clickHandler={clickHandler}
-                    />
-                </Grid>
-        )})}
-    </Grid>
-}
-
-type CanvasRowProps = RowProps & {
     canvasXAxis: (ctxt: CanvasRenderingContext2D) => void
     canvasYAxis: (ctxt: CanvasRenderingContext2D) => void
-    canvasPlotLabel: (ctxt: CanvasRenderingContext2D) => void
+    canvasPlotLabel: CanvasPlotLabelCallbackType
     dims: BoundedPlotDimensions
-    realData: number[][][]
+    data: number[][][]
     scatterCtxt: WebGLRenderingContext | null
     loadData: (data: number[][]) => void
 }
 
 const CanvasRow: FunctionComponent<CanvasRowProps> = (props: CanvasRowProps) => {
-    const { realData, colSpan, nfps, nc, canvasXAxis, canvasYAxis, canvasPlotLabel, dims, markedIds, clickHandler, scatterCtxt, loadData } = props
+    const { data, colSpan, nfps, nc, canvasXAxis, canvasYAxis, canvasPlotLabel, dims, markedIds, clickHandler, scatterCtxt, loadData } = props
 
     return <Grid container item>
-        {nfps.map((nfp) => {
-            // TODO: OBVIOUSLY NOT THIS
-            const ifNc: number[][] = new Array(realData[nfp - 1].length).fill(0).map(() => [])
-            if (nc !== undefined) {
-                ifNc[nc - 1] = realData[nfp - 1][nc - 1]
-            }
-            const reallyRealData = nc === undefined ? realData[nfp - 1] : ifNc
-
+        {nfps.map((nfp, idx) => {
             return (
                 <Grid item xs={colSpan} key={`${nfp}`}>
                     <CanvasPlotWrapper
                         key={`${nfp}-${nc}`}
-                        data={reallyRealData}
+                        data={data[idx]}
                         dims={dims}
                         canvasXAxis={canvasXAxis}
                         canvasYAxis={canvasYAxis}
@@ -134,7 +91,6 @@ const CanvasRow: FunctionComponent<CanvasRowProps> = (props: CanvasRowProps) => 
     </Grid>
 }
 
-const internalMargin = 20
 const PlotGrid: FunctionComponent<Props> = (props: Props) => {
     const { filters, selectionHandler, selectedRecords, width, height } = props
     const [activeNfp, setActiveNfp] = useState(1)
@@ -157,35 +113,10 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
 
     // Scales & Axes
     const [xScale, yScale] = useScales({filters, dimsIn: dims})
-    const [xAxis, yAxis] = useAxes({
-        xScale, yScale,
-        dependentVar: filters.dependentVariable, independentVar: filters.independentVariable,
-        dims
-    })
     const marks = useMemo(() => filters.markedRecords, [filters])
 
     const dataGeometry = useDataGeometry(filters)
-    
-    // TODO: Improved handling of SnTable records; don't redo the filter?
     const ncs = filters.ncPerHp.map((v, i) => (v ? i + 1 : void {})).filter(x => x !== undefined) as unknown as number[]
-    const rows = (ncs.length === 0 ? [undefined] : ncs).map(
-        nc => <Row
-            key={`row-${nc}`}
-            data={selectedRecords}
-            dependentVar={filters.dependentVariable}
-            independentVar={filters.independentVariable}
-            dims={dims}
-            xScale={xScale}
-            yScale={yScale}
-            xAxis={xAxis}
-            yAxis={yAxis}
-            nfps={nfps}
-            markedIds={marks}
-            colSpan={0}
-            nc={nc}
-            clickHandler={plotClickHandler}
-        />
-    )
 
     // TODO: CLEAN THIS UP
     const [canvasXAxis, canvasYAxis] = useCanvasAxes({
@@ -194,8 +125,8 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
         dims
     })
     // TODO: Label probably also needs to depend on the criteria and current value of same
-    const canvasPlotLabel = useCallback((ctxt: CanvasRenderingContext2D) => {
-        CanvasPlotLabel({dims}, ctxt)
+    const canvasPlotLabel: CanvasPlotLabelCallbackType = useCallback((ctxt, vals) => {
+        CanvasPlotLabel({dims, coarseField: ToggleableVariables.NC_PER_HP, medField: ToggleableVariables.NFP}, ctxt, vals)
     }, [dims])
 
     const projectionCriteria = {
@@ -203,7 +134,11 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
         xVar: filters.independentVariable,
         data: selectedRecords,
         fineSplit: ToggleableVariables.NC_PER_HP, // field to use to color data series
-        medSplit: ToggleableVariables.NFP         // field to use to separate plots within a row
+        medSplit: ToggleableVariables.NFP,        // field to use to separate plots within a row
+        coarseSplit: ToggleableVariables.NC_PER_HP, // field to use to separate plots into different rows
+        fineSplitVals: ncs,
+        medSplitVals: nfps,
+        coarseSplitVals: ncs
     }
     const { data: canvasData } = projectData(projectionCriteria)
 
@@ -217,20 +152,11 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
     const configureCanvas = useMemo(() => initProgram(webglCtxt), [webglCtxt])
     const loadData = useMemo(() => configureCanvas(colorList, dataGeometry, dims.boundedWidth, dims.boundedHeight),
         [configureCanvas, colorList, dataGeometry, dims.boundedWidth, dims.boundedHeight])
-    
 
-    const canvasRows = (ncs.length === 0 ? [undefined] : ncs).map(
-        nc => <CanvasRow
+
+    const canvasRows = ((ncs?.length ?? 0) === 0 ? [undefined] : ncs).map(
+        (nc, idx) => <CanvasRow
             key={`row-${nc}`}
-            data={selectedRecords}
-            // CUT THESE
-            dependentVar={filters.dependentVariable}
-            independentVar={filters.independentVariable}
-            xScale={xScale}
-            yScale={yScale}
-            xAxis={xAxis}
-            yAxis={yAxis}
-            // TO AT LEAST HERE
             nfps={nfps}
             markedIds={marks}
             colSpan={0}
@@ -239,7 +165,7 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
             canvasXAxis={canvasXAxis}
             canvasYAxis={canvasYAxis}
             canvasPlotLabel={canvasPlotLabel}
-            realData={canvasData[0]}
+            data={canvasData[idx]} // TODO: FIX THIS, don't hard-code NC as coarse split
             dims={dims}
             scatterCtxt={webglCtxt}
             loadData={loadData}
@@ -248,10 +174,7 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <div style={{ margin: internalMargin }}>
-            <div>Current filter settings return {selectedRecords.length} devices.</div>
-            <Grid container>
-                {rows}
-            </Grid>
+            <div style={{ paddingBottom: 10 }}>Current filter settings return {selectedRecords.length} devices.</div>
             <Grid container>
                 {canvasRows}
             </Grid>

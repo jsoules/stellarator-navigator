@@ -25,6 +25,7 @@ export type BufferSet = {
 type shaderTypes = WebGLRenderingContextBase["VERTEX_SHADER"] | WebGLRenderingContextBase["FRAGMENT_SHADER"]
 
 
+// example logic for circles: http://gamedusa.blogspot.com/2007/05/drawing-circle-primitives-using.html
 // note that we still need to configure this for size highlights.
 // Vertex shader: called per vertex of the shape.
 const vertexShaderSrc = `
@@ -32,6 +33,7 @@ uniform mat4 uProjectionMatrix;
 uniform vec2 uStdToScreen;
 attribute vec4 aDotPosition;
 attribute vec4 aColor;
+//attribute float aDotRadius; // should be 4.0 or 8.0
 varying vec4 vColor;
 varying vec2 vScreenPos;
 varying float vRadius;
@@ -163,7 +165,7 @@ const populateData = (glCtxt: WebGLRenderingContext, data: number[][], colorVecs
     // "optimize out" the empty array.
 
     // length/2 because it's a flattened list of both x and y coordinates.
-    const flatColors = data.map((series, idx) => new Array(series.length/2).fill(0).map(() => colorVecs[idx])).flat(2)
+    const flatColors = data.map((series, idx) => new Array((series?.length ?? 0)/2).fill(0).map(() => colorVecs[idx])).flat(2)
     // if (flatColors.length < 73) {
     //     console.log(`FlatColors report:\n,${flatColors.map((c, i) => `${c}${i % 4 === 3 ? '\n' : ''}`)}`)
     // }
@@ -242,6 +244,7 @@ const initProgram = (glCtxt: WebGLRenderingContext | null) => {
         glCtxt.uniform2fv(programInfo.uniformLocations.stdToScreen, [0.5*width + dotMargin, 0.5*height + dotMargin])
 
         const loadData = (data: number[][]) => {
+            if (data === undefined || data.length === 0) return
             populateData(glCtxt, data, colorVecs, buffers)
             readyData(glCtxt, buffers, programInfo)
         }
