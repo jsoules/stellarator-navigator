@@ -4,19 +4,19 @@ import { Tol, convertHexToRgb3Vec } from "@snComponents/display/Colormaps"
 import OpenSelectedButton from "@snComponents/display/OpenSelected"
 import CanvasPlotLabel, { CanvasPlotLabelCallbackType } from "@snComponents/display/plots/CanvasPlotLabel"
 import CanvasPlotWrapper from "@snComponents/display/plots/CanvasPlotWrapper"
-import { resizeCanvas } from "@snComponents/display/plots/webgl/drawScatter"
-import initProgram from "@snComponents/display/plots/webgl/drawingProgram"
+import { dotMargin, resizeCanvas } from "@snComponents/display/plots/webgl/drawScatter"
+import initProgram, { ScatterDataLoaderType } from "@snComponents/display/plots/webgl/drawingProgram"
 import HrBar from "@snComponents/general/HrBar"
 import SnTable from "@snDisplayComponents/SnTable"
 import { computePerPlotDimensions, useCanvasAxes, useDataGeometry, useScales } from "@snPlots/PlotScaling"
 import { useOnClickPlot } from "@snPlots/interactions"
 import projectData from "@snState/projection"
-import { ToggleableVariables } from "@snTypes/DataDictionary"
+import { ToggleableVariables, nfpValidValues } from "@snTypes/DataDictionary"
 import { BoundedPlotDimensions, FilterSettings, StellaratorRecord } from "@snTypes/Types"
-import { nfpValidValues } from "@snTypes/ValidValues"
 import { FunctionComponent, useCallback, useEffect, useMemo, useState } from "react"
 
 const internalMargin = 20
+
 
 type Props = {
     filters: FilterSettings
@@ -51,21 +51,21 @@ const rectifySelectedTable = (activeNc: number | undefined, activeNfp: number, n
 
 type CanvasRowProps = {
     colSpan: number
-    markedIds?: Set<number> // FIXME
     nfps: number[]  // FIXME
     nc?: number     // FIXME
+    dims: BoundedPlotDimensions
+    data: number[][][]
+    sizes: number[][][]
     clickHandler: (nfp: number, nc?: number) => void
     canvasXAxis: (ctxt: CanvasRenderingContext2D) => void
     canvasYAxis: (ctxt: CanvasRenderingContext2D) => void
     canvasPlotLabel: CanvasPlotLabelCallbackType
-    dims: BoundedPlotDimensions
-    data: number[][][]
+    loadData: ScatterDataLoaderType
     scatterCtxt: WebGLRenderingContext | null
-    loadData: (data: number[][]) => void
 }
 
 const CanvasRow: FunctionComponent<CanvasRowProps> = (props: CanvasRowProps) => {
-    const { data, colSpan, nfps, nc, canvasXAxis, canvasYAxis, canvasPlotLabel, dims, markedIds, clickHandler, scatterCtxt, loadData } = props
+    const { data, sizes, colSpan, nfps, nc, canvasXAxis, canvasYAxis, canvasPlotLabel, dims, clickHandler, scatterCtxt, loadData } = props
 
     return <Grid container item>
         {nfps.map((nfp, idx) => {
@@ -74,11 +74,11 @@ const CanvasRow: FunctionComponent<CanvasRowProps> = (props: CanvasRowProps) => 
                     <CanvasPlotWrapper
                         key={`${nfp}-${nc}`}
                         data={data[idx]}
+                        sizes={sizes[idx]}
                         dims={dims}
                         canvasXAxis={canvasXAxis}
                         canvasYAxis={canvasYAxis}
                         canvasPlotLabel={canvasPlotLabel}
-                        markedIds={markedIds}
                         nfpValue={nfp}
                         ncPerHpValue={nc}
                         clickHandler={clickHandler}
@@ -130,9 +130,10 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
     }, [dims])
 
     const projectionCriteria = {
+        data: selectedRecords,
         yVar: filters.dependentVariable,
         xVar: filters.independentVariable,
-        data: selectedRecords,
+        markedIds: marks,
         fineSplit: ToggleableVariables.NC_PER_HP, // field to use to color data series
         medSplit: ToggleableVariables.NFP,        // field to use to separate plots within a row
         coarseSplit: ToggleableVariables.NC_PER_HP, // field to use to separate plots into different rows
@@ -140,7 +141,8 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
         medSplitVals: nfps,
         coarseSplitVals: ncs
     }
-    const { data: canvasData } = projectData(projectionCriteria)
+    const { data: canvasData, selected } = projectData(projectionCriteria)
+    const sizes = selected.map(i => i.map(j => j.map(k => k.map(l => l ? dotMargin : dotMargin / 2))))
 
     // TODO: Do refactor this all out somewhere else
     // TODO: Do something about cutting off at the right margin--give it a little bit more space without messing up the scale
@@ -158,7 +160,6 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
         (nc, idx) => <CanvasRow
             key={`row-${nc}`}
             nfps={nfps}
-            markedIds={marks}
             colSpan={0}
             nc={nc}
             clickHandler={plotClickHandler}
@@ -166,6 +167,7 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
             canvasYAxis={canvasYAxis}
             canvasPlotLabel={canvasPlotLabel}
             data={canvasData[idx]} // TODO: FIX THIS, don't hard-code NC as coarse split
+            sizes={sizes[idx]}
             dims={dims}
             scatterCtxt={webglCtxt}
             loadData={loadData}

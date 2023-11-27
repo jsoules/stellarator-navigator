@@ -46,11 +46,14 @@ const makeLookups = (c: categorizationCriteria) => {
     // const { fineSplit, medSplit, coarseSplit } = c
     const { fineSplit, } = c
 
+    // TODO: Make fine-split/coloration a separate data series, to support picking continuous-valued variables here
+    // (since there's no reason after all this has to be discrete)
+
     const fineKeys:   {[key: string]: number} = {}
     const medKeys:    {[key: string]: number} = {}
     const coarseKeys: {[key: string]: number} = {}
 
-    // Need to decide if you actually want to enforce this
+    // TODO: Do we actually want to enforce this?
     // if (fineSplit !== undefined && (fineSplit === medSplit || fineSplit === coarseSplit)) {
     //     throw Error(`Data partition criteria must be distinct, but finest criterion ${fineSplit} matches one of middle ${medSplit} or coarse ${coarseSplit}`)
     // }
@@ -58,7 +61,7 @@ const makeLookups = (c: categorizationCriteria) => {
     //     throw Error(`Data partition criteria must be distinct, but mid-level criterion ${medSplit} matches coarsest criterion ${coarseSplit}`)
     // }
 
-    // Coloration depends on fine-split. So we have to keep all possible values to get the right number of lists
+    // Coloration is determined by fine-split. So we have to keep all possible values to get the right number of lists
     // so that the colors don't change when the selections do.
     const fineVals   = Fields[fineSplit as unknown as KnownFields]?.values ?? [defaultFieldKey]
     const medVals    = makeDefaultedList({ baseList: c.medSplitVals })  // TODO: REMOVE THE UNUSED PARAMETERS FROM MAKEDEFAULTEDLIST
@@ -101,18 +104,13 @@ const projectData = (props: ProjectionCriteria): ProjectedData => {
 
     // Precondition: We assume that every row is actually supposed to be there, and we just need to slot
     // them into the right place. Filtering of out-of-scope values should have already taken place.
-    // TODO: FIX THIS: IT WILL RESULT IN INCLUDING ROWS/COLUMNS WHICH ARE NOT SELECTED
-    data.forEach((record, id) => {
+    data.forEach((record) => {
         const fineIdx   = (fineSplit   ?   fineKeys[record[fineSplit]]   : 0) ?? 0
         const medIdx    = (medSplit    ?    medKeys[record[medSplit]]    : 0) ?? 0
         const coarseIdx = (coarseSplit ? coarseKeys[record[coarseSplit]] : 0) ?? 0
         buckets[coarseIdx][medIdx][fineIdx].push((record[xVar]))
         buckets[coarseIdx][medIdx][fineIdx].push((record[yVar]))
         selected[coarseIdx][medIdx][fineIdx].push(markedIds?.has(record.id) || false)
-        if (markedIds && record.id in markedIds) {
-            // TODO: Handle marked IDs properly
-            console.log(`Found marked id at index ${id}`)
-        }
     })
     return { data: buckets, selected }
 }

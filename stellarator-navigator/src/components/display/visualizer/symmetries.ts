@@ -143,15 +143,14 @@ export const applySurfaceSymmetries = (inputSurfaceObject: SurfaceObject, nfp: n
     })
     const completedSurfaces = fields
 
-    // TODO: expand pointValues to repeat along the outer dimension
-    const fullPeriodPointFields = pointValues.map(surfacePoints => {        const full = []
+    const fullPeriodPointFields = pointValues.map(surfacePoints => {
+        const full = []
         full.push(...(surfacePoints.reverse()))
         full.push(...(surfacePoints.reverse()))
         return full
     })
     const pointFields = fullPeriodPointFields.map(surfacePoints => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        return new Array(nfp).fill(0).map(_ => surfacePoints).flat() as ScalarField
+        return new Array(nfp).fill(0).map(() => surfacePoints).flat() as ScalarField
     })
     const completedPoints = pointFields
     

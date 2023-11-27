@@ -1,10 +1,6 @@
 import { getEnumVals } from "@snTypes/DataDictionary"
 
-// TODO: move to a config file? Read from viteconfig?
-// const basePath = "https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR/"
-// TODO: SWITCH BASE PATH BASED ON DEPLOYMENT STATUS
-// const basePath = "https://users.flatironinstitute.org/~jsoules/QUASR/" // FIXME
-// const basePath = "https://users.flatironinstitute.org/~jsoules/test/" // FIXME
+// TODO: move basename to a config file? Read from viteconfig?
 const BASENAME = import.meta.env.BASE_URL
 const basePath = BASENAME === '/'
                     ? import.meta.env.DEV

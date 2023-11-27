@@ -8,6 +8,7 @@ export type ProgramInfo = {
     attribLocations: {
         dotPosition: number
         dotColor: number
+        dotSize: number
     },
     uniformLocations: {
         dataToNormalMatrix: WebGLUniformLocation | null,
@@ -19,6 +20,7 @@ export type ProgramInfo = {
 export type BufferSet = {
     position: WebGLBuffer
     color: WebGLBuffer
+    size: WebGLBuffer
 }
 
 
@@ -33,7 +35,7 @@ uniform mat4 uProjectionMatrix;
 uniform vec2 uStdToScreen;
 attribute vec4 aDotPosition;
 attribute vec4 aColor;
-//attribute float aDotRadius; // should be 4.0 or 8.0
+attribute float aDotRadius; // expected to be 4.0 or 8.0
 varying vec4 vColor;
 varying vec2 vScreenPos;
 varying float vRadius;
@@ -50,7 +52,7 @@ void main() {
     // the visible part that gets copied. Technically we should
     // divide by the lesser of ([width, height] - margin)/[w, h]
     // but it's probably fine to just make it a little bit bigger.
-    gl_PointSize = 8.0 + 1.0;
+    gl_PointSize = 2.0 * aDotRadius + 1.0;
     vRadius = gl_PointSize * 0.5;
 }
 `
@@ -121,13 +123,15 @@ const createProgram = (glCtxt: WebGLRenderingContext, vertexShaderSrc: string, f
 const initBuffers = (glCtxt: WebGLRenderingContext): BufferSet => {
     const positionBuffer = glCtxt.createBuffer()
     const colorBuffer = glCtxt.createBuffer()
-    if (positionBuffer === null || colorBuffer === null) {
+    const sizeBuffer = glCtxt.createBuffer()
+    if (positionBuffer === null || colorBuffer === null || sizeBuffer === null) {
         throw Error("Error allocating buffers.")
     }
 
     return {
         position: positionBuffer,
-        color: colorBuffer
+        color: colorBuffer,
+        size: sizeBuffer
     }
 }
 
@@ -137,7 +141,8 @@ const makeProgramInfo = (shaderProgram: WebGLProgram, glCtxt: WebGLRenderingCont
         program: shaderProgram,
         attribLocations: {
             dotPosition: glCtxt.getAttribLocation(shaderProgram, "aDotPosition"),
-            dotColor: glCtxt.getAttribLocation(shaderProgram, "aColor")
+            dotColor: glCtxt.getAttribLocation(shaderProgram, "aColor"),
+            dotSize: glCtxt.getAttribLocation(shaderProgram, "aDotRadius")
         },
         uniformLocations: {
             dataToNormalMatrix: glCtxt.getUniformLocation(shaderProgram, "uProjectionMatrix"),
@@ -152,13 +157,13 @@ const makeProgramInfo = (shaderProgram: WebGLProgram, glCtxt: WebGLRenderingCont
 }
 
 
-const populateData = (glCtxt: WebGLRenderingContext, data: number[][], colorVecs: number[][], buffers: BufferSet) => {
+const populateData = (glCtxt: WebGLRenderingContext, data: number[][], colorVecs: number[][], sizes: number[][], buffers: BufferSet) => {
     const flatData = data.flat()
-    // if (flatData.length < 37) {
-    //     console.log(`FlatData report:\n,${flatData.map((v, i) => `${v}${i % 2 === 1 ? '\n' : ''}`)}`)
-    // }
     glCtxt.bindBuffer(glCtxt.ARRAY_BUFFER, buffers.position)
     glCtxt.bufferData(glCtxt.ARRAY_BUFFER, new Float32Array(flatData), glCtxt.STATIC_DRAW)
+
+    glCtxt.bindBuffer(glCtxt.ARRAY_BUFFER, buffers.size)
+    glCtxt.bufferData(glCtxt.ARRAY_BUFFER, new Float32Array(sizes.flat()), glCtxt.STATIC_DRAW)
 
     // incidentally, the "fill(0)" shouldn't be required: you can iterate over an array of empty elements
     // just as easily as an array of 0s. But some versions of TypeScript linter don't like it & want to
@@ -166,9 +171,6 @@ const populateData = (glCtxt: WebGLRenderingContext, data: number[][], colorVecs
 
     // length/2 because it's a flattened list of both x and y coordinates.
     const flatColors = data.map((series, idx) => new Array((series?.length ?? 0)/2).fill(0).map(() => colorVecs[idx])).flat(2)
-    // if (flatColors.length < 73) {
-    //     console.log(`FlatColors report:\n,${flatColors.map((c, i) => `${c}${i % 4 === 3 ? '\n' : ''}`)}`)
-    // }
     glCtxt.bindBuffer(glCtxt.ARRAY_BUFFER, buffers.color)
     glCtxt.bufferData(glCtxt.ARRAY_BUFFER, new Float32Array(flatColors), glCtxt.STATIC_DRAW)
 }
@@ -177,6 +179,7 @@ const populateData = (glCtxt: WebGLRenderingContext, data: number[][], colorVecs
 const readyData = (glCtxt: WebGLRenderingContext, buffers: BufferSet, programInfo: ProgramInfo) => {
     setPositionAttribute(glCtxt, buffers, programInfo)
     setColorAttribute(glCtxt, buffers, programInfo)
+    setSizeAttribute(glCtxt, buffers, programInfo)
 }
 
 
@@ -207,13 +210,21 @@ const setColorAttribute = (gl: WebGLRenderingContext, buffers: BufferSet, progra
 }
 
 
+const setSizeAttribute = (gl: WebGLRenderingContext, buffers: BufferSet, programInfo: ProgramInfo) => {
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.size)
+    gl.vertexAttribPointer(programInfo.attribLocations.dotSize, 1, gl.FLOAT, false, 0, 0)
+    gl.enableVertexAttribArray(programInfo.attribLocations.dotSize)
+}
+
+
+export type ScatterDataLoaderType = (data: number[][], sizes: number[][]) => void
+
 const initProgram = (glCtxt: WebGLRenderingContext | null) => {
     if (glCtxt === null) return () => () => {}
     const shaderProgram = createProgram(glCtxt, vertexShaderSrc, fragmentShaderSrc)
 
     const programInfo = makeProgramInfo(shaderProgram, glCtxt)
     const buffers = initBuffers(glCtxt)
-    // TODO: NEED TO ADD SIZE ARRAY
 
     glCtxt.useProgram(programInfo.program)
     const configureCanvas = (colorList: number[][], geometry: DataGeometry, width: number, height: number) => {
@@ -243,9 +254,9 @@ const initProgram = (glCtxt: WebGLRenderingContext | null) => {
         glCtxt.uniformMatrix4fv(programInfo.uniformLocations.dataToNormalMatrix, false, projectionMatrix)
         glCtxt.uniform2fv(programInfo.uniformLocations.stdToScreen, [0.5*width + dotMargin, 0.5*height + dotMargin])
 
-        const loadData = (data: number[][]) => {
+        const loadData: ScatterDataLoaderType = (data, sizes) => {
             if (data === undefined || data.length === 0) return
-            populateData(glCtxt, data, colorVecs, buffers)
+            populateData(glCtxt, data, colorVecs, sizes, buffers)
             readyData(glCtxt, buffers, programInfo)
         }
 

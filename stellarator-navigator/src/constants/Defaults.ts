@@ -1,6 +1,5 @@
 import { FilterSettings, NavigatorDatabase, StellaratorRecord } from "@snTypes/Types";
-import { CategoricalIndexedFields, DependentVariables, Fields, IndependentVariables } from "./DataDictionary";
-import { coilLengthPerHpValidValues, meanIotaValidValues, ncPerHpValidValues, nfpValidValues, totalCoilLengthValidValues } from "./ValidValues";
+import { CategoricalIndexedFields, DependentVariables, Fields, IndependentVariables, coilLengthPerHpValidValues, meanIotaValidValues, ncPerHpValidValues, nfpValidValues, totalCoilLengthValidValues } from "./DataDictionary";
 
 export const initialNavigatorState: FilterSettings = {
     coilLengthPerHp: [Math.min(...coilLengthPerHpValidValues), Math.max(...coilLengthPerHpValidValues)],
