@@ -1,5 +1,6 @@
 import { BoundedPlotDimensions } from "@snTypes/Types"
 import { FunctionComponent, useEffect, useRef, } from "react"
+import { CanvasPlotLabelCallbackType } from "./CanvasPlotLabel"
 import { plotGutterHorizontal, plotGutterVertical } from "./PlotScaling"
 import drawScatter, { dotMargin } from "./webgl/drawScatter"
 
@@ -10,7 +11,7 @@ type Props = {
     colorMap?: string[]
     canvasXAxis: (ctxt: CanvasRenderingContext2D) => void
     canvasYAxis: (ctxt: CanvasRenderingContext2D) => void
-    canvasPlotLabel: (ctxt: CanvasRenderingContext2D) => void
+    canvasPlotLabel: CanvasPlotLabelCallbackType
     markedIds?: Set<number>
     nfpValue: number
     ncPerHpValue?: number
@@ -21,7 +22,7 @@ type Props = {
 
 
 const CanvasPlotWrapper: FunctionComponent<Props> = (props: Props) => {
-    const { dims, data, canvasYAxis, canvasXAxis, canvasPlotLabel, scatterCtxt, loadData } = props
+    const { dims, data, canvasYAxis, canvasXAxis, canvasPlotLabel, scatterCtxt, loadData, nfpValue, ncPerHpValue } = props
     
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
@@ -32,19 +33,21 @@ const CanvasPlotWrapper: FunctionComponent<Props> = (props: Props) => {
         if (!canvasRef.current || !ctxt) return
         ctxt.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
 
-        canvasPlotLabel(ctxt)
+        canvasPlotLabel(ctxt, {coarseVal: ncPerHpValue, medVal: nfpValue})
         ctxt.save()
         ctxt.translate(dims.marginLeft, dims.marginRight)
         canvasXAxis(ctxt)
         canvasYAxis(ctxt)
         if (scatterCtxt !== null) {
+            if (data === undefined) throw Error("Data undefined")
+            if (data.some(d => d === undefined)) throw Error("Data contains undefined elements")
             loadData(data)
             const vertexCount = data.reduce((t: number, c) => t + c.length, 0)
             drawScatter({glCtxt: scatterCtxt, vertexCount })
             ctxt.drawImage(scatterCtxt.canvas, -dotMargin, -dotMargin)
         }
         ctxt.restore()
-    }, [canvasPlotLabel, canvasXAxis, canvasYAxis, data, dims.marginLeft, dims.marginRight, loadData, scatterCtxt])
+    }, [canvasPlotLabel, canvasXAxis, canvasYAxis, data, dims.marginLeft, dims.marginRight, loadData, ncPerHpValue, nfpValue, scatterCtxt])
 
     return (
         <div

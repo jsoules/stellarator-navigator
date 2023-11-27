@@ -191,24 +191,24 @@
         - one-liner FOR TEST DEV:
         - `yarn build && chmod 755 dist/* && rsync -vahP --delete dist/assets/ workstation:/mnt/home/jsoules/public_www/test/assets/ && rsync -vahP dist/index.html workstation:/mnt/home/jsoules/public_www/test/`
 
-[ ] Filter dots by radius
-    [ ] Probably happens *above* the plotting component level?
-    [ ] (Since we've already got the scales and everything)
-    [ ] ALTERNATIVELY --  figure out how to use Canvas instead of SVG to get around the size limits
-    [ ] --> I think we can draw the axes in a context2d, draw the dots in webgl, and copy from
+[ ] Improve scatterplot performance
+    [x] Figure out how to use Canvas instead of SVG to get around the size limits
+    [x] --> I think we can draw the axes in a context2d, draw the dots in webgl, and copy from
         the webgl canvas into the context2d canvas. It'll be tough but worth it.
     [ ] --> context2d canvas gets the drawing for any overlay select.
     [ ] --> Need a mapping and inverse-mapping matrix, sigh.
-    [ ] --> webgl will need a couple passes, small dots and bigger dots, as well as
+    [x] --> webgl will need a couple passes, small dots and bigger dots, as well as
         per-point color scheme, but that is all in the tutorials
 
-[ ] Give user ability to choose criteria for plot-splitting
+[-] Give user ability to choose criteria for plot-splitting
 
-[ ] Expose ability for user to choose the field to base dot coloration on
+[ ] Fix echo dots (when decreasing NC/HP count, get echo of exiting plots before it's filtered out again)
 
-[ ] AVOID REFILTERING for different plots/table selections
-    [ ] Don't hard-code the variable listed in the individual plots
-    [ ] Memoize the hierarchically divided groups at a higher level
+[-] Expose ability for user to choose the field to base dot coloration on
+
+[X] AVOID REFILTERING for different plots/table selections
+    [x] Don't hard-code the variable listed in the individual plots
+    [x] Memoize the hierarchically divided groups at a higher level
 
 [ ] Show/hide filters controls (i.e. tab in the control area)
 
@@ -240,6 +240,8 @@
 [ ] Replace favicon in index.html
 
 [ ] Trim font references/try to reduce code size
+
+[ ] Allow coloration based on continuous as well as discrete variables --> THIS WILL BE TOUGHER!
 
 
 QUERY OR DISTANT:
