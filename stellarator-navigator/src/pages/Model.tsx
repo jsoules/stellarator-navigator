@@ -26,9 +26,8 @@ const Model: FunctionComponent = () => {
     const [surfaceChecks, setSurfaceChecks] = useState<boolean[]>(Array(rec?.nSurfaces || 1).fill(true))
     useEffect(() => setSurfaceChecks(Array(rec.nSurfaces || 1).fill(true)), [rec?.nSurfaces])
 
-    // TODO: Consider de-memoizing this, it surely doesn't need it
-    const downloadLinks = useMemo(() => <DownloadLinks id={stringId} />, [stringId])
-    const poincarePlot = useMemo(() => <PoincarePlot id={stringId}/>, [stringId])
+    const downloadLinks = <DownloadLinks id={stringId} />
+    const poincarePlot = <PoincarePlot id={stringId}/>
 
     const { width } = useWindowDimensions()
     const lw = useMemo(() => Math.max(0, (2 * width / 3) - 80), [width])
@@ -65,10 +64,6 @@ const Model: FunctionComponent = () => {
         : (<div className="simulationViewParent ForceLightMode">
             <div className="flexWrapper simulationViewParent">
                 <div style={{width: Math.floor(lw + 40)}} className="simulationViewWrapper">
-                    <canvas ref={canvasRef}
-                        title="Click and drag to rotate the camera; right-click, shift-click, or ctrl-click and drag to pan."
-                    />
-                    {viewer}
                     <SurfaceControls
                         checksNeeded={surfaceCount > 0}
                         surfaceChecks={surfaceChecks}
@@ -80,6 +75,10 @@ const Model: FunctionComponent = () => {
                         showFullRing={showFullRing}
                         setShowFullRing={setShowFullRing}
                     />
+                    <canvas ref={canvasRef}
+                        title="Click and drag to rotate the camera; right-click, shift-click, or ctrl-click and drag to pan."
+                    />
+                    {viewer}
                 </div>
                 <div style={{width: Math.floor(rw)}}>
                     <RecordManifest rec={rec} />

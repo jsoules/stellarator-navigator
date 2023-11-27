@@ -5,7 +5,6 @@ type plotLabelProps = {
     dims: BoundedPlotDimensions
     coarseField?: ToggleableVariables
     medField?: ToggleableVariables
-    // TODO: Pass in and print out the filtering values
 }
 
 type fieldVals = {
@@ -29,7 +28,6 @@ const CanvasPlotLabel = (props: plotLabelProps, ctxt: CanvasRenderingContext2D, 
     ctxt.textAlign = "center"
     const mid = dims.marginLeft + dims.boundedWidth / 2
     const y = 1.4*dims.fontPx
-    // TODO: THIS SHOULD BE GENERALIZED FOR THE SELECTED ROW/COLUMN VARS
     ctxt.fillText(text, mid, y)
     ctxt.restore()
 }
