@@ -1,12 +1,12 @@
 import { FilterSettings, NavigatorDatabase, StellaratorRecord } from "@snTypes/Types";
-import { CategoricalIndexedFields, DependentVariables, Fields, IndependentVariables, coilLengthPerHpValidValues, meanIotaValidValues, ncPerHpValidValues, nfpValidValues, totalCoilLengthValidValues } from "./DataDictionary";
+import { CategoricalIndexedFields, DependentVariables, Fields, IndependentVariables, ToggleableVariables, coilLengthPerHpValidValues, meanIotaValidValues, ncPerHpValidValues, nfpValidValues, totalCoilLengthValidValues } from "./DataDictionary";
 
 export const initialNavigatorState: FilterSettings = {
     coilLengthPerHp: [Math.min(...coilLengthPerHpValidValues), Math.max(...coilLengthPerHpValidValues)],
     totalCoilLength: [Math.min(...totalCoilLengthValidValues), Math.max(...totalCoilLengthValidValues)],
     meanIota: [ true, ...(new Array(meanIotaValidValues.length - 1).fill(false)) ],
     ncPerHp: new Array(ncPerHpValidValues.length).fill(false),
-    nfp: new Array(nfpValidValues.length).fill(false),
+    nfp: new Array(nfpValidValues.length).fill(true),
     nSurfaces: new Array((Fields.nSurfaces.values ?? []).length).fill(false),
     maxKappa: (Fields.maxKappa.range),
     maxMeanSquaredCurve: (Fields.maxMeanSquaredCurve.range),
@@ -22,6 +22,9 @@ export const initialNavigatorState: FilterSettings = {
     //
     dependentVariable: DependentVariables.QA_ERROR,
     independentVariable: IndependentVariables.TOTAL_COIL_LENGTH,
+    coarsePlotSplit: ToggleableVariables.NC_PER_HP,
+    finePlotSplit: ToggleableVariables.NFP,
+    finePlotSelectedValue: 1,
     markedRecords: new Set<number>(),
 }
 

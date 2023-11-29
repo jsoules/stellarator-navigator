@@ -1,5 +1,5 @@
 import { NavigatorStateAction } from "@snState/NavigatorReducer"
-import { CategoricalIndexedFields, DependentVariables, IndependentVariables } from "@snTypes/DataDictionary"
+import { CategoricalIndexedFields, DependentVariables, IndependentVariables, ToggleableVariables } from "@snTypes/DataDictionary"
 import { Dispatch } from "react"
 
 export type FilterSettings = {
@@ -22,6 +22,10 @@ export type FilterSettings = {
     nFourierCoil?: number,
     dependentVariable: DependentVariables,
     independentVariable: IndependentVariables,
+    coarsePlotSplit?: ToggleableVariables,
+    finePlotSplit?: ToggleableVariables,
+    coarsePlotSelectedValue?: number,
+    finePlotSelectedValue?: number,
     markedRecords: Set<number>
 }
 

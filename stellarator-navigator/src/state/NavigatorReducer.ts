@@ -23,6 +23,12 @@ export type NavigatorStateAction = {
 } | {
     type: 'updateMarkedRecords',
     newSelections: Set<number>
+} | {
+    type: 'updatePlotSplits',
+    newSplits: (ToggleableVariables | undefined)[]
+} | {
+    type: 'updatePlotSplitValues',
+    newValues: (number | undefined)[]
 }
 
 // TODO: updating the filter should automatically trigger a narrowing or widening of the
@@ -49,6 +55,12 @@ const NavigatorReducer = (s: FilterSettings, a: NavigatorStateAction): FilterSet
         }
         case "updateMarkedRecords": {
             return { ...s, markedRecords: a.newSelections }
+        }
+        case "updatePlotSplits": {
+            return updatePlotSplits(s, a.newSplits)
+        }
+        case "updatePlotSplitValues": {
+            return { ...s, coarsePlotSelectedValue: a.newValues[0], finePlotSelectedValue: a.newValues[1] }
         }
         default: {
             throw Error(`Unknown reducer action ${JSON.stringify(a)}`)
@@ -99,5 +111,15 @@ const updateTripart = (key: TripartiteVariables, settings: FilterSettings, newVa
     newSettings[key] = newValue
     return newSettings
 }
+
+
+const updatePlotSplits = (settings: FilterSettings, newSplits: (ToggleableVariables | undefined)[]): FilterSettings => {
+    const coarseField = newSplits[0]
+    const fineField = newSplits[1]
+    const coarseVal = coarseField === undefined ? undefined : (Fields[coarseField].values ?? [])[settings[coarseField].findIndex(x => x)]
+    const fineVal = fineField === undefined ? undefined : (Fields[fineField].values ?? [])[settings[fineField].findIndex(x => x)]
+    return { ...settings, coarsePlotSplit: coarseField, finePlotSplit: fineField, coarsePlotSelectedValue: coarseVal, finePlotSelectedValue: fineVal }
+}
+
 
 export default NavigatorReducer

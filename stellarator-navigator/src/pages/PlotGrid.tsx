@@ -1,177 +1,80 @@
 import { Grid } from "@mui/material"
-import { GridRowSelectionModel } from "@mui/x-data-grid"
 import { Tol, convertHexToRgb3Vec } from "@snComponents/display/Colormaps"
-import OpenSelectedButton from "@snComponents/display/OpenSelected"
 import CanvasPlotLabel, { CanvasPlotLabelCallbackType } from "@snComponents/display/plots/CanvasPlotLabel"
 import CanvasPlotWrapper from "@snComponents/display/plots/CanvasPlotWrapper"
 import { dotMargin, resizeCanvas } from "@snComponents/display/plots/webgl/drawScatter"
-import initProgram, { ScatterDataLoaderType } from "@snComponents/display/plots/webgl/drawingProgram"
-import HrBar from "@snComponents/general/HrBar"
-import SnTable from "@snDisplayComponents/SnTable"
-import { computePerPlotDimensions, useCanvasAxes, useDataGeometry, useScales } from "@snPlots/PlotScaling"
-import { useOnClickPlot } from "@snPlots/interactions"
-import projectData from "@snState/projection"
-import { ToggleableVariables, nfpValidValues } from "@snTypes/DataDictionary"
-import { BoundedPlotDimensions, FilterSettings, StellaratorRecord } from "@snTypes/Types"
-import { FunctionComponent, useCallback, useEffect, useMemo, useState } from "react"
+import initProgram from "@snComponents/display/plots/webgl/drawingProgram"
+import { computePerPlotDimensions, useCanvasAxes } from "@snPlots/PlotScaling"
+import { DependentVariables, IndependentVariables, ToggleableVariables } from "@snTypes/DataDictionary"
+import { DataGeometry, StellaratorRecord } from "@snTypes/Types"
+import { FunctionComponent, useCallback, useMemo } from "react"
+import { PlotDataSummary } from "./Overview"
 
 const internalMargin = 20
 
 
 type Props = {
-    filters: FilterSettings
-    selectionHandler: (model: GridRowSelectionModel) => void
-    selectedRecords: StellaratorRecord[]
     width: number
     height: number
+    selectedRecords: StellaratorRecord[]
+    plotDataSummary: PlotDataSummary
+    dataGeometry: DataGeometry
+    dependentVariable: DependentVariables
+    independentVariable: IndependentVariables
+    plotClickHandler: (coarseValue: number | undefined, fineValue: number | undefined) => void
 }
 
-
-const getSelectedNfps = (filters: FilterSettings): number[] => {
-    const _nfps = (filters.nfp.map((v, i) => (v ? i + 1 : void {}))).filter(x => x !== undefined) as unknown as number[]
-    if (_nfps === undefined) throw Error("UNDEFINED NFPS IN getSelectedNfps")
-    const nfps = _nfps.length === 0 ? nfpValidValues : _nfps
-    return nfps
-}
-
-
-const rectifySelectedTable = (activeNc: number | undefined, activeNfp: number, ncChecks: boolean[], nfps: number[]) => {
-    const firstNc = ncChecks.findIndex(x => x) + 1
-    const activeNcGood = (activeNc !== undefined) && ncChecks[activeNc - 1]
-
-    const targetNc = firstNc === 0
-        ? undefined
-        : activeNcGood ? activeNc : firstNc
-
-    const targetNfp = nfps.includes(activeNfp) ? activeNfp : nfps[0]
-
-    return { targetNc, targetNfp }
-}
-
-
-type CanvasRowProps = {
-    colSpan: number
-    nfps: number[]  // FIXME
-    nc?: number     // FIXME
-    dims: BoundedPlotDimensions
-    data: number[][][]
-    sizes: number[][][]
-    clickHandler: (nfp: number, nc?: number) => void
-    canvasXAxis: (ctxt: CanvasRenderingContext2D) => void
-    canvasYAxis: (ctxt: CanvasRenderingContext2D) => void
-    canvasPlotLabel: CanvasPlotLabelCallbackType
-    loadData: ScatterDataLoaderType
-    scatterCtxt: WebGLRenderingContext | null
-}
-
-const CanvasRow: FunctionComponent<CanvasRowProps> = (props: CanvasRowProps) => {
-    const { data, sizes, colSpan, nfps, nc, canvasXAxis, canvasYAxis, canvasPlotLabel, dims, clickHandler, scatterCtxt, loadData } = props
-
-    return <Grid container item>
-        {nfps.map((nfp, idx) => {
-            return (
-                <Grid item xs={colSpan} key={`${nfp}`}>
-                    <CanvasPlotWrapper
-                        key={`${nfp}-${nc}`}
-                        data={data[idx]}
-                        sizes={sizes[idx]}
-                        dims={dims}
-                        canvasXAxis={canvasXAxis}
-                        canvasYAxis={canvasYAxis}
-                        canvasPlotLabel={canvasPlotLabel}
-                        nfpValue={nfp}
-                        ncPerHpValue={nc}
-                        clickHandler={clickHandler}
-                        scatterCtxt={scatterCtxt}
-                        loadData={loadData}
-                    />
-                </Grid>
-            )
-        })}
-    </Grid>
-}
 
 const PlotGrid: FunctionComponent<Props> = (props: Props) => {
-    const { filters, selectionHandler, selectedRecords, width, height } = props
-    const [activeNfp, setActiveNfp] = useState(1)
-    const [activeNc, setActiveNc] = useState<number | undefined>(undefined)
-    const plotClickHandler = useOnClickPlot(setActiveNfp, setActiveNc)
+    const { dataGeometry, selectedRecords, width, height, plotDataSummary, plotClickHandler, dependentVariable, independentVariable } = props
+    const { data, selected, fineSplitVals, coarseSplitVals } = plotDataSummary
 
-    // Compute dimensions
-    const nfps = getSelectedNfps(filters)
-    const [dims] = useMemo(() => computePerPlotDimensions(nfps.length, width - 2*internalMargin, height), [height, nfps.length, width])
-
-    useEffect(() => {
-        const { targetNc, targetNfp } = rectifySelectedTable(activeNc, activeNfp, filters.ncPerHp, nfps)
-        if (activeNc !== targetNc) {
-            setActiveNc(targetNc)
-        }
-        if (activeNfp !== targetNfp) {
-            setActiveNfp(targetNfp)
-        }
-    }, [activeNc, activeNfp, filters.ncPerHp, nfps])
-
-    // Scales & Axes
-    const [xScale, yScale] = useScales({filters, dimsIn: dims})
-    const marks = useMemo(() => filters.markedRecords, [filters])
-
-    const dataGeometry = useDataGeometry(filters)
-    const ncs = filters.ncPerHp.map((v, i) => (v ? i + 1 : void {})).filter(x => x !== undefined) as unknown as number[]
-
-    // TODO: CLEAN THIS UP
+    const [dims] = useMemo(() => computePerPlotDimensions(fineSplitVals.length, width - 2*internalMargin, height), [height, fineSplitVals.length, width])
     const [canvasXAxis, canvasYAxis] = useCanvasAxes({
-        xScale, yScale,
-        dependentVar: filters.dependentVariable, independentVar: filters.independentVariable,
-        dims
+        dataGeometry,
+        dependentVar: dependentVariable, independentVar: independentVariable,
+        dimsIn: dims
     })
-    // TODO: Label probably also needs to depend on the criteria and current value of same
     const canvasPlotLabel: CanvasPlotLabelCallbackType = useCallback((ctxt, vals) => {
-        CanvasPlotLabel({dims, coarseField: ToggleableVariables.NC_PER_HP, medField: ToggleableVariables.NFP}, ctxt, vals)
+        CanvasPlotLabel({dims, coarseField: ToggleableVariables.NC_PER_HP, fineField: ToggleableVariables.NFP}, ctxt, vals)
     }, [dims])
-
-    const projectionCriteria = {
-        data: selectedRecords,
-        yVar: filters.dependentVariable,
-        xVar: filters.independentVariable,
-        markedIds: marks,
-        fineSplit: ToggleableVariables.NC_PER_HP, // field to use to color data series
-        medSplit: ToggleableVariables.NFP,        // field to use to separate plots within a row
-        coarseSplit: ToggleableVariables.NC_PER_HP, // field to use to separate plots into different rows
-        fineSplitVals: ncs,
-        medSplitVals: nfps,
-        coarseSplitVals: ncs
-    }
-    const { data: canvasData, selected } = projectData(projectionCriteria)
     const sizes = selected.map(i => i.map(j => j.map(k => k.map(l => l ? dotMargin : dotMargin / 2))))
 
     // TODO: Do refactor this all out somewhere else
-    // TODO: Do something about cutting off at the right margin--give it a little bit more space without messing up the scale
-    const offscreenCanvas = useMemo(() => new OffscreenCanvas(10, 10), [])
-    const webglCtxt = useMemo(() => offscreenCanvas.getContext("webgl"), [offscreenCanvas])
-    resizeCanvas({ctxt: webglCtxt, width: dims.boundedWidth, height: dims.boundedHeight})
     // TODO: Allow changing color palette
     const colorList = useMemo(() => (Tol).map(c => convertHexToRgb3Vec(c)), [])
+    const offscreenCanvas = useMemo(() => new OffscreenCanvas(10, 10), [])
+    const webglCtxt = useMemo(() => offscreenCanvas.getContext("webgl"), [offscreenCanvas])
     const configureCanvas = useMemo(() => initProgram(webglCtxt), [webglCtxt])
     const loadData = useMemo(() => configureCanvas(colorList, dataGeometry, dims.boundedWidth, dims.boundedHeight),
         [configureCanvas, colorList, dataGeometry, dims.boundedWidth, dims.boundedHeight])
+    resizeCanvas({ctxt: webglCtxt, width: dims.boundedWidth, height: dims.boundedHeight})
 
-
-    const canvasRows = ((ncs?.length ?? 0) === 0 ? [undefined] : ncs).map(
-        (nc, idx) => <CanvasRow
-            key={`row-${nc}`}
-            nfps={nfps}
-            colSpan={0}
-            nc={nc}
-            clickHandler={plotClickHandler}
-            canvasXAxis={canvasXAxis}
-            canvasYAxis={canvasYAxis}
-            canvasPlotLabel={canvasPlotLabel}
-            data={canvasData[idx]} // TODO: FIX THIS, don't hard-code NC as coarse split
-            sizes={sizes[idx]}
-            dims={dims}
-            scatterCtxt={webglCtxt}
-            loadData={loadData}
-        />
+    const resolvedCoarseVals = (coarseSplitVals?.length ?? 0) === 0 ? [undefined] : coarseSplitVals
+    const resolvedFineVals = (fineSplitVals?.length ?? 0) === 0 ? [undefined] : fineSplitVals
+    const canvasRows = resolvedCoarseVals.map((coarseValue, coarseIdx) => (
+            <Grid container item key={`${coarseValue}`}>
+                { resolvedFineVals.map((fineValue, fineIdx) => (
+                        <Grid item xs={0} key={`${fineValue}`}>
+                            <CanvasPlotWrapper
+                                key={`${coarseValue}-${fineValue}`}
+                                data={data[coarseIdx][fineIdx]}
+                                sizes={sizes[coarseIdx][fineIdx]}
+                                dims={dims}
+                                canvasXAxis={canvasXAxis}
+                                canvasYAxis={canvasYAxis}
+                                canvasPlotLabel={canvasPlotLabel}
+                                fineValue={fineValue}
+                                coarseValue={coarseValue}
+                                clickHandler={() => plotClickHandler(coarseValue, fineValue)}
+                                scatterCtxt={webglCtxt}
+                                loadData={loadData}
+                            />
+                        </Grid>
+                    ))
+                }
+            </Grid>
+        )
     )
 
     return (
@@ -180,11 +83,6 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
             <Grid container>
                 {canvasRows}
             </Grid>
-            <HrBar />
-            <SnTable records={selectedRecords} selectionHandler={selectionHandler} activeNfp={activeNfp} activeNc={activeNc} />
-            <div className="padded">
-                <OpenSelectedButton markedIds={marks} />
-            </div>
         </div>
     )
 }

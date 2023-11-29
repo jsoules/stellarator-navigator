@@ -1,18 +1,16 @@
 import { DependentVariables, Fields, IndependentVariables, KnownFields, ToggleableVariables } from "@snTypes/DataDictionary"
-import { StellaratorRecord } from "@snTypes/Types"
+import { FilterSettings, StellaratorRecord } from "@snTypes/Types"
 
 
-// The intent is that the finest split should apply to data points within individual plots; the middle split separates different
-// plots in the same row; and the coarsest split separates different rows from each other.
+// We'd like to chop the plots into a grid based on selected discrete-valued data fields.
 // Unfortunately, it's confusing to talk about "rowSplits" and "columnSplits" because the name can be read as either
 // "field used to split the row apart" or "field used to split one row from another".
-// So we're just referring to three levels of coarseness.
+// So we define "fine-split" as making separations *within* rows and "coarse-split" as making separations *between* rows.
 // Higher-order groupings might be possible, but we won't implement that until it's requested.
 type categorizationCriteria = {
+    colorSplit?: ToggleableVariables
     fineSplit?: ToggleableVariables
     fineSplitVals?: number[]
-    medSplit?: ToggleableVariables
-    medSplitVals?: number[]
     coarseSplit?: ToggleableVariables
     coarseSplitVals?: number[]
 }
@@ -32,6 +30,15 @@ type ProjectedData = {
 }
 
 
+export const makeValsFromFieldname = (field: ToggleableVariables, filters: FilterSettings, useAllIfNone?: boolean) => {
+    const allValidVals = Fields[field]?.values ?? []
+    const splitVals = filters[field].map((v, i) => (v ? allValidVals[i] : undefined)).filter(x => x !== undefined) as unknown as number[]
+    return (splitVals.length !== 0 || !useAllIfNone)
+        ? splitVals
+        : allValidVals
+}
+
+
 export const defaultFieldKey = 'Any'
 const makeDefaultedList = (p: {baseList: number[] | undefined, defaultToAll?: boolean, fieldName?: ToggleableVariables | undefined}) => {
     if (p.baseList === undefined || p.baseList.length === 0) {
@@ -43,46 +50,34 @@ const makeDefaultedList = (p: {baseList: number[] | undefined, defaultToAll?: bo
 }
 
 const makeLookups = (c: categorizationCriteria) => {
-    // const { fineSplit, medSplit, coarseSplit } = c
-    const { fineSplit, } = c
+    const { colorSplit, fineSplit, coarseSplit } = c
 
     // TODO: Make fine-split/coloration a separate data series, to support picking continuous-valued variables here
     // (since there's no reason after all this has to be discrete)
 
+    const colorKeys:  {[key: string]: number} = {}
     const fineKeys:   {[key: string]: number} = {}
-    const medKeys:    {[key: string]: number} = {}
     const coarseKeys: {[key: string]: number} = {}
 
-    // TODO: Do we actually want to enforce this?
-    // if (fineSplit !== undefined && (fineSplit === medSplit || fineSplit === coarseSplit)) {
-    //     throw Error(`Data partition criteria must be distinct, but finest criterion ${fineSplit} matches one of middle ${medSplit} or coarse ${coarseSplit}`)
-    // }
-    // if (medSplit !== undefined && medSplit === coarseSplit) {
-    //     throw Error(`Data partition criteria must be distinct, but mid-level criterion ${medSplit} matches coarsest criterion ${coarseSplit}`)
-    // }
+    if (fineSplit !== undefined && (fineSplit === coarseSplit)) {
+        throw Error(`Data partition criteria must be distinct, but fine-split and coarse-split criterion match (${fineSplit}, ${coarseSplit})`)
+    }
 
-    // Coloration is determined by fine-split. So we have to keep all possible values to get the right number of lists
-    // so that the colors don't change when the selections do.
-    const fineVals   = Fields[fineSplit as unknown as KnownFields]?.values ?? [defaultFieldKey]
-    const medVals    = makeDefaultedList({ baseList: c.medSplitVals })  // TODO: REMOVE THE UNUSED PARAMETERS FROM MAKEDEFAULTEDLIST
+    // TODO: Make colors an entirely separate data series and not an index
+    const colorVals  = Fields[colorSplit as unknown as KnownFields]?.values ?? [defaultFieldKey]
+    const fineVals   = makeDefaultedList({ baseList: c.fineSplitVals })
     const coarseVals = makeDefaultedList({ baseList: c.coarseSplitVals })
 
-    // const fineVals   = Fields[fineSplit   as unknown as KnownFields]?.values ?? [defaultFieldKey]
-    // const medVals    = Fields[medSplit    as unknown as KnownFields]?.values ?? [defaultFieldKey]
-    // const coarseVals = Fields[coarseSplit as unknown as KnownFields]?.values ?? [defaultFieldKey]
-
+    colorVals.forEach((v, i) => colorKeys[`${v}`] = i)
     fineVals.forEach((v, i) => fineKeys[`${v}`] = i)
-    medVals.forEach((v, i) => medKeys[`${v}`] = i)
     coarseVals.forEach((v, i) => coarseKeys[`${v}`] = i)
 
-    // console.log(`generated fine keys ${JSON.stringify(fineKeys)}, med keys ${JSON.stringify(medKeys)}, coarse keys ${JSON.stringify(coarseKeys)}`)
-
-    return {fineKeys, medKeys, coarseKeys}
+    return {colorKeys, fineKeys, coarseKeys}
 }
 
 
 const projectData = (props: ProjectionCriteria): ProjectedData => {
-    const { data, yVar, xVar, markedIds, fineSplit, medSplit, coarseSplit } = props
+    const { data, yVar, xVar, markedIds, colorSplit, fineSplit, coarseSplit } = props
     // We're going to be boorish and iterative here, because filtering properly would potentially involve
     // iterating over the entire database ~1000 times.
     // Instead, create a data structure with S x R x C buckets, where S = cardinality of field for colorCriteria,
@@ -91,26 +86,26 @@ const projectData = (props: ProjectionCriteria): ProjectedData => {
     // populating the resulting list as a flat list of x, y values based on the chosen fields.
 
     
-    const { fineKeys, medKeys, coarseKeys } = makeLookups(props)
+    const { colorKeys, fineKeys,coarseKeys } = makeLookups(props)
     
     const buckets: number[][][][] = new Array(Object.keys(coarseKeys).length).fill(0)
-        .map(() => new Array(Object.keys(medKeys).length).fill(0)
-            .map(() => new Array(Object.keys(fineKeys).length).fill(0)
+        .map(() => new Array(Object.keys(fineKeys).length).fill(0)
+            .map(() => new Array(Object.keys(colorKeys).length).fill(0)
                 .map(() => [] as number[])))
     const selected: boolean[][][][] = new Array(Object.keys(coarseKeys).length).fill(0)
-    .map(() => new Array(Object.keys(medKeys).length).fill(0)
-        .map(() => new Array(Object.keys(fineKeys).length).fill(0)
+    .map(() => new Array(Object.keys(fineKeys).length).fill(0)
+        .map(() => new Array(Object.keys(colorKeys).length).fill(0)
             .map(() => [] as boolean[])))
 
-    // Precondition: We assume that every row is actually supposed to be there, and we just need to slot
+    // Precondition: Assume that every row of the data is actually supposed to be there, and we just need to slot
     // them into the right place. Filtering of out-of-scope values should have already taken place.
     data.forEach((record) => {
+        const colorIdx  = (colorSplit  ?  colorKeys[record[colorSplit]]  : 0) ?? 0
         const fineIdx   = (fineSplit   ?   fineKeys[record[fineSplit]]   : 0) ?? 0
-        const medIdx    = (medSplit    ?    medKeys[record[medSplit]]    : 0) ?? 0
         const coarseIdx = (coarseSplit ? coarseKeys[record[coarseSplit]] : 0) ?? 0
-        buckets[coarseIdx][medIdx][fineIdx].push((record[xVar]))
-        buckets[coarseIdx][medIdx][fineIdx].push((record[yVar]))
-        selected[coarseIdx][medIdx][fineIdx].push(markedIds?.has(record.id) || false)
+        buckets[coarseIdx][fineIdx][colorIdx].push((record[xVar]))
+        buckets[coarseIdx][fineIdx][colorIdx].push((record[yVar]))
+        selected[coarseIdx][fineIdx][colorIdx].push(markedIds?.has(record.id) || false)
     })
     return { data: buckets, selected }
 }
