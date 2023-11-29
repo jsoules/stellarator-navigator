@@ -1,7 +1,7 @@
-import useFiltering from "@snState/filter"
-import { initialDatabase } from "@snTypes/Defaults"
+import NavigatorReducer from "@snState/NavigatorReducer"
+import { initialDatabase, initialNavigatorState } from "@snTypes/Defaults"
 import useDatabase from 'querying/useDatabase'
-import { FunctionComponent, useState } from "react"
+import { FunctionComponent, useEffect, useReducer, useState } from "react"
 import About from './About'
 import Overview from './Overview'
 
@@ -9,14 +9,15 @@ import Overview from './Overview'
 const Home: FunctionComponent = () => {
     // TODO: Margin, more styling, etc.
     const database = useDatabase()
-    const { records, filterSettings, filterSettingDispatch } = useFiltering(database)
-    // TODO: Memoize records?
+    const [filterSettings, filterSettingDispatch] = useReducer(NavigatorReducer, initialNavigatorState)
+    useEffect(() => filterSettingDispatch({type: 'initialize', database: database}), [database])
+
     const [showOverview, setShowOverview] = useState<boolean>(false)
     const ready = database && database !== initialDatabase
-    
+
     return (
         showOverview 
-            ? <Overview records={records} dispatch={filterSettingDispatch} filterSettings={filterSettings} />
+            ? <Overview records={filterSettings.records} dispatch={filterSettingDispatch} filterSettings={filterSettings} />
             : <About ready={ready} setShowOverview={setShowOverview} />
     )
 }

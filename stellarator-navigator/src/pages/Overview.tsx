@@ -4,7 +4,7 @@ import { HrBar } from "@snComponents/general"
 import useFilterCallbacks from "@snControlComponents/SelectionControlCallbacks"
 import SelectionControlPanel from "@snControlComponents/SelectionControlPanel"
 import { NavigatorStateAction } from "@snState/NavigatorReducer"
-import projectData, { makeValsFromFieldname } from "@snState/projection"
+import projectToPlottableData, { makeValsFromFieldname } from "@snState/projection"
 import { ToggleableVariables } from "@snTypes/DataDictionary"
 import { FilterSettings, StellaratorRecord } from "@snTypes/Types"
 import useWindowDimensions from "@snUtil/useWindowDimensions"
@@ -21,7 +21,8 @@ export type PlotDataSummary = {
     selected: boolean[][][][]
     fineSplitVals: number[]
     coarseSplitVals: number[]
-    // coarseSplitField: 
+    coarseSplitField?: ToggleableVariables
+    fineSplitField?: ToggleableVariables
 }
 type plotHookType = (records: StellaratorRecord[],
                     filters: FilterSettings,
@@ -44,8 +45,8 @@ const usePlotData: plotHookType = (records, filters, colorSplit, fineSplit, coar
             fineSplitVals,
             coarseSplitVals
         }
-        const { data, selected } = projectData(projectionCriteria)
-        return { data, selected, fineSplitVals, coarseSplitVals }
+        const { data, selected } = projectToPlottableData(projectionCriteria)
+        return { data, selected, fineSplitVals, coarseSplitVals, coarseSplitField: coarseSplit, fineSplitField: fineSplit }
     }, [coarseSplit, colorSplit, filters, fineSplit, records])
 
     return res

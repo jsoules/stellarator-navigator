@@ -1,8 +1,5 @@
-import NavigatorReducer from "@snState/NavigatorReducer"
 import { Fields, RangeVariables, ToggleableVariables, TripartiteVariables, getValuesFromBoolArray } from "@snTypes/DataDictionary"
-import { initialNavigatorState } from "@snTypes/Defaults"
 import { CategoricalIndexSet, FilterSettings, NavigatorDatabase, StellaratorRecord } from "@snTypes/Types"
-import { useEffect, useMemo, useReducer, useState } from "react"
 
 
 export const projectRecords = (selection: Set<number>, database: NavigatorDatabase | undefined) => {
@@ -29,14 +26,8 @@ const intersect = (...sets: Set<number>[]): Set<number> => {
 }
 
 
-const applyFilterToState = (filters: FilterSettings, database: NavigatorDatabase, updateSelection: React.Dispatch<React.SetStateAction<Set<number>>>) => {
-    const set = applyFiltersToSet(filters, database, database.allIdSet)
-    updateSelection(set)
-}
-
-
 // TODO: DEBOUNCE?
-const applyFiltersToSet = (filters: FilterSettings, database: NavigatorDatabase, set?: Set<number>): Set<number> => {
+export const applyFiltersToSet = (filters: FilterSettings, database: NavigatorDatabase, set?: Set<number>): Set<number> => {
     const boolSets = makeBooleanFilters(database).map(b => {
         const { key, callback } = b
         const choices = filters[key]
@@ -120,17 +111,3 @@ export const filterTo = (records: StellaratorRecord[], filters: { [key in Toggle
     })
     return result
 }
-
-
-const useFiltering = (database: NavigatorDatabase) => {
-    const [filterSettings, filterSettingDispatch] = useReducer(NavigatorReducer, initialNavigatorState)
-    const [selection, updateSelection] = useState(new Set<number>())
-    
-    useEffect(() => applyFilterToState(filterSettings, database, updateSelection), [database, filterSettings])
-    const records = useMemo(() => projectRecords(selection, database), [database, selection])
-
-    return { records, filterSettings, filterSettingDispatch }
-}
-
-
-export default useFiltering
