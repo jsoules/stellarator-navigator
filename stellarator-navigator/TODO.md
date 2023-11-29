@@ -204,6 +204,9 @@
 
 [ ] Fix echo dots (when decreasing NC/HP count, get echo of exiting plots before it's filtered out again)
 
+[ ] In the reducer, automatically update selected coarse/fine selections for active table when the selected value stops being displayed
+    (e.g. case where we are showing NFP=2 and user deselects NFP = 2 from filter)
+
 [-] Expose ability for user to choose the field to base dot coloration on
 
 [X] AVOID REFILTERING for different plots/table selections

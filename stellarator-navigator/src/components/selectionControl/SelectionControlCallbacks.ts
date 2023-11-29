@@ -62,6 +62,17 @@ export const handleUpdateMarkedRecords = (dispatch: NavigatorDispatch, model: Gr
     dispatch(update)
 }
 
+// TODO: Add handler for updating the selected fields for coarse and fine plot splits
+
+export const _handleUpdateSplitFieldValues = (dispatch: NavigatorDispatch, coarseVal: number | undefined, fineVal: number | undefined) => {
+    const newVals = [coarseVal, fineVal]
+    const update: NavigatorStateAction = {
+        type: 'updatePlotSplitValues',
+        newValues: newVals
+    }
+    dispatch(update)
+}
+
 const useFilterCallbacks = (dispatch: Dispatch<NavigatorStateAction>) => {
     const handleRangeChange = useCallback((_: Event, field: RangeVariables, newValue: number | number[]) => {
         _handleRangeChange(dispatch, field, newValue)
@@ -81,6 +92,9 @@ const useFilterCallbacks = (dispatch: Dispatch<NavigatorStateAction>) => {
     const handleUpdateMarks = useCallback((model: GridRowSelectionModel) => {
         handleUpdateMarkedRecords(dispatch, model)
     }, [dispatch])
+    const handleUpdateSplitFieldValues = useCallback((coarseVal: number | undefined, fineVal: number | undefined) => {
+        _handleUpdateSplitFieldValues(dispatch, coarseVal, fineVal)
+    }, [dispatch])
 
     const callbacks = useMemo(() => {
         return {
@@ -90,8 +104,9 @@ const useFilterCallbacks = (dispatch: Dispatch<NavigatorStateAction>) => {
             handleDependentVariableChange,
             handleIndependentVariableChange,
             handleUpdateMarks,
+            handleUpdateSplitFieldValues
         }
-    }, [handleCheckboxChange, handleDependentVariableChange, handleIndependentVariableChange, handleRangeChange, handleTripartiteDropdownChange, handleUpdateMarks])
+    }, [handleCheckboxChange, handleDependentVariableChange, handleIndependentVariableChange, handleRangeChange, handleTripartiteDropdownChange, handleUpdateMarks, handleUpdateSplitFieldValues])
 
     return callbacks
 }

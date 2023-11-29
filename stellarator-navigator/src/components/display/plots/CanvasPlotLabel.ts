@@ -4,24 +4,24 @@ import { BoundedPlotDimensions } from "@snTypes/Types"
 type plotLabelProps = {
     dims: BoundedPlotDimensions
     coarseField?: ToggleableVariables
-    medField?: ToggleableVariables
+    fineField?: ToggleableVariables
 }
 
 type fieldVals = {
     coarseVal?: number
-    medVal?: number
+    fineVal?: number
 }
 
 export type CanvasPlotLabelCallbackType = (ctxt: CanvasRenderingContext2D, vals: fieldVals) => void
 
 
 const CanvasPlotLabel = (props: plotLabelProps, ctxt: CanvasRenderingContext2D, vals: fieldVals) => {
-    const { dims, coarseField, medField } = props
-    const { coarseVal, medVal } = vals
+    const { dims, coarseField, fineField } = props
+    const { coarseVal, fineVal } = vals
     const coarseDesc = Fields[coarseField as unknown as KnownFields]?.shortLabel ?? ''
-    const medDesc = Fields[medField as unknown as KnownFields]?.shortLabel ?? ''
+    const medDesc = Fields[fineField as unknown as KnownFields]?.shortLabel ?? ''
     const coarseBlurb = coarseDesc === '' ? '' : `${coarseDesc}: ${coarseVal === undefined ? 'Any' : coarseVal}`
-    const medBlurb = medDesc === '' ? '' : `${medDesc}: ${medVal === undefined ? 'Any' : medVal}`
+    const medBlurb = medDesc === '' ? '' : `${medDesc}: ${fineVal === undefined ? 'Any' : fineVal}`
     const text = (coarseBlurb !== '' && medBlurb !== '') ? `${coarseBlurb}; ${medBlurb}` : `${coarseBlurb}${medBlurb}`
     ctxt.save()
     ctxt.font = `${1.7*dims.fontPx}px sans-serif`

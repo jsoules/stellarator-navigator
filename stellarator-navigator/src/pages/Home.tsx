@@ -10,6 +10,7 @@ const Home: FunctionComponent = () => {
     // TODO: Margin, more styling, etc.
     const database = useDatabase()
     const { records, filterSettings, filterSettingDispatch } = useFiltering(database)
+    // TODO: Memoize records?
     const [showOverview, setShowOverview] = useState<boolean>(false)
     const ready = database && database !== initialDatabase
     

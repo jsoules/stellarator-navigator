@@ -62,6 +62,47 @@ const getExtrema = (filters: FilterSettings, field: IndependentVariables | Depen
 }
 
 
+type canvasAxisProps = {
+    dataGeometry: DataGeometry
+    dependentVar: DependentVariables
+    independentVar: IndependentVariables
+    dimsIn: BoundedPlotDimensions
+}
+
+
+export const useCanvasAxes = (props: canvasAxisProps) => {
+    const { dataGeometry, dependentVar, independentVar, dimsIn } = props
+
+    const xAxis = useCallback((c: CanvasRenderingContext2D) => {
+        const axisLabel = getLabel({name: independentVar, labelType: 'plot'})
+        CanvasXAxis({
+            dataRange: [dataGeometry.xmin, dataGeometry.xmax],
+            canvasRange: [0, dimsIn.boundedWidth],
+            axisLabel,
+            isLog: false,
+            isY: false,
+            markedValue: undefined,
+            dims: dimsIn
+        }, c)
+    }, [dataGeometry.xmax, dataGeometry.xmin, dimsIn, independentVar])
+
+    const yAxis = useCallback((c: CanvasRenderingContext2D) => {
+        const axisLabel = getLabel({name: dependentVar, labelType: 'plot'})
+        CanvasYAxis({
+            dataRange: [dataGeometry.ymin, dataGeometry.ymax],
+            canvasRange: [0, dimsIn.boundedHeight],
+            axisLabel,
+            isLog: Fields[dependentVar].isLog,
+            markedValue: Fields[dependentVar].markedValue,
+            dims: dimsIn,
+            isY: true
+        }, c)
+    }, [dataGeometry.ymax, dataGeometry.ymin, dependentVar, dimsIn])
+
+    return [xAxis, yAxis]
+}
+
+
 type axisProps = {
     xScale: ScaleLinear<number, number, never>
     yScale: ScaleLinear<number, number, never>
@@ -70,36 +111,6 @@ type axisProps = {
     dims: BoundedPlotDimensions
 }
 
-export const useCanvasAxes = (props: axisProps) => {
-    const { xScale, yScale, dependentVar, independentVar, dims, } = props
-    const xAxis = useCallback((c: CanvasRenderingContext2D) => {
-        const axisLabel = getLabel({name: independentVar, labelType: 'plot'})
-        CanvasXAxis({
-            dataRange: xScale.domain(),
-            canvasRange: xScale.range(),
-            axisLabel,
-            isLog: false,
-            isY: false,
-            markedValue: undefined,
-            dims
-        }, c)
-    }, [dims, independentVar, xScale])
-
-    const yAxis = useCallback((c: CanvasRenderingContext2D) => {
-        const axisLabel = getLabel({name: dependentVar, labelType: 'plot'})
-        CanvasYAxis({
-            dataRange: yScale.domain(), 
-            canvasRange: yScale.range(),
-            axisLabel,
-            isLog: Fields[dependentVar].isLog,
-            markedValue: Fields[dependentVar].markedValue,
-            dims,
-            isY: true
-        }, c)
-    }, [dependentVar, dims, yScale])
-
-    return [xAxis, yAxis]
-}
 
 export const useAxes = (props: axisProps) => {
     const { xScale, yScale, dependentVar, independentVar, dims, } = props
