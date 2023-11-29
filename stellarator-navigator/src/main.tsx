@@ -55,9 +55,6 @@ const devTools = import.meta.env.DEV && <ReactQueryDevtools position="bottom" />
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-        {/* <BrowserRouter
-            basename={import.meta.env.BASE_URL}
-        > */}
             <RouterProvider router={router} />
             {devTools}
     </QueryClientProvider>

@@ -5,12 +5,12 @@ import CanvasPlotWrapper from "@snComponents/display/plots/CanvasPlotWrapper"
 import { dotMargin, resizeCanvas } from "@snComponents/display/plots/webgl/drawScatter"
 import initProgram from "@snComponents/display/plots/webgl/drawingProgram"
 import { computePerPlotDimensions, useCanvasAxes } from "@snPlots/PlotScaling"
-import { DependentVariables, IndependentVariables, ToggleableVariables } from "@snTypes/DataDictionary"
+import { DependentVariables, IndependentVariables } from "@snTypes/DataDictionary"
 import { DataGeometry, StellaratorRecord } from "@snTypes/Types"
 import { FunctionComponent, useCallback, useMemo } from "react"
 import { PlotDataSummary } from "./Overview"
 
-const internalMargin = 20
+export const internalMargin = 20
 
 
 type Props = {
@@ -27,7 +27,7 @@ type Props = {
 
 const PlotGrid: FunctionComponent<Props> = (props: Props) => {
     const { dataGeometry, selectedRecords, width, height, plotDataSummary, plotClickHandler, dependentVariable, independentVariable } = props
-    const { data, selected, fineSplitVals, coarseSplitVals } = plotDataSummary
+    const { data, selected, fineSplitField, coarseSplitField, fineSplitVals, coarseSplitVals } = plotDataSummary
 
     const [dims] = useMemo(() => computePerPlotDimensions(fineSplitVals.length, width - 2*internalMargin, height), [height, fineSplitVals.length, width])
     const [canvasXAxis, canvasYAxis] = useCanvasAxes({
@@ -36,13 +36,14 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
         dimsIn: dims
     })
     const canvasPlotLabel: CanvasPlotLabelCallbackType = useCallback((ctxt, vals) => {
-        CanvasPlotLabel({dims, coarseField: ToggleableVariables.NC_PER_HP, fineField: ToggleableVariables.NFP}, ctxt, vals)
-    }, [dims])
+        CanvasPlotLabel({dims, coarseField: coarseSplitField, fineField: fineSplitField}, ctxt, vals)
+    }, [coarseSplitField, dims, fineSplitField])
     const sizes = selected.map(i => i.map(j => j.map(k => k.map(l => l ? dotMargin : dotMargin / 2))))
 
-    // TODO: Do refactor this all out somewhere else
     // TODO: Allow changing color palette
+    // TODO: Handle color palette when dealing with continuous-valued coloration
     const colorList = useMemo(() => (Tol).map(c => convertHexToRgb3Vec(c)), [])
+    // TODO: Do refactor this all out somewhere else
     const offscreenCanvas = useMemo(() => new OffscreenCanvas(10, 10), [])
     const webglCtxt = useMemo(() => offscreenCanvas.getContext("webgl"), [offscreenCanvas])
     const configureCanvas = useMemo(() => initProgram(webglCtxt), [webglCtxt])
@@ -78,7 +79,7 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
     )
 
     return (
-        <div style={{ margin: internalMargin }}>
+        <div>
             <div style={{ paddingBottom: 10 }}>Current filter settings return {selectedRecords.length} devices.</div>
             <Grid container>
                 {canvasRows}

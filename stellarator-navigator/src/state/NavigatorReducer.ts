@@ -1,7 +1,11 @@
+import { applyFiltersToSet, projectRecords } from "@snState/filter"
 import { DependentVariables, Fields, IndependentVariables, RangeVariables, ToggleableVariables, TripartiteVariables } from "@snTypes/DataDictionary"
-import { FilterSettings } from "@snTypes/Types"
+import { FilterSettings, NavigatorDatabase } from "@snTypes/Types"
 
 export type NavigatorStateAction = {
+    type: 'initialize',
+    database: NavigatorDatabase
+} | {
     type: 'updateRange',
     field: RangeVariables,
     newRange: number[]
@@ -38,6 +42,11 @@ export type NavigatorStateAction = {
 
 const NavigatorReducer = (s: FilterSettings, a: NavigatorStateAction): FilterSettings => {
     switch (a.type) {
+        case "initialize": {
+            const newSet = applyFiltersToSet(s, a.database)
+            const newRecords = projectRecords(newSet, a.database)
+            return { ...s, database: a.database, recordIds: newSet, records: newRecords }
+        }
         case "updateRange": {
             return updateRange(a.field, a.newRange, s)
         }
@@ -76,16 +85,31 @@ const updateBooleanList = (key: ToggleableVariables, index: number, newState: bo
     const current = (settings[key] ?? [])
 
     const reset = current.length !== rightLength    // handles initialization
-    const newSelections = reset ? new Array(rightLength).fill(false)
-                                : index === -1
-                                    ? new Array(rightLength).fill(newState)
-                                    : current
+    const newSelections: boolean[] = reset ? new Array(rightLength).fill(false)
+                                           : index === -1
+                                                ? new Array(rightLength).fill(newState)
+                                                : current
     if (index >= 0) {
         newSelections[index] = newState
     }
 
-    const result = { ...settings }
+    const result: FilterSettings = { ...settings }
     result[key] = newSelections
+
+    // having updated a filter, we may need to update the selections.
+    // TODO: Condition which input to use based on whether our selections got more or less restrictive
+    // (The big win will be that we don't have to rerun *all* the filters in that case, only whichever one actually changed.)
+    if (settings.database !== undefined) { // This should never not be the case
+        const newSet = applyFiltersToSet(result, settings.database)
+        // Cheat: we're using the size of the selected record set as a proxy
+        // because there shouldn't be a single interaction that allows you to select an entirely different set,
+        // those would all be broken into two or more interactions
+        const updateRecords = newSet.size !== settings.recordIds.size
+        if (updateRecords) {
+            const newMaterializedRecords = projectRecords(newSet, settings.database)
+            return { ...result, recordIds: newSet, records: newMaterializedRecords }
+        }
+    }
     
     return result
 }
@@ -101,6 +125,24 @@ const updateRange = (key: RangeVariables, newRange: number[], settings: FilterSe
     }
     const newSettings = { ...settings}
     newSettings[key] = [Math.min(...newRange), Math.max(...newRange)]
+
+    // TODO: HARMONIZE AS MUCH AS POSSIBLE WITH THE VERSION IN UPDATEBOOLEANLIST
+    // this is separated because if we implement intelligent "did-it-shrink" logic, that will
+    // likely differ between this and the above.
+    // having updated a filter, we may need to update the selections.
+    // TODO: Condition which input to use based on whether our selections got more or less restrictive
+    if (settings.database !== undefined) { // This should never not be the case
+        const newSet = applyFiltersToSet(newSettings, settings.database)
+        // Cheat: we're using the size of the selected record set as a proxy
+        // because there shouldn't be a single interaction that allows you to select an entirely different set,
+        // those would all be broken into two or more interactions
+        const updateRecords = newSet.size !== settings.recordIds.size
+        if (updateRecords) {
+            const newMaterializedRecords = projectRecords(newSet, settings.database)
+            return { ...newSettings, recordIds: newSet, records: newMaterializedRecords }
+        }
+    }
+
     return newSettings
 }
 
@@ -109,6 +151,17 @@ const updateTripart = (key: TripartiteVariables, settings: FilterSettings, newVa
     if (existingValue === newValue) return settings
     const newSettings = { ...settings }
     newSettings[key] = newValue
+
+    // having updated a filter, we may need to update the selections.
+    if (settings.database !== undefined) { // This should never not be the case
+        // Note we CANNOT use size as a proxy here, because flipping one of these could conceivably actually
+        // create two distinct sets of different size.
+        // So we'll always just rerun all filters on the current set.
+        const newSet = applyFiltersToSet(newSettings, settings.database)
+        const newMaterializedRecords = projectRecords(newSet, settings.database)
+        return { ...newSettings, recordIds: newSet, records: newMaterializedRecords }
+    }
+
     return newSettings
 }
 

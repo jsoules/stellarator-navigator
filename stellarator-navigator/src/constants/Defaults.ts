@@ -6,7 +6,7 @@ export const initialNavigatorState: FilterSettings = {
     totalCoilLength: [Math.min(...totalCoilLengthValidValues), Math.max(...totalCoilLengthValidValues)],
     meanIota: [ true, ...(new Array(meanIotaValidValues.length - 1).fill(false)) ],
     ncPerHp: new Array(ncPerHpValidValues.length).fill(false),
-    nfp: new Array(nfpValidValues.length).fill(true),
+    nfp: new Array(nfpValidValues.length).fill(false),
     nSurfaces: new Array((Fields.nSurfaces.values ?? []).length).fill(false),
     maxKappa: (Fields.maxKappa.range),
     maxMeanSquaredCurve: (Fields.maxMeanSquaredCurve.range),
@@ -25,6 +25,9 @@ export const initialNavigatorState: FilterSettings = {
     coarsePlotSplit: ToggleableVariables.NC_PER_HP,
     finePlotSplit: ToggleableVariables.NFP,
     finePlotSelectedValue: 1,
+    database: undefined,
+    records: [],
+    recordIds: new Set<number>(),
     markedRecords: new Set<number>(),
 }
 

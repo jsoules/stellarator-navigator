@@ -76,7 +76,7 @@ const makeLookups = (c: categorizationCriteria) => {
 }
 
 
-const projectData = (props: ProjectionCriteria): ProjectedData => {
+const projectToPlottableData = (props: ProjectionCriteria): ProjectedData => {
     const { data, yVar, xVar, markedIds, colorSplit, fineSplit, coarseSplit } = props
     // We're going to be boorish and iterative here, because filtering properly would potentially involve
     // iterating over the entire database ~1000 times.
@@ -111,4 +111,4 @@ const projectData = (props: ProjectionCriteria): ProjectedData => {
 }
 
 
-export default projectData
+export default projectToPlottableData

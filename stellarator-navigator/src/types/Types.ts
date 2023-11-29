@@ -26,6 +26,9 @@ export type FilterSettings = {
     finePlotSplit?: ToggleableVariables,
     coarsePlotSelectedValue?: number,
     finePlotSelectedValue?: number,
+    database: NavigatorDatabase | undefined,
+    records: StellaratorRecord[],
+    recordIds: Set<number>,
     markedRecords: Set<number>
 }
 
