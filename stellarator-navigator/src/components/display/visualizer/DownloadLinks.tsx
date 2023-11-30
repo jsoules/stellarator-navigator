@@ -1,5 +1,5 @@
 import { Button, Tooltip } from '@mui/material'
-import makeResourcePath, { KnownPathType } from "@snUtil/makeResourcePath"
+import makeResourcePath, { KnownPathType, getStringId } from "@snUtil/makeResourcePath"
 import { FunctionComponent } from "react"
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter"
 import python from "react-syntax-highlighter/dist/esm/languages/hljs/python"
@@ -18,8 +18,8 @@ const codeSnippet =
 
 const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
     const { id } = props
-    const vmecPath = makeResourcePath(id, KnownPathType.NML_VMEC)
-    const simsoptPath = makeResourcePath(id, KnownPathType.SIMSOPT)
+    const vmecPath = makeResourcePath(getStringId(id), KnownPathType.NML_VMEC)
+    const simsoptPath = makeResourcePath(getStringId(id), KnownPathType.SIMSOPT)
 
     // We have to do some fussy path-munging in order to construct the forced-download link correctly--otherwise
     // the browser will suggest saving the file according to its full path, not just its file name.

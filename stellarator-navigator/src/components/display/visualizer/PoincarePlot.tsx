@@ -1,5 +1,5 @@
 // import { Typography } from "@mui/material"
-import makeResourcePath, { KnownPathType } from "@snUtil/makeResourcePath"
+import makeResourcePath, { KnownPathType, getStringId } from "@snUtil/makeResourcePath"
 import { FunctionComponent } from "react"
 
 type PoincarePlotProps = {
@@ -7,7 +7,7 @@ type PoincarePlotProps = {
 }
 
 const PoincarePlot: FunctionComponent<PoincarePlotProps> = (props: PoincarePlotProps) => {
-    const path = makeResourcePath(props.id, KnownPathType.POINCARE)
+    const path = makeResourcePath(getStringId(props.id), KnownPathType.POINCARE)
     return (
         <div className="poincareContainer">
             {/* <Typography align="center" fontWeight="bold">Poincaré Plots</Typography> */}

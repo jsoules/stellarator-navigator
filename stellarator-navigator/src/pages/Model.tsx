@@ -17,7 +17,7 @@ const Model: FunctionComponent = () => {
     const stringId = getStringId(id)
     const canvasRef = useRef(null)
     const rec = useRecord(id)
-    const { baseCoils, baseSurfs, fullCoils, fullSurfs, surfaceCount } = useModel(stringId, rec?.nfp ?? 1)
+    const { baseCoils, baseSurfs, fullCoils, fullSurfs, surfaceCount } = useModel(stringId.id, rec?.nfp ?? 1)
     
     const [colorMap, setColorMap] = useState<SupportedColorMap>('plasma')
     const [showFullRing, setShowFullRing] = useState<boolean>(false)
@@ -26,8 +26,8 @@ const Model: FunctionComponent = () => {
     const [surfaceChecks, setSurfaceChecks] = useState<boolean[]>(Array(rec?.nSurfaces || 1).fill(true))
     useEffect(() => setSurfaceChecks(Array(rec.nSurfaces || 1).fill(true)), [rec?.nSurfaces])
 
-    const downloadLinks = <DownloadLinks id={stringId} />
-    const poincarePlot = <PoincarePlot id={stringId}/>
+    const downloadLinks = <DownloadLinks id={stringId.id} />
+    const poincarePlot = <PoincarePlot id={stringId.id}/>
 
     const { width } = useWindowDimensions()
     const lw = useMemo(() => Math.max(0, (2 * width / 3) - 80), [width])

@@ -185,6 +185,11 @@
 
 [x] Improve accessibility by providing descriptive text inside canvas element in CanvasPlotWrapper
 
+[x] Allow coloration based on continuous as well as discrete variables --> THIS WILL BE TOUGHER!
+
+[x] rewrite resource path finding to funnel everything consistently through getStringId and
+    make sure calling components don't make assumptions (esp. Model and its subcomponents)
+
 [-] Write up instructions for preprocessing data files, incl. in-memory database
     [ ] Latter should have the appropriate fields log-scaled, do JSONified output, and zip the result
     [ ] Rest of data: rsync it, delete the poincare directory, and run process_files.py
@@ -212,6 +217,10 @@
     [x] --> webgl will need a couple passes, small dots and bigger dots, as well as
         per-point color scheme, but that is all in the tutorials
 
+[ ] Just implement drag-zoom already
+
+[ ] Click handler for canvas!
+
 [-] Give user ability to choose criteria for plot-splitting
 
 [ ] In the reducer, automatically update selected coarse/fine selections for active table when the selected value stops being displayed
@@ -225,22 +234,13 @@
 
 [ ] Try to fix the whole "open selected" button thing; or at least unify the interaction
 
-[ ] Just implement drag-zoom already
-
-[ ] Click handler for canvas!
-
 [ ] Figure out a smarter way to right-size the table in the overview page
 
 [ ] Note that horizontal line for non-QA error corresponds to Earth's background magnetic field
 
-[ ] rewrite resource path finding to funnel everything consistently through getStringId and
-    make sure calling components don't make assumptions (esp. Model and its subcomponents)
-
 [ ] Trim font references/try to reduce code size
 
 [ ] Provide UI for changing the dot coloration criteria
-
-[x] Allow coloration based on continuous as well as discrete variables --> THIS WILL BE TOUGHER!
 
 
 QUERY OR DISTANT:

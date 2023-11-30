@@ -30,13 +30,14 @@ enum GraphicsType {
     POINCARE = KnownPathType.POINCARE
 }
 
-
-export const getStringId = (id: number | string): string => {
-    return `${id}`.padStart(idLength, '0')
+export type ValidId = { id: string }
+export const getStringId = (id: number | string): ValidId => {
+    return { id: `${id}`.padStart(idLength, '0') }
 }
 
 
-const makeResourcePath = (id: string, type: KnownPathType) => {
+const makeResourcePath = (validId: ValidId, type: KnownPathType) => {
+    const { id } = validId
     const graphicsTypes = getEnumVals(GraphicsType)
     const graphicsPart = graphicsTypes.includes(type) ? 'graphics/' : ''
     const binPrefix = id.substring(0, 3)
