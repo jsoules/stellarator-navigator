@@ -7,8 +7,9 @@ import { ScatterDataLoaderType } from "./webgl/drawingProgram"
 
 type Props = {
     dims: BoundedPlotDimensions
-    data: number[][]
-    sizes: number[][]
+    data: number[]
+    sizes: number[]
+    colorValuesRgb: number[][]
     highlightedSeries?: number
     colorMap?: string[]
     canvasXAxis: (ctxt: CanvasRenderingContext2D) => void
@@ -23,7 +24,7 @@ type Props = {
 
 
 const CanvasPlotWrapper: FunctionComponent<Props> = (props: Props) => {
-    const { dims, data, sizes, canvasYAxis, canvasXAxis, canvasPlotLabel, scatterCtxt, clickHandler, loadData, fineValue, coarseValue } = props
+    const { dims, data, sizes, colorValuesRgb, canvasYAxis, canvasXAxis, canvasPlotLabel, scatterCtxt, clickHandler, loadData, fineValue, coarseValue } = props
     
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
@@ -44,13 +45,15 @@ const CanvasPlotWrapper: FunctionComponent<Props> = (props: Props) => {
             // Assertions: should never happen
             if (data === undefined) throw Error("Data undefined")
             if (data.some(d => d === undefined)) throw Error("Data contains undefined elements")
-            loadData(data, sizes)
-            const vertexCount = data.reduce((t: number, c) => t + c.length, 0)
+            // need to add alpha channel to the rgb values
+            loadData(data, sizes, colorValuesRgb.map((rgb) => [...rgb, 1.0]).flat())
+            // const vertexCount = data.reduce((t: number, c) => t + c.length, 0)
+            const vertexCount = data.length/2
             drawScatter({glCtxt: scatterCtxt, vertexCount })
             ctxt.drawImage(scatterCtxt.canvas, -dotMargin, -dotMargin)
         }
         ctxt.restore()
-    }, [canvasPlotLabel, canvasXAxis, canvasYAxis, coarseValue, data, dims.marginLeft, dims.marginRight, fineValue, loadData, scatterCtxt, sizes])
+    }, [canvasPlotLabel, canvasXAxis, canvasYAxis, coarseValue, colorValuesRgb, data, dims.marginLeft, dims.marginRight, fineValue, loadData, scatterCtxt, sizes])
 
     return (
         <div

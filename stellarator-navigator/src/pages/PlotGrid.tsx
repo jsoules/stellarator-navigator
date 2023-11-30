@@ -1,9 +1,9 @@
 import { Grid } from "@mui/material"
-import { Tol, convertHexToRgb3Vec } from "@snComponents/display/Colormaps"
+import { makeColors } from "@snComponents/display/Colormaps"
 import CanvasPlotLabel, { CanvasPlotLabelCallbackType } from "@snComponents/display/plots/CanvasPlotLabel"
 import CanvasPlotWrapper from "@snComponents/display/plots/CanvasPlotWrapper"
 import { dotMargin, resizeCanvas } from "@snComponents/display/plots/webgl/drawScatter"
-import initProgram from "@snComponents/display/plots/webgl/drawingProgram"
+import useWebglOffscreenCanvas from "@snComponents/display/plots/webgl/useWebglOffscreenCanvas"
 import { computePerPlotDimensions, useCanvasAxes } from "@snPlots/PlotScaling"
 import { DependentVariables, IndependentVariables } from "@snTypes/DataDictionary"
 import { DataGeometry, StellaratorRecord } from "@snTypes/Types"
@@ -20,14 +20,14 @@ type Props = {
     plotDataSummary: PlotDataSummary
     dataGeometry: DataGeometry
     dependentVariable: DependentVariables
-    independentVariable: IndependentVariables
+    independentVariable: IndependentVariables   
     plotClickHandler: (coarseValue: number | undefined, fineValue: number | undefined) => void
 }
 
 
 const PlotGrid: FunctionComponent<Props> = (props: Props) => {
     const { dataGeometry, selectedRecords, width, height, plotDataSummary, plotClickHandler, dependentVariable, independentVariable } = props
-    const { data, selected, fineSplitField, coarseSplitField, fineSplitVals, coarseSplitVals } = plotDataSummary
+    const { data, selected, colorValues, fineSplitField, coarseSplitField, fineSplitVals, coarseSplitVals } = plotDataSummary
 
     const [dims] = useMemo(() => computePerPlotDimensions(fineSplitVals.length, width - 2*internalMargin, height), [height, fineSplitVals.length, width])
     const [canvasXAxis, canvasYAxis] = useCanvasAxes({
@@ -38,17 +38,13 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
     const canvasPlotLabel: CanvasPlotLabelCallbackType = useCallback((ctxt, vals) => {
         CanvasPlotLabel({dims, coarseField: coarseSplitField, fineField: fineSplitField}, ctxt, vals)
     }, [coarseSplitField, dims, fineSplitField])
-    const sizes = selected.map(i => i.map(j => j.map(k => k.map(l => l ? dotMargin : dotMargin / 2))))
+    const sizes = selected.map(i => i.map(j => j.map(k => k ? dotMargin : dotMargin / 2)))
 
-    // TODO: Allow changing color palette
-    // TODO: Handle color palette when dealing with continuous-valued coloration
-    const colorList = useMemo(() => (Tol).map(c => convertHexToRgb3Vec(c)), [])
-    // TODO: Do refactor this all out somewhere else
-    const offscreenCanvas = useMemo(() => new OffscreenCanvas(10, 10), [])
-    const webglCtxt = useMemo(() => offscreenCanvas.getContext("webgl"), [offscreenCanvas])
-    const configureCanvas = useMemo(() => initProgram(webglCtxt), [webglCtxt])
-    const loadData = useMemo(() => configureCanvas(colorList, dataGeometry, dims.boundedWidth, dims.boundedHeight),
-        [configureCanvas, colorList, dataGeometry, dims.boundedWidth, dims.boundedHeight])
+    // TODO: Expose UI for changing color palette
+    const colorsRgb = makeColors({isContinuous: false, values: colorValues, scheme: "Tol"})
+    // Here's an example of what this looks like for continuous values
+    // const colorsRgb = makeColors({isContinuous: true, values: colorValues, scheme: "plasma"})
+    const { webglCtxt, loadData } = useWebglOffscreenCanvas(dataGeometry, dims)
     resizeCanvas({ctxt: webglCtxt, width: dims.boundedWidth, height: dims.boundedHeight})
 
     const resolvedCoarseVals = (coarseSplitVals?.length ?? 0) === 0 ? [undefined] : coarseSplitVals
@@ -61,6 +57,7 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
                                 key={`${coarseValue}-${fineValue}`}
                                 data={data[coarseIdx][fineIdx]}
                                 sizes={sizes[coarseIdx][fineIdx]}
+                                colorValuesRgb={colorsRgb[coarseIdx][fineIdx]}
                                 dims={dims}
                                 canvasXAxis={canvasXAxis}
                                 canvasYAxis={canvasYAxis}

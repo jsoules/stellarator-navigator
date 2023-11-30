@@ -100,7 +100,7 @@ const updateBooleanList = (key: ToggleableVariables, index: number, newState: bo
     // TODO: Condition which input to use based on whether our selections got more or less restrictive
     // (The big win will be that we don't have to rerun *all* the filters in that case, only whichever one actually changed.)
     if (settings.database !== undefined) { // This should never not be the case
-        const newSet = applyFiltersToSet(result, settings.database)
+        const newSet = applyFiltersToSet(result, settings.database, settings.database.allIdSet)
         // Cheat: we're using the size of the selected record set as a proxy
         // because there shouldn't be a single interaction that allows you to select an entirely different set,
         // those would all be broken into two or more interactions
@@ -132,7 +132,7 @@ const updateRange = (key: RangeVariables, newRange: number[], settings: FilterSe
     // having updated a filter, we may need to update the selections.
     // TODO: Condition which input to use based on whether our selections got more or less restrictive
     if (settings.database !== undefined) { // This should never not be the case
-        const newSet = applyFiltersToSet(newSettings, settings.database)
+        const newSet = applyFiltersToSet(newSettings, settings.database, settings.database.allIdSet)
         // Cheat: we're using the size of the selected record set as a proxy
         // because there shouldn't be a single interaction that allows you to select an entirely different set,
         // those would all be broken into two or more interactions
@@ -157,7 +157,7 @@ const updateTripart = (key: TripartiteVariables, settings: FilterSettings, newVa
         // Note we CANNOT use size as a proxy here, because flipping one of these could conceivably actually
         // create two distinct sets of different size.
         // So we'll always just rerun all filters on the current set.
-        const newSet = applyFiltersToSet(newSettings, settings.database)
+        const newSet = applyFiltersToSet(newSettings, settings.database, settings.database.allIdSet)
         const newMaterializedRecords = projectRecords(newSet, settings.database)
         return { ...newSettings, recordIds: newSet, records: newMaterializedRecords }
     }

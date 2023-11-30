@@ -157,22 +157,15 @@ const makeProgramInfo = (shaderProgram: WebGLProgram, glCtxt: WebGLRenderingCont
 }
 
 
-const populateData = (glCtxt: WebGLRenderingContext, data: number[][], colorVecs: number[][], sizes: number[][], buffers: BufferSet) => {
-    const flatData = data.flat()
+const populateData = (glCtxt: WebGLRenderingContext, data: number[], colorValues: number[], sizes: number[], buffers: BufferSet) => {
     glCtxt.bindBuffer(glCtxt.ARRAY_BUFFER, buffers.position)
-    glCtxt.bufferData(glCtxt.ARRAY_BUFFER, new Float32Array(flatData), glCtxt.STATIC_DRAW)
+    glCtxt.bufferData(glCtxt.ARRAY_BUFFER, new Float32Array(data), glCtxt.STATIC_DRAW)
 
     glCtxt.bindBuffer(glCtxt.ARRAY_BUFFER, buffers.size)
     glCtxt.bufferData(glCtxt.ARRAY_BUFFER, new Float32Array(sizes.flat()), glCtxt.STATIC_DRAW)
 
-    // incidentally, the "fill(0)" shouldn't be required: you can iterate over an array of empty elements
-    // just as easily as an array of 0s. But some versions of TypeScript linter don't like it & want to
-    // "optimize out" the empty array.
-
-    // length/2 because it's a flattened list of both x and y coordinates.
-    const flatColors = data.map((series, idx) => new Array((series?.length ?? 0)/2).fill(0).map(() => colorVecs[idx])).flat(2)
     glCtxt.bindBuffer(glCtxt.ARRAY_BUFFER, buffers.color)
-    glCtxt.bufferData(glCtxt.ARRAY_BUFFER, new Float32Array(flatColors), glCtxt.STATIC_DRAW)
+    glCtxt.bufferData(glCtxt.ARRAY_BUFFER, new Float32Array(colorValues), glCtxt.STATIC_DRAW)
 }
 
 
@@ -217,7 +210,7 @@ const setSizeAttribute = (gl: WebGLRenderingContext, buffers: BufferSet, program
 }
 
 
-export type ScatterDataLoaderType = (data: number[][], sizes: number[][]) => void
+export type ScatterDataLoaderType = (data: number[], sizes: number[], colorValues: number[]) => void
 
 const initProgram = (glCtxt: WebGLRenderingContext | null) => {
     if (glCtxt === null) return () => () => {}
@@ -227,9 +220,9 @@ const initProgram = (glCtxt: WebGLRenderingContext | null) => {
     const buffers = initBuffers(glCtxt)
 
     glCtxt.useProgram(programInfo.program)
-    const configureCanvas = (colorList: number[][], geometry: DataGeometry, width: number, height: number) => {
-        const colorVecs = colorList.map(c => [c[0], c[1], c[2], 1.0])
-        
+    const configureCanvas = (geometry: DataGeometry, width: number, height: number) => {
+        // const colorVecs = colorList.map(c => [c[0], c[1], c[2], 1.0])
+
         // We want to add a margin (of some known pixel value) to each side of the canvas, so that dots on the edge
         // don't get cut off in drawing. Problem is our "ortho" matrix doesn't know that, and will just map to
         // (-1, 1) x (-1, 1). Figuring out what the matrix really should be is tricky; so instead we want to
@@ -254,9 +247,9 @@ const initProgram = (glCtxt: WebGLRenderingContext | null) => {
         glCtxt.uniformMatrix4fv(programInfo.uniformLocations.dataToNormalMatrix, false, projectionMatrix)
         glCtxt.uniform2fv(programInfo.uniformLocations.stdToScreen, [0.5*width + dotMargin, 0.5*height + dotMargin])
 
-        const loadData: ScatterDataLoaderType = (data, sizes) => {
+        const loadData: ScatterDataLoaderType = (data, sizes, colorValues) => {
             if (data === undefined || data.length === 0) return
-            populateData(glCtxt, data, colorVecs, sizes, buffers)
+            populateData(glCtxt, data, colorValues, sizes, buffers)
             readyData(glCtxt, buffers, programInfo)
         }
 
