@@ -1,4 +1,3 @@
-import { CSSProperties } from "react"
 import { inferno, magma, plasma, viridis } from 'scale-color-perceptual'
 
 export type SupportedColorMap = 'inferno' | 'magma' | 'plasma' | 'viridis' | 'hsv' | 'blueOrange' | 'default'
@@ -12,7 +11,7 @@ export const MapsConfig: {key: number, value: SupportedColorMap}[] = [
     { key: 5, value: 'hsv'     }
 ]
 
-export const Tab20: CSSProperties["color"][] = [
+export const Tab20: string[] = [
     "#1f77b4",
     "#aec7e8",
     "#ff7f0e",
@@ -35,7 +34,7 @@ export const Tab20: CSSProperties["color"][] = [
     "#9edae5"
 ]
 
-export const SpacedViridis: CSSProperties["color"][] = [
+export const SpacedViridis: string[] = [
     "#440154",
     "#472d7b",
     "#3b528b",
@@ -47,7 +46,6 @@ export const SpacedViridis: CSSProperties["color"][] = [
 ]
 
 // from https://davidmathlogic.com/colorblind/#%23000000-%23E69F00-%2356B4E9-%23009E73-%23F0E442-%230072B2-%23D55E00-%23CC79A7
-// export const WongCBFriendly: CSSProperties["color"][] = [
 export const WongCBFriendly: string[] = [
     "#000000",
     "#E69F00",
@@ -83,6 +81,46 @@ export const Tol: string[] = [
 
 // Continuous scales for display: cross-import from scale-color-perceptual
 
+export type SupportedColorPalette = "Tab20" | "SpacedViridis" | "WongCBFriendly" | "Tol"
+export const DefaultColorPalette: SupportedColorPalette = "Tol"
+const Palettes: {[key in SupportedColorPalette]: string[]} = {
+    "Tab20": Tab20,
+    "SpacedViridis": SpacedViridis,
+    "WongCBFriendly": WongCBFriendly,
+    "Tol": Tol
+}
+
+
+type makeColorsParamsType = {
+    values: number[][][]
+    isContinuous: true
+    scheme: SupportedColorMap
+} | {
+    values: number[][][]
+    isContinuous: false
+    scheme: SupportedColorPalette
+}
+type makeColorsType = ((props: makeColorsParamsType) => number[][][][])
+export const makeColors: makeColorsType = (props) => {
+    const { values, isContinuous, scheme } = props
+    if (isContinuous) {
+        // Normalize values
+        // TODO: Consider doing something more sophisticated for outliers?
+        const flatVals = values.flat(2)
+        const max = Math.max(...flatVals)
+        const min = Math.min(...flatVals)
+        const span = max - min
+        // TODO: This will not do the right thing for blue-orange, which should be normalized over (-1, 1)
+        // need to special-case that if you want to support it
+        // Handle the degenerate case: when max = min, map everything to 1
+        const normalize = span === 0 ? () => 1 : (v: number) => ((v - min)/span)
+        const normalValues = values.map(i => i.map(j => j.map(k => valueToRgbTriplet(normalize(k), scheme))))
+        return normalValues
+    }
+    return values.map(i => i.map(j => j.map(k => discreteColorToRgbTriplet(k, scheme))))
+}
+
+
 // TODO: Consider adding intensity-bounding?
 export const valueToRgbTriplet = (value: number, scheme: SupportedColorMap = 'viridis') => {
     if (value > 1) {
@@ -91,6 +129,12 @@ export const valueToRgbTriplet = (value: number, scheme: SupportedColorMap = 'vi
     }
     const rgbHex = getRgbValue(value, scheme)
     return convertHexToRgb3Vec(rgbHex)
+}
+
+
+export const discreteColorToRgbTriplet = (index: number, scheme: SupportedColorPalette = DefaultColorPalette) => {
+    const _scheme = Palettes[scheme]
+    return convertHexToRgb3Vec(_scheme[index % _scheme.length])
 }
 
 

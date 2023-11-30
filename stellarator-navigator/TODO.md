@@ -173,6 +173,18 @@
     [x] Use loaders to prefetch --> I'm not going to bother; I'm happy with the data loading situation
         and the changes that could be made just seem like needless complexity.
 
+[x] Fix echo dots (when decreasing NC/HP count, get echo of exiting plots before it's filtered out again)
+
+[X] AVOID REFILTERING for different plots/table selections
+    [x] Don't hard-code the variable listed in the individual plots
+    [x] Memoize the hierarchically divided groups at a higher level
+
+[x] Add custom size to selected dots/devices
+
+[x] Strip out unused junk in CanvasPlotWrapper etc. props
+
+[x] Improve accessibility by providing descriptive text inside canvas element in CanvasPlotWrapper
+
 [-] Write up instructions for preprocessing data files, incl. in-memory database
     [ ] Latter should have the appropriate fields log-scaled, do JSONified output, and zip the result
     [ ] Rest of data: rsync it, delete the poincare directory, and run process_files.py
@@ -202,34 +214,20 @@
 
 [-] Give user ability to choose criteria for plot-splitting
 
-[ ] Fix echo dots (when decreasing NC/HP count, get echo of exiting plots before it's filtered out again)
-
 [ ] In the reducer, automatically update selected coarse/fine selections for active table when the selected value stops being displayed
     (e.g. case where we are showing NFP=2 and user deselects NFP = 2 from filter)
 
+[ ] Automatically update selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
+
 [-] Expose ability for user to choose the field to base dot coloration on
 
-[X] AVOID REFILTERING for different plots/table selections
-    [x] Don't hard-code the variable listed in the individual plots
-    [x] Memoize the hierarchically divided groups at a higher level
-
 [ ] Show/hide filters controls (i.e. tab in the control area)
-
-[ ] Consider automatically updating selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
 
 [ ] Try to fix the whole "open selected" button thing; or at least unify the interaction
 
 [ ] Just implement drag-zoom already
 
-[ ] Add custom size to selected dots/devices
-
-[ ] Filter more responsibly
-
 [ ] Click handler for canvas!
-
-[ ] Strip out unused junk in CanvasPlotWrapper etc. props
-
-[ ] Improve accessibility by providing descriptive text inside canvas element in CanvasPlotWrapper
 
 [ ] Figure out a smarter way to right-size the table in the overview page
 
@@ -238,13 +236,11 @@
 [ ] rewrite resource path finding to funnel everything consistently through getStringId and
     make sure calling components don't make assumptions (esp. Model and its subcomponents)
 
-[ ] Improve styling for error pages
-
-[ ] Replace favicon in index.html
-
 [ ] Trim font references/try to reduce code size
 
-[ ] Allow coloration based on continuous as well as discrete variables --> THIS WILL BE TOUGHER!
+[ ] Provide UI for changing the dot coloration criteria
+
+[x] Allow coloration based on continuous as well as discrete variables --> THIS WILL BE TOUGHER!
 
 
 QUERY OR DISTANT:
@@ -264,4 +260,8 @@ QUERY OR DISTANT:
 [-] consider branding
 
 [-] finalize deployment details with SCC
+
+[-] Improve styling for error pages
+
+[-] Replace favicon in index.html
 
