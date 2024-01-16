@@ -1,3 +1,4 @@
+import { dotMargin } from "@snComponents/display/plots/webgl/drawScatter"
 import { DependentVariables, Fields, IndependentVariables, KnownFields, ToggleableVariables } from "@snTypes/DataDictionary"
 import { FilterSettings, StellaratorRecord } from "@snTypes/Types"
 
@@ -34,8 +35,10 @@ export type ProjectionCriteria = categorizationCriteria & {
 
 type ProjectedData = {
     data: number[][][]
-    selected: boolean[][][]
+//     selected: boolean[][][]
+    radius: number[][][]
     colorValues: number[][][]
+    ids: number[][][]
 }
 
 
@@ -99,28 +102,33 @@ const projectToPlotReadyData = (props: ProjectionCriteria): ProjectedData => {
     const buckets: number[][][] = new Array(Object.keys(coarseKeys).length).fill(0)
         .map(() => new Array(Object.keys(fineKeys).length).fill(0)
             .map(() => [] as number[]))
-    const selected: boolean[][][] = new Array(Object.keys(coarseKeys).length).fill(0)
-    .map(() => new Array(Object.keys(fineKeys).length).fill(0)
-        .map(() => [] as boolean[]))
+    const radius: number[][][] = new Array(Object.keys(coarseKeys).length).fill(0)
+        .map(() => new Array(Object.keys(fineKeys).length).fill(0)
+            .map(() => [] as number[]))
+    const ids: number[][][] = new Array(Object.keys(coarseKeys).length).fill(0)
+        .map(() => new Array(Object.keys(fineKeys).length).fill(0)
+            .map(() => [] as number[]))
     const colorValues: number[][][] = new Array(Object.keys(coarseKeys).length).fill(0)
-    .map(() => new Array(Object.keys(fineKeys).length).fill(0)
-        .map(() => [] as number[]))
+        .map(() => new Array(Object.keys(fineKeys).length).fill(0)
+            .map(() => [] as number[]))
 
     // Precondition: Assume that every row of the data is actually supposed to be there, and we just need to slot
     // them into the right place. Filtering of out-of-scope values should have already taken place.
     data.forEach((record) => {
         const fineIdx   = (fineSplit   ?   fineKeys[record[fineSplit]]   : 0) ?? 0
         const coarseIdx = (coarseSplit ? coarseKeys[record[coarseSplit]] : 0) ?? 0
+        const isSelected = markedIds?.has(record.id) || false
         buckets[coarseIdx][fineIdx].push(record[xVar])
         buckets[coarseIdx][fineIdx].push(record[yVar])
-        selected[coarseIdx][fineIdx].push(markedIds?.has(record.id) || false)
+        radius[coarseIdx][fineIdx].push(isSelected ? dotMargin : dotMargin / 2)
+        ids[coarseIdx][fineIdx].push(record["id"])
         if (colorFieldIsContinuous) {
             colorValues[coarseIdx][fineIdx].push(colorField === undefined ? 1 : record[colorField])
         } else {
             colorValues[coarseIdx][fineIdx].push(colorField === undefined ? 1 : colorKeys[record[colorField]])
         }
     })
-    return { data: buckets, selected, colorValues }
+    return { data: buckets, radius, colorValues, ids }
 }
 
 

@@ -27,7 +27,7 @@ const CanvasPlotLabel = (props: plotLabelProps, ctxt: CanvasRenderingContext2D, 
     ctxt.font = `${1.7*dims.fontPx}px sans-serif`
     ctxt.textAlign = "center"
     const mid = dims.marginLeft + dims.boundedWidth / 2
-    const y = 1.4*dims.fontPx
+    const y = 1.7*dims.fontPx
     ctxt.fillText(text, mid, y)
     ctxt.restore()
 }

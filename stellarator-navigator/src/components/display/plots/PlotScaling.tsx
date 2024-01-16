@@ -169,6 +169,7 @@ export const baseDims = {
     axisLabelOffset: 15,
 }
 
+// TODO: Variable names should reference the coarse/fine categories, not NFPs specifically
 export const computePerPlotDimensions = (selectedNfps: number, spaceWidth: number, spaceHeight: number): [BoundedPlotDimensions, number] => {
     const colCount =  selectedNfps === 0 ? 5 : selectedNfps
     const availableWidth = spaceWidth - (plotGutterVertical * (colCount + 1)) // gutter's-width margin on either side
@@ -195,4 +196,25 @@ export const computePerPlotDimensions = (selectedNfps: number, spaceWidth: numbe
     }
     
     return [dims, colCount]
+}
+
+
+export type ClickToDataCallbackType = (clickX: number, clickY: number) => number[]
+export const usePixelToDataConversions = (dims: BoundedPlotDimensions, dataGeometry: DataGeometry) => {
+    const chartXSpan = dims.boundedWidth
+    const chartYSpan = dims.boundedHeight
+    const dataXSpan = dataGeometry.xmax - dataGeometry.xmin
+    const dataYSpan = dataGeometry.ymax - dataGeometry.ymin
+
+    const xDataPerPixel = dataXSpan / chartXSpan
+    const yDataPerPixel = dataYSpan / chartYSpan
+
+    const interpretClick: ClickToDataCallbackType = useCallback((clickX: number, clickY: number) => {
+        const dataX = ((clickX - dims.marginLeft) * xDataPerPixel) + dataGeometry.xmin
+        const dataY = dataGeometry.ymax - ((clickY - dims.marginTop) * yDataPerPixel)
+        return [dataX, dataY]
+    }, [dataGeometry.xmin, dataGeometry.ymax, dims.marginLeft, dims.marginTop, xDataPerPixel, yDataPerPixel])
+
+
+    return { interpretClick, xDataPerPixel, yDataPerPixel }
 }

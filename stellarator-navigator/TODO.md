@@ -190,8 +190,10 @@
 [x] rewrite resource path finding to funnel everything consistently through getStringId and
     make sure calling components don't make assumptions (esp. Model and its subcomponents)
 
+[x] MORE PROOFING of the surface symmetries, ESPECIALLY for higher-period-count.
+
 [-] Write up instructions for preprocessing data files, incl. in-memory database
-    [ ] Latter should have the appropriate fields log-scaled, do JSONified output, and zip the result
+    [ ] Latter should have the appropriate fields log-scaled, do JSONified output (both handled by process_db.py), and zip the result
     [ ] Rest of data: rsync it, delete the poincare directory, and run process_files.py
     [ ] For deployment, need to switch:
         - `base` variable in `vite.config.ts` (SHOULD NO LONGER BE NEEDED EXCEPT FOR TEST DEPLOYMENT)
@@ -208,18 +210,18 @@
         - one-liner FOR TEST DEV:
         - `yarn build && chmod 755 dist/* && rsync -vahP --delete dist/assets/ workstation:/mnt/home/jsoules/public_www/test/assets/ && rsync -vahP dist/index.html workstation:/mnt/home/jsoules/public_www/test/`
 
-[ ] Improve scatterplot performance
+[x] Improve scatterplot performance
     [x] Figure out how to use Canvas instead of SVG to get around the size limits
     [x] --> I think we can draw the axes in a context2d, draw the dots in webgl, and copy from
         the webgl canvas into the context2d canvas. It'll be tough but worth it.
-    [ ] --> context2d canvas gets the drawing for any overlay select.
-    [ ] --> Need a mapping and inverse-mapping matrix, sigh.
+    [x] --> context2d canvas gets the drawing for any overlay select.
+    [x] --> Need a mapping matrix
     [x] --> webgl will need a couple passes, small dots and bigger dots, as well as
         per-point color scheme, but that is all in the tutorials
 
-[ ] Just implement drag-zoom already
+[x] Just implement drag-zoom already
 
-[ ] Click handler for canvas!
+[x] Click handler for canvas!
 
 [-] Give user ability to choose criteria for plot-splitting
 
@@ -240,12 +242,10 @@
 
 [ ] Trim font references/try to reduce code size
 
-[ ] Provide UI for changing the dot coloration criteria
+[ ] Code cleanup and reorg
 
 
 QUERY OR DISTANT:
-
-[x] MORE PROOFING of the surface symmetries, ESPECIALLY for higher-period-count.
 
 [-] Reorg with index.js files to collect contents of small files
 
@@ -255,11 +255,11 @@ QUERY OR DISTANT:
 
 [?] implement dot mouseover highlights (??)
 
-[-] secure domain name
+[x] secure domain name
 
 [-] consider branding
 
-[-] finalize deployment details with SCC
+[x] finalize deployment details with SCC
 
 [-] Improve styling for error pages
 

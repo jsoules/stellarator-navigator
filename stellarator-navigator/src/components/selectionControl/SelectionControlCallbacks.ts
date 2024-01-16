@@ -16,6 +16,17 @@ const _handleRangeChange = (dispatch: NavigatorDispatch, field: RangeVariables, 
     dispatch(update)
 }
 
+
+const _handleRangesChange = (dispatch: NavigatorDispatch, fields: RangeVariables[], newRanges: number[][]) => {
+    const update: NavigatorStateAction = {
+        type: "updateRanges",
+        fields,
+        newRanges
+    }
+    dispatch(update)
+}
+
+
 export const handleDependentVariableChg = (dispatch: NavigatorDispatch, event: SelectChangeEvent) => {
     const update: NavigatorStateAction = {
         type: 'updateDependentVariable',
@@ -73,9 +84,15 @@ export const _handleUpdateSplitFieldValues = (dispatch: NavigatorDispatch, coars
     dispatch(update)
 }
 
+// TODO: Relocate this
+export type PlotClickCallbackType = (coarsevVal: number | undefined, fineVal: number | undefined) => void
+
 const useFilterCallbacks = (dispatch: Dispatch<NavigatorStateAction>) => {
     const handleRangeChange = useCallback((_: Event, field: RangeVariables, newValue: number | number[]) => {
         _handleRangeChange(dispatch, field, newValue)
+    }, [dispatch])
+    const handleRangesChange = useCallback((fields: RangeVariables[], newValues: number[][]) => {
+        _handleRangesChange(dispatch, fields, newValues)
     }, [dispatch])
     const handleDependentVariableChange = useCallback((event: SelectChangeEvent) => {
         handleDependentVariableChg(dispatch, event)
@@ -99,6 +116,7 @@ const useFilterCallbacks = (dispatch: Dispatch<NavigatorStateAction>) => {
     const callbacks = useMemo(() => {
         return {
             handleRangeChange,
+            handleRangesChange,
             handleCheckboxChange,
             handleTripartiteDropdownChange,
             handleDependentVariableChange,
@@ -106,7 +124,7 @@ const useFilterCallbacks = (dispatch: Dispatch<NavigatorStateAction>) => {
             handleUpdateMarks,
             handleUpdateSplitFieldValues
         }
-    }, [handleCheckboxChange, handleDependentVariableChange, handleIndependentVariableChange, handleRangeChange, handleTripartiteDropdownChange, handleUpdateMarks, handleUpdateSplitFieldValues])
+    }, [handleCheckboxChange, handleDependentVariableChange, handleIndependentVariableChange, handleRangeChange, handleRangesChange, handleTripartiteDropdownChange, handleUpdateMarks, handleUpdateSplitFieldValues])
 
     return callbacks
 }

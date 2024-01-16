@@ -5,7 +5,7 @@ import { FunctionComponent } from "react"
 // import { onClickDot, onHoverDot, onHoverOff } from "./interactions"
 import { filterTo } from "@snState/filter"
 import { DependentVariables, IndependentVariables, ToggleableVariables } from "@snTypes/DataDictionary"
-import { onClickDot } from "./interactions"
+import { onClickDot } from "./interactions/dotInteractions"
 
 
 type ScatterplotProps = {

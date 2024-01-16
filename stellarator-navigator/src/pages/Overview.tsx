@@ -18,7 +18,8 @@ const splitterWidthRolloff = 30
 
 export type PlotDataSummary = {
     data: number[][][]
-    selected: boolean[][][]
+    radius: number[][][]
+    ids: number[][][]
     colorValues: number[][][]
     fineSplitVals: number[]
     coarseSplitVals: number[]
@@ -58,8 +59,8 @@ const usePlotData: plotHookType = ({records, filters, colorSplit, colorFieldIsCo
             fineSplitVals,
             coarseSplitVals
         } as unknown as ProjectionCriteria // discriminating the types based on the constant boolean is confusing the type parser
-        const { data, selected, colorValues } = projectToPlotReadyData(projectionCriteria)
-        return { data, selected, colorValues, fineSplitVals, coarseSplitVals, coarseSplitField: coarseSplit, fineSplitField: fineSplit }
+        const { data, radius, colorValues, ids } = projectToPlotReadyData(projectionCriteria)
+        return { data, radius, ids, colorValues, fineSplitVals, coarseSplitVals, coarseSplitField: coarseSplit, fineSplitField: fineSplit }
     }, [coarseSplit, colorFieldIsContinuous, colorSplit, filters, fineSplit, records])
 
     return res
@@ -105,6 +106,7 @@ const Overview: FunctionComponent<OverviewProps> = (props: OverviewProps) => {
                         dependentVariable={filterSettings.dependentVariable}
                         independentVariable={filterSettings.independentVariable}
                         plotClickHandler={callbacks.handleUpdateSplitFieldValues}
+                        resolveRangeChangeHandler={callbacks.handleRangesChange}
                     />
                     <HrBar />
                     <SnTable

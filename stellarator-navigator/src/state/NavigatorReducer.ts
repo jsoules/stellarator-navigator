@@ -10,6 +10,10 @@ export type NavigatorStateAction = {
     field: RangeVariables,
     newRange: number[]
 } | {
+    type: 'updateRanges',
+    fields: RangeVariables[],
+    newRanges: number[][]
+} | {
     type: 'updateCheckField',
     field: ToggleableVariables,
     index: number,
@@ -50,6 +54,9 @@ const NavigatorReducer = (s: FilterSettings, a: NavigatorStateAction): FilterSet
         case "updateRange": {
             return updateRange(a.field, a.newRange, s)
         }
+        case "updateRanges": {
+            return updateRanges(a.fields, a.newRanges, s)
+        }
         case "updateCheckField": {
             return updateBooleanList(a.field, a.index, a.targetState, s)
         }
@@ -77,6 +84,42 @@ const NavigatorReducer = (s: FilterSettings, a: NavigatorStateAction): FilterSet
     }
 }
 
+
+const applyUpdatedFilters = (settings: FilterSettings, ignoreSizeCheck: boolean = false): FilterSettings => {
+    // having updated a filter, we may need to update the selections.
+    if (settings.database !== undefined) { // Shouldn't happen
+        // TODO: Condition which input to use (the full database vs. the current set)
+        // based on whether our selections got more or less restrictive
+        const newSet = applyFiltersToSet(settings, settings.database, settings.database.allIdSet)
+        // Cheat: we're using the size of the selected record set as a proxy
+        // because there shouldn't be a single interaction that allows you to select an entirely different set,
+        // those would all be broken into two or more interactions
+        const updateRecords = newSet.size !== settings.recordIds.size
+        if (updateRecords || ignoreSizeCheck) {
+            const newMaterializedRecords = projectRecords(newSet, settings.database)
+            return { ...settings, recordIds: newSet, records: newMaterializedRecords }
+        }
+    }
+
+    return settings
+}
+
+
+const doSingleRangeUpdate = (key: RangeVariables, newRange: number[], settings: FilterSettings): FilterSettings => {
+    const existingRange = settings[key]
+    if (existingRange === undefined || existingRange.length !== 2) {
+        throw Error(`Error attempting to update non-extant/misconfigured range ${key} (currently ${existingRange})`)
+    }
+    if (newRange[0] === existingRange[0] && newRange[1] === existingRange[1]) {
+        // no change, return reference equality. Shouldn't happen
+        return settings
+    }
+    settings[key] = [Math.min(...newRange), Math.max(...newRange)]
+
+    return settings
+}
+
+
 const updateBooleanList = (key: ToggleableVariables, index: number, newState: boolean, settings: FilterSettings): FilterSettings => {
     const rightLength = (Fields[key].values || []).length
     if (!(key in settings)) {
@@ -96,55 +139,28 @@ const updateBooleanList = (key: ToggleableVariables, index: number, newState: bo
     const result: FilterSettings = { ...settings }
     result[key] = newSelections
 
-    // having updated a filter, we may need to update the selections.
-    // TODO: Condition which input to use based on whether our selections got more or less restrictive
-    // (The big win will be that we don't have to rerun *all* the filters in that case, only whichever one actually changed.)
-    if (settings.database !== undefined) { // This should never not be the case
-        const newSet = applyFiltersToSet(result, settings.database, settings.database.allIdSet)
-        // Cheat: we're using the size of the selected record set as a proxy
-        // because there shouldn't be a single interaction that allows you to select an entirely different set,
-        // those would all be broken into two or more interactions
-        const updateRecords = newSet.size !== settings.recordIds.size
-        if (updateRecords) {
-            const newMaterializedRecords = projectRecords(newSet, settings.database)
-            return { ...result, recordIds: newSet, records: newMaterializedRecords }
-        }
-    }
-    
-    return result
+    return applyUpdatedFilters(result)
 }
+
 
 const updateRange = (key: RangeVariables, newRange: number[], settings: FilterSettings) => {
-    const existingRange = settings[key]
-    if (existingRange === undefined || existingRange.length !== 2) {
-        throw Error(`Error attempting to update non-extant/misconfigured range ${key} (currently ${existingRange})`)
-    }
-    if (newRange[0] === existingRange[0] && newRange[1] === existingRange[1]) {
-        // no change, return reference equality. Shouldn't happen
-        return settings
-    }
-    const newSettings = { ...settings}
-    newSettings[key] = [Math.min(...newRange), Math.max(...newRange)]
-
-    // TODO: HARMONIZE AS MUCH AS POSSIBLE WITH THE VERSION IN UPDATEBOOLEANLIST
-    // this is separated because if we implement intelligent "did-it-shrink" logic, that will
-    // likely differ between this and the above.
-    // having updated a filter, we may need to update the selections.
-    // TODO: Condition which input to use based on whether our selections got more or less restrictive
-    if (settings.database !== undefined) { // This should never not be the case
-        const newSet = applyFiltersToSet(newSettings, settings.database, settings.database.allIdSet)
-        // Cheat: we're using the size of the selected record set as a proxy
-        // because there shouldn't be a single interaction that allows you to select an entirely different set,
-        // those would all be broken into two or more interactions
-        const updateRecords = newSet.size !== settings.recordIds.size
-        if (updateRecords) {
-            const newMaterializedRecords = projectRecords(newSet, settings.database)
-            return { ...newSettings, recordIds: newSet, records: newMaterializedRecords }
-        }
-    }
-
-    return newSettings
+    const newSettings = {...doSingleRangeUpdate(key, newRange, settings)}
+    return applyUpdatedFilters(newSettings)
 }
+
+
+const updateRanges = (keys: RangeVariables[], newRanges: number[][], settings: FilterSettings) => {
+    if (keys === undefined || newRanges === undefined) throw Error("Undefined lists passed to updateRanges")
+    if (keys.length !== newRanges.length) throw Error("updateRanges called with different number of keys and ranges.")
+
+    let newSettings = {...settings}
+    keys.forEach((k, i) => {
+        newSettings = doSingleRangeUpdate(k, newRanges[i], newSettings)
+    })
+
+    return applyUpdatedFilters(newSettings)
+}
+
 
 const updateTripart = (key: TripartiteVariables, settings: FilterSettings, newValue: number | undefined) => {
     const existingValue = settings[key]
@@ -152,17 +168,9 @@ const updateTripart = (key: TripartiteVariables, settings: FilterSettings, newVa
     const newSettings = { ...settings }
     newSettings[key] = newValue
 
-    // having updated a filter, we may need to update the selections.
-    if (settings.database !== undefined) { // This should never not be the case
-        // Note we CANNOT use size as a proxy here, because flipping one of these could conceivably actually
-        // create two distinct sets of different size.
-        // So we'll always just rerun all filters on the current set.
-        const newSet = applyFiltersToSet(newSettings, settings.database, settings.database.allIdSet)
-        const newMaterializedRecords = projectRecords(newSet, settings.database)
-        return { ...newSettings, recordIds: newSet, records: newMaterializedRecords }
-    }
-
-    return newSettings
+    // Note we CANNOT use size as a proxy here, because flipping one of these could conceivably actually
+    // create two distinct sets of different size.
+    return applyUpdatedFilters(newSettings, true)
 }
 
 

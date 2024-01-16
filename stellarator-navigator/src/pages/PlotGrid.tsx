@@ -2,10 +2,12 @@ import { Grid } from "@mui/material"
 import { makeColors } from "@snComponents/display/Colormaps"
 import CanvasPlotLabel, { CanvasPlotLabelCallbackType } from "@snComponents/display/plots/CanvasPlotLabel"
 import CanvasPlotWrapper from "@snComponents/display/plots/CanvasPlotWrapper"
-import { dotMargin, resizeCanvas } from "@snComponents/display/plots/webgl/drawScatter"
+import { useMouseHandlerFactory, usePointContainsClickFn } from "@snComponents/display/plots/interactions/mouseInteractions"
+import { resizeCanvas } from "@snComponents/display/plots/webgl/drawScatter"
 import useWebglOffscreenCanvas from "@snComponents/display/plots/webgl/useWebglOffscreenCanvas"
-import { computePerPlotDimensions, useCanvasAxes } from "@snPlots/PlotScaling"
-import { DependentVariables, IndependentVariables } from "@snTypes/DataDictionary"
+import { PlotClickCallbackType } from "@snComponents/selectionControl/SelectionControlCallbacks"
+import { computePerPlotDimensions, useCanvasAxes, usePixelToDataConversions } from "@snPlots/PlotScaling"
+import { DependentVariables, IndependentVariables, RangeVariables } from "@snTypes/DataDictionary"
 import { DataGeometry, StellaratorRecord } from "@snTypes/Types"
 import { FunctionComponent, useCallback, useMemo } from "react"
 import { PlotDataSummary } from "./Overview"
@@ -20,14 +22,15 @@ type Props = {
     plotDataSummary: PlotDataSummary
     dataGeometry: DataGeometry
     dependentVariable: DependentVariables
-    independentVariable: IndependentVariables   
-    plotClickHandler: (coarseValue: number | undefined, fineValue: number | undefined) => void
+    independentVariable: IndependentVariables
+    plotClickHandler: PlotClickCallbackType
+    resolveRangeChangeHandler: (fields: RangeVariables[], newValues: number[][]) => void
 }
 
 
 const PlotGrid: FunctionComponent<Props> = (props: Props) => {
-    const { dataGeometry, selectedRecords, width, height, plotDataSummary, plotClickHandler, dependentVariable, independentVariable } = props
-    const { data, selected, colorValues, fineSplitField, coarseSplitField, fineSplitVals, coarseSplitVals } = plotDataSummary
+    const { dataGeometry, selectedRecords, width, height, plotDataSummary, plotClickHandler, resolveRangeChangeHandler, dependentVariable, independentVariable } = props
+    const { data, radius, ids, colorValues, fineSplitField, coarseSplitField, fineSplitVals, coarseSplitVals } = plotDataSummary
 
     const [dims] = useMemo(() => computePerPlotDimensions(fineSplitVals.length, width - 2*internalMargin, height), [height, fineSplitVals.length, width])
     const [canvasXAxis, canvasYAxis] = useCanvasAxes({
@@ -35,28 +38,66 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
         dependentVar: dependentVariable, independentVar: independentVariable,
         dimsIn: dims
     })
+
     const canvasPlotLabel: CanvasPlotLabelCallbackType = useCallback((ctxt, vals) => {
         CanvasPlotLabel({dims, coarseField: coarseSplitField, fineField: fineSplitField}, ctxt, vals)
     }, [coarseSplitField, dims, fineSplitField])
-    const sizes = selected.map(i => i.map(j => j.map(k => k ? dotMargin : dotMargin / 2)))
 
     // TODO: Expose UI for changing color palette
     const colorsRgb = makeColors({isContinuous: false, values: colorValues, scheme: "Tol"})
+        .map(c => c.map(f => f.map(triplet => [...triplet, 1.0]).flat()))
     // Here's an example of what this looks like for continuous values
     // const colorsRgb = makeColors({isContinuous: true, values: colorValues, scheme: "plasma"})
+    // NOTE this still needs to add alpha channel and flatten as above
     const { webglCtxt, loadData } = useWebglOffscreenCanvas(dataGeometry, dims)
     resizeCanvas({ctxt: webglCtxt, width: dims.boundedWidth, height: dims.boundedHeight})
+    const { interpretClick, xDataPerPixel, yDataPerPixel } = usePixelToDataConversions(dims, dataGeometry)
+    const pointClickChecker = usePointContainsClickFn(xDataPerPixel, yDataPerPixel)
+    const mouseHandlerFactory = useMouseHandlerFactory({plotClickHandler, interpretClick, pointClickChecker})
+    const resolveRangeChange = useCallback((rect: number[]) => {
+        const dataUL = interpretClick(rect[0], rect[1])
+        const dataLR = interpretClick(rect[0] + rect[2], rect[1] + rect[3])
+        const dataX = [dataUL[0], dataLR[0]]
+        const dataY = [dataLR[1], dataUL[1]]
+        const useX = Object.values(RangeVariables).includes(independentVariable as unknown as RangeVariables)
+        const useY = Object.values(RangeVariables).includes(dependentVariable as unknown as RangeVariables)
+        if (!useX && !useY) {
+            // This can't happen with current rules since all dependent variables are range-type.
+            // But we'll leave the check in for future-proofing.
+            console.warn("Neither axis is a range: not updating from drag selection.")
+            return
+        }
+        const fields: RangeVariables[] = []
+        const newValues: number[][] = []
+        if (useX) {
+            fields.push(independentVariable as unknown as RangeVariables)
+            newValues.push(dataX)
+        }
+        if (useY) {
+            fields.push(dependentVariable as unknown as RangeVariables)
+            newValues.push(dataY)
+        }
+        resolveRangeChangeHandler(fields, newValues)
+    }, [dependentVariable, independentVariable, interpretClick, resolveRangeChangeHandler])
 
     const resolvedCoarseVals = (coarseSplitVals?.length ?? 0) === 0 ? [undefined] : coarseSplitVals
     const resolvedFineVals = (fineSplitVals?.length ?? 0) === 0 ? [undefined] : fineSplitVals
     const canvasRows = resolvedCoarseVals.map((coarseValue, coarseIdx) => (
             <Grid container item key={`${coarseValue}`}>
-                { resolvedFineVals.map((fineValue, fineIdx) => (
+                { resolvedFineVals.map((fineValue, fineIdx) => {
+                    const mouseHandler = mouseHandlerFactory({
+                        coarseValue,
+                        fineValue,
+                        data: data[coarseIdx][fineIdx],
+                        radius: radius[coarseIdx][fineIdx],
+                        ids: ids[coarseIdx][fineIdx]
+                    })
+                    return (
                         <Grid item xs={0} key={`${fineValue}`}>
                             <CanvasPlotWrapper
                                 key={`${coarseValue}-${fineValue}`}
                                 data={data[coarseIdx][fineIdx]}
-                                sizes={sizes[coarseIdx][fineIdx]}
+                                dotSizes={radius[coarseIdx][fineIdx]}
                                 colorValuesRgb={colorsRgb[coarseIdx][fineIdx]}
                                 dims={dims}
                                 canvasXAxis={canvasXAxis}
@@ -64,12 +105,13 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
                                 canvasPlotLabel={canvasPlotLabel}
                                 fineValue={fineValue}
                                 coarseValue={coarseValue}
-                                clickHandler={() => plotClickHandler(coarseValue, fineValue)}
+                                mouseHandler={mouseHandler}
+                                dragResolver={resolveRangeChange}
                                 scatterCtxt={webglCtxt}
                                 loadData={loadData}
                             />
                         </Grid>
-                    ))
+                    )})
                 }
             </Grid>
         )
@@ -77,7 +119,7 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <div>
-            <div style={{ paddingBottom: 10 }}>Current filter settings return {selectedRecords.length} devices.</div>
+            <div style={{ paddingTop: 10, paddingBottom: 10 }}>Current filter settings return {selectedRecords.length} devices.</div>
             <Grid container>
                 {canvasRows}
             </Grid>

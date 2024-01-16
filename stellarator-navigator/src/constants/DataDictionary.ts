@@ -418,7 +418,7 @@ export const Fields: FieldRecords = {
         shortLabel: "Vol",
         plotLabel: "Volume",
         fullLabel: "Volume",
-        description: "Volme enclosed by the outermost toroidal surface over which quasiasymmetry was optimized",
+        description: "Volume enclosed by the outermost toroidal surface over which quasiasymmetry was optimized",
         unit: `${METER_UNIT}^3`,
         range: [0.049, 2.42],
         isLog: false,
