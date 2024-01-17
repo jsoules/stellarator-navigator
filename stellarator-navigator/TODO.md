@@ -177,11 +177,10 @@
     [ ] Latter should have the appropriate fields log-scaled, do JSONified output, and zip the result
     [ ] Rest of data: rsync it, delete the poincare directory, and run process_files.py
     [ ] For deployment, need to switch:
-        - `base` variable in `vite.config.ts`
-        - `basePath` in `useResourcePath.ts` (NO LONGER NEEDED)
-        - `redirectHome` implementation in `useRoute.ts` (NO LONGER NEEDED)
-        - `onClickDot` in `interactions.tsx` (NO LONGER NEEDED)
-        - `useDatabase` hook in `database.ts` needs to expect UNCOMPRESSED file for local mode and COMPRESSED file (`true` parameter) for remote (NO LONGER NEEDED)
+        - `base` variable in `vite.config.ts` (SHOULD NO LONGER BE NEEDED EXCEPT FOR TEST DEPLOYMENT)
+        - `basePath` in `makeResourcePath.ts`
+        - `onClickDot` in `interactions.tsx` (NO LONGER NEEDED?)
+        - Compressed vs uncompressed data file is handled by import.meta.env.DEV (NOT basepath) so should be fine
         - rename `public` directory to `publicX` to avoid packaging a bunch of files!
     [ ] Build this project (using appropriate basename in vite.config.ts). rsync dist/index.html and dist/assets/ to
         the server.

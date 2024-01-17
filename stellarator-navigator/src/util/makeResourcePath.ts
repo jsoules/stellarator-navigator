@@ -6,7 +6,10 @@ import { getEnumVals } from "@snTypes/DataDictionary"
 // const basePath = "https://users.flatironinstitute.org/~jsoules/QUASR/" // FIXME
 // const basePath = "https://users.flatironinstitute.org/~jsoules/test/" // FIXME
 const BASENAME = import.meta.env.BASE_URL
-const basePath = BASENAME === '/' ? "http://localhost:5173/"
+const basePath = BASENAME === '/'
+                    ? import.meta.env.DEV
+                        ? 'http://localhost:5173'
+                        : 'https://quasr.flatironinstitute.org/'
                     : `https://users.flatironinstitute.org${BASENAME}/`
 const idLength = 6
 
