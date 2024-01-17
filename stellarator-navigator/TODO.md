@@ -192,6 +192,19 @@
 
 [x] MORE PROOFING of the surface symmetries, ESPECIALLY for higher-period-count.
 
+[x] Improve scatterplot performance
+    [x] Figure out how to use Canvas instead of SVG to get around the size limits
+    [x] --> I think we can draw the axes in a context2d, draw the dots in webgl, and copy from
+        the webgl canvas into the context2d canvas. It'll be tough but worth it.
+    [x] --> context2d canvas gets the drawing for any overlay select.
+    [x] --> Need a mapping matrix
+    [x] --> webgl will need a couple passes, small dots and bigger dots, as well as
+        per-point color scheme, but that is all in the tutorials
+
+[x] Just implement drag-zoom already
+
+[x] Click handler for canvas!
+
 [-] Write up instructions for preprocessing data files, incl. in-memory database
     [ ] Latter should have the appropriate fields log-scaled, do JSONified output (both handled by process_db.py), and zip the result
     [ ] Rest of data: rsync it, delete the poincare directory, and run process_files.py
@@ -210,35 +223,22 @@
         - one-liner FOR TEST DEV:
         - `yarn build && chmod 755 dist/* && rsync -vahP --delete dist/assets/ workstation:/mnt/home/jsoules/public_www/test/assets/ && rsync -vahP dist/index.html workstation:/mnt/home/jsoules/public_www/test/`
 
-[x] Improve scatterplot performance
-    [x] Figure out how to use Canvas instead of SVG to get around the size limits
-    [x] --> I think we can draw the axes in a context2d, draw the dots in webgl, and copy from
-        the webgl canvas into the context2d canvas. It'll be tough but worth it.
-    [x] --> context2d canvas gets the drawing for any overlay select.
-    [x] --> Need a mapping matrix
-    [x] --> webgl will need a couple passes, small dots and bigger dots, as well as
-        per-point color scheme, but that is all in the tutorials
-
-[x] Just implement drag-zoom already
-
-[x] Click handler for canvas!
-
 [-] Give user ability to choose criteria for plot-splitting
+
+[-] Expose ability for user to choose the field to base dot coloration on
+
+[ ] Note that horizontal line for non-QA error corresponds to Earth's background magnetic field
 
 [ ] In the reducer, automatically update selected coarse/fine selections for active table when the selected value stops being displayed
     (e.g. case where we are showing NFP=2 and user deselects NFP = 2 from filter)
 
 [ ] Automatically update selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
 
-[-] Expose ability for user to choose the field to base dot coloration on
-
 [ ] Show/hide filters controls (i.e. tab in the control area)
 
 [ ] Try to fix the whole "open selected" button thing; or at least unify the interaction
 
 [ ] Figure out a smarter way to right-size the table in the overview page
-
-[ ] Note that horizontal line for non-QA error corresponds to Earth's background magnetic field
 
 [ ] Trim font references/try to reduce code size
 
