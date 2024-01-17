@@ -79,7 +79,7 @@ const loadShader = (gl: WebGLRenderingContext, shaderType: shaderTypes, source: 
     gl.shaderSource(shader, source)
     gl.compileShader(shader)
 
-    const status = gl.getShaderParameter(shader, gl.COMPILE_STATUS)
+    const status = gl.getShaderParameter(shader, gl.COMPILE_STATUS) as boolean
     if (!status) {
         throw new TypeError(`Couldn't compile shader:\n${gl.getShaderInfoLog(shader)}`)
     }
@@ -107,7 +107,7 @@ const createProgram = (glCtxt: WebGLRenderingContext, vertexShaderSrc: string, f
     glCtxt.attachShader(shaderProgram, fragmentShader)
     glCtxt.linkProgram(shaderProgram)
 
-    const status = glCtxt.getProgramParameter(shaderProgram, glCtxt.LINK_STATUS)
+    const status = glCtxt.getProgramParameter(shaderProgram, glCtxt.LINK_STATUS) as boolean
     if (!status) {
         const error = glCtxt.getProgramInfoLog(shaderProgram)
         glCtxt.deleteProgram(shaderProgram)

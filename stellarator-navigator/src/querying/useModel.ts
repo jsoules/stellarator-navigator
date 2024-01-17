@@ -1,6 +1,7 @@
 import { applyCoilSymmetries, applySurfaceSymmetries } from "@snComponents/display/visualizer/symmetries"
+import { KnownPathType } from "@snTypes/DataDictionary"
 import { CoilRecord, ScalarField, SurfaceObject, Vec3, Vec3Field } from "@snTypes/Types"
-import makeResourcePath, { KnownPathType, ValidId, getStringId } from "@snUtil/makeResourcePath"
+import makeResourcePath, { ValidId, getStringId } from "@snUtil/makeResourcePath"
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import queryFn from "./queryFn"

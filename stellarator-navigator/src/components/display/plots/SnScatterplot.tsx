@@ -59,7 +59,7 @@ const Dot: FunctionComponent<dotProps> = (props: dotProps) => {
 const SnScatterplot: FunctionComponent<ScatterplotProps> = (props: ScatterplotProps) => {
     const { colormap, data, xScale, yScale, height, markedIds, dependentVar, independentVar, nfpValue, ncPerHpValue } = props
     if (data === undefined || data.length === 0) return <></>
-    const _colors = (colormap ?? Tol) as string[]
+    const _colors = (colormap ?? Tol)
     const color = scaleOrdinal()
         .domain(Array(_colors.length).fill(0).map((_, i) => `${i}`))
         .range(_colors) as ScaleOrdinal<string, string, never>

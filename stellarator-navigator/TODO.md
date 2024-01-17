@@ -227,7 +227,13 @@
 
 [-] Expose ability for user to choose the field to base dot coloration on
 
+[ ] Ensure plot size doesn't exceed e.g. 80% of the visible window height
+
+[ ] Add a "reset zoom" button to plot screen
+
 [ ] Note that horizontal line for non-QA error corresponds to Earth's background magnetic field
+
+[ ] Change page title to "QUASR Navigator"
 
 [ ] In the reducer, automatically update selected coarse/fine selections for active table when the selected value stops being displayed
     (e.g. case where we are showing NFP=2 and user deselects NFP = 2 from filter)

@@ -4,12 +4,12 @@ import { getStringId } from "@snUtil/makeResourcePath"
 const BASENAME = import.meta.env.BASE_URL
 
 export const onHoverDot = (id: number) => {
-    console.log(`Hovered ${getStringId(id)}`)
+    console.log(`Hovered ${getStringId(id).id}`)
 }
 
 
 export const onHoverOff = (id: number) => {
-    console.log(`Stopped hovering ${getStringId(id)}`)
+    console.log(`Stopped hovering ${getStringId(id).id}`)
 }
 
 
@@ -23,16 +23,18 @@ export const onClickDot = (id: number) => {
 }
 
 
+// TODO: RETEST THIS
 export const onOpenSelected = (ids?: Set<number>) => {
-    const slowOpen = async (id: number) => {
+    const slowOpen = (id: number) => {
         console.log(`Opening ${getStringId(id).id}`)
         onClickDot(id)
         window.focus()
     }
     if (ids !== undefined) {
-        ids.forEach(async id => {
+        ids.forEach(id => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            await new Promise(_ => setTimeout(() => slowOpen(id), 250))
+            // await new Promise(_ => setTimeout(() => slowOpen(id), 250))
+            setTimeout(() => slowOpen(id), 250)
         })
     }
 }

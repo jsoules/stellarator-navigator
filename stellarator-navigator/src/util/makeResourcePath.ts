@@ -1,4 +1,4 @@
-import { getEnumVals } from "@snTypes/DataDictionary"
+import { GraphicsType, KnownPathType, getEnumVals } from "@snTypes/DataDictionary"
 
 // TODO: move basename to a config file? Read from viteconfig?
 const BASENAME = import.meta.env.BASE_URL
@@ -10,31 +10,10 @@ const basePath = BASENAME === '/'
 const idLength = 6
 
 
-export enum KnownPathType {
-    COILS = "curves",
-    SURFACES = "surfaces",
-    MODB = "modB",
-    NML_VMEC = "nml",
-    SIMSOPT = "simsopt_serials",
-    CURRENTS = "currents",
-    POINCARE = "poincare",
-    DATABASE = "database",
-    RECORD = "record"
-}
-
-enum GraphicsType {
-    COILS = KnownPathType.COILS,
-    CURRENTS = KnownPathType.CURRENTS,
-    SURFACES = KnownPathType.SURFACES,
-    MODB = KnownPathType.MODB,
-    POINCARE = KnownPathType.POINCARE
-}
-
 export type ValidId = { id: string }
 export const getStringId = (id: number | string): ValidId => {
     return { id: `${id}`.padStart(idLength, '0') }
 }
-
 
 const makeResourcePath = (validId: ValidId, type: KnownPathType) => {
     const { id } = validId

@@ -60,7 +60,7 @@ angleFractionsPerNfp.map((v, i) => {
  * plotted individually. If there were k coils in the input set, there will be
  * 2 * k * nfp coils in the resulting output.
  */
-export const applyCoilSymmetries = (coilRecords: CoilRecord[], nfp: number) => {
+export const applyCoilSymmetries = (coilRecords: CoilRecord[], nfp: number): CoilRecord[] => {
     // Each coil is represented as 161 points in x-y-z space making a loop.
     // Step 1: convert our array of 3-vector 161-point loops into an array of N [coils] matrices,
     // each 161 [point-count] x 3 [x,y,z]
@@ -80,7 +80,7 @@ export const applyCoilSymmetries = (coilRecords: CoilRecord[], nfp: number) => {
             return { coil: pts, current: coilRecords[groupIndex].current } as CoilRecord
         })
     )
-    return coilGroupsWithCurrents.flat() as CoilRecord[]
+    return coilGroupsWithCurrents.flat()
 }
 
 /**

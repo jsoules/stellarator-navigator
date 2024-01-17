@@ -1,5 +1,5 @@
 export const getEnumVals = (x: object): string[] => {
-    return Object.values(x).filter(v => isNaN(Number(v)))
+    return (Object.values(x) as string[]).filter(v => isNaN(Number(v)))
 }
 
 export enum KnownFields {
@@ -511,4 +511,24 @@ export enum CategoricalIndexedFields {
     NFP = 'nfp',
     NFOURIER = 'nFourierCoil',
     NSURFACES = 'nSurfaces'
+}
+
+export enum KnownPathType {
+    COILS = "curves",
+    SURFACES = "surfaces",
+    MODB = "modB",
+    NML_VMEC = "nml",
+    SIMSOPT = "simsopt_serials",
+    CURRENTS = "currents",
+    POINCARE = "poincare",
+    DATABASE = "database",
+    RECORD = "record"
+}
+
+export enum GraphicsType {
+    COILS = KnownPathType.COILS,
+    CURRENTS = KnownPathType.CURRENTS,
+    SURFACES = KnownPathType.SURFACES,
+    MODB = KnownPathType.MODB,
+    POINCARE = KnownPathType.POINCARE
 }

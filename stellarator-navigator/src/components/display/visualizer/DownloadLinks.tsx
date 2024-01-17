@@ -1,5 +1,6 @@
 import { Button, Tooltip } from '@mui/material'
-import makeResourcePath, { KnownPathType, getStringId } from "@snUtil/makeResourcePath"
+import { KnownPathType } from '@snTypes/DataDictionary'
+import makeResourcePath, { getStringId } from "@snUtil/makeResourcePath"
 import { FunctionComponent } from "react"
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter"
 import python from "react-syntax-highlighter/dist/esm/languages/hljs/python"
@@ -60,7 +61,9 @@ const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
                 <div>
                     <span>To load downloaded SIMSOPT data, execute the following Python script:</span>
                     <div style={{border: "1px solid #7f7f7f", margin: 10}}>
-                        <SyntaxHighlighter children={codeSnippet} language="python" style={a11yLight} />
+                        <SyntaxHighlighter language="python" style={a11yLight}>
+                            {codeSnippet} 
+                        </SyntaxHighlighter>
                     </div>
                 </div>
             </div>

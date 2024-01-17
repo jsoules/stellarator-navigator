@@ -93,7 +93,7 @@ const makeSelectionFilter = (key: TripartiteVariables, db: NavigatorDatabase) =>
         if (value === undefined) return undefined
         const vals = Fields[key].range
         if (!(vals.includes(value))) {
-            throw Error(`Attempt to filter ${key} with unknown value ${value}, known range ${Fields[key].range}`)
+            throw Error(`Attempt to filter ${key} with unknown value ${value}, known range ${Fields[key].range[0]}, ${Fields[key].range[1]}`)
         }
         return db.categoricalIndexes[key][value]
     }

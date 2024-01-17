@@ -108,7 +108,7 @@ const applyUpdatedFilters = (settings: FilterSettings, ignoreSizeCheck: boolean 
 const doSingleRangeUpdate = (key: RangeVariables, newRange: number[], settings: FilterSettings): FilterSettings => {
     const existingRange = settings[key]
     if (existingRange === undefined || existingRange.length !== 2) {
-        throw Error(`Error attempting to update non-extant/misconfigured range ${key} (currently ${existingRange})`)
+        throw Error(`Error attempting to update non-extant/misconfigured range ${key} (currently ${existingRange[0]}, ${existingRange[1]})`)
     }
     if (newRange[0] === existingRange[0] && newRange[1] === existingRange[1]) {
         // no change, return reference equality. Shouldn't happen
@@ -128,9 +128,9 @@ const updateBooleanList = (key: ToggleableVariables, index: number, newState: bo
     const current = (settings[key] ?? [])
 
     const reset = current.length !== rightLength    // handles initialization
-    const newSelections: boolean[] = reset ? new Array(rightLength).fill(false)
+    const newSelections: boolean[] = reset ? new Array<boolean>(rightLength).fill(false)
                                            : index === -1
-                                                ? new Array(rightLength).fill(newState)
+                                                ? new Array<boolean>(rightLength).fill(newState)
                                                 : current
     if (index >= 0) {
         newSelections[index] = newState
