@@ -4,7 +4,7 @@ import { getEnumVals } from "@snTypes/DataDictionary"
 const BASENAME = import.meta.env.BASE_URL
 const basePath = BASENAME === '/'
                     ? import.meta.env.DEV
-                        ? 'http://localhost:5173'
+                        ? 'http://localhost:5173/'
                         : 'https://quasr.flatironinstitute.org/'
                     : `https://users.flatironinstitute.org${BASENAME}/`
 const idLength = 6
