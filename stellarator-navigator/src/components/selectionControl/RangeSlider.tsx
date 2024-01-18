@@ -21,7 +21,7 @@ const RangeSlider: FunctionComponent<Props> = (props: Props) => {
     const valueLabelFormat = step === null
         ? undefined
         : fieldDesc.isLog
-            ? (v: number) => `${(10 ** v).toExponential(3)}`
+            ? (v: number) => (10 ** v).toExponential(3)
             : (v: number) => v.toFixed(changeScale)
 
     const value = props.value ?? fieldDesc.range

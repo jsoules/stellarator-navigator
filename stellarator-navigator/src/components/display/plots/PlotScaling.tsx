@@ -1,4 +1,4 @@
-import { DependentVariables, Fields, IndependentVariables, RangeVariables, defaultDependentVariableValue, defaultIndependentVariableValue, getEnumVals, getLabel } from "@snTypes/DataDictionary"
+import { DependentVariables, Fields, IndependentVariables, RangeVariables, getEnumVals, getLabel } from "@snTypes/DataDictionary"
 import { BoundedPlotDimensions, DataGeometry, FilterSettings } from "@snTypes/Types"
 import { ScaleLinear, scaleLinear } from "d3"
 import { useCallback, useMemo } from "react"
@@ -25,8 +25,8 @@ type useScalesProps = {
 
 
 export const useDataGeometry = (filters: FilterSettings): DataGeometry => {
-    const independentVar = filters?.independentVariable ?? defaultIndependentVariableValue
-    const dependentVar = filters?.dependentVariable ?? defaultDependentVariableValue
+    const independentVar = filters.independentVariable
+    const dependentVar = filters.dependentVariable
     const rangeVals = getEnumVals(RangeVariables)
 
     const { low: xmin, high: xmax } = getExtrema(filters, independentVar, rangeVals.includes(independentVar))
@@ -104,8 +104,8 @@ export const useCanvasAxes = (props: canvasAxisProps) => {
 
 
 type axisProps = {
-    xScale: ScaleLinear<number, number, never>
-    yScale: ScaleLinear<number, number, never>
+    xScale: ScaleLinear<number, number>
+    yScale: ScaleLinear<number, number>
     dependentVar: DependentVariables
     independentVar: IndependentVariables
     dims: BoundedPlotDimensions

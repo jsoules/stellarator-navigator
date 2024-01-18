@@ -8,7 +8,7 @@ type dataType = {
 }
 
 const msgExtractor = (data?: dataType) => {
-    if (data && data.message) {
+    if (data?.message) {
         return <div>{data.message}</div>
     }
 }

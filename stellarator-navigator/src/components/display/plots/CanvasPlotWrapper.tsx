@@ -46,8 +46,9 @@ const CanvasPlotWrapper: FunctionComponent<Props> = (props: Props) => {
         canvasYAxis(ctxt)
         if (scatterCtxt !== null) {
             // Assertions: should never happen
-            if (data === undefined) throw Error("Data undefined")
-            if (data.some(d => d === undefined)) throw Error("Data contains undefined elements")
+            // TODO: Linter suggested removing these, consider doing so
+            // if (data === undefined) throw Error("Data undefined")
+            // if (data.some(d => d === undefined)) throw Error("Data contains undefined elements")
             loadData(data, dotSizes, colorValuesRgb)
             // const vertexCount = data.reduce((t: number, c) => t + c.length, 0)
             const vertexCount = data.length/2
@@ -59,7 +60,7 @@ const CanvasPlotWrapper: FunctionComponent<Props> = (props: Props) => {
     useEffect(() => {
         const ctxt = dragCanvasRef.current?.getContext("2d")
         if (!dragCanvasRef.current || !ctxt) return
-        repaintDragSelection(ctxt, dragSelectState.dragRect, (dragSelectState.isActive || false))
+        repaintDragSelection(ctxt, dragSelectState.dragRect, (dragSelectState.isActive ?? false))
     }, [dragSelectState.dragRect, dragSelectState.isActive])
 
     return (

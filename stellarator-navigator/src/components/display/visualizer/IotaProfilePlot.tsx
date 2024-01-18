@@ -42,7 +42,7 @@ const useTitleGroup = (width: number) => {
 }
 
 
-type LinearScale = ScaleLinear<number, number, never>
+type LinearScale = ScaleLinear<number, number>
 const useIotaContent = (iotaProf: number[], tfProf: number[], canvasHeight: number, xScale: LinearScale, yScale: LinearScale) => {
 
     const dots = useMemo(() => (

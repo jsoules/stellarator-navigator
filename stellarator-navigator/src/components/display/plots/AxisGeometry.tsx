@@ -24,7 +24,7 @@ export type TickDescriptor = {
 type TicksData = {
     canvasSpan: number
     pixelsPerTick: number
-    scale: ScaleLinear<number, number, never>
+    scale: ScaleLinear<number, number>
     isLog?: boolean
     isY?: boolean
     dataLow?: number

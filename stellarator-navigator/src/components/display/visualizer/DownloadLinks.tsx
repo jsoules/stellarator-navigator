@@ -57,7 +57,7 @@ const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
                         Download SIMSOPT
                     </Button>
                 </Tooltip>
-                <a id="simsopt_download" href={`${simsoptPathFinal}/${simsoptFile}`} download={`${simsoptFile}`} style={{display: "none"}} />
+                <a id="simsopt_download" href={`${simsoptPathFinal}/${simsoptFile}`} download={simsoptFile} style={{display: "none"}} />
                 <div>
                     <span>To load downloaded SIMSOPT data, execute the following Python script:</span>
                     <div style={{border: "1px solid #7f7f7f", margin: 10}}>

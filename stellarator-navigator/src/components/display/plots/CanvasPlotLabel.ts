@@ -18,10 +18,10 @@ export type CanvasPlotLabelCallbackType = (ctxt: CanvasRenderingContext2D, vals:
 const CanvasPlotLabel = (props: plotLabelProps, ctxt: CanvasRenderingContext2D, vals: fieldVals) => {
     const { dims, coarseField, fineField } = props
     const { coarseVal, fineVal } = vals
-    const coarseDesc = Fields[coarseField as unknown as KnownFields]?.shortLabel ?? ''
-    const medDesc = Fields[fineField as unknown as KnownFields]?.shortLabel ?? ''
-    const coarseBlurb = coarseDesc === '' ? '' : `${coarseDesc}: ${coarseVal === undefined ? 'Any' : coarseVal}`
-    const medBlurb = medDesc === '' ? '' : `${medDesc}: ${fineVal === undefined ? 'Any' : fineVal}`
+    const coarseDesc = Fields[coarseField as unknown as KnownFields].shortLabel
+    const medDesc = Fields[fineField as unknown as KnownFields].shortLabel
+    const coarseBlurb = coarseDesc === '' ? '' : `${coarseDesc}: ${coarseVal ?? 'Any'}`
+    const medBlurb = medDesc === '' ? '' : `${medDesc}: ${fineVal ?? 'Any'}`
     const text = (coarseBlurb !== '' && medBlurb !== '') ? `${coarseBlurb}; ${medBlurb}` : `${coarseBlurb}${medBlurb}`
     ctxt.save()
     ctxt.font = `${1.7*dims.fontPx}px sans-serif`

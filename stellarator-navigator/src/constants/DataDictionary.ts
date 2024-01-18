@@ -202,10 +202,10 @@ export const nSurfacesValidValues = [
 export const getLabel = (props: {name: string, labelType: 'short' | 'full' | 'plot'}) => {
     const { name, labelType } = props
     const rec = Fields[name as KnownFields]
-    if (rec === undefined) {
-        console.warn(`Attempt to request description for unknown field ${name}.`)
-        return 'ERROR OCCURRED'
-    }
+    // if (rec === undefined) { TODO REMOVE
+    //     console.warn(`Attempt to request description for unknown field ${name}.`)
+    //     return 'ERROR OCCURRED'
+    // }
     const unitPart = rec.unit === undefined ? '' : ` (${rec.unit})`
     // TODO: ugly, fix
     const labelPart = labelType === 'short' ? rec.shortLabel : labelType === 'plot' ? rec.plotLabel : rec.fullLabel

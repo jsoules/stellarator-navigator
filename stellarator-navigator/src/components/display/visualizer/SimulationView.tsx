@@ -57,11 +57,10 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
 
     const objects = useMemo(() => {
         const displayedSurfaces: THREE.Mesh<THREE.BufferGeometry, THREE.Material>[] = []
-        const definiteSurfaces = surfaces ?? []
         const definiteChecks = surfaceChecks ?? []
         surfaces.length > 0 && definiteChecks.forEach((v, idx) => {
             if (v) {
-                displayedSurfaces.push(definiteSurfaces[idx])
+                displayedSurfaces.push(surfaces[idx])
             }
         })
         return [...tubes, ...displayedSurfaces]
@@ -88,7 +87,6 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
 type Light = THREE.SpotLight | THREE.PointLight
 const zUnit = new THREE.Vector3(0, 0, -1)
 const updatePositions = (camera: THREE.PerspectiveCamera, controls: OrbitControls | undefined, positions: Positions, spots: Light[] ) => {
-    if (!camera) return
     if (!controls) return
     controls.target.copy(positions.center)
     // We'd like to position the camera so the full width of the largest span (x or y) is in view. Since the camera's field-of-view

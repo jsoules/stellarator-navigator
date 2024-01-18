@@ -68,7 +68,7 @@ export type StellaratorRecord = {
                                     // both are unitless and tfProfile should be constrained to lie on (0, 1)
     surfaceTypes: string[]          // array of nSurfaces+1 length, each element's values in ("exact", "ls")
 }
-export type RecordDict = { [key: number]: StellaratorRecord }
+export type RecordDict = Record<number, StellaratorRecord>
 
 export type NavigatorDatabase = {
     list: StellaratorRecord[]
@@ -78,7 +78,7 @@ export type NavigatorDatabase = {
 }
 
 export type CategoricalIndexSet = {[key in CategoricalIndexedFields]: NumericIndex}
-export type NumericIndex = {[key: number]: Set<number>}
+export type NumericIndex = Record<number, Set<number>>
 
 export type NavigatorDispatch = Dispatch<NavigatorStateAction>
 

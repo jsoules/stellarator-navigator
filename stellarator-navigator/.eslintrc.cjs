@@ -3,7 +3,8 @@ module.exports = {
   env: { browser: true, es2020: true },
   extends: [
     'eslint:recommended',
-    'plugin:@typescript-eslint/recommended-type-checked',
+    'plugin:@typescript-eslint/strict-type-checked',
+    // 'plugin:@typescript-eslint/stylistic-type-checked',  // use occasionally--more subjective
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
   ],
@@ -21,6 +22,9 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "@typescript-eslint/prefer-literal-enum-member": "off",
+    "@typescript-eslint/no-confusing-void-expression": "off",
+    "@typescript-eslint/consistent-type-definitions": "off"
   },
 }

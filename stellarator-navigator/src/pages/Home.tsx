@@ -13,7 +13,7 @@ const Home: FunctionComponent = () => {
     useEffect(() => filterSettingDispatch({type: 'initialize', database: database}), [database])
 
     const [showOverview, setShowOverview] = useState<boolean>(false)
-    const ready = database && database !== initialDatabase
+    const ready = database !== initialDatabase
 
     return (
         showOverview 

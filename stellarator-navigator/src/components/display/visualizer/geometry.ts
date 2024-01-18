@@ -6,8 +6,8 @@ import * as THREE from "three"
 export const SURFACE_SIDE_RESOLUTION = 60
 
 export const makeTubes = (coils: Vec3[][]): THREE.TubeGeometry[] => {
-    if (coils === undefined || coils.length === 0) return []
-    if (coils.some(c => c === undefined)) return []
+    if (coils.length === 0) return []
+    // if (coils.some(c => c === undefined)) return [] TODO REMOVE
     return coils.map(coil => {
         const points = coil.map(c => new THREE.Vector3(...c))
         const curve = new THREE.CatmullRomCurve3(points, true)
@@ -37,7 +37,7 @@ const triangulateField = (width: number, height: number): number[] => {
 
 
 export const makeSurfaces = (surfacePoints: Vec3Field[], periods: number = 1) => {
-    if (surfacePoints === undefined) return []
+    // if (surfacePoints === undefined) return [] TODO REMOVE
     if (surfacePoints.length === 0) return []
 
     // For each surface, create a BufferGeometry and add the
@@ -63,7 +63,7 @@ export const makeSurfaces = (surfacePoints: Vec3Field[], periods: number = 1) =>
 
 
 export const colorizeSurfaces = (surfaces: THREE.BufferGeometry[], scalars: ScalarField[], colormap: SupportedColorMap = 'viridis') => {
-    if (scalars === undefined || surfaces === undefined) return []
+    // if (scalars === undefined || surfaces === undefined) return [] TODO REMOVE
     if (scalars.length === 0 || surfaces.length === 0) return []
 
     surfaces.forEach((s, idx) => {

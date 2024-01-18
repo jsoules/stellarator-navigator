@@ -80,8 +80,8 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
         resolveRangeChangeHandler(fields, newValues)
     }, [dependentVariable, independentVariable, interpretClick, resolveRangeChangeHandler])
 
-    const resolvedCoarseVals = (coarseSplitVals?.length ?? 0) === 0 ? [undefined] : coarseSplitVals
-    const resolvedFineVals = (fineSplitVals?.length ?? 0) === 0 ? [undefined] : fineSplitVals
+    const resolvedCoarseVals = (coarseSplitVals.length) === 0 ? [undefined] : coarseSplitVals
+    const resolvedFineVals = (fineSplitVals.length) === 0 ? [undefined] : fineSplitVals
     const canvasRows = resolvedCoarseVals.map((coarseValue, coarseIdx) => (
             <Grid container item key={`${coarseValue}`}>
                 { resolvedFineVals.map((fineValue, fineIdx) => {

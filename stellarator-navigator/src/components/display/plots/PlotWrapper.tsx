@@ -10,8 +10,8 @@ type Props = {
     data: StellaratorRecord[]
     dependentVar: DependentVariables
     independentVar: IndependentVariables
-    xScale: ScaleLinear<number, number, never>
-    yScale: ScaleLinear<number, number, never>
+    xScale: ScaleLinear<number, number>
+    yScale: ScaleLinear<number, number>
     highlightedSeries?: number
     colorMap?: string[]
     xAxis?: JSX.Element

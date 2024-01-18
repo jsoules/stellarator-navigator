@@ -12,8 +12,8 @@ type ScatterplotProps = {
     data: StellaratorRecord[]
     dependentVar: DependentVariables
     independentVar: IndependentVariables
-    xScale: ScaleLinear<number, number, never>
-    yScale: ScaleLinear<number, number, never> | ScaleLogarithmic<number, number, never>
+    xScale: ScaleLinear<number, number>
+    yScale: ScaleLinear<number, number> | ScaleLogarithmic<number, number>
     height: number
     markedIds?: Set<number>
     highlightedSeries?: number
@@ -27,17 +27,18 @@ type dotProps = {
     rec: StellaratorRecord
     yVar: DependentVariables
     xVar: IndependentVariables
-    xScale: ScaleLinear<number, number, never>
-    yScale: ScaleLinear<number, number, never> | ScaleLogarithmic<number, number, never>
+    xScale: ScaleLinear<number, number>
+    yScale: ScaleLinear<number, number> | ScaleLogarithmic<number, number>
     height: number
-    colors: ScaleOrdinal<string, string, never>
+    colors: ScaleOrdinal<string, string>
     isMarked?: boolean
 }
 
 
 const Dot: FunctionComponent<dotProps> = (props: dotProps) => {
     const { rec, yVar, xVar, colors, xScale, yScale, height, isMarked } = props
-    if (rec === undefined) return <></>
+    // TODO: linter says to omit, maybe do so
+    // if (rec === undefined) return <></>
 
     const y = yScale(rec[yVar])
     if (isNaN(height - y)) {
@@ -58,11 +59,12 @@ const Dot: FunctionComponent<dotProps> = (props: dotProps) => {
 
 const SnScatterplot: FunctionComponent<ScatterplotProps> = (props: ScatterplotProps) => {
     const { colormap, data, xScale, yScale, height, markedIds, dependentVar, independentVar, nfpValue, ncPerHpValue } = props
-    if (data === undefined || data.length === 0) return <></>
+    // TODO: Linter says to omit, maybe do so
+    // if (data === undefined || data.length === 0) return <></>
     const _colors = (colormap ?? Tol)
     const color = scaleOrdinal()
         .domain(Array(_colors.length).fill(0).map((_, i) => `${i}`))
-        .range(_colors) as ScaleOrdinal<string, string, never>
+        .range(_colors) as ScaleOrdinal<string, string>
 
     const filters: {[key in ToggleableVariables]?: number | undefined} = {}
     filters[ToggleableVariables.NFP] = nfpValue

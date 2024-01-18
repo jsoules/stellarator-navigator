@@ -10,10 +10,10 @@ const useDragSelect = (dims: BoundedPlotDimensions) => {
 
     const boundedGetEventPoint = useCallback((e: React.MouseEvent) => {
         const pt = getEventPoint(e)
-        if (dims?.boundedHeight === undefined || dims?.boundedWidth === undefined) return pt
+        // if (dims?.boundedHeight === undefined || dims?.boundedWidth === undefined) return pt
         return [Math.min(Math.max(pt[0], dims.marginLeft), dims.boundedWidth + dims.marginLeft),
                Math.min(Math.max(pt[1], dims.marginTop), dims.boundedHeight + dims.marginTop)]
-    }, [dims?.boundedHeight, dims?.boundedWidth, dims?.marginLeft, dims?.marginTop])
+    }, [dims.boundedHeight, dims.boundedWidth, dims.marginLeft, dims.marginTop])
 
     const onMouseMove = useCallback((e: React.MouseEvent) => {
         if (!e.buttons) return

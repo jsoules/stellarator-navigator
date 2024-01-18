@@ -2,8 +2,11 @@ import { CoilRecord, ScalarField, SurfaceObject, Vec3, Vec3Field } from '@snType
 import { MathNumericType, Matrix, cos, index, matrix, multiply, range, sin } from 'mathjs'
 import { SURFACE_SIDE_RESOLUTION } from './geometry'
 
-const coilTransformMatrices: {[key: number]: Matrix[]} = {}
-const surfaceTransformMatrices: {[key: number]: Matrix[]} = {}
+// TODO: Remove per linter?
+// const coilTransformMatrices: {[key: number]: Matrix[]} = {}
+// const surfaceTransformMatrices: {[key: number]: Matrix[]} = {}
+const coilTransformMatrices: Record<number, Matrix[]> = {}
+const surfaceTransformMatrices: Record<number, Matrix[]> = {}
 
 const S = matrix([[1, 0, 0], [0, -1, 0], [0, 0, -1] ])
 // Create an array of 5 elements. Each element should be an array of length (index + 1),

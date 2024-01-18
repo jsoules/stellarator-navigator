@@ -107,7 +107,7 @@ const applyUpdatedFilters = (settings: FilterSettings, ignoreSizeCheck: boolean 
 
 const doSingleRangeUpdate = (key: RangeVariables, newRange: number[], settings: FilterSettings): FilterSettings => {
     const existingRange = settings[key]
-    if (existingRange === undefined || existingRange.length !== 2) {
+    if (existingRange.length !== 2) {
         throw Error(`Error attempting to update non-extant/misconfigured range ${key} (currently ${existingRange[0]}, ${existingRange[1]})`)
     }
     if (newRange[0] === existingRange[0] && newRange[1] === existingRange[1]) {
@@ -121,12 +121,11 @@ const doSingleRangeUpdate = (key: RangeVariables, newRange: number[], settings: 
 
 
 const updateBooleanList = (key: ToggleableVariables, index: number, newState: boolean, settings: FilterSettings): FilterSettings => {
-    const rightLength = (Fields[key].values || []).length
+    const rightLength = (Fields[key].values ?? []).length
     if (!(key in settings)) {
         throw Error(`Initialization error for boolean filter for ${key}.`)
     }
-    const current = (settings[key] ?? [])
-
+    const current = settings[key]
     const reset = current.length !== rightLength    // handles initialization
     const newSelections: boolean[] = reset ? new Array<boolean>(rightLength).fill(false)
                                            : index === -1
@@ -150,7 +149,6 @@ const updateRange = (key: RangeVariables, newRange: number[], settings: FilterSe
 
 
 const updateRanges = (keys: RangeVariables[], newRanges: number[][], settings: FilterSettings) => {
-    if (keys === undefined || newRanges === undefined) throw Error("Undefined lists passed to updateRanges")
     if (keys.length !== newRanges.length) throw Error("updateRanges called with different number of keys and ranges.")
 
     let newSettings = {...settings}

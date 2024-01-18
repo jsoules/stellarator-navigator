@@ -35,7 +35,6 @@ export type ProjectionCriteria = categorizationCriteria & {
 
 type ProjectedData = {
     data: number[][][]
-//     selected: boolean[][][]
     radius: number[][][]
     colorValues: number[][][]
     ids: number[][][]
@@ -43,7 +42,7 @@ type ProjectedData = {
 
 
 export const makeValsFromFieldname = (field: ToggleableVariables, filters: FilterSettings, useAllIfNone?: boolean) => {
-    const allValidVals = Fields[field]?.values ?? []
+    const allValidVals = Fields[field].values ?? []
     const splitVals = filters[field].map((v, i) => (v ? allValidVals[i] : undefined)).filter(x => x !== undefined) as unknown as number[]
     return (splitVals.length !== 0 || !useAllIfNone)
         ? splitVals
@@ -55,7 +54,7 @@ export const defaultFieldKey = 'Any'
 const makeDefaultedList = (p: {baseList: number[] | undefined, defaultToAll?: boolean, fieldName?: ToggleableVariables | undefined}) => {
     if (p.baseList === undefined || p.baseList.length === 0) {
         return p.defaultToAll
-            ? Fields[p.fieldName as unknown as KnownFields]?.values ?? [defaultFieldKey]
+            ? Fields[p.fieldName as unknown as KnownFields].values ?? [defaultFieldKey]
             : [defaultFieldKey]
     }
     return p.baseList
@@ -67,9 +66,9 @@ const makeLookups = (c: categorizationCriteria) => {
     // TODO: Make fine-split/coloration a separate data series, to support picking continuous-valued variables here
     // (since there's no reason after all this has to be discrete)
 
-    const fineKeys:   {[key: string]: number} = {}
-    const coarseKeys: {[key: string]: number} = {}
-    const colorKeys:  {[key: string]: number} = {}
+    const fineKeys:   Record<string, number> = {}
+    const coarseKeys: Record<string, number> = {}
+    const colorKeys:  Record<string, number> = {}
 
     if (fineSplit !== undefined && (fineSplit === coarseSplit)) {
         throw Error(`Data partition criteria must be distinct, but fine-split and coarse-split criterion match (${fineSplit}, ${coarseSplit})`)
@@ -115,13 +114,15 @@ const projectToPlotReadyData = (props: ProjectionCriteria): ProjectedData => {
     // Precondition: Assume that every row of the data is actually supposed to be there, and we just need to slot
     // them into the right place. Filtering of out-of-scope values should have already taken place.
     data.forEach((record) => {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         const fineIdx   = (fineSplit   ?   fineKeys[record[fineSplit]]   : 0) ?? 0
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         const coarseIdx = (coarseSplit ? coarseKeys[record[coarseSplit]] : 0) ?? 0
-        const isSelected = markedIds?.has(record.id) || false
+        const isSelected = markedIds?.has(record.id) ?? false
         buckets[coarseIdx][fineIdx].push(record[xVar])
         buckets[coarseIdx][fineIdx].push(record[yVar])
         radius[coarseIdx][fineIdx].push(isSelected ? dotMargin : dotMargin / 2)
-        ids[coarseIdx][fineIdx].push(record["id"])
+        ids[coarseIdx][fineIdx].push(record.id)
         if (colorFieldIsContinuous) {
             colorValues[coarseIdx][fineIdx].push(colorField === undefined ? 1 : record[colorField])
         } else {

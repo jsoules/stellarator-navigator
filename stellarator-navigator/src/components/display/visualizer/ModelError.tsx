@@ -10,7 +10,7 @@ type dataType = {
 // This is a little silly but it avoids referencing a member of `any`, which
 // keeps the linter happy
 const msgExtractor = (data?: dataType) => {
-    if (data && data.message) {
+    if (data?.message) {
         return <div>{data.message}</div>
     }
 }

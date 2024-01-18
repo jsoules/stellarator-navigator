@@ -32,22 +32,22 @@ const makeResourcePath = (validId: ValidId, type: KnownPathType) => {
             suffix = '.png'
             break
         case KnownPathType.SIMSOPT:
-            typeDirectory = `${type}`
+            typeDirectory = type
             fileBase = `serial${id}`
             suffix = `.json`
             break
         case KnownPathType.NML_VMEC:
-            typeDirectory = `${type}`
+            typeDirectory = type
             fileBase = "input."
-            suffix = `${id}`
+            suffix = id
             break
         case KnownPathType.RECORD:
             typeDirectory = 'records'
-            fileBase = `${id}`
+            fileBase = id
             suffix = '.json'
             break
         default:
-            typeDirectory = `${type}`
+            typeDirectory = type
             fileBase = `${type}${id}`
             suffix = '.json'
     }

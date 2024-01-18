@@ -51,19 +51,19 @@ const Splitter: FunctionComponent<PropsWithChildren<Props>> = (props) => {
     }
     else {
         const children = props.children.filter(c => (c !== undefined))
-        child1 = children[0] as unknown as ReactElement || null
-        child2 = (children[1] as unknown as ReactElement) || null
+        child1 = children[0] as unknown as ReactElement
+        child2 = (children[1] as unknown as ReactElement)
     }
-    if (!child1) {
-        child1 = child2
-        child2 = null
-    }
+    // if (!child1) {
+    //     child1 = child2
+    //     child2 = null
+    // }
 
     const noderef = React.useRef(null) // explicit reference to child node, required by strict mode
 
-    if (!child1) {
-        throw Error('Splitter must have at least one child.')
-    }
+    // if (!child1) {
+    //     throw Error('Splitter must have at least one child.')
+    // }
 
     if (!child2) {
         return <child1.type {...child1.props} width={width} height={height} />
@@ -128,8 +128,7 @@ const Splitter: FunctionComponent<PropsWithChildren<Props>> = (props) => {
         cursor: direction === 'horizontal' ? 'col-resize' : 'row-resize'
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const _handleGripDrag = (_evt: DraggableEvent, _ui: DraggableData) => {
-    }
+    const _handleGripDrag = (_evt: DraggableEvent, _ui: DraggableData) => { }
     const _handleGripDragStop = (_evt: DraggableEvent, ui: DraggableData) => {
         const newGripPositionFromLeft = direction === 'horizontal' ? ui.x : ui.y;
         if (newGripPositionFromLeft === gripPositionFromLeft) {

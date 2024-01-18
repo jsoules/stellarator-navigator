@@ -248,7 +248,7 @@ const initProgram = (glCtxt: WebGLRenderingContext | null) => {
         glCtxt.uniform2fv(programInfo.uniformLocations.stdToScreen, [0.5*width + dotMargin, 0.5*height + dotMargin])
 
         const loadData: ScatterDataLoaderType = (data, sizes, colorValues) => {
-            if (data === undefined || data.length === 0) return
+            if (data.length === 0) return
             populateData(glCtxt, data, colorValues, sizes, buffers)
             readyData(glCtxt, buffers, programInfo)
         }

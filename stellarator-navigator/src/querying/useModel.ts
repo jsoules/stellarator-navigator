@@ -75,16 +75,14 @@ const useModel = (id: string | number, nfp: number) => {
     const baseSurfaces = useMemo(() => handleSurfaces(stringId, surfacesQuery.data, modBQuery.data), [modBQuery.data, stringId, surfacesQuery.data])
 
     const fullCoils = useMemo(() => {
-        if (baseCoils === undefined || baseCoils.length === 0) return undefined
-        if (baseCoils.some(c => c.coil === undefined || (c.coil?.length ?? 0) === 0)) return undefined
+        if (baseCoils.length === 0) return undefined
+        if (baseCoils.some(c => c.coil.length === 0)) return undefined
         return applyCoilSymmetries(baseCoils, nfp)
     }, [baseCoils, nfp])
 
     const fullSurfs = useMemo(() => {
         if (baseSurfaces.incomplete) return undefined
-        // can't happen:
-        if (baseSurfaces.surfacePoints === undefined || baseSurfaces.pointValues === undefined) return undefined
-
+    
         return applySurfaceSymmetries(baseSurfaces, nfp)
     }, [baseSurfaces, nfp])
 
@@ -94,8 +92,8 @@ const useModel = (id: string | number, nfp: number) => {
             baseSurfs: baseSurfaces.incomplete ? undefined : baseSurfaces,
             fullCoils,
             fullSurfs,
-            surfaceCount: surfacesQuery?.data?.length || 0
-        }), [baseCoils, baseSurfaces, fullCoils, fullSurfs, surfacesQuery?.data?.length])
+            surfaceCount: surfacesQuery.data?.length ?? 0
+        }), [baseCoils, baseSurfaces, fullCoils, fullSurfs, surfacesQuery.data?.length])
     
     return record
 }

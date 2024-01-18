@@ -60,7 +60,11 @@ const endDrag = (): DragSelectState => defaultDragSelectState
 
 
 const handleMove = (s: DragSelectState, point: number[]): DragSelectState => {
-    const dragAnchor = s.dragAnchor as number[] // caller should have checked for nullity
+    if (s.dragAnchor === undefined) {
+        console.log("Improbable situation: handleMove with no drag anchor set. Ignoring...")
+        return s
+    }
+    const dragAnchor: number[] = s.dragAnchor
     const newDragRect = [
         Math.min(dragAnchor[0], point[0]),
         Math.min(dragAnchor[1], point[1]),
