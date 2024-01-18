@@ -205,16 +205,16 @@
 
 [x] Click handler for canvas!
 
-[-] Write up instructions for preprocessing data files, incl. in-memory database
-    [ ] Latter should have the appropriate fields log-scaled, do JSONified output (both handled by process_db.py), and zip the result
-    [ ] Rest of data: rsync it, delete the poincare directory, and run process_files.py
-    [ ] For deployment, need to switch:
+[x] Write up instructions for preprocessing data files, incl. in-memory database
+    [x] Latter should have the appropriate fields log-scaled, do JSONified output (both handled by process_db.py), and zip the result
+    [x] Rest of data: rsync it, delete the poincare directory, and run process_files.py
+    [x] For deployment, need to switch:
         - `base` variable in `vite.config.ts` (SHOULD NO LONGER BE NEEDED EXCEPT FOR TEST DEPLOYMENT)
         - `basePath` in `makeResourcePath.ts`
         - `onClickDot` in `interactions.tsx` (NO LONGER NEEDED?)
         - Compressed vs uncompressed data file is handled by import.meta.env.DEV (NOT basepath) so should be fine
         - rename `public` directory to `publicX` to avoid packaging a bunch of files!
-    [ ] Build this project (using appropriate basename in vite.config.ts). rsync dist/index.html and dist/assets/ to
+    [X] Build this project (using appropriate basename in vite.config.ts). rsync dist/index.html and dist/assets/ to
         the server.
         - `yarn build`
         - `chmod 755 dist/*`
