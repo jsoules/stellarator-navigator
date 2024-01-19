@@ -1,4 +1,3 @@
-
 import { FormControl, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material"
 import { IndependentVariables, defaultIndependentVariableValue, getLabel, independentVariableDropdownConfig } from "@snTypes/DataDictionary"
 import { FunctionComponent } from "react"

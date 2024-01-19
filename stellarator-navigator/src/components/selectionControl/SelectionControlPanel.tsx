@@ -4,10 +4,9 @@ import { Fields, RangeVariables, ToggleableVariables, TripartiteVariables } from
 import { FilterSettings } from '@snTypes/Types'
 import { FunctionComponent } from 'react'
 import ToggleableVariableCheckboxGroup from './Checkboxes'
-import DependentVariableSelector from './DependentVariableSelector'
-import IndependentVariableSelector from './IndependentVariableSelector'
 import RangeSlider from './RangeSlider'
 import TripartDropdownSelector from './TripartDropdownSelector'
+import VariableSelector from './VariableSelectDropdown'
 
 
 type Callbacks = {
@@ -36,8 +35,10 @@ const SelectionControlPanel: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <div className="ControlPanelWrapper">
-            <IndependentVariableSelector value={independentVariable} onChange={callbacks.handleIndependentVariableChange} />
-            <DependentVariableSelector value={dependentVariable} onChange={callbacks.handleDependentVariableChange} />
+            {/* <IndependentVariableSelector value={independentVariable} onChange={callbacks.handleIndependentVariableChange} />
+            <DependentVariableSelector value={dependentVariable} onChange={callbacks.handleDependentVariableChange} /> */}
+            <VariableSelector value={independentVariable} onChange={callbacks.handleIndependentVariableChange} type="Independent" />
+            <VariableSelector value={dependentVariable} onChange={callbacks.handleDependentVariableChange} type="Dependent" />
             <HrBar />
             {sliders}
             {/* TODO Unify the checkbox template thing by referencing values if it exists */}
