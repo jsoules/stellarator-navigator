@@ -5,30 +5,30 @@ import { Dispatch } from "react"
 export type FilterSettings = {
     coilLengthPerHp: number[]
     totalCoilLength: number[]
-    meanIota: boolean[],
-    ncPerHp: boolean[],
-    nfp: boolean[],
-    nSurfaces: boolean[],
-    maxKappa: number[],
-    maxMeanSquaredCurve: number[],
-    minIntercoilDist: number[],
-    qaError: number[],
-    aspectRatio: number[],
-    minorRadius: number[],
-    volume: number[],
-    minCoil2SurfaceDist: number[],
-    meanElongation: number[],
-    maxElongation: number[],
-    nFourierCoil?: number,
-    dependentVariable: DependentVariables,
-    independentVariable: IndependentVariables,
-    coarsePlotSplit?: ToggleableVariables,
-    finePlotSplit?: ToggleableVariables,
-    coarsePlotSelectedValue?: number,
-    finePlotSelectedValue?: number,
-    database: NavigatorDatabase | undefined,
-    records: StellaratorRecord[],
-    recordIds: Set<number>,
+    meanIota: boolean[]
+    ncPerHp: boolean[]
+    nfp: boolean[]
+    nSurfaces: boolean[]
+    maxKappa: number[]
+    maxMeanSquaredCurve: number[]
+    minIntercoilDist: number[]
+    qaError: number[]
+    aspectRatio: number[]
+    minorRadius: number[]
+    volume: number[]
+    minCoil2SurfaceDist: number[]
+    meanElongation: number[]
+    maxElongation: number[]
+    nFourierCoil?: number
+    dependentVariable: DependentVariables
+    independentVariable: IndependentVariables
+    coarsePlotSplit?: ToggleableVariables
+    finePlotSplit?: ToggleableVariables
+    coarsePlotSelectedValue?: number
+    finePlotSelectedValue?: number
+    database: NavigatorDatabase | undefined
+    records: StellaratorRecord[]
+    recordIds: Set<number>
     markedRecords: Set<number>
 }
 

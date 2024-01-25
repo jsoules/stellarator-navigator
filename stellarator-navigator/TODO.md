@@ -231,6 +231,8 @@
 
 [ ] Add a "reset zoom" button to plot screen
 
+[ ] Typographic fix to CanvasPlotLabel
+
 [ ] Note that horizontal line for non-QA error corresponds to Earth's background magnetic field
 
 [ ] Change page title to "QUASR Navigator"

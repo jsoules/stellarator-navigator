@@ -41,7 +41,7 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
         const coilTubes = coils === undefined ? [] : makeTubes(coils.map(r => r.coil))
         const currents = coils === undefined ? [] : coils.map(r => r.current)
         const coilMeshes = showCurrents
-            ? coilTubes.map((c, i) => new THREE.Mesh(c, getScaledTubeMaterial(currents[i], 'blueOrange')))
+            ? coilTubes.map((c, i) => new THREE.Mesh(c, getScaledTubeMaterial(currents[i], SupportedColorMap.BLUEORANGE)))
             : coilTubes.map(c => new THREE.Mesh(c, tubeMaterial))
         return coilMeshes
     }, [coils, showCurrents])

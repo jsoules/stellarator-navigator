@@ -62,7 +62,7 @@ export const makeSurfaces = (surfacePoints: Vec3Field[], periods: number = 1) =>
 }
 
 
-export const colorizeSurfaces = (surfaces: THREE.BufferGeometry[], scalars: ScalarField[], colormap: SupportedColorMap = 'viridis') => {
+export const colorizeSurfaces = (surfaces: THREE.BufferGeometry[], scalars: ScalarField[], colormap: SupportedColorMap = SupportedColorMap.VIRIDIS) => {
     // if (scalars === undefined || surfaces === undefined) return [] TODO REMOVE
     if (scalars.length === 0 || surfaces.length === 0) return []
 

@@ -1,5 +1,5 @@
 import { dotMargin } from "@snComponents/display/plots/webgl/drawScatter"
-import { DependentVariables, Fields, IndependentVariables, KnownFields, ToggleableVariables } from "@snTypes/DataDictionary"
+import { DependentVariables, Fields, IndependentVariables, KnownFields, ToggleableVariables, fieldIsCategorical } from "@snTypes/DataDictionary"
 import { FilterSettings, StellaratorRecord } from "@snTypes/Types"
 
 
@@ -9,21 +9,12 @@ import { FilterSettings, StellaratorRecord } from "@snTypes/Types"
 // So we define "fine-split" as making separations *within* rows and "coarse-split" as making separations *between* rows.
 // Higher-order groupings might be possible, but we won't implement that until it's requested.
 type categorizationCriteria = {
-    colorField?: DependentVariables
-    colorFieldIsContinuous?: true
-    fineSplit?: ToggleableVariables
-    fineSplitVals?: number[]
-    coarseSplit?: ToggleableVariables
-    coarseSplitVals?: number[]
-} | {
-    colorField?: ToggleableVariables
-    colorFieldIsContinuous?: false | undefined
+    colorField?: DependentVariables | ToggleableVariables
     fineSplit?: ToggleableVariables
     fineSplitVals?: number[]
     coarseSplit?: ToggleableVariables
     coarseSplitVals?: number[]
 }
-
 
 export type ProjectionCriteria = categorizationCriteria & {
     yVar: DependentVariables
@@ -42,8 +33,8 @@ type ProjectedData = {
 
 
 export const makeValsFromFieldname = (field: ToggleableVariables, filters: FilterSettings, useAllIfNone?: boolean) => {
-    const allValidVals = Fields[field].values ?? []
-    const splitVals = filters[field].map((v, i) => (v ? allValidVals[i] : undefined)).filter(x => x !== undefined) as unknown as number[]
+    const allValidVals = Fields[field]?.values ?? []
+    const splitVals = (filters[field] ?? []).map((v, i) => (v ? allValidVals[i] : undefined)).filter(x => x !== undefined) as unknown as number[]
     return (splitVals.length !== 0 || !useAllIfNone)
         ? splitVals
         : allValidVals
@@ -61,22 +52,22 @@ const makeDefaultedList = (p: {baseList: number[] | undefined, defaultToAll?: bo
 }
 
 const makeLookups = (c: categorizationCriteria) => {
-    const { fineSplit, coarseSplit, colorField, colorFieldIsContinuous } = c
-
-    // TODO: Make fine-split/coloration a separate data series, to support picking continuous-valued variables here
-    // (since there's no reason after all this has to be discrete)
+    // const { fineSplit, coarseSplit, colorField } = c
+    const { colorField } = c
 
     const fineKeys:   Record<string, number> = {}
     const coarseKeys: Record<string, number> = {}
     const colorKeys:  Record<string, number> = {}
 
-    if (fineSplit !== undefined && (fineSplit === coarseSplit)) {
-        throw Error(`Data partition criteria must be distinct, but fine-split and coarse-split criterion match (${fineSplit}, ${coarseSplit})`)
-    }
+    // Actually this isn't a good idea, as it's likely to occur as a trainsition state when changing values or axes
+    // if (fineSplit !== undefined && (fineSplit === coarseSplit)) {
+    //     throw Error(`Data partition criteria must be distinct, but fine-split and coarse-split criterion match (${fineSplit}, ${coarseSplit})`)
+    // }
 
     const fineVals   = makeDefaultedList({ baseList: c.fineSplitVals })
     const coarseVals = makeDefaultedList({ baseList: c.coarseSplitVals })
-    const colorVals  = colorFieldIsContinuous ? [] : makeDefaultedList({ baseList: undefined, defaultToAll: true, fieldName: colorField as ToggleableVariables })
+    const colorFieldIsCategorical = fieldIsCategorical(colorField)
+    const colorVals  = colorFieldIsCategorical ? makeDefaultedList({ baseList: undefined, defaultToAll: true, fieldName: colorField as ToggleableVariables }) : []
 
     fineVals.forEach((v, i) => fineKeys[`${v}`] = i)
     coarseVals.forEach((v, i) => coarseKeys[`${v}`] = i)
@@ -87,7 +78,7 @@ const makeLookups = (c: categorizationCriteria) => {
 
 
 const projectToPlotReadyData = (props: ProjectionCriteria): ProjectedData => {
-    const { data, yVar, xVar, markedIds, colorField, colorFieldIsContinuous, fineSplit, coarseSplit } = props
+    const { data, yVar, xVar, markedIds, colorField, fineSplit, coarseSplit } = props
     // We're going to be boorish and iterative here, because filtering properly would potentially involve
     // iterating over the entire database ~1000 times.
     // Instead, create a data structure with S x R x C buckets, where S = cardinality of field for colorCriteria,
@@ -97,6 +88,7 @@ const projectToPlotReadyData = (props: ProjectionCriteria): ProjectedData => {
 
     
     const { fineKeys, coarseKeys, colorKeys } = makeLookups(props)
+    const colorFieldIsCategorical = fieldIsCategorical(colorField)
     
     const buckets: number[][][] = new Array(Object.keys(coarseKeys).length).fill(0)
         .map(() => new Array(Object.keys(fineKeys).length).fill(0)
@@ -123,10 +115,10 @@ const projectToPlotReadyData = (props: ProjectionCriteria): ProjectedData => {
         buckets[coarseIdx][fineIdx].push(record[yVar])
         radius[coarseIdx][fineIdx].push(isSelected ? dotMargin : dotMargin / 2)
         ids[coarseIdx][fineIdx].push(record.id)
-        if (colorFieldIsContinuous) {
-            colorValues[coarseIdx][fineIdx].push(colorField === undefined ? 1 : record[colorField])
-        } else {
+        if (colorFieldIsCategorical) {
             colorValues[coarseIdx][fineIdx].push(colorField === undefined ? 1 : colorKeys[record[colorField]])
+        } else {
+            colorValues[coarseIdx][fineIdx].push(colorField === undefined ? 1 : record[colorField])
         }
     })
     return { data: buckets, radius, colorValues, ids }

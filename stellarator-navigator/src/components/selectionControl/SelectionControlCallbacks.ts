@@ -1,11 +1,12 @@
 import { SelectChangeEvent } from '@mui/material'
 import { GridRowSelectionModel } from '@mui/x-data-grid'
-import { NavigatorStateAction } from '@snState/NavigatorReducer'
+import { FacetSplitType, NavigatorStateAction } from '@snState/NavigatorReducer'
 import { DependentVariables, IndependentVariables, RangeVariables, ToggleableVariables, TripartiteVariables } from '@snTypes/DataDictionary'
 import { NavigatorDispatch } from '@snTypes/Types'
 import { Dispatch, useCallback, useMemo } from 'react'
 
 export const defaultTripartiteBothState = -1
+export const defaultFacetNoneState = 0
 
 const _handleRangeChange = (dispatch: NavigatorDispatch, field: RangeVariables, newRange: number | number[]) => {
     const update: NavigatorStateAction = {
@@ -26,7 +27,6 @@ const _handleRangesChange = (dispatch: NavigatorDispatch, fields: RangeVariables
     dispatch(update)
 }
 
-
 export const handleDependentVariableChg = (dispatch: NavigatorDispatch, event: SelectChangeEvent) => {
     const update: NavigatorStateAction = {
         type: 'updateDependentVariable',
@@ -42,6 +42,20 @@ export const handleIndependentVariableChg = (dispatch: NavigatorDispatch, event:
     }
     dispatch(update)
 }
+
+const _facetVariableHandlerFactory = (target: FacetSplitType) => {
+    return (dispatch: NavigatorDispatch, event: SelectChangeEvent) => {
+        const update: NavigatorStateAction = {
+            type: 'updatePlotSplits',
+            target,
+            newSplit: event.target.value as unknown as ToggleableVariables | undefined
+        }
+        dispatch(update)
+    }
+}
+
+export const _handleCoarseVariableChange = _facetVariableHandlerFactory('coarse')
+export const _handleFineVariableChange = _facetVariableHandlerFactory('fine')
 
 export const handleCheckboxChangeBase = (dispatch: NavigatorDispatch, field: ToggleableVariables, index: number, targetState: boolean) => {
     const update: NavigatorStateAction = {
@@ -75,10 +89,10 @@ export const handleUpdateMarkedRecords = (dispatch: NavigatorDispatch, model: Gr
 
 // TODO: Add handler for updating the selected fields for coarse and fine plot splits
 
-export const _handleUpdateSplitFieldValues = (dispatch: NavigatorDispatch, coarseVal: number | undefined, fineVal: number | undefined) => {
+export const _handleUpdateFocusedPlotIndices = (dispatch: NavigatorDispatch, coarseVal: number | undefined, fineVal: number | undefined) => {
     const newVals = [coarseVal, fineVal]
     const update: NavigatorStateAction = {
-        type: 'updatePlotSplitValues',
+        type: 'updateFocusedPlotIndices',
         newValues: newVals
     }
     dispatch(update)
@@ -97,9 +111,9 @@ const useFilterCallbacks = (dispatch: Dispatch<NavigatorStateAction>) => {
     const handleDependentVariableChange = useCallback((event: SelectChangeEvent) => {
         handleDependentVariableChg(dispatch, event)
     }, [dispatch])
-    const handleIndependentVariableChange = useCallback((event: SelectChangeEvent) => {
-        handleIndependentVariableChg(dispatch, event)
-    }, [dispatch])
+    const handleIndependentVariableChange = useCallback((e: SelectChangeEvent) => handleIndependentVariableChg(dispatch, e), [dispatch])
+    const handleCoarseVariableChange = useCallback((e: SelectChangeEvent) => _handleCoarseVariableChange(dispatch, e), [dispatch])
+    const handleFineVariableChange = useCallback((e: SelectChangeEvent) => _handleFineVariableChange(dispatch, e), [dispatch])
     const handleCheckboxChange = useCallback((field: ToggleableVariables, index: number, targetState: boolean) => {
         handleCheckboxChangeBase(dispatch, field, index, targetState)
     }, [dispatch])
@@ -109,8 +123,8 @@ const useFilterCallbacks = (dispatch: Dispatch<NavigatorStateAction>) => {
     const handleUpdateMarks = useCallback((model: GridRowSelectionModel) => {
         handleUpdateMarkedRecords(dispatch, model)
     }, [dispatch])
-    const handleUpdateSplitFieldValues = useCallback((coarseVal: number | undefined, fineVal: number | undefined) => {
-        _handleUpdateSplitFieldValues(dispatch, coarseVal, fineVal)
+    const handleUpdateFocusedPlotIndices = useCallback((coarseVal: number | undefined, fineVal: number | undefined) => {
+        _handleUpdateFocusedPlotIndices(dispatch, coarseVal, fineVal)
     }, [dispatch])
 
     const callbacks = useMemo(() => {
@@ -121,10 +135,12 @@ const useFilterCallbacks = (dispatch: Dispatch<NavigatorStateAction>) => {
             handleTripartiteDropdownChange,
             handleDependentVariableChange,
             handleIndependentVariableChange,
+            handleCoarseVariableChange,
+            handleFineVariableChange,
             handleUpdateMarks,
-            handleUpdateSplitFieldValues
+            handleUpdateFocusedPlotIndices
         }
-    }, [handleCheckboxChange, handleDependentVariableChange, handleIndependentVariableChange, handleRangeChange, handleRangesChange, handleTripartiteDropdownChange, handleUpdateMarks, handleUpdateSplitFieldValues])
+    }, [handleCheckboxChange, handleDependentVariableChange, handleIndependentVariableChange, handleRangeChange, handleRangesChange, handleTripartiteDropdownChange, handleUpdateMarks, handleUpdateFocusedPlotIndices])
 
     return callbacks
 }

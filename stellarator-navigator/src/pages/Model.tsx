@@ -19,7 +19,7 @@ const Model: FunctionComponent = () => {
     const rec = useRecord(id)
     const { baseCoils, baseSurfs, fullCoils, fullSurfs, surfaceCount } = useModel(stringId.id, rec.nfp)
     
-    const [colorMap, setColorMap] = useState<SupportedColorMap>('plasma')
+    const [colorMap, setColorMap] = useState<SupportedColorMap>(SupportedColorMap.PLASMA)
     const [showFullRing, setShowFullRing] = useState<boolean>(false)
     // TODO: Temporarily defaulted to False & disabled control while an irregularity in the data is updated
     const [showCurrents, setShowCurrents] = useState<boolean>(false)

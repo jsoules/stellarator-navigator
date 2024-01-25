@@ -1,6 +1,12 @@
 import { FilterSettings, NavigatorDatabase, StellaratorRecord } from "@snTypes/Types";
 import { CategoricalIndexedFields, DependentVariables, Fields, IndependentVariables, ToggleableVariables, coilLengthPerHpValidValues, meanIotaValidValues, ncPerHpValidValues, nfpValidValues, totalCoilLengthValidValues } from "./DataDictionary";
 
+export const defaultFinePlotSplit = ToggleableVariables.NFP
+export const defaultCoarsePlotSplit = ToggleableVariables.NC_PER_HP
+export const defaultDependentVariableValue = DependentVariables.QA_ERROR
+export const defaultIndependentVariableValue = IndependentVariables.TOTAL_COIL_LENGTH
+export const defaultPlotColorSplit = ToggleableVariables.NC_PER_HP
+
 export const initialNavigatorState: FilterSettings = {
     coilLengthPerHp: [Math.min(...coilLengthPerHpValidValues), Math.max(...coilLengthPerHpValidValues)],
     totalCoilLength: [Math.min(...totalCoilLengthValidValues), Math.max(...totalCoilLengthValidValues)],
@@ -20,10 +26,10 @@ export const initialNavigatorState: FilterSettings = {
     maxElongation: (Fields.maxElongation.range),
     nFourierCoil: undefined,
     //
-    dependentVariable: DependentVariables.QA_ERROR,
-    independentVariable: IndependentVariables.TOTAL_COIL_LENGTH,
-    coarsePlotSplit: ToggleableVariables.NC_PER_HP,
-    finePlotSplit: ToggleableVariables.NFP,
+    dependentVariable: defaultDependentVariableValue,
+    independentVariable: defaultIndependentVariableValue,
+    coarsePlotSplit: defaultCoarsePlotSplit,
+    finePlotSplit: defaultFinePlotSplit,
     finePlotSelectedValue: 1,
     database: undefined,
     records: [],
@@ -35,11 +41,11 @@ export const initialDatabase: NavigatorDatabase = {
     list: [],
     byId: {},
     categoricalIndexes: {
-        [CategoricalIndexedFields.MEAN_IOTA]: {},
-        [CategoricalIndexedFields.NC_PER_HP]: {},
-        [CategoricalIndexedFields.NFP]: {},
-        [CategoricalIndexedFields.NFOURIER]: {},
-        [CategoricalIndexedFields.NSURFACES]: {}
+        [ CategoricalIndexedFields.MEAN_IOTA ]: {},
+        [ CategoricalIndexedFields.NC_PER_HP ]: {},
+        [ CategoricalIndexedFields.NFP       ]: {},
+        [ CategoricalIndexedFields.NFOURIER  ]: {},
+        [ CategoricalIndexedFields.NSURFACES ]: {}
     },
     allIdSet: new Set<number>([])
 }

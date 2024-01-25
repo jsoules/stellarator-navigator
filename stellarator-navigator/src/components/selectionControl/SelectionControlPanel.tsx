@@ -1,8 +1,10 @@
 import { SelectChangeEvent } from '@mui/material'
+import { SupportedColorMap, SupportedColorPalette } from '@snComponents/display/Colormaps'
+import { ColorPropsAction, PlotColorProps, useUpdateColorSchemeCallback, useUpdateColorVariableCallback } from '@snComponents/display/plots/interactions/plotColors'
 import HrBar from '@snComponents/general/HrBar'
-import { Fields, RangeVariables, ToggleableVariables, TripartiteVariables } from '@snTypes/DataDictionary'
+import { Fields, RangeVariables, ToggleableVariables, TripartiteVariables, fieldIsCategorical } from '@snTypes/DataDictionary'
 import { FilterSettings } from '@snTypes/Types'
-import { FunctionComponent } from 'react'
+import { Dispatch, FunctionComponent } from 'react'
 import ToggleableVariableCheckboxGroup from './Checkboxes'
 import RangeSlider from './RangeSlider'
 import TripartDropdownSelector from './TripartDropdownSelector'
@@ -14,18 +16,26 @@ type Callbacks = {
     handleTripartiteDropdownChange: (field: TripartiteVariables, event: SelectChangeEvent<number>) => void
     handleDependentVariableChange: (event: SelectChangeEvent) => void
     handleIndependentVariableChange: (event: SelectChangeEvent) => void
+    handleCoarseVariableChange: (event: SelectChangeEvent) => void
+    handleFineVariableChange: (event: SelectChangeEvent) => void
     handleCheckboxChange: (type: ToggleableVariables, index: number, targetState: boolean) => void
 }
 
 
 type Props = {
     filterSettings: FilterSettings,
-    callbacks: Callbacks
+    callbacks: Callbacks,
+    colorProps: PlotColorProps,
+    colorChgDispatcher: Dispatch<ColorPropsAction>
 }
 
 const SelectionControlPanel: FunctionComponent<Props> = (props: Props) => {
-    const { filterSettings, callbacks } = props
-    const { meanIota, ncPerHp, nfp, dependentVariable, independentVariable, nSurfaces } = filterSettings
+    const { filterSettings, callbacks, colorChgDispatcher } = props
+    const { meanIota, ncPerHp, nfp, dependentVariable, independentVariable, coarsePlotSplit, finePlotSplit, nSurfaces } = filterSettings
+    const { colorSplit, style } = props.colorProps
+
+    const colorVarCallback = useUpdateColorVariableCallback(colorChgDispatcher)
+    const colorSchemeCallback = useUpdateColorSchemeCallback(colorChgDispatcher)
 
     const sliders = Object.values(RangeVariables).filter(rv => isNaN(Number(rv)))
         .map(rv => (<RangeSlider key={rv} field={rv} value={filterSettings[rv]} onChange={callbacks.handleRangeChange} />))
@@ -33,12 +43,20 @@ const SelectionControlPanel: FunctionComponent<Props> = (props: Props) => {
     const tripartDropdowns = Object.values(TripartiteVariables).filter(rv => isNaN(Number(rv)))
         .map(rv => (<TripartDropdownSelector key={rv} field={rv} value={filterSettings[rv] ?? -1} onChange={callbacks.handleTripartiteDropdownChange} />))
 
+    const styleSelector = fieldIsCategorical(colorSplit)
+        ? <VariableSelector value={style as SupportedColorPalette} onChange={colorSchemeCallback} type="ColorStyleDiscrete" />
+        : <VariableSelector value={style as SupportedColorMap} onChange={colorSchemeCallback} type="ColorStyleContinuous" />
+
     return (
         <div className="ControlPanelWrapper">
-            {/* <IndependentVariableSelector value={independentVariable} onChange={callbacks.handleIndependentVariableChange} />
-            <DependentVariableSelector value={dependentVariable} onChange={callbacks.handleDependentVariableChange} /> */}
             <VariableSelector value={independentVariable} onChange={callbacks.handleIndependentVariableChange} type="Independent" />
             <VariableSelector value={dependentVariable} onChange={callbacks.handleDependentVariableChange} type="Dependent" />
+            <HrBar />
+            <VariableSelector value={colorSplit} onChange={colorVarCallback} type="ColorVariable" />
+            {styleSelector}
+            <HrBar />
+            <VariableSelector value={coarsePlotSplit} onChange={callbacks.handleCoarseVariableChange} type="CoarseSplit" />
+            <VariableSelector value={finePlotSplit} onChange={callbacks.handleFineVariableChange} type="FineSplit" />
             <HrBar />
             {sliders}
             {/* TODO Unify the checkbox template thing by referencing values if it exists */}

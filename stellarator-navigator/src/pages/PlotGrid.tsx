@@ -3,6 +3,8 @@ import { makeColors } from "@snComponents/display/Colormaps"
 import CanvasPlotLabel, { CanvasPlotLabelCallbackType } from "@snComponents/display/plots/CanvasPlotLabel"
 import CanvasPlotWrapper from "@snComponents/display/plots/CanvasPlotWrapper"
 import { useMouseHandlerFactory, usePointContainsClickFn } from "@snComponents/display/plots/interactions/mouseInteractions"
+import { PlotColorProps } from "@snComponents/display/plots/interactions/plotColors"
+import { PlotDataSummary } from "@snComponents/display/plots/interactions/usePlotData"
 import { resizeCanvas } from "@snComponents/display/plots/webgl/drawScatter"
 import useWebglOffscreenCanvas from "@snComponents/display/plots/webgl/useWebglOffscreenCanvas"
 import { PlotClickCallbackType } from "@snComponents/selectionControl/SelectionControlCallbacks"
@@ -10,7 +12,6 @@ import { computePerPlotDimensions, useCanvasAxes, usePixelToDataConversions } fr
 import { DependentVariables, IndependentVariables, RangeVariables } from "@snTypes/DataDictionary"
 import { DataGeometry, StellaratorRecord } from "@snTypes/Types"
 import { FunctionComponent, useCallback, useMemo } from "react"
-import { PlotDataSummary } from "./Overview"
 
 export const internalMargin = 20
 
@@ -23,14 +24,16 @@ type Props = {
     dataGeometry: DataGeometry
     dependentVariable: DependentVariables
     independentVariable: IndependentVariables
+    plotColorProps: PlotColorProps
     plotClickHandler: PlotClickCallbackType
     resolveRangeChangeHandler: (fields: RangeVariables[], newValues: number[][]) => void
 }
 
 
 const PlotGrid: FunctionComponent<Props> = (props: Props) => {
-    const { dataGeometry, selectedRecords, width, height, plotDataSummary, plotClickHandler, resolveRangeChangeHandler, dependentVariable, independentVariable } = props
-    const { data, radius, ids, colorValues, fineSplitField, coarseSplitField, fineSplitVals, coarseSplitVals } = plotDataSummary
+    const { dataGeometry, selectedRecords, width, height, plotClickHandler, resolveRangeChangeHandler, dependentVariable, independentVariable } = props
+    const { data, radius, ids, colorValues, fineSplitField, coarseSplitField, fineSplitVals, coarseSplitVals } = props.plotDataSummary
+    const { style } = props.plotColorProps
 
     const [dims] = useMemo(() => computePerPlotDimensions(fineSplitVals.length, width - 2*internalMargin, height), [height, fineSplitVals.length, width])
     const [canvasXAxis, canvasYAxis] = useCanvasAxes({
@@ -43,12 +46,8 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
         CanvasPlotLabel({dims, coarseField: coarseSplitField, fineField: fineSplitField}, ctxt, vals)
     }, [coarseSplitField, dims, fineSplitField])
 
-    // TODO: Expose UI for changing color palette
-    const colorsRgb = makeColors({isContinuous: false, values: colorValues, scheme: "Tol"})
+    const colorsRgb = makeColors({values: colorValues, scheme: style})
         .map(c => c.map(f => f.map(triplet => [...triplet, 1.0]).flat()))
-    // Here's an example of what this looks like for continuous values
-    // const colorsRgb = makeColors({isContinuous: true, values: colorValues, scheme: "plasma"})
-    // NOTE this still needs to add alpha channel and flatten as above
     const { webglCtxt, loadData } = useWebglOffscreenCanvas(dataGeometry, dims)
     resizeCanvas({ctxt: webglCtxt, width: dims.boundedWidth, height: dims.boundedHeight})
     const { interpretClick, xDataPerPixel, yDataPerPixel } = usePixelToDataConversions(dims, dataGeometry)

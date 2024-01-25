@@ -2,6 +2,8 @@ import { applyFiltersToSet, projectRecords } from "@snState/filter"
 import { DependentVariables, Fields, IndependentVariables, RangeVariables, ToggleableVariables, TripartiteVariables } from "@snTypes/DataDictionary"
 import { FilterSettings, NavigatorDatabase } from "@snTypes/Types"
 
+export type FacetSplitType = 'coarse' | 'fine'
+
 export type NavigatorStateAction = {
     type: 'initialize',
     database: NavigatorDatabase
@@ -33,9 +35,10 @@ export type NavigatorStateAction = {
     newSelections: Set<number>
 } | {
     type: 'updatePlotSplits',
-    newSplits: (ToggleableVariables | undefined)[]
+    newSplit: (ToggleableVariables | undefined)
+    target: FacetSplitType
 } | {
-    type: 'updatePlotSplitValues',
+    type: 'updateFocusedPlotIndices',
     newValues: (number | undefined)[]
 }
 
@@ -73,9 +76,9 @@ const NavigatorReducer = (s: FilterSettings, a: NavigatorStateAction): FilterSet
             return { ...s, markedRecords: a.newSelections }
         }
         case "updatePlotSplits": {
-            return updatePlotSplits(s, a.newSplits)
+            return updatePlotSplits(s, a.target, a.newSplit)
         }
-        case "updatePlotSplitValues": {
+        case "updateFocusedPlotIndices": {
             return { ...s, coarsePlotSelectedValue: a.newValues[0], finePlotSelectedValue: a.newValues[1] }
         }
         default: {
@@ -172,12 +175,18 @@ const updateTripart = (key: TripartiteVariables, settings: FilterSettings, newVa
 }
 
 
-const updatePlotSplits = (settings: FilterSettings, newSplits: (ToggleableVariables | undefined)[]): FilterSettings => {
-    const coarseField = newSplits[0]
-    const fineField = newSplits[1]
-    const coarseVal = coarseField === undefined ? undefined : (Fields[coarseField].values ?? [])[settings[coarseField].findIndex(x => x)]
-    const fineVal = fineField === undefined ? undefined : (Fields[fineField].values ?? [])[settings[fineField].findIndex(x => x)]
-    return { ...settings, coarsePlotSplit: coarseField, finePlotSplit: fineField, coarsePlotSelectedValue: coarseVal, finePlotSelectedValue: fineVal }
+const updatePlotSplits = (settings: FilterSettings, target: FacetSplitType, newSplit: ToggleableVariables | undefined): FilterSettings => {
+    // because of the dropdown select interface, this is sometimes passed a literal string value of "undefined" :(
+    const splitUndefined = newSplit === undefined || ("undefined" === newSplit as string)
+    const value = splitUndefined ? undefined : (Fields[newSplit]?.values ?? [])[settings[newSplit].findIndex(x => x)]
+    switch(target) {
+        case 'coarse':
+            return { ...settings, coarsePlotSplit: newSplit, coarsePlotSelectedValue: value }
+        case 'fine':
+            return { ...settings, finePlotSplit: newSplit, finePlotSelectedValue: value }
+        default:
+            throw Error('Unsupported update-plot-split target.')
+    }
 }
 
 

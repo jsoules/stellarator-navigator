@@ -29,16 +29,16 @@ export enum KnownFields {
 }
 
 export enum DependentVariables {
-    COIL_LENGTH_PER_HP = KnownFields.COIL_LENGTH_PER_HP,
     TOTAL_COIL_LENGTH = KnownFields.TOTAL_COIL_LENGTH,
+    COIL_LENGTH_PER_HP = KnownFields.COIL_LENGTH_PER_HP,
+    MIN_INTERCOIL_DIST = KnownFields.MIN_INTERCOIL_DIST,
+    MIN_COIL_TO_SURFACE_DIST = KnownFields.MIN_COIL_TO_SURFACE_DIST,
+    QA_ERROR = KnownFields.QA_ERROR,
     MAX_KAPPA = KnownFields.MAX_KAPPA,
     MAX_MEAN_SQUARED_CURVE = KnownFields.MAX_MEAN_SQUARED_CURVE,
-    MIN_INTERCOIL_DIST = KnownFields.MIN_INTERCOIL_DIST,
-    QA_ERROR = KnownFields.QA_ERROR,
     ASPECT_RATIO = KnownFields.ASPECT_RATIO,
     MINOR_RADIUS = KnownFields.MINOR_RADIUS,
     VOLUME = KnownFields.VOLUME,
-    MIN_COIL_TO_SURFACE_DIST = KnownFields.MIN_COIL_TO_SURFACE_DIST,
     MEAN_ELONGATION = KnownFields.MEAN_ELONGATION,
     MAX_ELONGATION = KnownFields.MAX_ELONGATION
 }
@@ -90,43 +90,54 @@ export enum TripartiteVariables {
     N_FOURIER_COIL = KnownFields.N_FOURIER_COIL,
 }
 
-export const defaultDependentVariableValue = DependentVariables.QA_ERROR
-export const defaultIndependentVariableValue = IndependentVariables.TOTAL_COIL_LENGTH
-
-export const dependentVariableDropdownConfig: { key: number, fieldName: DependentVariables }[] = [
-    { key:  1, fieldName: DependentVariables.QA_ERROR                 },
-    { key:  2, fieldName: DependentVariables.MAX_KAPPA                },
-    { key:  3, fieldName: DependentVariables.MAX_MEAN_SQUARED_CURVE   },
-    { key:  4, fieldName: DependentVariables.MIN_INTERCOIL_DIST       },
-    { key:  5, fieldName: DependentVariables.MIN_COIL_TO_SURFACE_DIST },
-    { key:  6, fieldName: DependentVariables.MINOR_RADIUS             },
-    { key:  7, fieldName: DependentVariables.VOLUME                   },
-    { key:  8, fieldName: DependentVariables.ASPECT_RATIO             },
-    { key:  9, fieldName: DependentVariables.COIL_LENGTH_PER_HP       },
-    { key: 10, fieldName: DependentVariables.TOTAL_COIL_LENGTH        },
-    { key: 11, fieldName: DependentVariables.MEAN_ELONGATION          },
-    { key: 12, fieldName: DependentVariables.MAX_ELONGATION           },
+export const dependentVariableDropdownConfig: { key: number, value: DependentVariables }[] = [
+    { key:  1, value: DependentVariables.QA_ERROR                 },
+    { key:  2, value: DependentVariables.MAX_KAPPA                },
+    { key:  3, value: DependentVariables.MAX_MEAN_SQUARED_CURVE   },
+    { key:  4, value: DependentVariables.MIN_INTERCOIL_DIST       },
+    { key:  5, value: DependentVariables.MIN_COIL_TO_SURFACE_DIST },
+    { key:  6, value: DependentVariables.MINOR_RADIUS             },
+    { key:  7, value: DependentVariables.VOLUME                   },
+    { key:  8, value: DependentVariables.ASPECT_RATIO             },
+    { key:  9, value: DependentVariables.COIL_LENGTH_PER_HP       },
+    { key: 10, value: DependentVariables.TOTAL_COIL_LENGTH        },
+    { key: 11, value: DependentVariables.MEAN_ELONGATION          },
+    { key: 12, value: DependentVariables.MAX_ELONGATION           },
 ]
 
-export const independentVariableDropdownConfig: { key: number, fieldName: IndependentVariables }[] = [
-    { key:  1, fieldName: IndependentVariables.TOTAL_COIL_LENGTH        },
-    { key:  2, fieldName: IndependentVariables.COIL_LENGTH_PER_HP       },
-    { key:  3, fieldName: IndependentVariables.MIN_INTERCOIL_DIST       },
-    { key:  4, fieldName: IndependentVariables.MIN_COIL_TO_SURFACE_DIST },
-    { key:  5, fieldName: IndependentVariables.QA_ERROR                 },
-    { key:  6, fieldName: IndependentVariables.MAX_KAPPA                },
-    { key:  7, fieldName: IndependentVariables.MAX_MEAN_SQUARED_CURVE   },
-    { key:  8, fieldName: IndependentVariables.ASPECT_RATIO             },
-    { key:  9, fieldName: IndependentVariables.MINOR_RADIUS             },
-    { key: 10, fieldName: IndependentVariables.VOLUME                   },
-    { key: 11, fieldName: IndependentVariables.MEAN_IOTA                },
-    { key: 12, fieldName: IndependentVariables.MEAN_ELONGATION          },
-    { key: 13, fieldName: IndependentVariables.MAX_ELONGATION           },
-    { key: 14, fieldName: IndependentVariables.NC_PER_HP                },
-    { key: 15, fieldName: IndependentVariables.NFP                      },
-    { key: 17, fieldName: IndependentVariables.N_FOURIER_COIL           },
-    { key: 18, fieldName: IndependentVariables.NSURFACES                },
+export const independentVariableDropdownConfig: { key: number, value: IndependentVariables }[] = [
+    { key:  1, value: IndependentVariables.TOTAL_COIL_LENGTH        },
+    { key:  2, value: IndependentVariables.COIL_LENGTH_PER_HP       },
+    { key:  3, value: IndependentVariables.MIN_INTERCOIL_DIST       },
+    { key:  4, value: IndependentVariables.MIN_COIL_TO_SURFACE_DIST },
+    { key:  5, value: IndependentVariables.QA_ERROR                 },
+    { key:  6, value: IndependentVariables.MAX_KAPPA                },
+    { key:  7, value: IndependentVariables.MAX_MEAN_SQUARED_CURVE   },
+    { key:  8, value: IndependentVariables.ASPECT_RATIO             },
+    { key:  9, value: IndependentVariables.MINOR_RADIUS             },
+    { key: 10, value: IndependentVariables.VOLUME                   },
+    { key: 11, value: IndependentVariables.MEAN_IOTA                },
+    { key: 12, value: IndependentVariables.MEAN_ELONGATION          },
+    { key: 13, value: IndependentVariables.MAX_ELONGATION           },
+    { key: 14, value: IndependentVariables.NC_PER_HP                },
+    { key: 15, value: IndependentVariables.NFP                      },
+    { key: 17, value: IndependentVariables.N_FOURIER_COIL           },
+    { key: 18, value: IndependentVariables.NSURFACES                },
 ]
+
+export const toggleableVariableDropdownConfig: { key: number, value: ToggleableVariables }[] = [
+    { key: 1, value: ToggleableVariables.MEAN_IOTA  },
+    { key: 2, value: ToggleableVariables.NC_PER_HP  },
+    { key: 3, value: ToggleableVariables.NFP        },
+    { key: 4, value: ToggleableVariables.N_SURFACES },
+]
+
+
+export const colorationVariableDropdownConfig: { key: number, value: DependentVariables | ToggleableVariables }[] = [
+    ...toggleableVariableDropdownConfig,
+    ...(dependentVariableDropdownConfig.map(v => ({ key: v.key + toggleableVariableDropdownConfig.length, value: v.value})))
+]
+
 
 export type FieldDescription = {
     shortLabel: string,
@@ -503,6 +514,10 @@ export const Fields: FieldRecords = {
         tableColumnWidth: 0,
         displayInTable: false
     }
+}
+
+export const fieldIsCategorical = (fieldName?: string): boolean => {
+    return Fields[fieldName as KnownFields]?.isCategorical ?? false
 }
 
 export enum CategoricalIndexedFields {
