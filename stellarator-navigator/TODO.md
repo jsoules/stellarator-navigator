@@ -227,15 +227,19 @@
 
 [x] Expose ability for user to choose the field to base dot coloration on
 
-[ ] Typographic fix to CanvasPlotLabel
+[x] Change page title to "QUASR Navigator"
 
-[ ] Ensure plot size doesn't exceed e.g. 80% of the visible window height
+[x] in computePerPlotDimensions, set column count based on actual values from fine variable--
+name shouldn't reference nfp and the default shouldn't be hard-coded 5
+
+[x] Ensure plot size doesn't exceed e.g. 80% of the visible window height
+    --> checked off for now, but need to query in future, see what others think
+
+[x] Note that horizontal line for non-QA error corresponds to Earth's background magnetic field
 
 [ ] Add a "reset zoom" button to plot screen
 
-[ ] Note that horizontal line for non-QA error corresponds to Earth's background magnetic field
-
-[ ] Change page title to "QUASR Navigator"
+[ ] Typographic fix to CanvasPlotLabel
 
 [ ] In the reducer, automatically update selected coarse/fine selections for active table when the selected value stops being displayed
     (e.g. case where we are showing NFP=2 and user deselects NFP = 2 from filter)

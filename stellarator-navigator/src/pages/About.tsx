@@ -100,7 +100,7 @@ const Home: FunctionComponent<Props> = (props: Props) => {
                     ))}
                 </div>
                 <div>
-                    Stellarator Navigator by Jeff Soules (Flatiron Institute)
+                    Navigator by Jeff Soules (Flatiron Institute)
                 </div>
             </div>
         </div>

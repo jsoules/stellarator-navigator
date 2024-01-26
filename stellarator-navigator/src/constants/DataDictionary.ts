@@ -148,8 +148,9 @@ export type FieldDescription = {
     range: [number, number],
     values?: number[],
     isLog: boolean,
-    isCategorical: boolean,
+    isCategorical: boolean
     markedValue?: number,
+    markedValueDesc?: string
     tableColumnWidth?: number,
     displayInTable: boolean
 }
@@ -356,6 +357,7 @@ export const Fields: FieldRecords = {
         isLog: false,
         isCategorical: false,
         markedValue: 5,
+        markedValueDesc: "DESCRIPTION TK",
         displayInTable: true
     },
     'maxMeanSquaredCurve': {
@@ -368,6 +370,7 @@ export const Fields: FieldRecords = {
         isLog: false,
         isCategorical: false,
         markedValue: 5,
+        markedValueDesc: "DESCRIPTION TK",
         displayInTable: true
     },
     'minIntercoilDist': {
@@ -380,6 +383,7 @@ export const Fields: FieldRecords = {
         isLog: false,
         isCategorical: false,
         markedValue: 0.1,
+        markedValueDesc: "DESCRIPTION TK",
         displayInTable: true
     },
     'qaError': {
@@ -391,6 +395,7 @@ export const Fields: FieldRecords = {
         isLog: true,
         isCategorical: false,
         markedValue: -4.30,
+        markedValueDesc: "Horizontal line indicates the Earth's background magnetic field.",
         displayInTable: true
     },
     'gradient': {
@@ -446,6 +451,7 @@ export const Fields: FieldRecords = {
         isLog: false,
         isCategorical: false,
         markedValue: 0.1,
+        markedValueDesc: "DESCRIPTION TK",
         displayInTable: true
     },
     'meanElongation': {
@@ -516,9 +522,17 @@ export const Fields: FieldRecords = {
     }
 }
 
-export const fieldIsCategorical = (fieldName?: string): boolean => {
-    return Fields[fieldName as KnownFields]?.isCategorical ?? false
-}
+export const fieldIsCategorical = (fieldName?: string): boolean => (
+    Fields[fieldName as KnownFields]?.isCategorical ?? false
+)
+
+export const fieldValuesCount = (fieldName?: string): number => (
+    Fields[fieldName as KnownFields]?.values?.length ?? 0
+)
+
+export const fieldMarkedValueDesc = (fieldName?: string): string | undefined => (
+    Fields[fieldName as KnownFields]?.markedValueDesc
+)
 
 export enum CategoricalIndexedFields {
     MEAN_IOTA = 'meanIota',

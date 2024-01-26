@@ -9,7 +9,7 @@ import { resizeCanvas } from "@snComponents/display/plots/webgl/drawScatter"
 import useWebglOffscreenCanvas from "@snComponents/display/plots/webgl/useWebglOffscreenCanvas"
 import { PlotClickCallbackType } from "@snComponents/selectionControl/SelectionControlCallbacks"
 import { computePerPlotDimensions, useCanvasAxes, usePixelToDataConversions } from "@snPlots/PlotScaling"
-import { DependentVariables, IndependentVariables, RangeVariables } from "@snTypes/DataDictionary"
+import { DependentVariables, IndependentVariables, RangeVariables, fieldMarkedValueDesc, fieldValuesCount } from "@snTypes/DataDictionary"
 import { DataGeometry, StellaratorRecord } from "@snTypes/Types"
 import { FunctionComponent, useCallback, useMemo } from "react"
 
@@ -35,7 +35,16 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
     const { data, radius, ids, colorValues, fineSplitField, coarseSplitField, fineSplitVals, coarseSplitVals } = props.plotDataSummary
     const { style } = props.plotColorProps
 
-    const [dims] = useMemo(() => computePerPlotDimensions(fineSplitVals.length, width - 2*internalMargin, height), [height, fineSplitVals.length, width])
+    const markedValueDesc = fieldMarkedValueDesc(dependentVariable)
+    const markedValueExplanation = markedValueDesc === undefined
+        ? <></>
+        : <div style={{ paddingTop: 10, paddingBottom: 10 }}>{markedValueDesc}</div>
+
+    // All this logic probably belongs elsewhere
+    const colCount = useMemo(() => 
+        fineSplitVals.length === 0 ? fieldValuesCount(fineSplitField) : fineSplitVals.length,
+    [fineSplitVals.length, fineSplitField])
+    const [dims] = useMemo(() => computePerPlotDimensions(colCount, width - 2*internalMargin, height), [height, fineSplitVals.length, width])
     const [canvasXAxis, canvasYAxis] = useCanvasAxes({
         dataGeometry,
         dependentVar: dependentVariable, independentVar: independentVariable,
@@ -122,6 +131,7 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
             <Grid container>
                 {canvasRows}
             </Grid>
+            {markedValueExplanation}
         </div>
     )
 }
