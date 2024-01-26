@@ -223,15 +223,15 @@
         - one-liner FOR TEST DEV:
         - `yarn build && chmod 755 dist/* && rsync -vahP --delete dist/assets/ workstation:/mnt/home/jsoules/public_www/test/assets/ && rsync -vahP dist/index.html workstation:/mnt/home/jsoules/public_www/test/`
 
-[-] Give user ability to choose criteria for plot-splitting
+[x] Give user ability to choose criteria for plot-splitting
 
-[-] Expose ability for user to choose the field to base dot coloration on
+[x] Expose ability for user to choose the field to base dot coloration on
+
+[ ] Typographic fix to CanvasPlotLabel
 
 [ ] Ensure plot size doesn't exceed e.g. 80% of the visible window height
 
 [ ] Add a "reset zoom" button to plot screen
-
-[ ] Typographic fix to CanvasPlotLabel
 
 [ ] Note that horizontal line for non-QA error corresponds to Earth's background magnetic field
 
@@ -244,13 +244,13 @@
 
 [ ] Show/hide filters controls (i.e. tab in the control area)
 
-[ ] Try to fix the whole "open selected" button thing; or at least unify the interaction
-
 [ ] Figure out a smarter way to right-size the table in the overview page
 
 [ ] Trim font references/try to reduce code size
 
 [ ] Code cleanup and reorg
+
+[ ] Try to fix the whole "open selected" button thing; or at least unify the interaction
 
 -- Note: 260734 looks kind of like a cherry blossom, aww
 

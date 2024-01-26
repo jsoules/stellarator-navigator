@@ -140,7 +140,7 @@ const useFilterCallbacks = (dispatch: Dispatch<NavigatorStateAction>) => {
             handleUpdateMarks,
             handleUpdateFocusedPlotIndices
         }
-    }, [handleCheckboxChange, handleDependentVariableChange, handleIndependentVariableChange, handleRangeChange, handleRangesChange, handleTripartiteDropdownChange, handleUpdateMarks, handleUpdateFocusedPlotIndices])
+    }, [handleCheckboxChange, handleDependentVariableChange, handleIndependentVariableChange, handleRangeChange, handleRangesChange, handleTripartiteDropdownChange, handleUpdateMarks, handleUpdateFocusedPlotIndices, handleCoarseVariableChange, handleFineVariableChange])
 
     return callbacks
 }

@@ -14,6 +14,11 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
+    // Haven't got the config on this perfect yet--
+    // when using an IDE/editor started out of the root repo directory,
+    // need to use this config.
+    // Swap for the other when linting from the BASE/stellarator-navigator
+    // directory (where eslint is actually installed.)
     project: [path.join(__dirname, './tsconfig.json'),
               path.join(__dirname, './tsconfig.node.json')],
     // project: ['./tsconfig.json', './tsconfig.node.json'],
@@ -28,6 +33,10 @@ module.exports = {
     "react/react-in-jsx-scope": "off",
     "@typescript-eslint/prefer-literal-enum-member": "off",
     "@typescript-eslint/no-confusing-void-expression": "off",
-    "@typescript-eslint/consistent-type-definitions": "off"
+    "@typescript-eslint/consistent-type-definitions": "off",
+    // Unfortunately we do a lot of potentially-unsafe casting to make the
+    // data dictionary work; linter doesn't realize how unsafe it is
+    // and encourages us to remove safety rails that are actually needful
+    "@typescript-eslint/no-unnecessary-condition": "off",
   },
 }
