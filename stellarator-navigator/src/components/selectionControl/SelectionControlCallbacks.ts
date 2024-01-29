@@ -27,6 +27,16 @@ const _handleRangesChange = (dispatch: NavigatorDispatch, fields: RangeVariables
     dispatch(update)
 }
 
+
+const _handleRangeReset = (dispatch: NavigatorDispatch, field: RangeVariables) => {
+    const update: NavigatorStateAction = {
+        type: "resetRange",
+        field
+    }
+    dispatch(update)
+}
+
+
 export const handleDependentVariableChg = (dispatch: NavigatorDispatch, event: SelectChangeEvent) => {
     const update: NavigatorStateAction = {
         type: 'updateDependentVariable',
@@ -108,6 +118,7 @@ const useFilterCallbacks = (dispatch: Dispatch<NavigatorStateAction>) => {
     const handleRangesChange = useCallback((fields: RangeVariables[], newValues: number[][]) => {
         _handleRangesChange(dispatch, fields, newValues)
     }, [dispatch])
+    const handleRangeReset = useCallback((field: RangeVariables) => _handleRangeReset(dispatch, field), [dispatch])
     const handleDependentVariableChange = useCallback((event: SelectChangeEvent) => {
         handleDependentVariableChg(dispatch, event)
     }, [dispatch])
@@ -131,6 +142,7 @@ const useFilterCallbacks = (dispatch: Dispatch<NavigatorStateAction>) => {
         return {
             handleRangeChange,
             handleRangesChange,
+            handleRangeReset,
             handleCheckboxChange,
             handleTripartiteDropdownChange,
             handleDependentVariableChange,
@@ -140,7 +152,7 @@ const useFilterCallbacks = (dispatch: Dispatch<NavigatorStateAction>) => {
             handleUpdateMarks,
             handleUpdateFocusedPlotIndices
         }
-    }, [handleCheckboxChange, handleDependentVariableChange, handleIndependentVariableChange, handleRangeChange, handleRangesChange, handleTripartiteDropdownChange, handleUpdateMarks, handleUpdateFocusedPlotIndices, handleCoarseVariableChange, handleFineVariableChange])
+    }, [handleCheckboxChange, handleDependentVariableChange, handleIndependentVariableChange, handleRangeChange, handleRangesChange, handleRangeReset, handleTripartiteDropdownChange, handleUpdateMarks, handleUpdateFocusedPlotIndices, handleCoarseVariableChange, handleFineVariableChange])
 
     return callbacks
 }

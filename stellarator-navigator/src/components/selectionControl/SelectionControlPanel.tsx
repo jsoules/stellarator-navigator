@@ -13,6 +13,7 @@ import VariableSelector from './VariableSelectDropdown'
 
 type Callbacks = {
     handleRangeChange: (event: Event, field: RangeVariables, newValue: number | number[]) => void
+    handleRangeReset: (field: RangeVariables) => void
     handleTripartiteDropdownChange: (field: TripartiteVariables, event: SelectChangeEvent<number>) => void
     handleDependentVariableChange: (event: SelectChangeEvent) => void
     handleIndependentVariableChange: (event: SelectChangeEvent) => void
@@ -38,7 +39,7 @@ const SelectionControlPanel: FunctionComponent<Props> = (props: Props) => {
     const colorSchemeCallback = useUpdateColorSchemeCallback(colorChgDispatcher)
 
     const sliders = Object.values(RangeVariables).filter(rv => isNaN(Number(rv)))
-        .map(rv => (<RangeSlider key={rv} field={rv} value={filterSettings[rv]} onChange={callbacks.handleRangeChange} />))
+        .map(rv => (<RangeSlider key={rv} field={rv} value={filterSettings[rv]} onChange={callbacks.handleRangeChange} onReset={callbacks.handleRangeReset} />))
 
     const tripartDropdowns = Object.values(TripartiteVariables).filter(rv => isNaN(Number(rv)))
         .map(rv => (<TripartDropdownSelector key={rv} field={rv} value={filterSettings[rv] ?? -1} onChange={callbacks.handleTripartiteDropdownChange} />))

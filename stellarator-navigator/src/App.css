@@ -92,11 +92,19 @@ div.ForceLightMode {
 
 .sliderWrapper {
     padding-left: 8px;
-    padding-top: 10px;
+    padding-top: 15px;
 }
 
 .switchWrapper {
     padding-left: 8px;
+}
+
+.rangeLabel {
+    float: left;
+}
+
+.rangeResetButton {
+    float: right;
 }
 
 .overviewTable {

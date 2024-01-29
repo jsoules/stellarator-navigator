@@ -146,8 +146,11 @@ export const useAxes = (props: axisProps) => {
 // TODO: These may be tweaked
 export const plotGutterVertical = 15
 export const plotGutterHorizontal = 15
-const minPlotX = 250
-const minPlotY = 250
+// const minPlotX = 250
+// const minPlotY = 250
+// TODO: we may revisit this based on feedback about ideal plot shape
+const minPlotX = 270
+const minPlotY = 270
 // aspect ratio is width/height (I'm talking about the plot aspect ratio here, not the quantity in the data)
 // const minPlotAspect = 0.5 // this turns out not to matter--we don't need to fill vertical space
 const idealPlotAspect = 1.4
@@ -159,7 +162,8 @@ const MaxPlotHeightFraction = 0.66  // upper bound on how much window space the 
 // and make them proportional to the other hard-coded values for consistent styling
 const fontPx = 10
 export const baseDims = {
-    marginTop: 30,
+    // marginTop: 30,
+    marginTop: 40,
     marginRight: 20,
     marginBottom: 60,
     marginLeft: 80,
@@ -177,22 +181,18 @@ export const baseDims = {
 export const computePerPlotDimensions = (colCount: number, spaceWidth: number, spaceHeight: number): [BoundedPlotDimensions, number] => {
     const availableWidth = spaceWidth - (plotGutterVertical * (colCount + 1)) // gutter's-width margin on either side
     const availableHeight = (spaceHeight - plotGutterHorizontal * 2) * MaxPlotHeightFraction // apply some margin
-    console.log(`spaceheight ${spaceHeight} available ${availableHeight}`)
     let plotWidth = Math.max(availableWidth / colCount, minPlotX)
     let plotHeight = -1
     // if this width would result in vertical scroll for even a single graph, dial the width back
-    console.log(`plotWidth ${plotWidth}, ratio ${plotWidth/maxPlotAspect}, available ${availableHeight}`)
     if (plotWidth/maxPlotAspect > availableHeight) {
         plotWidth = availableHeight * maxPlotAspect
         plotHeight = availableHeight
     } else {
         // Use the height for the ideal aspect ratio, or if that's too short, the min plot height.
         plotHeight = Math.floor(Math.min(plotWidth/idealPlotAspect, Math.max(availableHeight, minPlotY)))
-        console.log(`Enough room; set height ${plotHeight}`)
     }
     // We clamp the plot height to minPlotY, which matches minPlotX, so if we hit the clamp,
     // the worst we can do is make a square plot. So we'll never force an aspect ratio that's too low.
-    console.log(`Computed and returning plotHeight ${plotHeight}`)
 
     const dims = {
         ...baseDims,

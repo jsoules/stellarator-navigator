@@ -237,9 +237,9 @@ name shouldn't reference nfp and the default shouldn't be hard-coded 5
 
 [x] Note that horizontal line for non-QA error corresponds to Earth's background magnetic field
 
-[ ] Add a "reset zoom" button to plot screen
+[x] Typographic fix to CanvasPlotLabel
 
-[ ] Typographic fix to CanvasPlotLabel
+[x] Add a "reset zoom" button to plot screen
 
 [ ] In the reducer, automatically update selected coarse/fine selections for active table when the selected value stops being displayed
     (e.g. case where we are showing NFP=2 and user deselects NFP = 2 from filter)

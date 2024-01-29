@@ -16,6 +16,9 @@ export type NavigatorStateAction = {
     fields: RangeVariables[],
     newRanges: number[][]
 } | {
+    type: 'resetRange',
+    field: RangeVariables
+} | {
     type: 'updateCheckField',
     field: ToggleableVariables,
     index: number,
@@ -59,6 +62,9 @@ const NavigatorReducer = (s: FilterSettings, a: NavigatorStateAction): FilterSet
         }
         case "updateRanges": {
             return updateRanges(a.fields, a.newRanges, s)
+        }
+        case "resetRange": {
+            return resetRange(a.field, s)
         }
         case "updateCheckField": {
             return updateBooleanList(a.field, a.index, a.targetState, s)
@@ -160,6 +166,12 @@ const updateRanges = (keys: RangeVariables[], newRanges: number[][], settings: F
     })
 
     return applyUpdatedFilters(newSettings)
+}
+
+
+const resetRange = (key: RangeVariables, settings: FilterSettings) => {
+    const newRange = Fields[key]?.range ?? [-1, 1]
+    return updateRange(key, newRange, settings)
 }
 
 

@@ -1,15 +1,17 @@
 import { Slider, Typography } from "@mui/material"
 import { Fields, RangeVariables, getLabel } from "@snTypes/DataDictionary"
 import { FunctionComponent, useCallback } from "react"
+import ResetRangeButton from "./ResetRangeButton"
 
 type Props = {
     field: RangeVariables,
     value: number[] | undefined,
-    onChange: (event: Event, field: RangeVariables, newValue: number | number[]) => void
+    onChange: (event: Event, field: RangeVariables, newValue: number | number[]) => void,
+    onReset: (field: RangeVariables) => void
 }
 
 const RangeSlider: FunctionComponent<Props> = (props: Props) => {
-    const { field, onChange } = props
+    const { field, onChange, onReset } = props
     const changeHandler = useCallback((event: Event, newValue: number | number[]) => {
         return onChange(event, field, newValue)
     }, [field, onChange])
@@ -30,9 +32,10 @@ const RangeSlider: FunctionComponent<Props> = (props: Props) => {
     return (
         <div className="sliderWrapper">
             {/* TODO: Not sure I love the font weight options here... */}
-            <Typography id={`${label}-slider`} fontWeight="450" gutterBottom>
+            <Typography id={`${label}-slider`} fontWeight="450" className="rangeLabel" gutterBottom>
                 { label }
             </Typography>
+            <ResetRangeButton field={field} onReset={onReset} />
             <Slider
                 getAriaLabel={() => label}
                 value={value}

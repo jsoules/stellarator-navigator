@@ -42,7 +42,7 @@ const PlotGrid: FunctionComponent<Props> = (props: Props) => {
 
     // All this logic probably belongs elsewhere
     const colCount = useMemo(() => 
-        fineSplitVals.length === 0 ? fieldValuesCount(fineSplitField) : fineSplitVals.length,
+        Math.max(1, fineSplitVals.length === 0 ? fieldValuesCount(fineSplitField) : fineSplitVals.length),
     [fineSplitVals.length, fineSplitField])
     const [dims] = useMemo(() => computePerPlotDimensions(colCount, width - 2*internalMargin, height), [height, fineSplitVals.length, width])
     const [canvasXAxis, canvasYAxis] = useCanvasAxes({
