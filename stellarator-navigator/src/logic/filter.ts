@@ -52,6 +52,12 @@ export const applyFiltersToSet = (filters: FilterSettings, database: NavigatorDa
 }
 
 
+export const restrictMarksToFilteredInIds = (currentMarks: Set<number>, filteredIn: Set<number>) => {
+    if (currentMarks.size === 0 || filteredIn.size === 0) return new Set([0])
+    return intersect(currentMarks, filteredIn)
+}
+
+
 // Filter setup
 const makeBooleanFilter = (key: ToggleableVariables, db: NavigatorDatabase) => {
     const callback = (choices: boolean[]) => {

@@ -241,10 +241,10 @@ name shouldn't reference nfp and the default shouldn't be hard-coded 5
 
 [x] Add a "reset zoom" button to plot screen
 
+[x] Automatically update selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
+
 [ ] In the reducer, automatically update selected coarse/fine selections for active table when the selected value stops being displayed
     (e.g. case where we are showing NFP=2 and user deselects NFP = 2 from filter)
-
-[ ] Automatically update selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
 
 [ ] Show/hide filters controls (i.e. tab in the control area)
 

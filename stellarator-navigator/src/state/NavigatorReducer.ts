@@ -1,4 +1,4 @@
-import { applyFiltersToSet, projectRecords } from "@snState/filter"
+import { applyFiltersToSet, projectRecords, restrictMarksToFilteredInIds } from "@snState/filter"
 import { DependentVariables, Fields, IndependentVariables, RangeVariables, ToggleableVariables, TripartiteVariables } from "@snTypes/DataDictionary"
 import { FilterSettings, NavigatorDatabase } from "@snTypes/Types"
 
@@ -104,9 +104,10 @@ const applyUpdatedFilters = (settings: FilterSettings, ignoreSizeCheck: boolean 
         // because there shouldn't be a single interaction that allows you to select an entirely different set,
         // those would all be broken into two or more interactions
         const updateRecords = newSet.size !== settings.recordIds.size
+        const newMarks = restrictMarksToFilteredInIds(settings.markedRecords, newSet)
         if (updateRecords || ignoreSizeCheck) {
             const newMaterializedRecords = projectRecords(newSet, settings.database)
-            return { ...settings, recordIds: newSet, records: newMaterializedRecords }
+            return { ...settings, recordIds: newSet, records: newMaterializedRecords, markedRecords: newMarks }
         }
     }
 
@@ -120,7 +121,7 @@ const doSingleRangeUpdate = (key: RangeVariables, newRange: number[], settings: 
         throw Error(`Error attempting to update non-extant/misconfigured range ${key} (currently ${existingRange[0]}, ${existingRange[1]})`)
     }
     if (newRange[0] === existingRange[0] && newRange[1] === existingRange[1]) {
-        // no change, return reference equality. Shouldn't happen
+        // no change, return reference equality. e.g. user clicks "reset" for already-default range.
         return settings
     }
     settings[key] = [Math.min(...newRange), Math.max(...newRange)]
