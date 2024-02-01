@@ -243,8 +243,22 @@ name shouldn't reference nfp and the default shouldn't be hard-coded 5
 
 [x] Automatically update selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
 
-[ ] In the reducer, automatically update selected coarse/fine selections for active table when the selected value stops being displayed
+[x] In the reducer, automatically update selected coarse/fine selections for active table when the selected value stops being displayed
     (e.g. case where we are showing NFP=2 and user deselects NFP = 2 from filter)
+
+[x] Special-case coil length, coil length per HP as continuous for coloration purposes
+
+[x] Make NFP / fine split behave same as coarse, just set the default NFP to all-selected
+
+[x] Add counts below each plot?
+
+[ ] Add a color bar and/or legend for when (continuous, discrete) colorations are used
+
+[ ] For missing poincare plot, show error in UI -- poincare needs to be rerun for this device, does not represent issue
+
+[ ] --> for every ID number there should be an associated coils, surfaces, modb, axis. This is a fair check so do it
+
+[ ] Visual indication for which plot is focused?
 
 [ ] Show/hide filters controls (i.e. tab in the control area)
 

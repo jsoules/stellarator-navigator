@@ -32,12 +32,11 @@ type ProjectedData = {
 }
 
 
-export const makeValsFromFieldname = (field: ToggleableVariables, filters: FilterSettings, useAllIfNone?: boolean) => {
+export const makeValsFromFieldname = (field: ToggleableVariables | undefined, filters: FilterSettings) => {
+    if (field === undefined) return []
     const allValidVals = Fields[field]?.values ?? []
     const splitVals = (filters[field] ?? []).map((v, i) => (v ? allValidVals[i] : undefined)).filter(x => x !== undefined) as unknown as number[]
-    return (splitVals.length !== 0 || !useAllIfNone)
-        ? splitVals
-        : allValidVals
+    return splitVals
 }
 
 

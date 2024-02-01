@@ -260,7 +260,7 @@ export const Fields: FieldRecords = {
         range: [4.5, 60],
         values: coilLengthPerHpValidValues,
         isLog: false,
-        isCategorical: true,
+        isCategorical: false,       // technically it is, but there's too many categories for it to make sense
         markedValue: undefined,
         tableColumnWidth: 80,
         displayInTable: true
@@ -274,7 +274,7 @@ export const Fields: FieldRecords = {
         range: [28.5, 120],
         values: totalCoilLengthValidValues,
         isLog: false,
-        isCategorical: true,
+        isCategorical: false,       // technically it is, but there's too many categories for it to make sense
         markedValue: undefined,
         tableColumnWidth: 80,
         displayInTable: true

@@ -12,7 +12,7 @@ export const initialNavigatorState: FilterSettings = {
     totalCoilLength: [Math.min(...totalCoilLengthValidValues), Math.max(...totalCoilLengthValidValues)],
     meanIota: [ true, ...(new Array<boolean>(meanIotaValidValues.length - 1).fill(false)) ],
     ncPerHp: new Array<boolean>(ncPerHpValidValues.length).fill(false),
-    nfp: new Array<boolean>(nfpValidValues.length).fill(false),
+    nfp: new Array<boolean>(nfpValidValues.length).fill(true),
     nSurfaces: new Array<boolean>((Fields.nSurfaces.values ?? []).length).fill(false),
     maxKappa: (Fields.maxKappa.range),
     maxMeanSquaredCurve: (Fields.maxMeanSquaredCurve.range),

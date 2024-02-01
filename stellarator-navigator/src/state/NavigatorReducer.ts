@@ -1,5 +1,5 @@
 import { applyFiltersToSet, projectRecords, restrictMarksToFilteredInIds } from "@snState/filter"
-import { DependentVariables, Fields, IndependentVariables, RangeVariables, ToggleableVariables, TripartiteVariables } from "@snTypes/DataDictionary"
+import { DependentVariables, Fields, IndependentVariables, RangeVariables, ToggleableVariables, TripartiteVariables, getValuesFromBoolArray } from "@snTypes/DataDictionary"
 import { FilterSettings, NavigatorDatabase } from "@snTypes/Types"
 
 export type FacetSplitType = 'coarse' | 'fine'
@@ -85,6 +85,7 @@ const NavigatorReducer = (s: FilterSettings, a: NavigatorStateAction): FilterSet
             return updatePlotSplits(s, a.target, a.newSplit)
         }
         case "updateFocusedPlotIndices": {
+            console.log(`Updating to ${a.newValues}`)
             return { ...s, coarsePlotSelectedValue: a.newValues[0], finePlotSelectedValue: a.newValues[1] }
         }
         default: {
@@ -100,17 +101,38 @@ const applyUpdatedFilters = (settings: FilterSettings, ignoreSizeCheck: boolean 
         // TODO: Condition which input to use (the full database vs. the current set)
         // based on whether our selections got more or less restrictive
         const newSet = applyFiltersToSet(settings, settings.database, settings.database.allIdSet)
-        // Cheat: we're using the size of the selected record set as a proxy
-        // because there shouldn't be a single interaction that allows you to select an entirely different set,
-        // those would all be broken into two or more interactions
+        // Cheat: we're using the size of the selected record set as a proxy for set change,
+        // since no single interaction allows you to select an entirely different set of the same size.
         const updateRecords = newSet.size !== settings.recordIds.size
         const newMarks = restrictMarksToFilteredInIds(settings.markedRecords, newSet)
         if (updateRecords || ignoreSizeCheck) {
+            const settingsWithCorrectedFocusPlot = rationalizeFocusedPlot(settings)
             const newMaterializedRecords = projectRecords(newSet, settings.database)
-            return { ...settings, recordIds: newSet, records: newMaterializedRecords, markedRecords: newMarks }
+            return { ...settingsWithCorrectedFocusPlot, recordIds: newSet, records: newMaterializedRecords, markedRecords: newMarks }
         }
     }
 
+    return settings
+}
+
+
+const selectedOrFirst = (field: ToggleableVariables, choices: boolean[], selected: number | undefined): number | undefined => {
+    if (selected === undefined) return selected
+    const setVals = getValuesFromBoolArray(field, choices)
+    return setVals.includes(selected) ? selected : setVals[0]
+}
+
+
+const rationalizeFocusedPlot = (settings: FilterSettings): FilterSettings => {
+    const newCoarse = settings.coarsePlotSplit === undefined
+        ? settings.coarsePlotSelectedValue
+        : selectedOrFirst(settings.coarsePlotSplit, settings[settings.coarsePlotSplit], settings.coarsePlotSelectedValue)
+    const newFine = settings.finePlotSplit === undefined
+        ? settings.finePlotSelectedValue
+        : selectedOrFirst(settings.finePlotSplit, settings[settings.finePlotSplit], settings.finePlotSelectedValue)
+    if (newCoarse !== settings.coarsePlotSelectedValue || newFine !== settings.finePlotSelectedValue) {
+        return { ...settings, coarsePlotSelectedValue: newCoarse, finePlotSelectedValue: newFine }
+    }
     return settings
 }
 

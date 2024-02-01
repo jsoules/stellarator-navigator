@@ -22,13 +22,11 @@ const CanvasPlotLabel = (props: plotLabelProps, ctxt: CanvasRenderingContext2D, 
     const medDesc = (Fields[fineField as unknown as KnownFields]?.shortLabel ?? '')
     const coarseBlurb = coarseDesc === '' ? '' : `${coarseDesc}: ${coarseVal ?? 'Any'}`
     const medBlurb = medDesc === '' ? '' : `${medDesc}: ${fineVal ?? 'Any'}`
-    // const text = (coarseBlurb !== '' && medBlurb !== '') ? `${coarseBlurb}; ${medBlurb}` : `${coarseBlurb}${medBlurb}`
     ctxt.save()
     ctxt.font = `${1.7*dims.fontPx}px sans-serif`
     ctxt.textAlign = "center"
     const mid = dims.marginLeft + dims.boundedWidth / 2
     const y = 1.7*dims.fontPx
-    // ctxt.fillText(text, mid, y)
     ctxt.fillText(coarseBlurb === '' ? medBlurb : coarseBlurb, mid, y)
     if (coarseBlurb !== '' && medBlurb !== '') {
         ctxt.fillText(medBlurb, mid, 2 * y)

@@ -1,7 +1,7 @@
 import SnTable from "@snComponents/display/SnTable"
-import { useDataGeometry } from "@snComponents/display/plots/PlotScaling"
 import { defaultPlotColorProps, plotColorReducer } from "@snComponents/display/plots/interactions/plotColors"
 import { usePlotData } from "@snComponents/display/plots/interactions/usePlotData"
+import { useDataGeometry } from "@snComponents/display/plots/layout/PlotScaling"
 import { HrBar } from "@snComponents/general"
 import useFilterCallbacks from "@snControlComponents/SelectionControlCallbacks"
 import SelectionControlPanel from "@snControlComponents/SelectionControlPanel"

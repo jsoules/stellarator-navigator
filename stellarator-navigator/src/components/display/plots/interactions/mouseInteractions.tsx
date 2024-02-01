@@ -1,6 +1,6 @@
 import { PlotClickCallbackType } from "@snComponents/selectionControl/SelectionControlCallbacks"
 import { useCallback } from "react"
-import { ClickToDataCallbackType } from "../PlotScaling"
+import { ClickToDataCallbackType } from "../layout/PlotScaling"
 import { onClickDot } from "./dotInteractions"
 import { DragMouseupHandlerType } from "./useDragSelect"
 

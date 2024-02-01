@@ -41,6 +41,8 @@ export type StellaratorRecord = {
     // PK
     id: number,                     // 952 - 504819
     // Categorical fields
+    // Note: coil lengths are technically categorical but we mark them as continuous in the the
+    // data dictionary because there's like 80 possible values
     coilLengthPerHp: number,        // range 4.5-60. Length of coil used per half-period (meters)
     totalCoilLength: number,        // range 28.5 - 120. Total length of coil used to construct coils (m)
     meanIota: number,               // range 0.1 - 0.9

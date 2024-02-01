@@ -1,27 +1,6 @@
-import { DependentVariables, Fields, IndependentVariables, RangeVariables, getEnumVals, getLabel } from "@snTypes/DataDictionary"
+import { DependentVariables, Fields, IndependentVariables, RangeVariables, getEnumVals } from "@snTypes/DataDictionary"
 import { BoundedPlotDimensions, DataGeometry, FilterSettings } from "@snTypes/Types"
-import { ScaleLinear, scaleLinear } from "d3"
 import { useCallback, useMemo } from "react"
-import CanvasXAxis from "./CanvasXAxis"
-import CanvasYAxis from "./CanvasYAxis"
-import SvgXAxis from "./SvgXAxis"
-import SvgYAxis from "./SvgYAxis"
-
-
-const useScale = (dataRange: number[], physicalRange: number) => {
-    const scale = useMemo(() => {
-        return scaleLinear()
-            .domain(dataRange)
-            .range([0, physicalRange])
-    }, [dataRange, physicalRange])
-    return scale
-}
-
-
-type useScalesProps = {
-    filters: FilterSettings
-    dimsIn: BoundedPlotDimensions
-}
 
 
 export const useDataGeometry = (filters: FilterSettings): DataGeometry => {
@@ -35,24 +14,6 @@ export const useDataGeometry = (filters: FilterSettings): DataGeometry => {
 }
 
 
-export const useScales = (props: useScalesProps) => {
-    const { filters, dimsIn } = props
-    const { xmin: iLow, xmax: iHigh, ymin: dLow, ymax: dHigh } = useDataGeometry(filters)
-
-    const dataDomain = useMemo(() => {
-        return [iLow, iHigh]
-    }, [iHigh, iLow])
-    const dataRange = useMemo(() => {
-        return [dLow, dHigh]
-    }, [dHigh, dLow])
-
-    const xScale = useScale(dataDomain, dimsIn.boundedWidth)
-    const yScale = useScale(dataRange, dimsIn.boundedHeight)
-
-    return [xScale, yScale]
-}
-
-
 const getExtrema = (filters: FilterSettings, field: IndependentVariables | DependentVariables, validRangeField: boolean) => {
     const baseRange = Fields[field].range
     const range = (validRangeField ? (filters[field] ?? []) : baseRange) as number[]
@@ -62,93 +23,9 @@ const getExtrema = (filters: FilterSettings, field: IndependentVariables | Depen
 }
 
 
-type canvasAxisProps = {
-    dataGeometry: DataGeometry
-    dependentVar: DependentVariables
-    independentVar: IndependentVariables
-    dimsIn: BoundedPlotDimensions
-}
-
-
-export const useCanvasAxes = (props: canvasAxisProps) => {
-    const { dataGeometry, dependentVar, independentVar, dimsIn } = props
-
-    const xAxis = useCallback((c: CanvasRenderingContext2D) => {
-        const axisLabel = getLabel({name: independentVar, labelType: 'plot'})
-        CanvasXAxis({
-            dataRange: [dataGeometry.xmin, dataGeometry.xmax],
-            canvasRange: [0, dimsIn.boundedWidth],
-            axisLabel,
-            isLog: false,
-            isY: false,
-            markedValue: undefined,
-            dims: dimsIn
-        }, c)
-    }, [dataGeometry.xmax, dataGeometry.xmin, dimsIn, independentVar])
-
-    const yAxis = useCallback((c: CanvasRenderingContext2D) => {
-        const axisLabel = getLabel({name: dependentVar, labelType: 'plot'})
-        CanvasYAxis({
-            dataRange: [dataGeometry.ymin, dataGeometry.ymax],
-            canvasRange: [0, dimsIn.boundedHeight],
-            axisLabel,
-            isLog: Fields[dependentVar].isLog,
-            markedValue: Fields[dependentVar].markedValue,
-            dims: dimsIn,
-            isY: true
-        }, c)
-    }, [dataGeometry.ymax, dataGeometry.ymin, dependentVar, dimsIn])
-
-    return [xAxis, yAxis]
-}
-
-
-type axisProps = {
-    xScale: ScaleLinear<number, number>
-    yScale: ScaleLinear<number, number>
-    dependentVar: DependentVariables
-    independentVar: IndependentVariables
-    dims: BoundedPlotDimensions
-}
-
-
-export const useAxes = (props: axisProps) => {
-    const { xScale, yScale, dependentVar, independentVar, dims, } = props
-    const xAxis = useMemo(() => {
-        const axisLabel = getLabel({name: independentVar, labelType: 'plot'})
-        return <SvgXAxis
-                    dataRange={xScale.domain()}
-                    canvasRange={xScale.range()}
-                    dims={dims}
-                    axisLabel={axisLabel}
-                    isLog={false}
-                    isY={false}
-                />
-    }, [xScale, dims, independentVar])
-
-    const yAxis = useMemo(() => {
-        const axisLabel = getLabel({name: dependentVar, labelType: 'plot'})
-        return <SvgYAxis
-                    dataRange={yScale.domain()} 
-                    canvasRange={yScale.range()}
-                    axisLabel={axisLabel}
-                    isLog={Fields[dependentVar].isLog}
-                    markedValue={Fields[dependentVar].markedValue}
-                    dims={dims}
-                    isY={true}
-                />
-    }, [dependentVar, yScale, dims])
-
-    return [xAxis, yAxis]
-}
-
-
 // TODO: These may be tweaked
 export const plotGutterVertical = 15
-export const plotGutterHorizontal = 15
-// const minPlotX = 250
-// const minPlotY = 250
-// TODO: we may revisit this based on feedback about ideal plot shape
+export const plotGutterHorizontal = 30
 const minPlotX = 270
 const minPlotY = 270
 // aspect ratio is width/height (I'm talking about the plot aspect ratio here, not the quantity in the data)
@@ -165,7 +42,7 @@ export const baseDims = {
     // marginTop: 30,
     marginTop: 40,
     marginRight: 20,
-    marginBottom: 60,
+    marginBottom: 45,
     marginLeft: 80,
     tickLength: 6,
     fontPx,
@@ -176,8 +53,6 @@ export const baseDims = {
 }
 
 
-// TODO: Variable names should reference the coarse/fine categories, not NFPs specifically
-// NFP is the default fine, so we should be looking at the fine value here
 export const computePerPlotDimensions = (colCount: number, spaceWidth: number, spaceHeight: number): [BoundedPlotDimensions, number] => {
     const availableWidth = spaceWidth - (plotGutterVertical * (colCount + 1)) // gutter's-width margin on either side
     const availableHeight = (spaceHeight - plotGutterHorizontal * 2) * MaxPlotHeightFraction // apply some margin

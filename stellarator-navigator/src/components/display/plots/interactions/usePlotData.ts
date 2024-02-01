@@ -28,9 +28,9 @@ export const usePlotData: plotHookType = ({records, filterSettings, colorSplit})
     const fineSplit = filterSettings.finePlotSplit
     const coarseSplit = filterSettings.coarsePlotSplit
     const res = useMemo(() => {
-        const fineSplitVals = fineSplit === undefined ? [] : makeValsFromFieldname(fineSplit, filterSettings, true)
-        const coarseSplitVals = coarseSplit === undefined ? [] : makeValsFromFieldname(coarseSplit, filterSettings)
-        const projectionCriteria = {
+        const fineSplitVals = makeValsFromFieldname(fineSplit, filterSettings)
+        const coarseSplitVals = makeValsFromFieldname(coarseSplit, filterSettings)
+        const projectionCriteria: ProjectionCriteria = {
             data: records,
             yVar: filterSettings.dependentVariable,
             xVar: filterSettings.independentVariable,
@@ -40,7 +40,7 @@ export const usePlotData: plotHookType = ({records, filterSettings, colorSplit})
             coarseSplit,
             fineSplitVals,
             coarseSplitVals
-        } as unknown as ProjectionCriteria // discriminating the types based on the constant boolean is confusing the type parser
+        }
         const { data, radius, colorValues, ids } = projectToPlotReadyData(projectionCriteria)
         return { data, radius, ids, colorValues, fineSplitVals, coarseSplitVals, coarseSplitField: coarseSplit, fineSplitField: fineSplit }
     }, [coarseSplit, colorSplit, filterSettings, fineSplit, records])

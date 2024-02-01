@@ -110,12 +110,13 @@ export const _handleUpdateFocusedPlotIndices = (dispatch: NavigatorDispatch, coa
 
 // TODO: Relocate this
 export type PlotClickCallbackType = (coarsevVal: number | undefined, fineVal: number | undefined) => void
+export type RangesChangeCallbackType = (fields: RangeVariables[], newValues: number[][]) => void
 
 const useFilterCallbacks = (dispatch: Dispatch<NavigatorStateAction>) => {
     const handleRangeChange = useCallback((_: Event, field: RangeVariables, newValue: number | number[]) => {
         _handleRangeChange(dispatch, field, newValue)
     }, [dispatch])
-    const handleRangesChange = useCallback((fields: RangeVariables[], newValues: number[][]) => {
+    const handleRangesChange: RangesChangeCallbackType = useCallback((fields: RangeVariables[], newValues: number[][]) => {
         _handleRangesChange(dispatch, fields, newValues)
     }, [dispatch])
     const handleRangeReset = useCallback((field: RangeVariables) => _handleRangeReset(dispatch, field), [dispatch])

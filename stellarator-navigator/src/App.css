@@ -107,6 +107,15 @@ div.ForceLightMode {
     float: right;
 }
 
+.plotGridNote {
+    padding: 10px;
+}
+
+.plotCaption {
+    text-align: center;
+    margin-left: 80px;
+}
+
 .overviewTable {
     height: 500px;
     width: 100%;
