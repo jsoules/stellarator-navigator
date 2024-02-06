@@ -62,13 +62,18 @@ deploy any local copies of the data files
     - It may be desirable to repeat this with the `stylistic-type-checked` plugin uncommented in `.eslintrc.cjs`;
     that one's feedback is sometimes useful, but a bit too subjective/situational, so configuring it properly
     is not worth the effort
+  - Ensure that the following are set up:
   - `yarn build`
   - `chmod 755 dist/*`
-  - `rsync -vahPn --delete dist/assets/ $TARGET_DEPLOYMENT_DIRECTORY` (where `$TARGET_DEPLOYMENT_DIRECTORY` is
+  - `rsync -vahPn --delete dist/assets/ $TARGET_DEPLOYMENT_DIRECTORY/assets/` (where `$TARGET_DEPLOYMENT_DIRECTORY` is
   set appropriately for your use case, i.e. the target for your web server)
     - **Note** the `n` flag for `rsync` which makes this a dry-run. If this test run reveals no issues, repeat
     without `n` to effectuate the deployment
   - `rsync -vahP dist/index.html $TARGET_DEPLOYMENT_DIRECTORY` to deploy `index.html` to the website root
+  - Confirm that the following are set up within `$TARGET_DEPLOYMENT_DIRECTORY`:
+    - an `overview` directory containing an `index.html` symlink to the `index.html` in `$TARGET_DEPLOYMENT_DIRECTORY`
+    - `graphics`, `nml`, `records`, `simsopt_serials` directories (or symlinks to directories) holding the
+    corresponding data files
 - Visit the production deployment location and confirm that everything functions correctly
 
 ### Considerations for test and local deployment
