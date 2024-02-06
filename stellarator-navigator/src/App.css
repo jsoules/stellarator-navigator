@@ -84,6 +84,10 @@ div.ForceLightMode {
     padding: 100px 20px 0px 20px;
 }
 
+.showFiltersButton {
+    margin: 20px;
+}
+
 /* !important isn't great style, but this will get overwritten by some MUI class styling otherwise */
 .checkboxItem {
     padding: 1px !important;
@@ -107,13 +111,63 @@ div.ForceLightMode {
     float: right;
 }
 
+.highlightedPlot {
+    border: 1px solid #7f7f7f;
+}
+
+.unhighlightedPlot {
+    border: 1px solid #ffffff;
+}
+
+.drawerCloser {
+    display: block;
+}
+
+.rightIcon {
+    margin: 10px;
+    float: right;
+}
+
+.plotGrid {
+    padding: 15px;
+}
+
 .plotGridNote {
-    padding: 10px;
+    padding: 20px 10px 10px 30px;
 }
 
 .plotCaption {
     text-align: center;
     margin-left: 80px;
+}
+
+.legend {
+    border: 1px solid #111111;
+}
+
+.legendHeader {
+    margin: 5px;
+    font-weight: bold;
+}
+
+.legendEntry {
+    display: inline flex;
+    margin: 6px 16px 6px 16px;
+    align-items: center;
+}
+
+.colorBox {
+    float: left;
+    width: 8px;
+    height: 8px;
+    overflow: hidden;
+    /* TODO: Positioning to center it */
+}
+
+.legendText {
+    float: left;
+    margin-left: 8px;
+    padding: 5px;
 }
 
 .overviewTable {

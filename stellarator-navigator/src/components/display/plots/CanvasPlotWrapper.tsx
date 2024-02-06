@@ -3,7 +3,7 @@ import { FunctionComponent, useEffect, useRef, } from "react"
 import { useComposedMouseupHandler } from "./interactions/mouseInteractions"
 import useDragSelect, { repaintDragSelection } from "./interactions/useDragSelect"
 import { plotGutterHorizontal, plotGutterVertical } from "./layout/PlotScaling"
-import { PlotFittings } from "./layout/usePlotFittings"
+import { PlotFittings } from "./plotFittings/usePlotFittings"
 import drawScatter, { dotMargin } from "./webgl/drawScatter"
 
 
@@ -16,6 +16,7 @@ type Props = {
     colorMap?: string[]
     fineValue?: number
     coarseValue?: number
+    isFocus?: boolean
     plotFittings: PlotFittings
     mouseHandler: (e: React.MouseEvent) => void
     dragResolver: (rect: number[]) => void
@@ -65,6 +66,8 @@ const CanvasPlotWrapper: FunctionComponent<Props> = (props: Props) => {
                 marginRight: plotGutterVertical/2,
                 position: "relative"
             }}
+            // TODO: also go to unhighlighted if the data table is hidden
+            className={props.isFocus ? 'highlightedPlot' : 'unhighlightedPlot'}
             onMouseDown={onMouseDown}
             onMouseUp={composedMouseupHandler}
             onMouseMove={onMouseMove}
@@ -76,7 +79,7 @@ const CanvasPlotWrapper: FunctionComponent<Props> = (props: Props) => {
                 style={{top: 0, left: 0, position: 'absolute'}}>
                 Canvas overlay displaying drag selection.
             </canvas>
-            <div className="plotCaption">N = {data.length}</div>
+            <div className="plotCaption">N = {data.length/2}</div>
       </div>
     )
 }

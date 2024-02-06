@@ -124,7 +124,7 @@ const VariableSelector: FunctionComponent<Props> = (props: Props) => {
     const { desc } = materialize(props.type)
     return (
         <div className="dropdownWrapper">
-            <Typography id={`${props.type}-variable-selector`} gutterBottom>
+            <Typography id={`${props.type}-variable-selector`} fontWeight="550" gutterBottom>
                 {desc}
             </Typography>
             <FormControl fullWidth size="small">

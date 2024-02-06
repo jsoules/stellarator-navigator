@@ -395,7 +395,7 @@ export const Fields: FieldRecords = {
         isLog: true,
         isCategorical: false,
         markedValue: -4.30,
-        markedValueDesc: "Horizontal line indicates the Earth's background magnetic field.",
+        markedValueDesc: "Marked line indicates the Earth's background magnetic field.",
         displayInTable: true
     },
     'gradient': {

@@ -1,5 +1,5 @@
 import { DependentVariables, fieldMarkedValueDesc } from "@snTypes/DataDictionary";
-import { FunctionComponent } from "react";
+import { FunctionComponent, PropsWithChildren } from "react";
 
 type MarkedValueProps = {
     dependentVariable: DependentVariables
@@ -19,7 +19,10 @@ type OverallHitCountProps = {
 }
 
 
-export const OverallHitCount: FunctionComponent<OverallHitCountProps> = (props: OverallHitCountProps) => (
-    <div className="plotGridNote">Current filter settings return {props.hits} devices.</div>
+export const OverallHitCount: FunctionComponent<PropsWithChildren<OverallHitCountProps>> = (props: PropsWithChildren<OverallHitCountProps>) => (
+    <div className="plotGridNote">
+        {props.children}
+        <span className="plotGridNoteText">Current filter settings return {props.hits} devices.</span>
+    </div>
 )
 

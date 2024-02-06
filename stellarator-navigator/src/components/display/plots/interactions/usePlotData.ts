@@ -1,5 +1,5 @@
 import projectToPlotReadyData, { ProjectionCriteria, makeValsFromFieldname } from "@snState/projection"
-import { ToggleableVariables } from "@snTypes/DataDictionary"
+import { ToggleableVariables, fieldIsCategorical } from "@snTypes/DataDictionary"
 import { FilterSettings, StellaratorRecord } from "@snTypes/Types"
 import { useMemo } from "react"
 import { PlotColorProps } from "./plotColors"
@@ -10,6 +10,7 @@ export type PlotDataSummary = {
     radius: number[][][]
     ids: number[][][]
     colorValues: number[][][]
+    colorFieldRange: number[]
     fineSplitVals: number[]
     coarseSplitVals: number[]
     coarseSplitField?: ToggleableVariables
@@ -42,7 +43,10 @@ export const usePlotData: plotHookType = ({records, filterSettings, colorSplit})
             coarseSplitVals
         }
         const { data, radius, colorValues, ids } = projectToPlotReadyData(projectionCriteria)
-        return { data, radius, ids, colorValues, fineSplitVals, coarseSplitVals, coarseSplitField: coarseSplit, fineSplitField: fineSplit }
+        const colorFieldRange: number[] = fieldIsCategorical(colorSplit)
+            ? []
+            : filterSettings[colorSplit] as number[]
+        return { data, radius, ids, colorValues, fineSplitVals, coarseSplitVals, coarseSplitField: coarseSplit, fineSplitField: fineSplit, colorFieldRange }
     }, [coarseSplit, colorSplit, filterSettings, fineSplit, records])
 
     return res

@@ -1,6 +1,6 @@
 import { SelectChangeEvent } from '@mui/material'
 import { SupportedColorMap, SupportedColorPalette } from '@snComponents/display/Colormaps'
-import { ColorPropsAction, PlotColorProps, useUpdateColorSchemeCallback, useUpdateColorVariableCallback } from '@snComponents/display/plots/interactions/plotColors'
+import { ColorPropsAction, PlotColorProps, usePlotColorCallbacks } from '@snComponents/display/plots/interactions/plotColors'
 import HrBar from '@snComponents/general/HrBar'
 import { Fields, RangeVariables, ToggleableVariables, TripartiteVariables, fieldIsCategorical } from '@snTypes/DataDictionary'
 import { FilterSettings } from '@snTypes/Types'
@@ -35,8 +35,8 @@ const SelectionControlPanel: FunctionComponent<Props> = (props: Props) => {
     const { meanIota, ncPerHp, nfp, dependentVariable, independentVariable, coarsePlotSplit, finePlotSplit, nSurfaces } = filterSettings
     const { colorSplit, style } = props.colorProps
 
-    const colorVarCallback = useUpdateColorVariableCallback(colorChgDispatcher)
-    const colorSchemeCallback = useUpdateColorSchemeCallback(colorChgDispatcher)
+    const { colorVariableCallback, colorSchemeCallback } = usePlotColorCallbacks(colorChgDispatcher)
+    
 
     const sliders = Object.values(RangeVariables).filter(rv => isNaN(Number(rv)))
         .map(rv => (<RangeSlider key={rv} field={rv} value={filterSettings[rv]} onChange={callbacks.handleRangeChange} onReset={callbacks.handleRangeReset} />))
@@ -53,7 +53,7 @@ const SelectionControlPanel: FunctionComponent<Props> = (props: Props) => {
             <VariableSelector value={independentVariable} onChange={callbacks.handleIndependentVariableChange} type="Independent" />
             <VariableSelector value={dependentVariable} onChange={callbacks.handleDependentVariableChange} type="Dependent" />
             <HrBar />
-            <VariableSelector value={colorSplit} onChange={colorVarCallback} type="ColorVariable" />
+            <VariableSelector value={colorSplit} onChange={colorVariableCallback} type="ColorVariable" />
             {styleSelector}
             <HrBar />
             <VariableSelector value={coarsePlotSplit} onChange={callbacks.handleCoarseVariableChange} type="CoarseSplit" />

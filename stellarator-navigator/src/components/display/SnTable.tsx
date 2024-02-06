@@ -1,5 +1,5 @@
 import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid'
-import { internalMargin } from '@snComponents/PlotGrid'
+import { plotGridInternalMargin } from '@snComponents/Overview'
 import { filterTo } from '@snState/filter'
 import { Fields, KnownFields, ToggleableVariables } from '@snTypes/DataDictionary'
 import { StellaratorRecord } from '@snTypes/Types'
@@ -84,7 +84,7 @@ const SnTable: FunctionComponent<SnTableProps> = (props: SnTableProps) => {
     })
 
     return (
-        <div style={{ marginLeft: internalMargin, marginRight: internalMargin }}>
+        <div style={{ marginLeft: plotGridInternalMargin, marginRight: plotGridInternalMargin }}>
             <div className="overviewTable">
                 <DataGrid
                     columns={columns}

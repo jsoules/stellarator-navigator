@@ -1,8 +1,8 @@
 import { DependentVariables, Fields, IndependentVariables, getLabel } from "@snTypes/DataDictionary"
 import { BoundedPlotDimensions, DataGeometry } from "@snTypes/Types"
 import { useCallback } from "react"
-import CanvasXAxis from "../plotFittings/CanvasXAxis"
-import CanvasYAxis from "../plotFittings/CanvasYAxis"
+import CanvasXAxis from "./CanvasXAxis"
+import CanvasYAxis from "./CanvasYAxis"
 
 
 type canvasAxisProps = {

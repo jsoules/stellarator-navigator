@@ -1,12 +1,21 @@
-import { PlotGridProps } from "@snComponents/PlotGrid"
-import { useCanvasAxes } from "@snComponents/display/plots/layout/PlotAxes"
 import CanvasPlotLabel, { CanvasPlotLabelCallbackType } from "@snComponents/display/plots/plotFittings/CanvasPlotLabel"
+import { useCanvasAxes } from "@snComponents/display/plots/plotFittings/PlotAxes"
 import { resizeCanvas } from "@snComponents/display/plots/webgl/drawScatter"
 import useWebglOffscreenCanvas from "@snComponents/display/plots/webgl/useWebglOffscreenCanvas"
-import { BoundedPlotDimensions } from "@snTypes/Types"
+import { DependentVariables, IndependentVariables, ToggleableVariables } from "@snTypes/DataDictionary"
+import { BoundedPlotDimensions, DataGeometry } from "@snTypes/Types"
 import { useCallback, useMemo } from "react"
 import { ScatterDataLoaderType } from "../webgl/drawingProgram"
 
+
+type PlotFittingsProps = {
+    dataGeometry: DataGeometry
+    plotDimensions: BoundedPlotDimensions
+    dependentVariable: DependentVariables
+    independentVariable: IndependentVariables
+    fineSplitField?: ToggleableVariables
+    coarseSplitField?: ToggleableVariables
+}
 
 export type PlotFittings = {
     offscreenCtxt: WebGLRenderingContext | null
@@ -16,22 +25,21 @@ export type PlotFittings = {
     loadData: ScatterDataLoaderType
 }
 
-const usePlotFittings = (props: PlotGridProps, dims: BoundedPlotDimensions): PlotFittings => {
-    const { dataGeometry, dependentVariable, independentVariable } = props
-    const { fineSplitField, coarseSplitField } = props.plotDataSummary
+const usePlotFittings = (props: PlotFittingsProps): PlotFittings => {
+    const { dataGeometry, dependentVariable, independentVariable, fineSplitField, coarseSplitField, plotDimensions } = props
 
     const [canvasXAxis, canvasYAxis] = useCanvasAxes({
         dataGeometry,
         dependentVar: dependentVariable, independentVar: independentVariable,
-        dimsIn: dims
+        dimsIn: plotDimensions
     })
 
     const canvasPlotLabel: CanvasPlotLabelCallbackType = useCallback((ctxt, vals) => {
-        CanvasPlotLabel({dims, coarseField: coarseSplitField, fineField: fineSplitField}, ctxt, vals)
-    }, [coarseSplitField, dims, fineSplitField])
+        CanvasPlotLabel({dims: plotDimensions, coarseField: coarseSplitField, fineField: fineSplitField}, ctxt, vals)
+    }, [coarseSplitField, plotDimensions, fineSplitField])
 
-    const { webglCtxt: offscreenCtxt, loadData } = useWebglOffscreenCanvas(dataGeometry, dims)
-    resizeCanvas({ctxt: offscreenCtxt, width: dims.boundedWidth, height: dims.boundedHeight})
+    const { webglCtxt: offscreenCtxt, loadData } = useWebglOffscreenCanvas(dataGeometry, plotDimensions)
+    resizeCanvas({ctxt: offscreenCtxt, width: plotDimensions.boundedWidth, height: plotDimensions.boundedHeight})
 
     return useMemo(() => ({
         offscreenCtxt,

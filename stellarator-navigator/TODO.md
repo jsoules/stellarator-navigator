@@ -252,23 +252,38 @@ name shouldn't reference nfp and the default shouldn't be hard-coded 5
 
 [x] Add counts below each plot?
 
-[ ] Add a color bar and/or legend for when (continuous, discrete) colorations are used
+[x] Visual indication for which plot is focused?
+
+[x] Show/hide filters controls (i.e. tab in the control area)
+
+[x] Add a color bar and/or legend for when (continuous, discrete) colorations are used
+
+[x] Normalize continuous color to the FILTER RANGE, not the range of the data!
+
+[ ] Add show/hide instructions panel
 
 [ ] For missing poincare plot, show error in UI -- poincare needs to be rerun for this device, does not represent issue
 
 [ ] --> for every ID number there should be an associated coils, surfaces, modb, axis. This is a fair check so do it
 
-[ ] Visual indication for which plot is focused?
-
-[ ] Show/hide filters controls (i.e. tab in the control area)
-
 [ ] Figure out a smarter way to right-size the table in the overview page
 
 [ ] Trim font references/try to reduce code size
 
+[ ] Redo N= figure for plots to be drawn by same routine as x-axis label, for guaranteed formatting consistency
+
+[ ] Fix column alignment for legend
+
 [ ] Code cleanup and reorg
 
+[ ] Centralize conversions between toggleable values, value lists, boolean positive selections, etc.
+    --> Basically all the stuff referenced in the plotLegend component
+
 [ ] Try to fix the whole "open selected" button thing; or at least unify the interaction
+
+[ ] Rewrite some CSS to use `calc` instead of javascript computations?
+
+[ ] revisit transitions for controls drawer (if we can get them applied to the content div)
 
 -- Note: 260734 looks kind of like a cherry blossom, aww
 

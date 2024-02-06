@@ -104,7 +104,7 @@ export const PalettesConfig: { key: number, value: SupportedColorPalette }[] = [
     { key: 3, value: SupportedColorPalette.TAB20          },
     { key: 4, value: SupportedColorPalette.SPACEDVIRIDIS  },
 ]
-const Palettes: {[key in SupportedColorPalette]: string[]} = {
+export const Palettes: {[key in SupportedColorPalette]: string[]} = {
     "Tab20": Tab20,
     "Spaced-Viridis": SpacedViridis,
     "Wong-CB-Friendly": WongCBFriendly,
@@ -114,18 +114,19 @@ const Palettes: {[key in SupportedColorPalette]: string[]} = {
 type makeColorsParamsType = {
     values: number[][][]
     scheme: SupportedColorMap | SupportedColorPalette
+    range?: number[]
 }
 type makeColorsType = ((props: makeColorsParamsType) => number[][][][])
 export const makeColors: makeColorsType = (props) => {
-    const { values, scheme } = props
+    const { values, scheme, range } = props
     // SupportedColorMap enumerates the continuous scales;
     //  if we get a continuous scale, interpret data as continuous values
     if (Object.values(SupportedColorMap).includes(scheme as SupportedColorMap)) {
         // Normalize values
         // TODO: Consider doing something more sophisticated for outliers?
         const flatVals = values.flat(2)
-        const max = Math.max(...flatVals)
-        const min = Math.min(...flatVals)
+        const min = (range ?? [])[0] ?? Math.min(...flatVals)
+        const max = (range ?? [])[1] ?? Math.max(...flatVals)
         const span = max - min
         // TODO: This will not do the right thing for blue-orange, which should be normalized over (-1, 1)
         // need to special-case that if you want to support it

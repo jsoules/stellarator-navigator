@@ -1,50 +1,38 @@
 import { Grid } from "@mui/material"
 import { makeColors } from "@snComponents/display/Colormaps"
 import CanvasPlotWrapper from "@snComponents/display/plots/CanvasPlotWrapper"
+import { MouseHandlers } from "@snComponents/display/plots/interactions/mouseInteractions"
 import { PlotColorProps } from "@snComponents/display/plots/interactions/plotColors"
 import { PlotDataSummary } from "@snComponents/display/plots/interactions/usePlotData"
-import usePlotMouseHandlers from "@snComponents/display/plots/interactions/usePlotMouseHandlers"
-import { computePerPlotDimensions } from "@snComponents/display/plots/layout/PlotScaling"
-import usePlotFittings from "@snComponents/display/plots/layout/usePlotFittings"
-import { MarkedValueDesc, OverallHitCount } from "@snComponents/display/plots/plotFittings/PlotGridNotes"
-import { PlotClickCallbackType } from "@snComponents/selectionControl/SelectionControlCallbacks"
-import { DependentVariables, IndependentVariables, RangeVariables } from "@snTypes/DataDictionary"
-import { DataGeometry, StellaratorRecord } from "@snTypes/Types"
-import { FunctionComponent, useMemo } from "react"
-
-export const internalMargin = 20
+import { PlotFittings } from "@snComponents/display/plots/plotFittings/usePlotFittings"
+import { BoundedPlotDimensions, DataGeometry } from "@snTypes/Types"
+import { FunctionComponent } from "react"
 
 
 export type PlotGridProps = {
-    width: number
-    height: number
-    selectedRecords: StellaratorRecord[]
     plotDataSummary: PlotDataSummary
     dataGeometry: DataGeometry
-    dependentVariable: DependentVariables
-    independentVariable: IndependentVariables
+    plotDimensions: BoundedPlotDimensions
+    mouseHandlers: MouseHandlers
+    plotFittings: PlotFittings
     plotColorProps: PlotColorProps
-    plotClickHandler: PlotClickCallbackType
-    resolveRangeChangeHandler: (fields: RangeVariables[], newValues: number[][]) => void
+    focusCoarseValue?: number
+    focusFineValue?: number
 }
 
 // TODO: Further simplify this to avoid passing so many props around, both into here and into CanvasPlotWrapper
 const PlotGrid: FunctionComponent<PlotGridProps> = (props: PlotGridProps) => {
-    const { selectedRecords, dependentVariable, width, height, } = props
+    const { plotDimensions, mouseHandlers, plotFittings, focusCoarseValue, focusFineValue } = props
     const { data, radius, ids, fineSplitVals, coarseSplitVals } = props.plotDataSummary
     const resolvedCoarseVals = (coarseSplitVals.length) === 0 ? [undefined] : coarseSplitVals
     const resolvedFineVals = (fineSplitVals.length) === 0 ? [undefined] : fineSplitVals
-    const colCount = resolvedFineVals.length
-    const [dims] = useMemo(() => computePerPlotDimensions(colCount, width - 2*internalMargin, height), [colCount, height, width])
-    const colorsRgb = makeColors({values: props.plotDataSummary.colorValues, scheme: props.plotColorProps.style})
+    const colorsRgb = makeColors({values: props.plotDataSummary.colorValues, scheme: props.plotColorProps.style, range: props.plotDataSummary.colorFieldRange})
         .map(c => c.map(f => f.map(triplet => [...triplet, 1.0]).flat()))
-    const { mouseHandlerFactory, resolveRangeChange } = usePlotMouseHandlers({dims, ...props })
-    const plotFittings = usePlotFittings(props, dims)
 
     const canvasRows = resolvedCoarseVals.map((coarseValue, coarseIdx) => (
             <Grid container item key={`${coarseValue}`}>
                 { resolvedFineVals.map((fineValue, fineIdx) => {
-                    const mouseHandler = mouseHandlerFactory({
+                    const mouseHandler = mouseHandlers.mouseHandlerFactory({
                         coarseValue,
                         fineValue,
                         data: data[coarseIdx][fineIdx],
@@ -58,13 +46,14 @@ const PlotGrid: FunctionComponent<PlotGridProps> = (props: PlotGridProps) => {
                                 data={data[coarseIdx][fineIdx]}
                                 dotSizes={radius[coarseIdx][fineIdx]}
                                 colorValuesRgb={colorsRgb[coarseIdx][fineIdx]}
-                                dims={dims}
+                                dims={plotDimensions}
                                 fineValue={fineValue}
                                 coarseValue={coarseValue}
+                                isFocus={coarseValue === focusCoarseValue && fineValue === focusFineValue}
                                 plotFittings={plotFittings}
 
                                 mouseHandler={mouseHandler}
-                                dragResolver={resolveRangeChange}
+                                dragResolver={mouseHandlers.resolveRangeChange}
                             />
                         </Grid>
                     )})
@@ -75,11 +64,9 @@ const PlotGrid: FunctionComponent<PlotGridProps> = (props: PlotGridProps) => {
 
     return (
         <div>
-            <OverallHitCount hits={selectedRecords.length} />
             <Grid container>
                 {canvasRows}
             </Grid>
-            <MarkedValueDesc dependentVariable={dependentVariable} />
         </div>
     )
 }

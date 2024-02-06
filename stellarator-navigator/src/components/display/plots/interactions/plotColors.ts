@@ -55,20 +55,21 @@ export const plotColorReducer = (s: PlotColorProps, a: ColorPropsAction): PlotCo
     }
 }
 
-export const useUpdateColorVariableCallback = (dispatch: Dispatch<ColorPropsAction>) => {
-    return useCallback((event: SelectChangeEvent) => {
+
+export const usePlotColorCallbacks = (dispatch: Dispatch<ColorPropsAction>) => {
+    const colorVariableCallback = useCallback((event: SelectChangeEvent) => {
         dispatch({
             type: 'updateVariable',
             variable: event.target.value as unknown as DependentVariables | ToggleableVariables
         })
     }, [dispatch])
-}
 
-export const useUpdateColorSchemeCallback = (dispatch: Dispatch<ColorPropsAction>) => {
-    return useCallback((event: SelectChangeEvent) => {
+    const colorSchemeCallback = useCallback((event: SelectChangeEvent) => {
         dispatch({
             type: 'updateScheme',
             scheme: event.target.value as SupportedColorPalette | SupportedColorMap
         })
     }, [dispatch])
+
+    return { colorVariableCallback, colorSchemeCallback }
 }

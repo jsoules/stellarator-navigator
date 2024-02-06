@@ -32,11 +32,11 @@ type ProjectedData = {
 }
 
 
-export const makeValsFromFieldname = (field: ToggleableVariables | undefined, filters: FilterSettings) => {
+export const makeValsFromFieldname = (field: ToggleableVariables | undefined, filters: FilterSettings, includeAllIfNone?: boolean) => {
     if (field === undefined) return []
     const allValidVals = Fields[field]?.values ?? []
     const splitVals = (filters[field] ?? []).map((v, i) => (v ? allValidVals[i] : undefined)).filter(x => x !== undefined) as unknown as number[]
-    return splitVals
+    return includeAllIfNone && splitVals.length === 0 ? allValidVals : splitVals
 }
 
 
@@ -58,7 +58,7 @@ const makeLookups = (c: categorizationCriteria) => {
     const coarseKeys: Record<string, number> = {}
     const colorKeys:  Record<string, number> = {}
 
-    // Actually this isn't a good idea, as it's likely to occur as a trainsition state when changing values or axes
+    // Actually this isn't a good idea, as it's likely to occur as a transition state when changing values or axes
     // if (fineSplit !== undefined && (fineSplit === coarseSplit)) {
     //     throw Error(`Data partition criteria must be distinct, but fine-split and coarse-split criterion match (${fineSplit}, ${coarseSplit})`)
     // }

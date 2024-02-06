@@ -45,11 +45,6 @@ export type NavigatorStateAction = {
     newValues: (number | undefined)[]
 }
 
-// TODO: updating the filter should automatically trigger a narrowing or widening of the
-// selection state!!!
-// DOING THIS EFFICIENTLY IS PROBABLY HARDER THAN THIS
-// OR GET THE SELECTION STATE OUT OF THIS REDUCER
-
 const NavigatorReducer = (s: FilterSettings, a: NavigatorStateAction): FilterSettings => {
     switch (a.type) {
         case "initialize": {
@@ -85,7 +80,6 @@ const NavigatorReducer = (s: FilterSettings, a: NavigatorStateAction): FilterSet
             return updatePlotSplits(s, a.target, a.newSplit)
         }
         case "updateFocusedPlotIndices": {
-            console.log(`Updating to ${a.newValues}`)
             return { ...s, coarsePlotSelectedValue: a.newValues[0], finePlotSelectedValue: a.newValues[1] }
         }
         default: {
