@@ -39,7 +39,7 @@ const usePerPlotDimensions = (width: number, height: number, colCount: number) =
     const _colCount = Math.max(1, colCount)
     return useMemo(() => (
         computePerPlotDimensions(_colCount, _width, height)
-    ), [width, height, colCount])
+    ), [_width, height, _colCount])
 }
 
 

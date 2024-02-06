@@ -49,7 +49,7 @@ const CanvasPlotWrapper: FunctionComponent<Props> = (props: Props) => {
             ctxt.drawImage(plotFittings.offscreenCtxt.canvas, -dotMargin, -dotMargin)
         }
         ctxt.restore()
-    }, [coarseValue, colorValuesRgb, data, dims.marginLeft, dims.marginTop, fineValue, dotSizes])
+    }, [plotFittings, coarseValue, colorValuesRgb, data, dims.marginLeft, dims.marginTop, fineValue, dotSizes])
     useEffect(() => {
         const ctxt = dragCanvasRef.current?.getContext("2d")
         if (!dragCanvasRef.current || !ctxt) return

@@ -77,7 +77,7 @@ const ColorBar: FunctionComponent<ColorBarProps> = (props: ColorBarProps) => {
             drawObs(ctxt, i, barContentWidth, style)
         }
         ctxt.restore()
-    }, [canvasRef.current, baseline, style])
+    }, [baseline, style])
 
     return <div>
         <div className="legendHeader">Color Bar</div>
