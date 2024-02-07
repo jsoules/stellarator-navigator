@@ -30,7 +30,7 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
         }
     }, [setSurfaceChecks, surfaceChecks])
 
-    const handleColorMapChange = (evt: SelectChangeEvent<SupportedColorMap>) => setColorMap(evt.target.value as unknown as SupportedColorMap)
+    const handleColorMapChange = (evt: SelectChangeEvent<SupportedColorMap>) => setColorMap(evt.target.value as SupportedColorMap)
     const surfacePart = (
         <div className="flexWrapper">
             <div className="surfaceControlFlexSplitAlt">

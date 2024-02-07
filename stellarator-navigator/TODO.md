@@ -173,16 +173,48 @@
     [x] Use loaders to prefetch --> I'm not going to bother; I'm happy with the data loading situation
         and the changes that could be made just seem like needless complexity.
 
-[-] Write up instructions for preprocessing data files, incl. in-memory database
-    [ ] Latter should have the appropriate fields log-scaled, do JSONified output, and zip the result
-    [ ] Rest of data: rsync it, delete the poincare directory, and run process_files.py
-    [ ] For deployment, need to switch:
+[x] Fix echo dots (when decreasing NC/HP count, get echo of exiting plots before it's filtered out again)
+
+[X] AVOID REFILTERING for different plots/table selections
+    [x] Don't hard-code the variable listed in the individual plots
+    [x] Memoize the hierarchically divided groups at a higher level
+
+[x] Add custom size to selected dots/devices
+
+[x] Strip out unused junk in CanvasPlotWrapper etc. props
+
+[x] Improve accessibility by providing descriptive text inside canvas element in CanvasPlotWrapper
+
+[x] Allow coloration based on continuous as well as discrete variables --> THIS WILL BE TOUGHER!
+
+[x] rewrite resource path finding to funnel everything consistently through getStringId and
+    make sure calling components don't make assumptions (esp. Model and its subcomponents)
+
+[x] MORE PROOFING of the surface symmetries, ESPECIALLY for higher-period-count.
+
+[x] Improve scatterplot performance
+    [x] Figure out how to use Canvas instead of SVG to get around the size limits
+    [x] --> I think we can draw the axes in a context2d, draw the dots in webgl, and copy from
+        the webgl canvas into the context2d canvas. It'll be tough but worth it.
+    [x] --> context2d canvas gets the drawing for any overlay select.
+    [x] --> Need a mapping matrix
+    [x] --> webgl will need a couple passes, small dots and bigger dots, as well as
+        per-point color scheme, but that is all in the tutorials
+
+[x] Just implement drag-zoom already
+
+[x] Click handler for canvas!
+
+[x] Write up instructions for preprocessing data files, incl. in-memory database
+    [x] Latter should have the appropriate fields log-scaled, do JSONified output (both handled by process_db.py), and zip the result
+    [x] Rest of data: rsync it, delete the poincare directory, and run process_files.py
+    [x] For deployment, need to switch:
         - `base` variable in `vite.config.ts` (SHOULD NO LONGER BE NEEDED EXCEPT FOR TEST DEPLOYMENT)
         - `basePath` in `makeResourcePath.ts`
         - `onClickDot` in `interactions.tsx` (NO LONGER NEEDED?)
         - Compressed vs uncompressed data file is handled by import.meta.env.DEV (NOT basepath) so should be fine
         - rename `public` directory to `publicX` to avoid packaging a bunch of files!
-    [ ] Build this project (using appropriate basename in vite.config.ts). rsync dist/index.html and dist/assets/ to
+    [X] Build this project (using appropriate basename in vite.config.ts). rsync dist/index.html and dist/assets/ to
         the server.
         - `yarn build`
         - `chmod 755 dist/*`
@@ -191,44 +223,72 @@
         - one-liner FOR TEST DEV:
         - `yarn build && chmod 755 dist/* && rsync -vahP --delete dist/assets/ workstation:/mnt/home/jsoules/public_www/test/assets/ && rsync -vahP dist/index.html workstation:/mnt/home/jsoules/public_www/test/`
 
-[ ] Filter dots by radius
-    [ ] Probably happens *above* the plotting component level?
-    [ ] (Since we've already got the scales and everything)
-    [ ] ALTERNATIVELY --  figure out how to use Canvas instead of SVG to get around the size limits
+[x] Give user ability to choose criteria for plot-splitting
 
-[ ] Give user ability to choose criteria for plot-splitting
+[x] Expose ability for user to choose the field to base dot coloration on
 
-[ ] Expose ability for user to choose the field to base dot coloration on
+[x] Change page title to "QUASR Navigator"
 
-[ ] AVOID REFILTERING for different plots/table selections
-    [ ] Don't hard-code the variable listed in the individual plots
-    [ ] Memoize the hierarchically divided groups at a higher level
+[x] in computePerPlotDimensions, set column count based on actual values from fine variable--
+name shouldn't reference nfp and the default shouldn't be hard-coded 5
 
-[ ] Show/hide filters controls (i.e. tab in the control area)
+[x] Ensure plot size doesn't exceed e.g. 80% of the visible window height
+    --> checked off for now, but need to query in future, see what others think
 
-[ ] Consider automatically updating selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
+[x] Note that horizontal line for non-QA error corresponds to Earth's background magnetic field
 
-[ ] Try to fix the whole "open selected" button thing; or at least unify the interaction
+[x] Typographic fix to CanvasPlotLabel
 
-[ ] Just implement drag-zoom already
+[x] Add a "reset zoom" button to plot screen
+
+[x] Automatically update selection state in NavigatorReducer.ts when the filters update, so that filtered-out records can't be selected
+
+[x] In the reducer, automatically update selected coarse/fine selections for active table when the selected value stops being displayed
+    (e.g. case where we are showing NFP=2 and user deselects NFP = 2 from filter)
+
+[x] Special-case coil length, coil length per HP as continuous for coloration purposes
+
+[x] Make NFP / fine split behave same as coarse, just set the default NFP to all-selected
+
+[x] Add counts below each plot?
+
+[x] Visual indication for which plot is focused?
+
+[x] Show/hide filters controls (i.e. tab in the control area)
+
+[x] Add a color bar and/or legend for when (continuous, discrete) colorations are used
+
+[x] Normalize continuous color to the FILTER RANGE, not the range of the data!
+
+[x] Add show/hide instructions panel
+
+[x] For missing poincare plot, show error in UI -- poincare needs to be rerun for this device, does not represent issue
+
+[ ] --> for every ID number there should be an associated coils, surfaces, modb, axis. This is a fair check so do it
 
 [ ] Figure out a smarter way to right-size the table in the overview page
 
-[ ] Note that horizontal line for non-QA error corresponds to Earth's background magnetic field
-
-[ ] rewrite resource path finding to funnel everything consistently through getStringId and
-    make sure calling components don't make assumptions (esp. Model and its subcomponents)
-
-[ ] Improve styling for error pages
-
-[ ] Replace favicon in index.html
-
 [ ] Trim font references/try to reduce code size
+
+[ ] Redo N= figure for plots to be drawn by same routine as x-axis label, for guaranteed formatting consistency
+
+[ ] Fix column alignment for legend
+
+[ ] Code cleanup and reorg
+
+[ ] Centralize conversions between toggleable values, value lists, boolean positive selections, etc.
+    --> Basically all the stuff referenced in the plotLegend component
+
+[ ] Try to fix the whole "open selected" button thing; or at least unify the interaction
+
+[ ] Rewrite some CSS to use `calc` instead of javascript computations?
+
+[ ] revisit transitions for controls drawer (if we can get them applied to the content div)
+
+-- Note: 260734 looks kind of like a cherry blossom, aww
 
 
 QUERY OR DISTANT:
-
-[x] MORE PROOFING of the surface symmetries, ESPECIALLY for higher-period-count.
 
 [-] Reorg with index.js files to collect contents of small files
 
@@ -238,9 +298,13 @@ QUERY OR DISTANT:
 
 [?] implement dot mouseover highlights (??)
 
-[-] secure domain name
+[x] secure domain name
 
 [-] consider branding
 
-[-] finalize deployment details with SCC
+[x] finalize deployment details with SCC
+
+[-] Improve styling for error pages
+
+[-] Replace favicon in index.html
 

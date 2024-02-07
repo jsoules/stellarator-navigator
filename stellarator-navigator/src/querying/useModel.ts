@@ -1,6 +1,7 @@
 import { applyCoilSymmetries, applySurfaceSymmetries } from "@snComponents/display/visualizer/symmetries"
+import { KnownPathType } from "@snTypes/DataDictionary"
 import { CoilRecord, ScalarField, SurfaceObject, Vec3, Vec3Field } from "@snTypes/Types"
-import makeResourcePath, { KnownPathType, getStringId } from "@snUtil/makeResourcePath"
+import makeResourcePath, { ValidId, getStringId } from "@snUtil/makeResourcePath"
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import queryFn from "./queryFn"
@@ -9,41 +10,41 @@ import queryFn from "./queryFn"
 // fortunately, multiple useQuery calls will run in parallel
 
 // TODO: Compress all files on server!
-const coilsQueryKey = (id: string) => ['coils', id]
-const coilsQueryFn = async (id: string) => {
-    const path = makeResourcePath(id, KnownPathType.COILS)
+const coilsQueryKey = (validId: ValidId) => ['coils', validId.id]
+const coilsQueryFn = async (validId: ValidId) => {
+    const path = makeResourcePath(getStringId(validId.id), KnownPathType.COILS)
     return queryFn<Vec3[][]>(path, false)
 }
 
-const currentsQueryKey = (id: string) => ['currents', id]
-const currentsQueryFn = async (id: string) => {
-    const path = makeResourcePath(id, KnownPathType.CURRENTS)
+const currentsQueryKey = (validId: ValidId) => ['currents', validId.id]
+const currentsQueryFn = async (validId: ValidId) => {
+    const path = makeResourcePath(getStringId(validId.id), KnownPathType.CURRENTS)
     return queryFn<number[]>(path, false)
 }
 
-const modBQueryKey = (id: string) => ['modB', id]
-const modBQueryFn = async (id: string) => {
-    const path = makeResourcePath(id, KnownPathType.MODB)
+const modBQueryKey = (validId: ValidId) => ['modB', validId.id]
+const modBQueryFn = async (validId: ValidId) => {
+    const path = makeResourcePath(getStringId(validId.id), KnownPathType.MODB)
     return queryFn<ScalarField[]>(path, false)
 }
 
-const surfacesQueryKey = (id: string) => ['surfaces', id]
-const surfacesQueryFn = async (id: string) => {
-    const path = makeResourcePath(id, KnownPathType.SURFACES)
+const surfacesQueryKey = (validId: ValidId) => ['surfaces', validId.id]
+const surfacesQueryFn = async (validId: ValidId) => {
+    const path = makeResourcePath(getStringId(validId.id), KnownPathType.SURFACES)
     return queryFn<Vec3Field[]>(path, false)
 }
 
 
-const handleCoils = (id: string, coilData: Vec3[][] | undefined, currentData: number[] | undefined): CoilRecord[] => {
+const handleCoils = (validId: ValidId, coilData: Vec3[][] | undefined, currentData: number[] | undefined): CoilRecord[] => {
     if (coilData === undefined || currentData === undefined) return []
-    if (coilData.length !== currentData.length) throw Error(`Mismatched record lengths for record ${id}: coils ${coilData.length}, currents ${currentData.length}`)
+    if (coilData.length !== currentData.length) throw Error(`Mismatched record lengths for record ${validId.id}: coils ${coilData.length}, currents ${currentData.length}`)
     return currentData.map((current, idx) => ({ coil: coilData[idx], current } as CoilRecord))
 }
 
 
-const handleSurfaces = (id: string, surfacePts: Vec3Field[] | undefined, pointValues: ScalarField[] | undefined): SurfaceObject => {
+const handleSurfaces = (validId: ValidId, surfacePts: Vec3Field[] | undefined, pointValues: ScalarField[] | undefined): SurfaceObject => {
     if (surfacePts === undefined || pointValues === undefined) return { surfacePoints: [], pointValues: [], incomplete: true }
-    if (surfacePts.length !== pointValues.length) throw Error(`Mismatched record lengths for record ${id}: surfaces ${surfacePts.length}, values ${pointValues.length}`)
+    if (surfacePts.length !== pointValues.length) throw Error(`Mismatched record lengths for record ${validId.id}: surfaces ${surfacePts.length}, values ${pointValues.length}`)
     return { surfacePoints: surfacePts, pointValues: pointValues, incomplete: false } 
 }
 
@@ -74,16 +75,14 @@ const useModel = (id: string | number, nfp: number) => {
     const baseSurfaces = useMemo(() => handleSurfaces(stringId, surfacesQuery.data, modBQuery.data), [modBQuery.data, stringId, surfacesQuery.data])
 
     const fullCoils = useMemo(() => {
-        if (baseCoils === undefined || baseCoils.length === 0) return undefined
-        if (baseCoils.some(c => c.coil === undefined || (c.coil?.length ?? 0) === 0)) return undefined
+        if (baseCoils.length === 0) return undefined
+        if (baseCoils.some(c => c.coil.length === 0)) return undefined
         return applyCoilSymmetries(baseCoils, nfp)
     }, [baseCoils, nfp])
 
     const fullSurfs = useMemo(() => {
         if (baseSurfaces.incomplete) return undefined
-        // can't happen:
-        if (baseSurfaces.surfacePoints === undefined || baseSurfaces.pointValues === undefined) return undefined
-
+    
         return applySurfaceSymmetries(baseSurfaces, nfp)
     }, [baseSurfaces, nfp])
 
@@ -93,8 +92,8 @@ const useModel = (id: string | number, nfp: number) => {
             baseSurfs: baseSurfaces.incomplete ? undefined : baseSurfaces,
             fullCoils,
             fullSurfs,
-            surfaceCount: surfacesQuery?.data?.length || 0
-        }), [baseCoils, baseSurfaces, fullCoils, fullSurfs, surfacesQuery?.data?.length])
+            surfaceCount: surfacesQuery.data?.length ?? 0
+        }), [baseCoils, baseSurfaces, fullCoils, fullSurfs, surfacesQuery.data?.length])
     
     return record
 }

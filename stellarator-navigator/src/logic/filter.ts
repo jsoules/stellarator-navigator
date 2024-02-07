@@ -1,8 +1,5 @@
-import NavigatorReducer from "@snState/NavigatorReducer"
 import { Fields, RangeVariables, ToggleableVariables, TripartiteVariables, getValuesFromBoolArray } from "@snTypes/DataDictionary"
-import { initialNavigatorState } from "@snTypes/Defaults"
 import { CategoricalIndexSet, FilterSettings, NavigatorDatabase, StellaratorRecord } from "@snTypes/Types"
-import { useEffect, useMemo, useReducer, useState } from "react"
 
 
 export const projectRecords = (selection: Set<number>, database: NavigatorDatabase | undefined) => {
@@ -29,14 +26,8 @@ const intersect = (...sets: Set<number>[]): Set<number> => {
 }
 
 
-const applyFilterToState = (filters: FilterSettings, database: NavigatorDatabase, updateSelection: React.Dispatch<React.SetStateAction<Set<number>>>) => {
-    const set = applyFiltersToSet(filters, database, database.allIdSet)
-    updateSelection(set)
-}
-
-
 // TODO: DEBOUNCE?
-const applyFiltersToSet = (filters: FilterSettings, database: NavigatorDatabase, set?: Set<number>): Set<number> => {
+export const applyFiltersToSet = (filters: FilterSettings, database: NavigatorDatabase, set?: Set<number>): Set<number> => {
     const boolSets = makeBooleanFilters(database).map(b => {
         const { key, callback } = b
         const choices = filters[key]
@@ -61,6 +52,12 @@ const applyFiltersToSet = (filters: FilterSettings, database: NavigatorDatabase,
 }
 
 
+export const restrictMarksToFilteredInIds = (currentMarks: Set<number>, filteredIn: Set<number>) => {
+    if (currentMarks.size === 0 || filteredIn.size === 0) return new Set([0])
+    return intersect(currentMarks, filteredIn)
+}
+
+
 // Filter setup
 const makeBooleanFilter = (key: ToggleableVariables, db: NavigatorDatabase) => {
     const callback = (choices: boolean[]) => {
@@ -70,7 +67,8 @@ const makeBooleanFilter = (key: ToggleableVariables, db: NavigatorDatabase) => {
         const vals = getValuesFromBoolArray(key, choices)
         const idx = db.categoricalIndexes[key as unknown as keyof CategoricalIndexSet]
         const sets = vals.map(v => idx[v])
-        const union = new Set(sets.reduce((curr: number[], newSet) => { return [...curr, ...(newSet ?? [])] }, []))
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        const union = new Set(sets.reduce((curr: number[], newSet) => [...curr, ...(newSet || [])], []))
         return union
     }
     return {key, callback}
@@ -102,7 +100,7 @@ const makeSelectionFilter = (key: TripartiteVariables, db: NavigatorDatabase) =>
         if (value === undefined) return undefined
         const vals = Fields[key].range
         if (!(vals.includes(value))) {
-            throw Error(`Attempt to filter ${key} with unknown value ${value}, known range ${Fields[key].range}`)
+            throw Error(`Attempt to filter ${key} with unknown value ${value}, known range ${Fields[key].range[0]}, ${Fields[key].range[1]}`)
         }
         return db.categoricalIndexes[key][value]
     }
@@ -120,17 +118,3 @@ export const filterTo = (records: StellaratorRecord[], filters: { [key in Toggle
     })
     return result
 }
-
-
-const useFiltering = (database: NavigatorDatabase) => {
-    const [filterSettings, filterSettingDispatch] = useReducer(NavigatorReducer, initialNavigatorState)
-    const [selection, updateSelection] = useState(new Set<number>())
-    
-    useEffect(() => applyFilterToState(filterSettings, database, updateSelection), [database, filterSettings])
-    const records = useMemo(() => projectRecords(selection, database), [database, selection])
-
-    return { records, filterSettings, filterSettingDispatch }
-}
-
-
-export default useFiltering

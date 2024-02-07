@@ -1,9 +1,9 @@
 import useBestFitLine from "@snUtil/useBestFitLine"
 import { ScaleLinear, scaleLinear } from "d3"
 import { FunctionComponent, useMemo } from "react"
-import { baseDims } from "../plots/PlotScaling"
-import SvgXAxis from "../plots/SvgXAxis"
-import SvgYAxis from "../plots/SvgYAxis"
+import { baseDims } from "../plots/layout/PlotScaling"
+import SvgXAxis from "../plots/plotFittings/SvgXAxis"
+import SvgYAxis from "../plots/plotFittings/SvgYAxis"
 
 
 type Props = {
@@ -42,7 +42,7 @@ const useTitleGroup = (width: number) => {
 }
 
 
-type LinearScale = ScaleLinear<number, number, never>
+type LinearScale = ScaleLinear<number, number>
 const useIotaContent = (iotaProf: number[], tfProf: number[], canvasHeight: number, xScale: LinearScale, yScale: LinearScale) => {
 
     const dots = useMemo(() => (
@@ -113,10 +113,12 @@ const IotaProfilePlot: FunctionComponent<Props> = (props: Props) => {
     }, [boundedDims.boundedHeight, broadYrange])
 
     const xAxis = useMemo(() => <SvgXAxis
-                                    dataDomain={xScale.domain()}
+                                    dataRange={xScale.domain()}
                                     canvasRange={xScale.range()}
                                     dims={boundedDims}
                                     axisLabel="Normalized toroidal flux"
+                                    isLog={false}
+                                    isY={false}
                                 />,
         [boundedDims, xScale])
     const yAxis = useMemo(() => <SvgYAxis
@@ -126,6 +128,7 @@ const IotaProfilePlot: FunctionComponent<Props> = (props: Props) => {
                                     isLog={false}
                                     markedValue={meanIota}
                                     dims={boundedDims}
+                                    isY={true}
                                 />,
         [boundedDims, meanIota, yScale])
     return (

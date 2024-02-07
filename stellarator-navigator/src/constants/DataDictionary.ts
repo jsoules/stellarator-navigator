@@ -1,7 +1,5 @@
-import { coilLengthPerHpValidValues, meanIotaValidValues, nFourierCoilValidValues, nSurfacesValidValues, ncPerHpValidValues, nfpValidValues, totalCoilLengthValidValues } from "./ValidValues"
-
 export const getEnumVals = (x: object): string[] => {
-    return Object.values(x).filter(v => isNaN(Number(v)))
+    return (Object.values(x) as string[]).filter(v => isNaN(Number(v)))
 }
 
 export enum KnownFields {
@@ -31,16 +29,16 @@ export enum KnownFields {
 }
 
 export enum DependentVariables {
-    COIL_LENGTH_PER_HP = KnownFields.COIL_LENGTH_PER_HP,
     TOTAL_COIL_LENGTH = KnownFields.TOTAL_COIL_LENGTH,
+    COIL_LENGTH_PER_HP = KnownFields.COIL_LENGTH_PER_HP,
+    MIN_INTERCOIL_DIST = KnownFields.MIN_INTERCOIL_DIST,
+    MIN_COIL_TO_SURFACE_DIST = KnownFields.MIN_COIL_TO_SURFACE_DIST,
+    QA_ERROR = KnownFields.QA_ERROR,
     MAX_KAPPA = KnownFields.MAX_KAPPA,
     MAX_MEAN_SQUARED_CURVE = KnownFields.MAX_MEAN_SQUARED_CURVE,
-    MIN_INTERCOIL_DIST = KnownFields.MIN_INTERCOIL_DIST,
-    QA_ERROR = KnownFields.QA_ERROR,
     ASPECT_RATIO = KnownFields.ASPECT_RATIO,
     MINOR_RADIUS = KnownFields.MINOR_RADIUS,
     VOLUME = KnownFields.VOLUME,
-    MIN_COIL_TO_SURFACE_DIST = KnownFields.MIN_COIL_TO_SURFACE_DIST,
     MEAN_ELONGATION = KnownFields.MEAN_ELONGATION,
     MAX_ELONGATION = KnownFields.MAX_ELONGATION
 }
@@ -92,43 +90,54 @@ export enum TripartiteVariables {
     N_FOURIER_COIL = KnownFields.N_FOURIER_COIL,
 }
 
-export const defaultDependentVariableValue = DependentVariables.QA_ERROR
-export const defaultIndependentVariableValue = IndependentVariables.TOTAL_COIL_LENGTH
-
-export const dependentVariableDropdownConfig: { key: number, fieldName: DependentVariables }[] = [
-    { key:  1, fieldName: DependentVariables.QA_ERROR                 },
-    { key:  2, fieldName: DependentVariables.MAX_KAPPA                },
-    { key:  3, fieldName: DependentVariables.MAX_MEAN_SQUARED_CURVE   },
-    { key:  4, fieldName: DependentVariables.MIN_INTERCOIL_DIST       },
-    { key:  5, fieldName: DependentVariables.MIN_COIL_TO_SURFACE_DIST },
-    { key:  6, fieldName: DependentVariables.MINOR_RADIUS             },
-    { key:  7, fieldName: DependentVariables.VOLUME                   },
-    { key:  8, fieldName: DependentVariables.ASPECT_RATIO             },
-    { key:  9, fieldName: DependentVariables.COIL_LENGTH_PER_HP       },
-    { key: 10, fieldName: DependentVariables.TOTAL_COIL_LENGTH        },
-    { key: 11, fieldName: DependentVariables.MEAN_ELONGATION          },
-    { key: 12, fieldName: DependentVariables.MAX_ELONGATION           },
+export const dependentVariableDropdownConfig: { key: number, value: DependentVariables }[] = [
+    { key:  1, value: DependentVariables.QA_ERROR                 },
+    { key:  2, value: DependentVariables.MAX_KAPPA                },
+    { key:  3, value: DependentVariables.MAX_MEAN_SQUARED_CURVE   },
+    { key:  4, value: DependentVariables.MIN_INTERCOIL_DIST       },
+    { key:  5, value: DependentVariables.MIN_COIL_TO_SURFACE_DIST },
+    { key:  6, value: DependentVariables.MINOR_RADIUS             },
+    { key:  7, value: DependentVariables.VOLUME                   },
+    { key:  8, value: DependentVariables.ASPECT_RATIO             },
+    { key:  9, value: DependentVariables.COIL_LENGTH_PER_HP       },
+    { key: 10, value: DependentVariables.TOTAL_COIL_LENGTH        },
+    { key: 11, value: DependentVariables.MEAN_ELONGATION          },
+    { key: 12, value: DependentVariables.MAX_ELONGATION           },
 ]
 
-export const independentVariableDropdownConfig: { key: number, fieldName: IndependentVariables }[] = [
-    { key:  1, fieldName: IndependentVariables.TOTAL_COIL_LENGTH        },
-    { key:  2, fieldName: IndependentVariables.COIL_LENGTH_PER_HP       },
-    { key:  3, fieldName: IndependentVariables.MIN_INTERCOIL_DIST       },
-    { key:  4, fieldName: IndependentVariables.MIN_COIL_TO_SURFACE_DIST },
-    { key:  5, fieldName: IndependentVariables.QA_ERROR                 },
-    { key:  6, fieldName: IndependentVariables.MAX_KAPPA                },
-    { key:  7, fieldName: IndependentVariables.MAX_MEAN_SQUARED_CURVE   },
-    { key:  8, fieldName: IndependentVariables.ASPECT_RATIO             },
-    { key:  9, fieldName: IndependentVariables.MINOR_RADIUS             },
-    { key: 10, fieldName: IndependentVariables.VOLUME                   },
-    { key: 11, fieldName: IndependentVariables.MEAN_IOTA                },
-    { key: 12, fieldName: IndependentVariables.MEAN_ELONGATION          },
-    { key: 13, fieldName: IndependentVariables.MAX_ELONGATION           },
-    { key: 14, fieldName: IndependentVariables.NC_PER_HP                },
-    { key: 15, fieldName: IndependentVariables.NFP                      },
-    { key: 17, fieldName: IndependentVariables.N_FOURIER_COIL           },
-    { key: 18, fieldName: IndependentVariables.NSURFACES                },
+export const independentVariableDropdownConfig: { key: number, value: IndependentVariables }[] = [
+    { key:  1, value: IndependentVariables.TOTAL_COIL_LENGTH        },
+    { key:  2, value: IndependentVariables.COIL_LENGTH_PER_HP       },
+    { key:  3, value: IndependentVariables.MIN_INTERCOIL_DIST       },
+    { key:  4, value: IndependentVariables.MIN_COIL_TO_SURFACE_DIST },
+    { key:  5, value: IndependentVariables.QA_ERROR                 },
+    { key:  6, value: IndependentVariables.MAX_KAPPA                },
+    { key:  7, value: IndependentVariables.MAX_MEAN_SQUARED_CURVE   },
+    { key:  8, value: IndependentVariables.ASPECT_RATIO             },
+    { key:  9, value: IndependentVariables.MINOR_RADIUS             },
+    { key: 10, value: IndependentVariables.VOLUME                   },
+    { key: 11, value: IndependentVariables.MEAN_IOTA                },
+    { key: 12, value: IndependentVariables.MEAN_ELONGATION          },
+    { key: 13, value: IndependentVariables.MAX_ELONGATION           },
+    { key: 14, value: IndependentVariables.NC_PER_HP                },
+    { key: 15, value: IndependentVariables.NFP                      },
+    { key: 17, value: IndependentVariables.N_FOURIER_COIL           },
+    { key: 18, value: IndependentVariables.NSURFACES                },
 ]
+
+export const toggleableVariableDropdownConfig: { key: number, value: ToggleableVariables }[] = [
+    { key: 1, value: ToggleableVariables.MEAN_IOTA  },
+    { key: 2, value: ToggleableVariables.NC_PER_HP  },
+    { key: 3, value: ToggleableVariables.NFP        },
+    { key: 4, value: ToggleableVariables.N_SURFACES },
+]
+
+
+export const colorationVariableDropdownConfig: { key: number, value: DependentVariables | ToggleableVariables }[] = [
+    ...toggleableVariableDropdownConfig,
+    ...(dependentVariableDropdownConfig.map(v => ({ key: v.key + toggleableVariableDropdownConfig.length, value: v.value})))
+]
+
 
 export type FieldDescription = {
     shortLabel: string,
@@ -139,8 +148,9 @@ export type FieldDescription = {
     range: [number, number],
     values?: number[],
     isLog: boolean,
-    isCategorical: boolean,
+    isCategorical: boolean
     markedValue?: number,
+    markedValueDesc?: string
     tableColumnWidth?: number,
     displayInTable: boolean
 }
@@ -149,14 +159,65 @@ type FieldRecords = {
     [name in KnownFields]: FieldDescription
 }
 
+
+export const coilLengthPerHpValidValues = [
+    4.5, 4.75, 5.0, 5.25, 5.5, 5.75, 6.0, 
+    6.25, 6.5, 6.75, 7.0, 7.25, 7.5, 7.75, 8.0, 8.25,
+    8.5, 8.75, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0,
+    12.5, 13.0, 13.5, 14.0, 14.25, 14.5, 15.0, 15.5, 15.75,
+    16.0, 16.5, 17.0, 17.25, 17.5, 18.0, 18.75, 19.0, 19.5,
+    20.0, 20.25, 21.0, 21.75, 22.0, 22.5, 23.0, 23.25, 23.75,
+    24.0, 24.75, 25.0, 25.5, 26.0, 26.25, 27.0, 27.5, 28.0,
+    28.5, 28.75, 29.0, 30.0, 31.0, 31.25, 31.5, 32.0, 32.5,
+    33.0, 33.25, 33.75, 34.0, 34.5, 35.0, 36.0, 36.25, 36.75,
+    37.5, 38.0, 38.5, 38.75, 39.0, 40.0, 40.25, 40.5, 41.25,
+    42.0, 42.5, 42.75, 43.5, 43.75, 44.0, 45.0, 45.5, 46.0,
+    46.5, 47.25, 47.5, 48.0, 49.0, 49.5, 50.0, 50.75, 51.0,
+    51.75, 52.0, 52.25, 52.5, 54.0, 54.25, 55.0, 56.0, 56.25,
+    57.0, 57.5, 57.75, 58.0, 58.5, 60.0
+]
+
+export const totalCoilLengthValidValues = [
+    28.5, 30.0, 31.0, 31.5, 32.0, 33.0, 34.0, 34.5, 35.0, 
+    36.0, 37.5, 38.0, 39.0, 40.0, 40.5, 42.0, 43.5, 44.0,
+    45.0, 46.0, 46.5, 47.5, 48.0, 49.5, 50.0, 51.0, 52.0,
+    52.5, 54.0, 55.0, 56.0, 57.0, 57.5, 58.0, 60.0, 62.0,
+    62.5, 63.0, 64.0, 65.0, 66.0, 66.5, 67.5, 68.0, 69.0,
+    70.0, 72.0, 72.5, 73.5, 75.0, 76.0, 77.0, 77.5, 78.0, 
+    80.0, 80.5, 81.0, 82.5, 84.0, 85.0, 85.5, 87.0, 87.5,
+    88.0, 90.0, 91.0, 92.0, 93.0, 94.5, 95.0, 96.0, 98.0, 
+    99.0, 100.0, 101.5, 102.0, 103.5, 104.0, 104.5, 105.0,
+    108.0, 108.5, 110.0, 112.0, 112.5, 114.0, 115.0, 115.5, 
+    116.0, 117.0, 120.0
+]
+
+export const meanIotaValidValues = [
+    0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9
+]
+
+export const ncPerHpValidValues = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
+]
+
+export const nfpValidValues = [
+    1, 2, 3, 4, 5
+]
+
+export const nFourierCoilValidValues = [6, 16]
+
+export const nSurfacesValidValues = [
+    1, 2, 3, 4, 5, 6, 7
+]
+
+
 // TODO: Something about init-capping these in some contexts
 export const getLabel = (props: {name: string, labelType: 'short' | 'full' | 'plot'}) => {
     const { name, labelType } = props
     const rec = Fields[name as KnownFields]
-    if (rec === undefined) {
-        console.warn(`Attempt to request description for unknown field ${name}.`)
-        return 'ERROR OCCURRED'
-    }
+    // if (rec === undefined) { TODO REMOVE
+    //     console.warn(`Attempt to request description for unknown field ${name}.`)
+    //     return 'ERROR OCCURRED'
+    // }
     const unitPart = rec.unit === undefined ? '' : ` (${rec.unit})`
     // TODO: ugly, fix
     const labelPart = labelType === 'short' ? rec.shortLabel : labelType === 'plot' ? rec.plotLabel : rec.fullLabel
@@ -199,7 +260,7 @@ export const Fields: FieldRecords = {
         range: [4.5, 60],
         values: coilLengthPerHpValidValues,
         isLog: false,
-        isCategorical: true,
+        isCategorical: false,       // technically it is, but there's too many categories for it to make sense
         markedValue: undefined,
         tableColumnWidth: 80,
         displayInTable: true
@@ -213,7 +274,7 @@ export const Fields: FieldRecords = {
         range: [28.5, 120],
         values: totalCoilLengthValidValues,
         isLog: false,
-        isCategorical: true,
+        isCategorical: false,       // technically it is, but there's too many categories for it to make sense
         markedValue: undefined,
         tableColumnWidth: 80,
         displayInTable: true
@@ -234,7 +295,7 @@ export const Fields: FieldRecords = {
         displayInTable: true
     },
     'ncPerHp': {
-        shortLabel: "Coils/hp",
+        shortLabel: "NC/HP",
         plotLabel: "Coils per HP",
         fullLabel: "Coil count per half-period (NC per HP)",
         description: "Coil count per half-period",
@@ -248,7 +309,7 @@ export const Fields: FieldRecords = {
         displayInTable: true
     },
     'nfp': {
-        shortLabel: "FPs",
+        shortLabel: "NFP",
         plotLabel: "FP Count",
         fullLabel: "Number of Field Periods (NFP)",
         description: "Count of field periods",
@@ -258,7 +319,7 @@ export const Fields: FieldRecords = {
         isLog: false,
         isCategorical: true,
         markedValue: undefined,
-        tableColumnWidth: 50,
+        tableColumnWidth: 75,
         displayInTable: true
     },
     'nFourierCoil': {
@@ -296,6 +357,7 @@ export const Fields: FieldRecords = {
         isLog: false,
         isCategorical: false,
         markedValue: 5,
+        markedValueDesc: "DESCRIPTION TK",
         displayInTable: true
     },
     'maxMeanSquaredCurve': {
@@ -308,6 +370,7 @@ export const Fields: FieldRecords = {
         isLog: false,
         isCategorical: false,
         markedValue: 5,
+        markedValueDesc: "DESCRIPTION TK",
         displayInTable: true
     },
     'minIntercoilDist': {
@@ -320,6 +383,7 @@ export const Fields: FieldRecords = {
         isLog: false,
         isCategorical: false,
         markedValue: 0.1,
+        markedValueDesc: "DESCRIPTION TK",
         displayInTable: true
     },
     'qaError': {
@@ -331,6 +395,7 @@ export const Fields: FieldRecords = {
         isLog: true,
         isCategorical: false,
         markedValue: -4.30,
+        markedValueDesc: "Marked line indicates the Earth's background magnetic field.",
         displayInTable: true
     },
     'gradient': {
@@ -369,7 +434,7 @@ export const Fields: FieldRecords = {
         shortLabel: "Vol",
         plotLabel: "Volume",
         fullLabel: "Volume",
-        description: "Volme enclosed by the outermost toroidal surface over which quasiasymmetry was optimized",
+        description: "Volume enclosed by the outermost toroidal surface over which quasiasymmetry was optimized",
         unit: `${METER_UNIT}^3`,
         range: [0.049, 2.42],
         isLog: false,
@@ -386,6 +451,7 @@ export const Fields: FieldRecords = {
         isLog: false,
         isCategorical: false,
         markedValue: 0.1,
+        markedValueDesc: "DESCRIPTION TK",
         displayInTable: true
     },
     'meanElongation': {
@@ -456,10 +522,42 @@ export const Fields: FieldRecords = {
     }
 }
 
+export const fieldIsCategorical = (fieldName?: string): boolean => (
+    Fields[fieldName as KnownFields]?.isCategorical ?? false
+)
+
+export const fieldValuesCount = (fieldName?: string): number => (
+    Fields[fieldName as KnownFields]?.values?.length ?? 0
+)
+
+export const fieldMarkedValueDesc = (fieldName?: string): string | undefined => (
+    Fields[fieldName as KnownFields]?.markedValueDesc
+)
+
 export enum CategoricalIndexedFields {
     MEAN_IOTA = 'meanIota',
     NC_PER_HP = 'ncPerHp',
     NFP = 'nfp',
     NFOURIER = 'nFourierCoil',
     NSURFACES = 'nSurfaces'
+}
+
+export enum KnownPathType {
+    COILS = "curves",
+    SURFACES = "surfaces",
+    MODB = "modB",
+    NML_VMEC = "nml",
+    SIMSOPT = "simsopt_serials",
+    CURRENTS = "currents",
+    POINCARE = "poincare",
+    DATABASE = "database",
+    RECORD = "record"
+}
+
+export enum GraphicsType {
+    COILS = KnownPathType.COILS,
+    CURRENTS = KnownPathType.CURRENTS,
+    SURFACES = KnownPathType.SURFACES,
+    MODB = KnownPathType.MODB,
+    POINCARE = KnownPathType.POINCARE
 }

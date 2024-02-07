@@ -52,12 +52,13 @@ const queryClient = new QueryClient({
 
 const devTools = import.meta.env.DEV && <ReactQueryDevtools position="bottom" />
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const rootElement = document.getElementById('root')
+if (rootElement === null) {
+    throw Error("Impossible situation: document has no root element.")
+}
+ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-        {/* <BrowserRouter
-            basename={import.meta.env.BASE_URL}
-        > */}
             <RouterProvider router={router} />
             {devTools}
     </QueryClientProvider>

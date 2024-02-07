@@ -1,18 +1,27 @@
-import { CSSProperties } from "react"
 import { inferno, magma, plasma, viridis } from 'scale-color-perceptual'
 
-export type SupportedColorMap = 'inferno' | 'magma' | 'plasma' | 'viridis' | 'hsv' | 'blueOrange' | 'default'
+export enum SupportedColorMap {
+    INFERNO = 'inferno',
+    MAGMA = 'magma',
+    PLASMA = 'plasma',
+    VIRIDIS = 'viridis',
+    HSV = 'hsv',
+    BLUEORANGE = 'blueOrange',
+    DEFAULT = 'default'
+}
 
-export const DefaultColorMap: SupportedColorMap = 'plasma'
-export const MapsConfig: {key: number, value: SupportedColorMap}[] = [
-    { key: 1, value: 'plasma'  },
-    { key: 2, value: 'inferno' },
-    { key: 3, value: 'magma'   },
-    { key: 4, value: 'viridis' },
-    { key: 5, value: 'hsv'     }
+export const DefaultColorMap: SupportedColorMap = SupportedColorMap.PLASMA
+export const MapsConfig: { key: number, value: SupportedColorMap }[] = [
+    { key: 1, value: SupportedColorMap.PLASMA  },
+    { key: 2, value: SupportedColorMap.INFERNO },
+    { key: 3, value: SupportedColorMap.MAGMA   },
+    { key: 4, value: SupportedColorMap.VIRIDIS },
+    { key: 5, value: SupportedColorMap.HSV     }
 ]
 
-export const Tab20: CSSProperties["color"][] = [
+
+
+export const Tab20: string[] = [
     "#1f77b4",
     "#aec7e8",
     "#ff7f0e",
@@ -35,7 +44,7 @@ export const Tab20: CSSProperties["color"][] = [
     "#9edae5"
 ]
 
-export const SpacedViridis: CSSProperties["color"][] = [
+export const SpacedViridis: string[] = [
     "#440154",
     "#472d7b",
     "#3b528b",
@@ -47,7 +56,6 @@ export const SpacedViridis: CSSProperties["color"][] = [
 ]
 
 // from https://davidmathlogic.com/colorblind/#%23000000-%23E69F00-%2356B4E9-%23009E73-%23F0E442-%230072B2-%23D55E00-%23CC79A7
-// export const WongCBFriendly: CSSProperties["color"][] = [
 export const WongCBFriendly: string[] = [
     "#000000",
     "#E69F00",
@@ -62,7 +70,7 @@ export const WongCBFriendly: string[] = [
 // and another one pulling from https://personal.sron.nl/~pault/ entry of 2021.04.02 -- get feedback
 // Note: it's *really challenging* to get 13 distinct colors with sufficient contrast; we probably
 // can't fully meet web accessibility guidelines under these constraints. Hopefully it isn't as
-// important since the data can be explored in other ways.
+// essential since the data can be explored in other ways.
 export const Tol: string[] = [
     "#332288", // indigo
     "#88CCEE", // cyan
@@ -83,36 +91,91 @@ export const Tol: string[] = [
 
 // Continuous scales for display: cross-import from scale-color-perceptual
 
+export enum SupportedColorPalette {
+    TAB20 = "Tab20",
+    SPACEDVIRIDIS = "Spaced-Viridis",
+    WONGCBFRIENDLY = "Wong-CB-Friendly",
+    TOL = "Tol",
+}
+export const DefaultColorPalette: SupportedColorPalette = SupportedColorPalette.TOL
+export const PalettesConfig: { key: number, value: SupportedColorPalette }[] = [
+    { key: 1, value: SupportedColorPalette.TOL            },
+    { key: 2, value: SupportedColorPalette.WONGCBFRIENDLY },
+    { key: 3, value: SupportedColorPalette.TAB20          },
+    { key: 4, value: SupportedColorPalette.SPACEDVIRIDIS  },
+]
+export const Palettes: {[key in SupportedColorPalette]: string[]} = {
+    "Tab20": Tab20,
+    "Spaced-Viridis": SpacedViridis,
+    "Wong-CB-Friendly": WongCBFriendly,
+    "Tol": Tol
+}
+
+type makeColorsParamsType = {
+    values: number[][][]
+    scheme: SupportedColorMap | SupportedColorPalette
+    range?: number[]
+}
+type makeColorsType = ((props: makeColorsParamsType) => number[][][][])
+export const makeColors: makeColorsType = (props) => {
+    const { values, scheme, range } = props
+    // SupportedColorMap enumerates the continuous scales;
+    //  if we get a continuous scale, interpret data as continuous values
+    if (Object.values(SupportedColorMap).includes(scheme as SupportedColorMap)) {
+        // Normalize values
+        // TODO: Consider doing something more sophisticated for outliers?
+        const flatVals = values.flat(2)
+        const min = (range ?? [])[0] ?? Math.min(...flatVals)
+        const max = (range ?? [])[1] ?? Math.max(...flatVals)
+        const span = max - min
+        // TODO: This will not do the right thing for blue-orange, which should be normalized over (-1, 1)
+        // need to special-case that if you want to support it
+        // Handle the degenerate case: when max = min, map everything to 1
+        const normalize = span === 0 ? () => 1 : (v: number) => ((v - min)/span)
+        const normalValues = values.map(i => i.map(j => j.map(k => valueToRgbTriplet(normalize(k), scheme as SupportedColorMap))))
+        return normalValues
+    }
+    // Alternate branch: discrete data, so use the categorical colors (ColorPalettes)
+    return values.map(i => i.map(j => j.map(k => discreteColorToRgbTriplet(k, scheme as SupportedColorPalette))))
+}
+
+
 // TODO: Consider adding intensity-bounding?
-export const valueToRgbTriplet = (value: number, scheme: SupportedColorMap = 'viridis') => {
+export const valueToRgbTriplet = (value: number, scheme: SupportedColorMap = SupportedColorMap.VIRIDIS) => {
     if (value > 1) {
         console.warn(`Continuous color mapper received value ${value}, but should be normalized to (0, 1).`)
         return ([0, 0, 0])
     }
     const rgbHex = getRgbValue(value, scheme)
-    return convertHexToRgb(rgbHex)
+    return convertHexToRgb3Vec(rgbHex)
 }
 
 
-const getRgbValue = (value: number, scheme: SupportedColorMap = 'viridis'): string => {
+export const discreteColorToRgbTriplet = (index: number, scheme: SupportedColorPalette = DefaultColorPalette) => {
+    const _scheme = Palettes[scheme]
+    return convertHexToRgb3Vec(_scheme[index % _scheme.length])
+}
+
+
+const getRgbValue = (value: number, scheme: SupportedColorMap = SupportedColorMap.VIRIDIS): string => {
     // TODO: Support the rainbow color map currently being used
     switch(scheme) {
-        case 'inferno':
+        case SupportedColorMap.INFERNO:
             return inferno(value)
             break
-        case 'magma':
+        case SupportedColorMap.MAGMA:
             return magma(value)
             break
-        case 'plasma':
+        case SupportedColorMap.PLASMA:
             return plasma(value)
             break
-        case 'viridis':
+        case SupportedColorMap.VIRIDIS:
             return viridis(value)
             break
-        case 'hsv':
+        case SupportedColorMap.HSV:
             return hsv(value)
             break
-        case 'blueOrange':
+        case SupportedColorMap.BLUEORANGE:
             return blueOrange(value)
             break
         default:
@@ -128,7 +191,7 @@ const toPaddedRgb = (v: number): string => {
 }
 
 
-const convertHexToRgb = (hex: string): number[] => {
+export const convertHexToRgb3Vec = (hex: string): number[] => {
     // assume 6-digit hex with leading sharp, e.g. '#00ff00'
     const rStr = hex.substring(1, 3)
     const gStr = hex.substring(3, 5)

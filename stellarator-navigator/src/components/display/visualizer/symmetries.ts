@@ -2,8 +2,11 @@ import { CoilRecord, ScalarField, SurfaceObject, Vec3, Vec3Field } from '@snType
 import { MathNumericType, Matrix, cos, index, matrix, multiply, range, sin } from 'mathjs'
 import { SURFACE_SIDE_RESOLUTION } from './geometry'
 
-const coilTransformMatrices: {[key: number]: Matrix[]} = {}
-const surfaceTransformMatrices: {[key: number]: Matrix[]} = {}
+// TODO: Remove per linter?
+// const coilTransformMatrices: {[key: number]: Matrix[]} = {}
+// const surfaceTransformMatrices: {[key: number]: Matrix[]} = {}
+const coilTransformMatrices: Record<number, Matrix[]> = {}
+const surfaceTransformMatrices: Record<number, Matrix[]> = {}
 
 const S = matrix([[1, 0, 0], [0, -1, 0], [0, 0, -1] ])
 // Create an array of 5 elements. Each element should be an array of length (index + 1),
@@ -60,7 +63,7 @@ angleFractionsPerNfp.map((v, i) => {
  * plotted individually. If there were k coils in the input set, there will be
  * 2 * k * nfp coils in the resulting output.
  */
-export const applyCoilSymmetries = (coilRecords: CoilRecord[], nfp: number) => {
+export const applyCoilSymmetries = (coilRecords: CoilRecord[], nfp: number): CoilRecord[] => {
     // Each coil is represented as 161 points in x-y-z space making a loop.
     // Step 1: convert our array of 3-vector 161-point loops into an array of N [coils] matrices,
     // each 161 [point-count] x 3 [x,y,z]
@@ -80,7 +83,7 @@ export const applyCoilSymmetries = (coilRecords: CoilRecord[], nfp: number) => {
             return { coil: pts, current: coilRecords[groupIndex].current } as CoilRecord
         })
     )
-    return coilGroupsWithCurrents.flat() as CoilRecord[]
+    return coilGroupsWithCurrents.flat()
 }
 
 /**
@@ -143,15 +146,14 @@ export const applySurfaceSymmetries = (inputSurfaceObject: SurfaceObject, nfp: n
     })
     const completedSurfaces = fields
 
-    // TODO: expand pointValues to repeat along the outer dimension
-    const fullPeriodPointFields = pointValues.map(surfacePoints => {        const full = []
+    const fullPeriodPointFields = pointValues.map(surfacePoints => {
+        const full = []
         full.push(...(surfacePoints.reverse()))
         full.push(...(surfacePoints.reverse()))
         return full
     })
     const pointFields = fullPeriodPointFields.map(surfacePoints => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        return new Array(nfp).fill(0).map(_ => surfacePoints).flat() as ScalarField
+        return new Array(nfp).fill(0).map(() => surfacePoints).flat() as ScalarField
     })
     const completedPoints = pointFields
     

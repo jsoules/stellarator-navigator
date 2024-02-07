@@ -1,152 +1,72 @@
 import { Grid } from "@mui/material"
-import { GridRowSelectionModel } from "@mui/x-data-grid"
-import HrBar from "@snComponents/HrBar"
-import OpenSelectedButton from "@snComponents/display/OpenSelected"
-import SnTable from "@snDisplayComponents/SnTable"
-import { computePerPlotDimensions, useAxes, useScales } from "@snPlots/PlotScaling"
-import PlotWrapper from "@snPlots/PlotWrapper"
-import { useOnClickPlot } from "@snPlots/interactions"
-import { DependentVariables, IndependentVariables } from "@snTypes/DataDictionary"
-import { BoundedPlotDimensions, FilterSettings, StellaratorRecord } from "@snTypes/Types"
-import { ScaleLinear } from "d3"
-import { FunctionComponent, useEffect, useMemo, useState } from "react"
+import { makeColors } from "@snComponents/display/Colormaps"
+import CanvasPlotWrapper from "@snComponents/display/plots/CanvasPlotWrapper"
+import { MouseHandlers } from "@snComponents/display/plots/interactions/mouseInteractions"
+import { PlotColorProps } from "@snComponents/display/plots/interactions/plotColors"
+import { PlotDataSummary } from "@snComponents/display/plots/interactions/usePlotData"
+import { PlotFittings } from "@snComponents/display/plots/plotFittings/usePlotFittings"
+import { BoundedPlotDimensions, DataGeometry } from "@snTypes/Types"
+import { FunctionComponent } from "react"
 
-type Props = {
-    filters: FilterSettings
-    selectionHandler: (model: GridRowSelectionModel) => void
-    selectedRecords: StellaratorRecord[]
-    width: number
-    height: number
+
+export type PlotGridProps = {
+    plotDataSummary: PlotDataSummary
+    dataGeometry: DataGeometry
+    plotDimensions: BoundedPlotDimensions
+    mouseHandlers: MouseHandlers
+    plotFittings: PlotFittings
+    plotColorProps: PlotColorProps
+    focusCoarseValue?: number
+    focusFineValue?: number
 }
 
+// TODO: Further simplify this to avoid passing so many props around, both into here and into CanvasPlotWrapper
+const PlotGrid: FunctionComponent<PlotGridProps> = (props: PlotGridProps) => {
+    const { plotDimensions, mouseHandlers, plotFittings, focusCoarseValue, focusFineValue } = props
+    const { data, radius, ids, fineSplitVals, coarseSplitVals } = props.plotDataSummary
+    const resolvedCoarseVals = (coarseSplitVals.length) === 0 ? [undefined] : coarseSplitVals
+    const resolvedFineVals = (fineSplitVals.length) === 0 ? [undefined] : fineSplitVals
+    const colorsRgb = makeColors({values: props.plotDataSummary.colorValues, scheme: props.plotColorProps.style, range: props.plotDataSummary.colorFieldRange})
+        .map(c => c.map(f => f.map(triplet => [...triplet, 1.0]).flat()))
 
-const getSelectedNfps = (filters: FilterSettings): number[] => {
-    const _nfps = (filters.nfp.map((v, i) => (v ? i + 1 : void {}))).filter(x => x !== undefined) as unknown as number[]
-    const nfps = _nfps.length === 0 ? [1, 2, 3, 4, 5] : _nfps
-    return nfps
-}
+    const canvasRows = resolvedCoarseVals.map((coarseValue, coarseIdx) => (
+            <Grid container item key={`${coarseValue}`}>
+                { resolvedFineVals.map((fineValue, fineIdx) => {
+                    const mouseHandler = mouseHandlers.mouseHandlerFactory({
+                        coarseValue,
+                        fineValue,
+                        data: data[coarseIdx][fineIdx],
+                        radius: radius[coarseIdx][fineIdx],
+                        ids: ids[coarseIdx][fineIdx]
+                    })
+                    return (
+                        <Grid item xs={0} key={`${fineValue}`}>
+                            <CanvasPlotWrapper
+                                key={`${coarseValue}-${fineValue}`}
+                                data={data[coarseIdx][fineIdx]}
+                                dotSizes={radius[coarseIdx][fineIdx]}
+                                colorValuesRgb={colorsRgb[coarseIdx][fineIdx]}
+                                dims={plotDimensions}
+                                fineValue={fineValue}
+                                coarseValue={coarseValue}
+                                isFocus={coarseValue === focusCoarseValue && fineValue === focusFineValue}
+                                plotFittings={plotFittings}
 
-
-const rectifySelectedTable = (activeNc: number | undefined, activeNfp: number, ncChecks: boolean[], nfps: number[]) => {
-    const firstNc = ncChecks.findIndex(x => x) + 1
-    const activeNcGood = (activeNc !== undefined) && ncChecks[activeNc - 1]
-
-    const targetNc = firstNc === 0
-        ? undefined
-        : activeNcGood ? activeNc : firstNc
-
-    const targetNfp = nfps.includes(activeNfp) ? activeNfp : nfps[0]
-
-    return { targetNc, targetNfp }
-}
-
-
-type RowProps = {
-    data: StellaratorRecord[]
-    dependentVar: DependentVariables
-    independentVar: IndependentVariables
-    dims: BoundedPlotDimensions
-    xScale: ScaleLinear<number, number, never>
-    yScale: ScaleLinear<number, number, never>
-    xAxis?: JSX.Element
-    yAxis?: JSX.Element
-    nfps: number[]
-    nc?: number
-    markedIds?: Set<number>
-    colSpan: number
-    clickHandler: (nfp: number, nc?: number) => void
-}
-
-const Row: FunctionComponent<RowProps> = (props: RowProps) => {
-    const { data, dependentVar, independentVar, dims, xScale, yScale, xAxis, yAxis, nfps, nc, markedIds, colSpan, clickHandler } = props
-
-    return <Grid container item>
-        {nfps.map(nfp => {
-            return (
-                <Grid item xs={colSpan} key={`${nfp}`}>
-                    <PlotWrapper
-                        key={`${nfp}-${nc}`}
-                        data={data}
-                        dependentVar={dependentVar}
-                        independentVar={independentVar}
-                        xScale={xScale}
-                        yScale={yScale}
-                        xAxis={xAxis}
-                        yAxis={yAxis}
-                        dims={dims}
-                        markedIds={markedIds}
-                        nfpValue={nfp}
-                        ncPerHpValue={nc}
-                        clickHandler={clickHandler}
-                    />
-                </Grid>
-        )})}
-    </Grid>
-}
-
-const internalMargin = 20
-const PlotGrid: FunctionComponent<Props> = (props: Props) => {
-    const { filters, selectionHandler, selectedRecords, width, height } = props
-    const [activeNfp, setActiveNfp] = useState(1)
-    const [activeNc, setActiveNc] = useState<number | undefined>(undefined)
-    const plotClickHandler = useOnClickPlot(setActiveNfp, setActiveNc)
-
-    // Compute dimensions
-    const nfps = getSelectedNfps(filters)
-    const [dims] = useMemo(() => computePerPlotDimensions(nfps.length, width - 2*internalMargin, height), [height, nfps.length, width])
-
-    useEffect(() => {
-        const { targetNc, targetNfp } = rectifySelectedTable(activeNc, activeNfp, filters.ncPerHp, nfps)
-        if (activeNc !== targetNc) {
-            setActiveNc(targetNc)
-        }
-        if (activeNfp !== targetNfp) {
-            setActiveNfp(targetNfp)
-        }
-    }, [activeNc, activeNfp, filters.ncPerHp, nfps])
-
-    // Scales & Axes
-    const [xScale, yScale] = useScales({filters, dimsIn: dims})
-    const [xAxis, yAxis] = useAxes({
-        xScale, yScale,
-        dependentVar: filters.dependentVariable, independentVar: filters.independentVariable,
-        dims
-    })
-    const marks = useMemo(() => filters.markedRecords, [filters])
-    
-    // TODO: Improved handling of SnTable records; don't redo the filter?
-    const ncs = filters.ncPerHp.map((v, i) => (v ? i + 1 : void {})).filter(x => x !== undefined) as unknown as number[]
-    const rows = (ncs.length === 0 ? [undefined] : ncs).map(
-        nc => <Row
-            key={`row-${nc}`}
-            data={selectedRecords}
-            dependentVar={filters.dependentVariable}
-            independentVar={filters.independentVariable}
-            dims={dims}
-            xScale={xScale}
-            yScale={yScale}
-            xAxis={xAxis}
-            yAxis={yAxis}
-            nfps={nfps}
-            markedIds={marks}
-            colSpan={0}
-            nc={nc}
-            clickHandler={plotClickHandler}
-        />
+                                mouseHandler={mouseHandler}
+                                dragResolver={mouseHandlers.resolveRangeChange}
+                            />
+                        </Grid>
+                    )})
+                }
+            </Grid>
+        )
     )
 
     return (
-        <div style={{ margin: internalMargin }}>
+        <div>
             <Grid container>
-                {rows}
+                {canvasRows}
             </Grid>
-            <div>Current filter settings return {selectedRecords.length} devices.</div>
-
-            <HrBar />
-            <SnTable records={selectedRecords} selectionHandler={selectionHandler} activeNfp={activeNfp} activeNc={activeNc} />
-            <div className="padded">
-                <OpenSelectedButton markedIds={marks} />
-            </div>
         </div>
     )
 }

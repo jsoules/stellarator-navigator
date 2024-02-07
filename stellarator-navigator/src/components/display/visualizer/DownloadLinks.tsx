@@ -1,5 +1,6 @@
 import { Button, Tooltip } from '@mui/material'
-import makeResourcePath, { KnownPathType } from "@snUtil/makeResourcePath"
+import { KnownPathType } from '@snTypes/DataDictionary'
+import makeResourcePath, { getStringId } from "@snUtil/makeResourcePath"
 import { FunctionComponent } from "react"
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter"
 import python from "react-syntax-highlighter/dist/esm/languages/hljs/python"
@@ -18,8 +19,8 @@ const codeSnippet =
 
 const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
     const { id } = props
-    const vmecPath = makeResourcePath(id, KnownPathType.NML_VMEC)
-    const simsoptPath = makeResourcePath(id, KnownPathType.SIMSOPT)
+    const vmecPath = makeResourcePath(getStringId(id), KnownPathType.NML_VMEC)
+    const simsoptPath = makeResourcePath(getStringId(id), KnownPathType.SIMSOPT)
 
     // We have to do some fussy path-munging in order to construct the forced-download link correctly--otherwise
     // the browser will suggest saving the file according to its full path, not just its file name.
@@ -30,7 +31,7 @@ const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
     const simsoptFile = simsoptPathParts.pop() ?? ""
     const simsoptPathFinal = simsoptPathParts.join("/")
 
-    return <div className="indent">
+    return  (<div className="indent">
                 <Tooltip
                     title="Download VMEC input file"
                 >
@@ -56,34 +57,16 @@ const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
                         Download SIMSOPT
                     </Button>
                 </Tooltip>
-                <a id="simsopt_download" href={`${simsoptPathFinal}/${simsoptFile}`} download={`${simsoptFile}`} style={{display: "none"}} />
+                <a id="simsopt_download" href={`${simsoptPathFinal}/${simsoptFile}`} download={simsoptFile} style={{display: "none"}} />
                 <div>
                     <span>To load downloaded SIMSOPT data, execute the following Python script:</span>
                     <div style={{border: "1px solid #7f7f7f", margin: 10}}>
-                        <SyntaxHighlighter children={codeSnippet} language="python" style={a11yLight} />
+                        <SyntaxHighlighter language="python" style={a11yLight}>
+                            {codeSnippet} 
+                        </SyntaxHighlighter>
                     </div>
                 </div>
-            </div>
-    // This is retained as a links-only implementation, just in case we need to roll back to it.
-    // return <div className="indent">
-    //     Right-click and "Save link as" to download:
-    //     <ul>
-    //         <li>
-    //             <a id="vmec_download" href={`${vmecPathFinal}/${vmecFile}`} download={vmecFile}> VMEC input file</a>
-    //         </li>
-    //         <li>
-    //             <a id="simsopt_download" href={`${simsoptPathFinal}/${simsoptFile}`} download={`${simsoptFile}`}>
-    //                 SIMSOPT coils, magnetic axis, and surface serializations
-    //             </a>
-    //         </li>
-    //     </ul>
-    //     <div>
-    //         <span>To load downloaded SIMSOPT data, execute the following Python script:</span>
-    //         <div className="codeSnippetWrapper">
-    //             <SyntaxHighlighter children={codeSnippet} language="python" style={a11yLight} />
-    //         </div>
-    //     </div>
-    // </div>
+            </div>)
 }
 
 export default DownloadLinks

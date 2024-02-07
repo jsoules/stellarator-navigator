@@ -1,6 +1,6 @@
 import { Button, Tooltip } from '@mui/material'
 import { FunctionComponent } from 'react'
-import { onOpenSelected } from './plots/interactions'
+import { onOpenSelected } from './plots/interactions/dotInteractions'
 
 
 type OpenSelectedProps = {

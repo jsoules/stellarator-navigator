@@ -1,27 +1,34 @@
 import { NavigatorStateAction } from "@snState/NavigatorReducer"
-import { CategoricalIndexedFields, DependentVariables, IndependentVariables } from "@snTypes/DataDictionary"
+import { CategoricalIndexedFields, DependentVariables, IndependentVariables, ToggleableVariables } from "@snTypes/DataDictionary"
 import { Dispatch } from "react"
 
 export type FilterSettings = {
     coilLengthPerHp: number[]
     totalCoilLength: number[]
-    meanIota: boolean[],
-    ncPerHp: boolean[],
-    nfp: boolean[],
-    nSurfaces: boolean[],
-    maxKappa: number[],
-    maxMeanSquaredCurve: number[],
-    minIntercoilDist: number[],
-    qaError: number[],
-    aspectRatio: number[],
-    minorRadius: number[],
-    volume: number[],
-    minCoil2SurfaceDist: number[],
-    meanElongation: number[],
-    maxElongation: number[],
-    nFourierCoil?: number,
-    dependentVariable: DependentVariables,
-    independentVariable: IndependentVariables,
+    meanIota: boolean[]
+    ncPerHp: boolean[]
+    nfp: boolean[]
+    nSurfaces: boolean[]
+    maxKappa: number[]
+    maxMeanSquaredCurve: number[]
+    minIntercoilDist: number[]
+    qaError: number[]
+    aspectRatio: number[]
+    minorRadius: number[]
+    volume: number[]
+    minCoil2SurfaceDist: number[]
+    meanElongation: number[]
+    maxElongation: number[]
+    nFourierCoil?: number
+    dependentVariable: DependentVariables
+    independentVariable: IndependentVariables
+    coarsePlotSplit?: ToggleableVariables
+    finePlotSplit?: ToggleableVariables
+    coarsePlotSelectedValue?: number
+    finePlotSelectedValue?: number
+    database: NavigatorDatabase | undefined
+    records: StellaratorRecord[]
+    recordIds: Set<number>
     markedRecords: Set<number>
 }
 
@@ -34,6 +41,8 @@ export type StellaratorRecord = {
     // PK
     id: number,                     // 952 - 504819
     // Categorical fields
+    // Note: coil lengths are technically categorical but we mark them as continuous in the the
+    // data dictionary because there's like 80 possible values
     coilLengthPerHp: number,        // range 4.5-60. Length of coil used per half-period (meters)
     totalCoilLength: number,        // range 28.5 - 120. Total length of coil used to construct coils (m)
     meanIota: number,               // range 0.1 - 0.9
@@ -61,7 +70,7 @@ export type StellaratorRecord = {
                                     // both are unitless and tfProfile should be constrained to lie on (0, 1)
     surfaceTypes: string[]          // array of nSurfaces+1 length, each element's values in ("exact", "ls")
 }
-export type RecordDict = { [key: number]: StellaratorRecord }
+export type RecordDict = Record<number, StellaratorRecord>
 
 export type NavigatorDatabase = {
     list: StellaratorRecord[]
@@ -71,7 +80,7 @@ export type NavigatorDatabase = {
 }
 
 export type CategoricalIndexSet = {[key in CategoricalIndexedFields]: NumericIndex}
-export type NumericIndex = {[key: number]: Set<number>}
+export type NumericIndex = Record<number, Set<number>>
 
 export type NavigatorDispatch = Dispatch<NavigatorStateAction>
 
@@ -104,6 +113,13 @@ export type BoundedPlotDimensions = PlotDimensions & {
     clipAvoidanceXOffset: number,
     clipAvoidanceYOffset: number,
     axisLabelOffset: number
+}
+
+export type DataGeometry = {
+    xmin: number,
+    xmax: number,
+    ymin: number,
+    ymax: number
 }
 
 export type Vec3 = [number, number, number]

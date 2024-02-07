@@ -1,6 +1,7 @@
 import { makeRecordFromObject, rawObject } from "@snState/database"
+import { KnownPathType } from "@snTypes/DataDictionary"
 import { defaultEmptyRecord } from '@snTypes/Defaults'
-import makeResourcePath, { KnownPathType, getStringId } from "@snUtil/makeResourcePath"
+import makeResourcePath, { getStringId } from "@snUtil/makeResourcePath"
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import queryFn from "./queryFn"

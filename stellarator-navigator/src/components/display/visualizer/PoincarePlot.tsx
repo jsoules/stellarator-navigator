@@ -1,5 +1,6 @@
 // import { Typography } from "@mui/material"
-import makeResourcePath, { KnownPathType } from "@snUtil/makeResourcePath"
+import { KnownPathType } from "@snTypes/DataDictionary"
+import makeResourcePath, { getStringId } from "@snUtil/makeResourcePath"
 import { FunctionComponent } from "react"
 
 type PoincarePlotProps = {
@@ -7,11 +8,16 @@ type PoincarePlotProps = {
 }
 
 const PoincarePlot: FunctionComponent<PoincarePlotProps> = (props: PoincarePlotProps) => {
-    const path = makeResourcePath(props.id, KnownPathType.POINCARE)
+    const path = makeResourcePath(getStringId(props.id), KnownPathType.POINCARE)
     return (
         <div className="poincareContainer">
             {/* <Typography align="center" fontWeight="bold">Poincaré Plots</Typography> */}
-            <img src={path} alt={`Poincare plot for device ${props.id}`} className="poincareContainer" />
+            <img
+                src={path}
+                title={`Poincare plot for device ${props.id}`}
+                alt={`Poincare plot for device ${props.id}. A missing image indicates that the plot needs to be rerun for this device.`}
+                className="poincareContainer"
+            />
         </div>
     )
 }

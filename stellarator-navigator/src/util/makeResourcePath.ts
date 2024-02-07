@@ -1,46 +1,22 @@
-import { getEnumVals } from "@snTypes/DataDictionary"
+import { GraphicsType, KnownPathType, getEnumVals } from "@snTypes/DataDictionary"
 
-// TODO: move to a config file? Read from viteconfig?
-// const basePath = "https://sdsc-users.flatironinstitute.org/~agiuliani/QUASR/"
-// TODO: SWITCH BASE PATH BASED ON DEPLOYMENT STATUS
-// const basePath = "https://users.flatironinstitute.org/~jsoules/QUASR/" // FIXME
-// const basePath = "https://users.flatironinstitute.org/~jsoules/test/" // FIXME
+// TODO: move basename to a config file? Read from viteconfig?
 const BASENAME = import.meta.env.BASE_URL
 const basePath = BASENAME === '/'
                     ? import.meta.env.DEV
-                        ? 'http://localhost:5173'
+                        ? 'http://localhost:5173/'
                         : 'https://quasr.flatironinstitute.org/'
                     : `https://users.flatironinstitute.org${BASENAME}/`
 const idLength = 6
 
 
-export enum KnownPathType {
-    COILS = "curves",
-    SURFACES = "surfaces",
-    MODB = "modB",
-    NML_VMEC = "nml",
-    SIMSOPT = "simsopt_serials",
-    CURRENTS = "currents",
-    POINCARE = "poincare",
-    DATABASE = "database",
-    RECORD = "record"
+export type ValidId = { id: string }
+export const getStringId = (id: number | string): ValidId => {
+    return { id: `${id}`.padStart(idLength, '0') }
 }
 
-enum GraphicsType {
-    COILS = KnownPathType.COILS,
-    CURRENTS = KnownPathType.CURRENTS,
-    SURFACES = KnownPathType.SURFACES,
-    MODB = KnownPathType.MODB,
-    POINCARE = KnownPathType.POINCARE
-}
-
-
-export const getStringId = (id: number | string): string => {
-    return `${id}`.padStart(idLength, '0')
-}
-
-
-const makeResourcePath = (id: string, type: KnownPathType) => {
+const makeResourcePath = (validId: ValidId, type: KnownPathType) => {
+    const { id } = validId
     const graphicsTypes = getEnumVals(GraphicsType)
     const graphicsPart = graphicsTypes.includes(type) ? 'graphics/' : ''
     const binPrefix = id.substring(0, 3)
@@ -56,22 +32,22 @@ const makeResourcePath = (id: string, type: KnownPathType) => {
             suffix = '.png'
             break
         case KnownPathType.SIMSOPT:
-            typeDirectory = `${type}`
+            typeDirectory = type
             fileBase = `serial${id}`
             suffix = `.json`
             break
         case KnownPathType.NML_VMEC:
-            typeDirectory = `${type}`
+            typeDirectory = type
             fileBase = "input."
-            suffix = `${id}`
+            suffix = id
             break
         case KnownPathType.RECORD:
             typeDirectory = 'records'
-            fileBase = `${id}`
+            fileBase = id
             suffix = '.json'
             break
         default:
-            typeDirectory = `${type}`
+            typeDirectory = type
             fileBase = `${type}${id}`
             suffix = '.json'
     }

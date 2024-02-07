@@ -3,6 +3,18 @@ import { isRouteErrorResponse, useParams, useRouteError } from 'react-router-dom
 
 const dev = import.meta.env.DEV
 
+type dataType = {
+    message?: string
+}
+
+// This is a little silly but it avoids referencing a member of `any`, which
+// keeps the linter happy
+const msgExtractor = (data?: dataType) => {
+    if (data?.message) {
+        return <div>{data.message}</div>
+    }
+}
+
 const ModelError: FunctionComponent = () => {
     const error = useRouteError()
     const params = useParams()
@@ -15,7 +27,7 @@ const ModelError: FunctionComponent = () => {
         ? <>
             <h2>{error.status}</h2>
             <div>{error.statusText}</div>
-            { error.data?.message && <div>{error.data.message}</div> }
+            {msgExtractor(error.data as dataType)}
         </>
         : <>
             <div>

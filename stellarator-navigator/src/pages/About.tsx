@@ -80,7 +80,7 @@ const Home: FunctionComponent<Props> = (props: Props) => {
                         and the coil sets that generate them, optimized for volume quasi-symmetry.
                     </div>
                     <div>
-                        Click the "Launch Navigator" button to navigate the QUASR database. Once you have
+                        Click the &ldquo;Launch Navigator&rdquo; button to navigate the QUASR database. Once you have
                         identified devices of interest, click the scatterplot representation or table
                         entry to launch a separate window with detailed record information,
                         including an interactive 3-D model and Poincaré plots.
@@ -100,7 +100,7 @@ const Home: FunctionComponent<Props> = (props: Props) => {
                     ))}
                 </div>
                 <div>
-                    Stellarator Navigator by Jeff Soules (Flatiron Institute)
+                    Navigator by Jeff Soules (Flatiron Institute)
                 </div>
             </div>
         </div>

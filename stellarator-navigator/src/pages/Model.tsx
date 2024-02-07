@@ -1,17 +1,12 @@
-import HrBar from "@snComponents/HrBar"
 import { SupportedColorMap } from "@snComponents/display/Colormaps"
-import DownloadLinks from "@snComponents/display/visualizer/DownloadLinks"
-import IotaProfilePlot from "@snComponents/display/visualizer/IotaProfilePlot"
-import PoincarePlot from "@snComponents/display/visualizer/PoincarePlot"
-import SurfaceControls from "@snComponents/display/visualizer/SurfaceControls"
-import Spinner from "@snComponents/general/Spinner"
+import InstructionButton from "@snComponents/general/InstructionButton"
+import { ModelInstructionDrawer } from "@snComponents/general/InstructionDrawer"
+import { HrBar, Spinner } from "@snGeneralComponents/index"
+import { useModel, useRecord } from "@snQuerying/index"
 import { defaultEmptyRecord } from "@snTypes/Defaults"
 import { getStringId } from "@snUtil/makeResourcePath"
 import useWindowDimensions from "@snUtil/useWindowDimensions"
-import RecordManifest from "@snVisualizer/RecordManifest"
-import SimulationView from "@snVisualizer/SimulationView"
-import useModel from "querying/useModel"
-import useRecord from "querying/useRecord"
+import { DownloadLinks, IotaProfilePlot, PoincarePlot, RecordManifest, SimulationView, SurfaceControls } from "@snVisualizer/index"
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from "react"
 import { useParams } from "react-router"
 
@@ -24,25 +19,26 @@ const Model: FunctionComponent = () => {
     const stringId = getStringId(id)
     const canvasRef = useRef(null)
     const rec = useRecord(id)
-    const { baseCoils, baseSurfs, fullCoils, fullSurfs, surfaceCount } = useModel(stringId, rec?.nfp ?? 1)
+    const { baseCoils, baseSurfs, fullCoils, fullSurfs, surfaceCount } = useModel(stringId.id, rec.nfp)
     
-    const [colorMap, setColorMap] = useState<SupportedColorMap>('plasma')
+    const [instructionsOpen, setInstructionsOpen] = useState(false)
+    const [colorMap, setColorMap] = useState<SupportedColorMap>(SupportedColorMap.PLASMA)
     const [showFullRing, setShowFullRing] = useState<boolean>(false)
     // TODO: Temporarily defaulted to False & disabled control while an irregularity in the data is updated
     const [showCurrents, setShowCurrents] = useState<boolean>(false)
-    const [surfaceChecks, setSurfaceChecks] = useState<boolean[]>(Array(rec?.nSurfaces || 1).fill(true))
-    useEffect(() => setSurfaceChecks(Array(rec.nSurfaces || 1).fill(true)), [rec?.nSurfaces])
+    const [surfaceChecks, setSurfaceChecks] = useState<boolean[]>(Array(rec.nSurfaces).fill(true))
+    useEffect(() => setSurfaceChecks(Array<boolean>(rec.nSurfaces).fill(true)), [rec.nSurfaces])
 
-    // TODO: Consider de-memoizing this, it surely doesn't need it
-    const downloadLinks = useMemo(() => <DownloadLinks id={stringId} />, [stringId])
-    const poincarePlot = useMemo(() => <PoincarePlot id={stringId}/>, [stringId])
+    const downloadLinks = <DownloadLinks id={stringId.id} />
+    const poincarePlot = <PoincarePlot id={stringId.id}/>
 
     const { width } = useWindowDimensions()
     const lw = useMemo(() => Math.max(0, (2 * width / 3) - 80), [width])
     const rw = useMemo(() => Math.max(0, (width / 3) - 40), [width])
 
     const viewer = useMemo(() => {
-        // TODO: Fix this so it's not breaking hook rules
+        // TODO: Can we avoid rendering a SimulationView with no data, without
+        // breaking the changing-number-of-hooks rules?
         const ifAvail = (
             <>
                 <SimulationView
@@ -69,13 +65,12 @@ const Model: FunctionComponent = () => {
     return rec === defaultEmptyRecord
         ? <div></div>
         : (<div className="simulationViewParent ForceLightMode">
+            <ModelInstructionDrawer open={instructionsOpen} changeOpenState={setInstructionsOpen} />
+            <div className="buttonRow">
+                <InstructionButton open={instructionsOpen} changeOpenState={setInstructionsOpen} />
+            </div>
             <div className="flexWrapper simulationViewParent">
-                {/* <div style={{width: 400, height: 300}}>
-                    <Spinner Type='barSpinner'/>
-                </div> */}
                 <div style={{width: Math.floor(lw + 40)}} className="simulationViewWrapper">
-                    <canvas ref={canvasRef} />
-                    {viewer}
                     <SurfaceControls
                         checksNeeded={surfaceCount > 0}
                         surfaceChecks={surfaceChecks}
@@ -87,6 +82,10 @@ const Model: FunctionComponent = () => {
                         showFullRing={showFullRing}
                         setShowFullRing={setShowFullRing}
                     />
+                    <canvas ref={canvasRef}
+                        title="Click and drag to rotate the camera; right-click, shift-click, or ctrl-click and drag to pan."
+                    />
+                    {viewer}
                 </div>
                 <div style={{width: Math.floor(rw)}}>
                     <RecordManifest rec={rec} />
