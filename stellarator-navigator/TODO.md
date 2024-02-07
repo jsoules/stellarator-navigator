@@ -260,7 +260,7 @@ name shouldn't reference nfp and the default shouldn't be hard-coded 5
 
 [x] Normalize continuous color to the FILTER RANGE, not the range of the data!
 
-[ ] Add show/hide instructions panel
+[x] Add show/hide instructions panel
 
 [ ] For missing poincare plot, show error in UI -- poincare needs to be rerun for this device, does not represent issue
 

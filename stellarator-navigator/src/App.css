@@ -84,7 +84,32 @@ div.ForceLightMode {
     padding: 100px 20px 0px 20px;
 }
 
+.buttonRow {
+    display: inline flex;
+}
+
 .showFiltersButton {
+    float: left;
+    margin: 20px 5px 20px 20px;
+}
+
+.instructionButton {
+    float: left;
+    margin: 15px 20px 10px 5px;
+    align-items: center;
+}
+
+.instructionBox {
+    font-size: larger;
+    line-height: 1.2;
+    max-width: 80ch;
+    align-content: center;
+    margin-left: calc(50% - 80ch/2);
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.instructionBox div {
     margin: 20px;
 }
 
@@ -241,4 +266,8 @@ div.ForceLightMode {
 
 .poincareContainer img {
     max-width: 98%;
+}
+
+.emphasis {
+    font-weight: bold;
 }

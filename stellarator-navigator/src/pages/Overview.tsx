@@ -9,6 +9,8 @@ import PlotLegend from "@snComponents/display/plots/legends/plotLegend"
 import { MarkedValueDesc, OverallHitCount } from "@snComponents/display/plots/plotFittings/PlotGridNotes"
 import usePlotFittings from "@snComponents/display/plots/plotFittings/usePlotFittings"
 import { HrBar } from "@snComponents/general"
+import InstructionButton from "@snComponents/general/InstructionButton"
+import { OverviewInstructionDrawer } from "@snComponents/general/InstructionDrawer"
 import SelectionControlDrawer from "@snComponents/selectionControl/SelectionControlDrawer"
 import ShowFiltersButton from "@snComponents/selectionControl/ShowFiltersButton"
 import useFilterCallbacks from "@snControlComponents/SelectionControlCallbacks"
@@ -48,6 +50,7 @@ const Overview: FunctionComponent<OverviewProps> = (props: OverviewProps) => {
     const {width, height} = useWindowDimensions()
     const [plotColorProps, plotColorPropsDispatch] = useReducer(plotColorReducer, defaultPlotColorProps)
     const [drawerOpen, setDrawerOpen] = useState(false)
+    const [instructionsOpen, setInstructionsOpen] = useState(false)
     const callbacks = useFilterCallbacks(props.dispatch)
 
     // Note: was height - 40, may need to reinstate to allow room for a banner
@@ -96,57 +99,52 @@ const Overview: FunctionComponent<OverviewProps> = (props: OverviewProps) => {
             // style={{width: effectiveWidth, height: effectiveHeight}}
             style={{width: effectiveWidth}}
         >
-            {/* <Splitter
-                width={width - splitterWidthRolloff}
-                height={effectiveHeight}
-                initialPosition={splitterInitialPosition}
-            > */}
-                {/* <div> */}
-                <SelectionControlDrawer
-                    open={drawerOpen}
-                    changeOpenState={setDrawerOpen}
-                    width={drawerWidth}
-                >
-                    <SelectionControlPanel
-                        filterSettings={filterSettings}
-                        callbacks={callbacks}
-                        colorProps={plotColorProps}
-                        colorChgDispatcher={plotColorPropsDispatch}
-                    />
-                </SelectionControlDrawer>
-                {/* </div> */}
-                    <ShowFiltersButton openState={drawerOpen} changeOpenState={setDrawerOpen} />
-                <div
-                    // onClick={toggleControlDrawer(setDrawerOpen, false)}
-                    // onKeyDown={toggleControlDrawer(setDrawerOpen, false)}
-                    // className="plotGrid"
-                    style={{
-                        marginLeft: `${contentDivLeftMargin}px`
-                    }}
-                >
-                    <OverallHitCount hits={records.length} />
-                    <PlotGrid
-                        plotDataSummary={plotDataSummary}
-                        dataGeometry={dataGeometry}
-                        plotDimensions={plotDimensions}
-                        mouseHandlers={mouseHandlers}
-                        plotFittings={plotFittings}
-                        plotColorProps={plotColorProps}
-                        focusCoarseValue={filterSettings.coarsePlotSelectedValue}
-                        focusFineValue={filterSettings.finePlotSelectedValue}
-                    />
-                    {legend}
-                    <MarkedValueDesc dependentVariable={filterSettings.dependentVariable} />
-                    <HrBar />
-                    <SnTable
-                        records={records}
-                        markedIds={filterSettings.markedRecords}
-                        selectionHandler={callbacks.handleUpdateMarks}
-                        filterCriteria={[filterSettings.coarsePlotSplit, filterSettings.finePlotSplit]}
-                        filterValues={[filterSettings.coarsePlotSelectedValue, filterSettings.finePlotSelectedValue]}
-                    />
-                </div>
-            {/* </Splitter> */}
+            <SelectionControlDrawer
+                open={drawerOpen}
+                changeOpenState={setDrawerOpen}
+                width={drawerWidth}
+            >
+                <SelectionControlPanel
+                    filterSettings={filterSettings}
+                    callbacks={callbacks}
+                    colorProps={plotColorProps}
+                    colorChgDispatcher={plotColorPropsDispatch}
+                />
+            </SelectionControlDrawer>
+
+            <OverviewInstructionDrawer open={instructionsOpen} changeOpenState={setInstructionsOpen} />
+
+            <div className="buttonRow">
+                <ShowFiltersButton openState={drawerOpen} changeOpenState={setDrawerOpen} />
+                <InstructionButton open={instructionsOpen} changeOpenState={setInstructionsOpen} />
+            </div>
+            <div
+                style={{
+                    marginLeft: `${contentDivLeftMargin}px`
+                }}
+            >
+                <OverallHitCount hits={records.length} />
+                <PlotGrid
+                    plotDataSummary={plotDataSummary}
+                    dataGeometry={dataGeometry}
+                    plotDimensions={plotDimensions}
+                    mouseHandlers={mouseHandlers}
+                    plotFittings={plotFittings}
+                    plotColorProps={plotColorProps}
+                    focusCoarseValue={filterSettings.coarsePlotSelectedValue}
+                    focusFineValue={filterSettings.finePlotSelectedValue}
+                />
+                {legend}
+                <MarkedValueDesc dependentVariable={filterSettings.dependentVariable} />
+                <HrBar />
+                <SnTable
+                    records={records}
+                    markedIds={filterSettings.markedRecords}
+                    selectionHandler={callbacks.handleUpdateMarks}
+                    filterCriteria={[filterSettings.coarsePlotSplit, filterSettings.finePlotSplit]}
+                    filterValues={[filterSettings.coarsePlotSelectedValue, filterSettings.finePlotSelectedValue]}
+                />
+            </div>
         </div>
     )
 }

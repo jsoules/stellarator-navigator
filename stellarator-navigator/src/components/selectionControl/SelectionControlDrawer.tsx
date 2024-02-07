@@ -12,7 +12,6 @@ type DrawerProps = {
 
 
 const DrawerCloser: FunctionComponent<DrawerProps> = (props: DrawerProps) => (
-
     <div className="drawerCloser">
         <span className="rightIcon">
             <IconButton onClick={() => props.changeOpenState(false)}>

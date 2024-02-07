@@ -1,4 +1,6 @@
 import { SupportedColorMap } from "@snComponents/display/Colormaps"
+import InstructionButton from "@snComponents/general/InstructionButton"
+import { ModelInstructionDrawer } from "@snComponents/general/InstructionDrawer"
 import { HrBar, Spinner } from "@snGeneralComponents/index"
 import { useModel, useRecord } from "@snQuerying/index"
 import { defaultEmptyRecord } from "@snTypes/Defaults"
@@ -19,6 +21,7 @@ const Model: FunctionComponent = () => {
     const rec = useRecord(id)
     const { baseCoils, baseSurfs, fullCoils, fullSurfs, surfaceCount } = useModel(stringId.id, rec.nfp)
     
+    const [instructionsOpen, setInstructionsOpen] = useState(false)
     const [colorMap, setColorMap] = useState<SupportedColorMap>(SupportedColorMap.PLASMA)
     const [showFullRing, setShowFullRing] = useState<boolean>(false)
     // TODO: Temporarily defaulted to False & disabled control while an irregularity in the data is updated
@@ -62,6 +65,10 @@ const Model: FunctionComponent = () => {
     return rec === defaultEmptyRecord
         ? <div></div>
         : (<div className="simulationViewParent ForceLightMode">
+            <ModelInstructionDrawer open={instructionsOpen} changeOpenState={setInstructionsOpen} />
+            <div className="buttonRow">
+                <InstructionButton open={instructionsOpen} changeOpenState={setInstructionsOpen} />
+            </div>
             <div className="flexWrapper simulationViewParent">
                 <div style={{width: Math.floor(lw + 40)}} className="simulationViewWrapper">
                     <SurfaceControls

@@ -1,10 +1,12 @@
 import { Button, Tooltip } from '@mui/material'
-import { FunctionComponent } from 'react'
+import { FunctionComponent, PropsWithChildren } from 'react'
 
-type ShowFiltersProps = {
+type ShowFiltersBase = {
     openState: boolean
     changeOpenState: (newState: boolean) => void
 }
+
+type ShowFiltersProps = PropsWithChildren<ShowFiltersBase>
 
 const ShowFiltersButton: FunctionComponent<ShowFiltersProps> = (props: ShowFiltersProps) => {
     return props.openState ? <></> : (
@@ -21,6 +23,7 @@ const ShowFiltersButton: FunctionComponent<ShowFiltersProps> = (props: ShowFilte
                     Show Filter Controls
                 </Button>
             </Tooltip>
+            {/* {props.children} */}
         </div>
     )
 }
