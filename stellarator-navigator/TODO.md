@@ -262,7 +262,7 @@ name shouldn't reference nfp and the default shouldn't be hard-coded 5
 
 [x] Add show/hide instructions panel
 
-[ ] For missing poincare plot, show error in UI -- poincare needs to be rerun for this device, does not represent issue
+[x] For missing poincare plot, show error in UI -- poincare needs to be rerun for this device, does not represent issue
 
 [ ] --> for every ID number there should be an associated coils, surfaces, modb, axis. This is a fair check so do it
 
