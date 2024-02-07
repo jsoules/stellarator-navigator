@@ -51,7 +51,7 @@ export const OverviewInstructionDrawer: FunctionComponent<InstructionDrawerProps
         <div className="instructionBox">
             <div>
                 This page presents plots of the devices in the QUASR database, filtered according to parameters of interest.
-                You can show the filter controls by clicking the button, and hide them again with the "&lt;" symbol.
+                You can show the filter controls by clicking the button, and hide them again with the &ldquo;&lt;&rdquo; symbol.
                 Filter controls are divided into plot controls and filter controls.
             </div>
             <div>
@@ -60,7 +60,7 @@ export const OverviewInstructionDrawer: FunctionComponent<InstructionDrawerProps
                 the plots into rows and columns according to variables of your choice. Altogether, this allows the
                 plots to display five dimensions of data.
                 By default, the plots show the root of quasi-asymmetry error against total coil length, with dots colored
-                according to the device's number of coils per half-period (NC/HP), and plots split into columns according
+                according to the device&apos;s number of coils per half-period (NC/HP), and plots split into columns according
                 to the number of field periods (NFP).
             </div>
             <div>
@@ -96,7 +96,7 @@ export const ModelInstructionDrawer: FunctionComponent<InstructionDrawerPropsBas
                 choose whether to show coloration for current strengths in the coils.
             </div>
             <div>
-                In addition to the 3D visualization, this page also shows a plot of the device's iota profile,
+                In addition to the 3D visualization, this page also shows a plot of the device&apos;s iota profile,
                 a complete description of the device parameters, and Poincaré plots. Additionally, you can download
                 the device data in VMEC or SIMSOPT format.
             </div>
