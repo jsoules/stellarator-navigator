@@ -15,7 +15,7 @@ const PoincarePlot: FunctionComponent<PoincarePlotProps> = (props: PoincarePlotP
             <img
                 src={path}
                 title={`Poincare plot for device ${props.id}`}
-                alt={`Poincare plot for device ${props.id}. If the image is missing, it likely indicates that the plot needs to be rerun for this device.`}
+                alt={`Poincare plot for device ${props.id}. A missing image indicates that the plot needs to be rerun for this device.`}
                 className="poincareContainer"
             />
         </div>
