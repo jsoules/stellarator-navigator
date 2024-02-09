@@ -14,29 +14,36 @@ uses the following procedure.
 ### Modify Code to Account for New Data
 
 - If there are substantial modifications to the underlying data model, account for them with code changes.
-- Addition or reclassification of new fields within Stellarator Records can be accommodated by:
+- Addition or reclassification of new fields within Stellarator Records can be accommodated by the following.
   - In `Types.ts`:
-    - Adding new fields and descriptions to the `StellaratorRecord` type in `Types.ts`
-    - Adding corresponding fields and ranges to the `FilterSettings` type in `Types.ts`
-  - In `Defaults.ts`:
-    - Ensure the new field is present with a sensible deafult in `defaultEmptyRecord`
+    - Add new fields and descriptions to the `StellaratorRecord` type in `Types.ts`
+    - Add corresponding fields and ranges to the `FilterSettings` type in `Types.ts`
   - In `DataDictionary.ts`:
-    - Adding new fields to the `KnownFields` enum
-    - Adding the new `KnownFields` entries to `DependentVariables`, `IndependentVariables` as appropriate
+    - Add new fields to the `KnownFields` enum
+    - Add the new `KnownFields` entries to `DependentVariables`, `IndependentVariables` as appropriate
     (These determine which field options are allowed for the x- and y-axis value selection in browsing plots)
-    - Adding the new `KnownFields` to `ToggleableVariables`, `RangeVariables`, `TripartiteVariables` as appropriate
+    - Add the new `KnownFields` to `ToggleableVariables`, `RangeVariables`, `TripartiteVariables` as appropriate
     (These determine the type of controls that will be created for filtering: Toggleable are checkbox lists,
-    Ranges are selected ranges, and Tripartite are categorical fields where we can display option 1, option 2, or both)
+    Ranges are range selectors, and Tripartite are categorical fields where we can display option 1, option 2, or both)
     - If there is a discrete set of valid values for the new data field, add a new entry along the lines of
     `meanIotaValidValues` or other examples
     - Add a full description of each new field in the `Fields` object
     - Add the new `KnownFields` entry to `CategoricalIndexedFields` if appropriate (these are used for creating
     indexes for the in-memory database)
-  - In `Database.ts`:
+  - In `Defaults.ts`:
+    - Ensure the new field is present with a sensible deafult in `defaultEmptyRecord`
+    - If the new field is a categorical indexed field, add it to the `categoricalIndexes` of the `initialDatabase`
+  - In `database.ts`:
     - Add the new field with its native (in-export) name in the `RawFields` enum
     - Add the new field in the appropriate location in `recordJig` and ensure the `order` fields are correct
+    - If the new field is a categorical index field, add a set for it to the `categoricalFieldIndexes` variable so
+      its records can be populated appropriately
   - In `SnTable.tsx`:
-    - Ensure the new field has been added appropriately to the `rows` variable mapped from each filtered record
+    - Ensure the new field has been added appropriately to the `rows` variable (mapped from each filtered record)
+  - In `RecordManifest.tsx`:
+    - Ensure the new field appears in the complete record values display (if desired)
+  - In `process_db.py`:
+    - Ensure database processing script has an up-to-date list of fields to drop and to log-scale
 - More complex changes (or applying this tool to a new data set) may require more extensive code updates and are
   beyond the scope of this readme.
 
