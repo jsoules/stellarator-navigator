@@ -15,7 +15,7 @@ export enum KnownFields {
     MAX_MEAN_SQUARED_CURVE = 'maxMeanSquaredCurve',
     MIN_INTERCOIL_DIST = 'minIntercoilDist',
     QA_ERROR = 'qaError',
-    GRADIENT = 'gradient',
+    // GRADIENT = 'gradient',   // Removed as of 2024.01 export
     ASPECT_RATIO = 'aspectRatio',
     MINOR_RADIUS = 'minorRadius',
     VOLUME = 'volume',
@@ -26,6 +26,7 @@ export enum KnownFields {
     IOTA_PROFILE = 'iotaProfile',
     TF_PROFILE = 'tfProfile',
     SURFACE_TYPES = 'surfaceTypes',
+    HELICITY = 'helicity',
 }
 
 export enum DependentVariables {
@@ -68,7 +69,7 @@ export enum ToggleableVariables {
     NC_PER_HP = KnownFields.NC_PER_HP,
     NFP = KnownFields.NFP,
     MEAN_IOTA = KnownFields.MEAN_IOTA,
-    N_SURFACES = KnownFields.NSURFACES
+    N_SURFACES = KnownFields.NSURFACES,
 }
 
 export enum RangeVariables {
@@ -83,11 +84,12 @@ export enum RangeVariables {
     VOLUME = KnownFields.VOLUME,
     MIN_COIL_TO_SURFACE_DIST = KnownFields.MIN_COIL_TO_SURFACE_DIST,
     MEAN_ELONGATION = KnownFields.MEAN_ELONGATION,
-    MAX_ELONGATION = KnownFields.MAX_ELONGATION
+    MAX_ELONGATION = KnownFields.MAX_ELONGATION,
 }
 
 export enum TripartiteVariables {
     N_FOURIER_COIL = KnownFields.N_FOURIER_COIL,
+    HELICITY = KnownFields.HELICITY,
 }
 
 export const dependentVariableDropdownConfig: { key: number, value: DependentVariables }[] = [
@@ -192,7 +194,9 @@ export const totalCoilLengthValidValues = [
 ]
 
 export const meanIotaValidValues = [
-    0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9
+    0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9,
+    1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9,
+    2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6
 ]
 
 export const ncPerHpValidValues = [
@@ -204,6 +208,10 @@ export const nfpValidValues = [
 ]
 
 export const nFourierCoilValidValues = [6, 16]
+
+export const helicityValidValues = [0, 1] // 0 = QA, 1 = QH
+// The below is a hack, and we should do something more principled.
+export const helicityValuesTranslation = ['QA', 'QH']
 
 export const nSurfacesValidValues = [
     1, 2, 3, 4, 5, 6, 7
@@ -244,7 +252,7 @@ export const Fields: FieldRecords = {
         fullLabel: "Device ID",
         description: "Unique identifier of the design simulation",
         unit: undefined,
-        range: [952, 504819],
+        range: [952, 1968351],
         isLog: false,
         isCategorical: true,
         markedValue: undefined,
@@ -286,7 +294,7 @@ export const Fields: FieldRecords = {
         fullLabel: "Mean Iota",
         description: "The mean pitch of a particle trajectory across the surface",
         unit: undefined,
-        range: [0.1, 0.9],
+        range: [0.1, 2.6],
         values: meanIotaValidValues,
         isLog: false,
         isCategorical: true,
@@ -353,7 +361,7 @@ export const Fields: FieldRecords = {
         fullLabel: "Max curvature (kappa)",
         description: "Maximum curvature in the coils of the device",
         unit: `1/${METER_UNIT}`,
-        range: [1.6, 5.005],
+        range: [1.6, 19.55],
         isLog: false,
         isCategorical: false,
         markedValue: 5,
@@ -366,7 +374,7 @@ export const Fields: FieldRecords = {
         fullLabel: "Max mean-squared curvature",
         description: "Maximum mean squared curvature of the coils",
         unit: `1/${METER_UNIT}^2`,
-        range: [1.05, 5.005],
+        range: [1.05, 35.05],
         isLog: false,
         isCategorical: false,
         markedValue: 5,
@@ -391,29 +399,29 @@ export const Fields: FieldRecords = {
         plotLabel: "Root of QA Error",
         fullLabel: "Root of Quasi-Axisymmetry (QA) Error",
         description: "Square root of quasi-Axisymmetry (QA) error, proxy for particle loss",
-        range: [-5.47, -0.535],
+        range: [-5.47, -0.44],
         isLog: true,
         isCategorical: false,
         markedValue: -4.30,
         markedValueDesc: "Marked line indicates the Earth's background magnetic field.",
         displayInTable: true
     },
-    'gradient': {
-        shortLabel: "Gradient",
-        plotLabel: "Gradient",
-        fullLabel: "Optimization gradient",
-        description: "Norm of the gradient at the final iteration of the optimization algorithm--an indicator of closeness to optimality",
-        range: [-12.74, 12.12],
-        isLog: true,
-        isCategorical: false,
-        displayInTable: true
-    },
+    // 'gradient': {
+    //     shortLabel: "Gradient",
+    //     plotLabel: "Gradient",
+    //     fullLabel: "Optimization gradient",
+    //     description: "Norm of the gradient at the final iteration of the optimization algorithm--an indicator of closeness to optimality",
+    //     range: [-12.74, 12.12],
+    //     isLog: true,
+    //     isCategorical: false,
+    //     displayInTable: true
+    // },
     'aspectRatio': {
         shortLabel: "AR",
         plotLabel: "Aspect ratio",
         fullLabel: "Aspect ratio (AR)",
         description: "The aspect ratio of the device, computed using the VMEC definition",
-        range: [2.5, 20.03],
+        range: [2.5, 24.05],
         isLog: false,
         isCategorical: false,   // technically not categorical, but for our display purposes, might as well be
         tableColumnWidth: 30,
@@ -425,7 +433,7 @@ export const Fields: FieldRecords = {
         fullLabel: "Minor radius",
         description: "The minor radius of the outermost surface, scaled so the major radius is 1",
         unit: METER_UNIT,
-        range: [0.04996, 0.363],
+        range: [0.0416, 0.363],
         isLog: false,
         isCategorical: false,
         displayInTable: true
@@ -436,7 +444,7 @@ export const Fields: FieldRecords = {
         fullLabel: "Volume",
         description: "Volume enclosed by the outermost toroidal surface over which quasiasymmetry was optimized",
         unit: `${METER_UNIT}^3`,
-        range: [0.049, 2.42],
+        range: [0.034, 2.42],
         isLog: false,
         isCategorical: false,
         displayInTable: true
@@ -447,7 +455,7 @@ export const Fields: FieldRecords = {
         fullLabel: "Min coil-surface distance",
         description: "Minimumn distance between any device coil and the outermost surface over which quasiasymmetry was optimized",
         unit: METER_UNIT,
-        range: [0.0999, 0.61],
+        range: [0.0999, 0.685],
         isLog: false,
         isCategorical: false,
         markedValue: 0.1,
@@ -459,7 +467,7 @@ export const Fields: FieldRecords = {
         plotLabel: "Mean Elongation",
         fullLabel: "Mean Elongation (elliptical axis ratio)",
         description: "Ratio of major to minor axis of an ellipse fitted to an innermost magnetic surface (mean)",
-        range: [1, 44],
+        range: [1, 62],
         isLog: false,
         isCategorical: false,
         // markedValue?: undefined,
@@ -470,7 +478,7 @@ export const Fields: FieldRecords = {
         plotLabel: "Max Elongation",
         fullLabel: "Max Elongation (elliptical axis ratio)",
         description: "Maximum ratio of major to m inor axis of an ellipse fitted to an innermost magnetic surface",
-        range: [1, 146],
+        range: [1.1, 313.2],
         isLog: false,
         isCategorical: false,
         // markedValue?: undefined,
@@ -519,6 +527,19 @@ export const Fields: FieldRecords = {
         isCategorical: false,
         tableColumnWidth: 0,
         displayInTable: false
+    },
+    'helicity': {
+        shortLabel: "Helicity",
+        plotLabel: "Helicity",
+        fullLabel: "Helicity",
+        description: "Quasi-axisymmetric (QA) or Quasi-helically symmetric (QH)",
+        range: [0, 1],
+        values: helicityValidValues,
+        isLog: false,
+        isCategorical: true,
+        markedValue: undefined,
+        tableColumnWidth: 80,
+        displayInTable: true
     }
 }
 
@@ -534,12 +555,21 @@ export const fieldMarkedValueDesc = (fieldName?: string): string | undefined => 
     Fields[fieldName as KnownFields]?.markedValueDesc
 )
 
+export const getFieldValueDescriptions = (fieldName: TripartiteVariables): string[] | number[] => {
+    if (fieldName === TripartiteVariables.HELICITY) {
+        return helicityValuesTranslation
+    }
+    return Fields[fieldName]?.values ?? []
+}
+
+
 export enum CategoricalIndexedFields {
     MEAN_IOTA = 'meanIota',
     NC_PER_HP = 'ncPerHp',
     NFP = 'nfp',
     NFOURIER = 'nFourierCoil',
-    NSURFACES = 'nSurfaces'
+    NSURFACES = 'nSurfaces',
+    HELICITY = 'helicity',
 }
 
 export enum KnownPathType {

@@ -1,6 +1,12 @@
 import numpy as np
 # import pandas # required for the pickle to load correctly
 import pickle
+import os
+import errno
+
+# NOTE: If ID length or folder structure changes, may need to adjust these
+id_length = 7
+prefix_length = 4
 
 input_file_name = 'database_full.pkl'
 output_file_name = 'database.json'
@@ -9,12 +15,13 @@ with open(input_file_name, "rb") as file:
     data = pickle.load(file)
 
 # DROP FIELDS WE DON'T CARE ABOUT--shrink the file size
-fields_to_drop = ["constraint_success", "run_ID", "shear", "well",
-                  "volume_profile", "LgradBstar", "currents",
+fields_to_drop = ["constraint_success", #"run_ID", "shear", "well",
+                  "volume_profile", "currents",
                   "min_coil2axis_dist", "axis_Rc", "axis_Zs"]
 data = data.drop(columns=fields_to_drop)
 
-fields_to_log_scale = ["qa_error", "gradient"]
+# fields_to_log_scale = ["qa_error", "gradient"]
+fields_to_log_scale = ["qa_error"]
 for field in fields_to_log_scale:
     data[field] = data[field].transform(lambda x: np.log10(x))
 data["qa_error"] = data["qa_error"].transform(lambda x: x/2) # we actually want sqrt of this value
@@ -25,12 +32,10 @@ data.to_json(output_file_name, orient='split', double_precision=10)
 # Solution: include per-record json strings for the records in the database, under a 'records/' directory,
 # following the usual naming convention.
 
-import os
-import errno
 
 for _, row in data.iterrows():
-    name = str(row["ID"]).rjust(6, "0")
-    prename = name[:3]
+    name = str(row["ID"]).rjust(id_length, "0")
+    prename = name[:prefix_length]
     directory = os.path.join("records", prename)
     if not os.path.exists(directory):
         try:

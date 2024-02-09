@@ -18,7 +18,7 @@ type ModelProps = {
 }
 
 const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
-    const { checksNeeded, surfaceChecks, setSurfaceChecks, colorMap, setColorMap, showFullRing, setShowFullRing } = props
+    const { checksNeeded, surfaceChecks, setSurfaceChecks, showCurrents, setShowCurrents, colorMap, setColorMap, showFullRing, setShowFullRing } = props
 
     const handleCheckboxChange = useCallback((index: number, newState: boolean) => {
         if (index === -1) {
@@ -60,13 +60,12 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
                     />
                 </div>
                 <div className="surfaceControlFlexSplit">
-                    {/* TODO: TEMPORARILY DISABLED while a data irregularity is updated */}
-                    {/* <SnSwitch
+                    <SnSwitch
                         header="Coil currents"
                         label="Color coils per currents?"
                         checked={showCurrents}
                         handleChange={setShowCurrents}
-                    /> */}
+                    />
                 </div>
             </div>
         </>

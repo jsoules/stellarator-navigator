@@ -1,4 +1,4 @@
-import { getLabel } from "@snTypes/DataDictionary"
+import { getLabel, helicityValuesTranslation } from "@snTypes/DataDictionary"
 import { StellaratorRecord } from "@snTypes/Types"
 import { FunctionComponent } from "react"
 
@@ -79,13 +79,18 @@ const RecordManifest: FunctionComponent<recordProps> = (props: recordProps) => {
             <span className="manifestLabel">{getLabel({name: "surfaceTypes", labelType: "full"})}:</span>
             <span>{rec.surfaceTypes.join(", ")}</span>
         </div> */}
-        <div key="gradient">
+        {/* Gradient removed as of 2024.01 export */}
+        {/* <div key="gradient">
             <span className="manifestLabel">{getLabel({name: "gradient", labelType: "full"})}:</span>
             <span>{(10 ** rec.gradient).toExponential(10)}</span>
-        </div>
+        </div> */}
         <div key="aspectRatio">
             <span className="manifestLabel">{getLabel({name: "aspectRatio", labelType: "full"})}:</span>
             <span>{rec.aspectRatio}</span>
+        </div>
+        <div key="helicity">
+            <span className="manifestLabel">{getLabel({name: "helicity", labelType: "full"})}:</span>
+            <span>{helicityValuesTranslation[rec.helicity]}</span>
         </div>
     </div>)
 }

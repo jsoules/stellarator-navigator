@@ -45,7 +45,8 @@ export const initialDatabase: NavigatorDatabase = {
         [ CategoricalIndexedFields.NC_PER_HP ]: {},
         [ CategoricalIndexedFields.NFP       ]: {},
         [ CategoricalIndexedFields.NFOURIER  ]: {},
-        [ CategoricalIndexedFields.NSURFACES ]: {}
+        [ CategoricalIndexedFields.NSURFACES ]: {},
+        [ CategoricalIndexedFields.HELICITY  ]: {}
     },
     allIdSet: new Set<number>([])
 }
@@ -64,7 +65,6 @@ export const defaultEmptyRecord: StellaratorRecord = {
     maxMeanSquaredCurve: 0,
     minIntercoilDist: 0,
     qaError: 0,
-    gradient: 0,
     aspectRatio: 0,
     minorRadius: 0,
     volume: 0,
@@ -74,5 +74,6 @@ export const defaultEmptyRecord: StellaratorRecord = {
     message: "",
     iotaProfile: [],
     tfProfile: [],
-    surfaceTypes: []
+    surfaceTypes: [],
+    helicity: 0
 }

@@ -7,7 +7,8 @@ const basePath = BASENAME === '/'
                         ? 'http://localhost:5173/'
                         : 'https://quasr.flatironinstitute.org/'
                     : `https://users.flatironinstitute.org${BASENAME}/`
-const idLength = 6
+const idLength = 7
+const prefixLength = 4
 
 
 export type ValidId = { id: string }
@@ -19,7 +20,7 @@ const makeResourcePath = (validId: ValidId, type: KnownPathType) => {
     const { id } = validId
     const graphicsTypes = getEnumVals(GraphicsType)
     const graphicsPart = graphicsTypes.includes(type) ? 'graphics/' : ''
-    const binPrefix = id.substring(0, 3)
+    const binPrefix = id.substring(0, prefixLength)
 
     let typeDirectory = ''
     let fileBase = ''
