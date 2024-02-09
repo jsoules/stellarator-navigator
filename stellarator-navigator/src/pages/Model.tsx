@@ -24,8 +24,7 @@ const Model: FunctionComponent = () => {
     const [instructionsOpen, setInstructionsOpen] = useState(false)
     const [colorMap, setColorMap] = useState<SupportedColorMap>(SupportedColorMap.PLASMA)
     const [showFullRing, setShowFullRing] = useState<boolean>(false)
-    // TODO: Temporarily defaulted to False & disabled control while an irregularity in the data is updated
-    const [showCurrents, setShowCurrents] = useState<boolean>(false)
+    const [showCurrents, setShowCurrents] = useState<boolean>(true)
     const [surfaceChecks, setSurfaceChecks] = useState<boolean[]>(Array(rec.nSurfaces).fill(true))
     useEffect(() => setSurfaceChecks(Array<boolean>(rec.nSurfaces).fill(true)), [rec.nSurfaces])
 

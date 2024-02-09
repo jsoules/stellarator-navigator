@@ -1,7 +1,7 @@
 import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid'
 import { plotGridInternalMargin } from '@snComponents/Overview'
 import { filterTo } from '@snState/filter'
-import { Fields, KnownFields, ToggleableVariables } from '@snTypes/DataDictionary'
+import { Fields, KnownFields, ToggleableVariables, helicityValuesTranslation } from '@snTypes/DataDictionary'
 import { StellaratorRecord } from '@snTypes/Types'
 import { FunctionComponent } from 'react'
 import OpenSelectedButton from './OpenSelected'
@@ -73,13 +73,13 @@ const SnTable: FunctionComponent<SnTableProps> = (props: SnTableProps) => {
             maxMeanSquaredCurve: r.maxMeanSquaredCurve.toFixed(5),
             minIntercoilDist: r.minIntercoilDist.toFixed(5),
             qaError: (10 ** r.qaError).toExponential(4),
-            gradient: (10 ** r.gradient).toExponential(4),
             aspectRatio: r.aspectRatio.toFixed(1),
             minorRadius: r.minorRadius.toFixed(3),
             volume: r.volume.toFixed(5),
             minCoil2SurfaceDist: r.minCoil2SurfaceDist.toFixed(5),
             meanElongation: r.meanElongation.toFixed(4),
             maxElongation: r.maxElongation.toFixed(4),
+            helicity: helicityValuesTranslation[r.helicity] // TODO: standardize this better?
         }
     })
 

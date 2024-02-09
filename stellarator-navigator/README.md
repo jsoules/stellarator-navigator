@@ -17,7 +17,9 @@ uses the following procedure.
 - Addition or reclassification of new fields within Stellarator Records can be accommodated by:
   - In `Types.ts`:
     - Adding new fields and descriptions to the `StellaratorRecord` type in `Types.ts`
-    - Adding corresponding ranges to the `FilterSettings` type in `Types.ts`
+    - Adding corresponding fields and ranges to the `FilterSettings` type in `Types.ts`
+  - In `Defaults.ts`:
+    - Ensure the new field is present with a sensible deafult in `defaultEmptyRecord`
   - In `DataDictionary.ts`:
     - Adding new fields to the `KnownFields` enum
     - Adding the new `KnownFields` entries to `DependentVariables`, `IndependentVariables` as appropriate
@@ -30,6 +32,11 @@ uses the following procedure.
     - Add a full description of each new field in the `Fields` object
     - Add the new `KnownFields` entry to `CategoricalIndexedFields` if appropriate (these are used for creating
     indexes for the in-memory database)
+  - In `Database.ts`:
+    - Add the new field with its native (in-export) name in the `RawFields` enum
+    - Add the new field in the appropriate location in `recordJig` and ensure the `order` fields are correct
+  - In `SnTable.tsx`:
+    - Ensure the new field has been added appropriately to the `rows` variable mapped from each filtered record
 - More complex changes (or applying this tool to a new data set) may require more extensive code updates and are
   beyond the scope of this readme.
 
