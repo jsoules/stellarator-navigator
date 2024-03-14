@@ -1,5 +1,6 @@
 import { Button, Tooltip } from '@mui/material'
-import imgUrl from 'assets/sample-197168.png'
+// import imgUrl from 'assets/sample-197168.png'
+import imgVideo from 'assets/sample-0197168.mp4'
 import { Dispatch, FunctionComponent, SetStateAction, useMemo } from "react"
 
 // const BASENAME = import.meta.env.BASE_URL
@@ -71,9 +72,6 @@ const Home: FunctionComponent<Props> = (props: Props) => {
             </h1>
 
             <div className="flexWrapper">
-                <div className="homeImage">
-                    <img src={imgUrl} />
-                </div>
                 <div className="homeCopy">
                     <div>
                         The QUASR repository contains a database of over 320,000 curl-free stellarators
@@ -86,6 +84,12 @@ const Home: FunctionComponent<Props> = (props: Props) => {
                         including an interactive 3-D model and Poincaré plots.
                     </div>
                     {button}
+                </div>
+                <div className="homeImage">
+                    {/* <img src={imgUrl} /> */}
+                    <video loop autoPlay muted>
+                        <source src={imgVideo} type="video/mp4" />
+                    </video>
                 </div>
             </div>
             <div className="authorship">
