@@ -1,8 +1,8 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import { IconButton } from '@mui/material'
 import Drawer from '@mui/material/Drawer'
+import imgLogo from 'assets/Quasr_Logo_RGB_Full.svg'
 import { FunctionComponent, PropsWithChildren } from 'react'
-
 
 type DrawerProps = {
     open: boolean
@@ -38,7 +38,10 @@ const SelectionControlDrawer: FunctionComponent<PropsWithChildren<DrawerProps>> 
             }}
             open={open}
         >
-            <DrawerCloser {...props} />
+            <div>
+                <img className="ControlPanelLogo" src={imgLogo} />
+                <DrawerCloser  {...props} />
+            </div>
             {children}
         </Drawer>
     )

@@ -91,15 +91,24 @@ div.ForceLightMode {
     display: inline-block;
 }
 
+.overviewLogo {
+    max-width: 210px;
+    padding-top: 2em;
+    padding-left: 2em;
+    display: block;
+}
+
 .ControlPanelWrapper {
     margin: 0px 20px 20px 20px;
     padding: 10px 20px 0px 20px;
 }
 
-.ControlPanelImage {
-    max-width: 375px;
-    /* padding-top: 1em; */
+.ControlPanelLogo {
+    max-width: 210px;
+    padding-left: 2em;
+    padding-top: 2em;
     padding-bottom: 2em;
+    float: left;
 }
 
 .buttonRow {
@@ -108,12 +117,12 @@ div.ForceLightMode {
 
 .showFiltersButton {
     float: left;
-    margin: 20px 5px 20px 20px;
+    margin: 0px 5px 0px 20px;
 }
 
 .instructionButton {
     float: left;
-    margin: 10px 20px 10px 5px;
+    margin: -10px 20px 0px 5px;
     align-items: center;
 }
 
@@ -188,6 +197,7 @@ div.ForceLightMode {
 
 .drawerCloser {
     display: block;
+    padding-top: 2em;
 }
 
 .rightIcon {

@@ -4,7 +4,6 @@ import { ColorPropsAction, PlotColorProps, usePlotColorCallbacks } from '@snComp
 import HrBar from '@snComponents/general/HrBar'
 import { Fields, RangeVariables, ToggleableVariables, TripartiteVariables, fieldIsCategorical } from '@snTypes/DataDictionary'
 import { FilterSettings } from '@snTypes/Types'
-import imgLogo from 'assets/Quasr_Logo_RGB_Full.svg'
 import { Dispatch, FunctionComponent, useState } from 'react'
 // import { Dispatch, FunctionComponent } from 'react'
 import ToggleableVariableCheckboxGroup from './Checkboxes'
@@ -54,7 +53,6 @@ const SelectionControlPanel: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <div className="ControlPanelWrapper">
-            <img className="ControlPanelImage" src={imgLogo} />
             <PlotVariableControlsDropdown
                 isClosed={plotVarsClosed}
                 toggleFn={setPlotVarsClosed}
