@@ -15,7 +15,6 @@ export enum KnownFields {
     MAX_MEAN_SQUARED_CURVE = 'maxMeanSquaredCurve',
     MIN_INTERCOIL_DIST = 'minIntercoilDist',
     QA_ERROR = 'qaError',
-    // GRADIENT = 'gradient',   // Removed as of 2024.01 export
     ASPECT_RATIO = 'aspectRatio',
     MINOR_RADIUS = 'minorRadius',
     VOLUME = 'volume',
@@ -222,10 +221,6 @@ export const nSurfacesValidValues = [
 export const getLabel = (props: {name: string, labelType: 'short' | 'full' | 'plot'}) => {
     const { name, labelType } = props
     const rec = Fields[name as KnownFields]
-    // if (rec === undefined) { TODO REMOVE
-    //     console.warn(`Attempt to request description for unknown field ${name}.`)
-    //     return 'ERROR OCCURRED'
-    // }
     const unitPart = rec.unit === undefined ? '' : ` (${rec.unit})`
     // TODO: ugly, fix
     const labelPart = labelType === 'short' ? rec.shortLabel : labelType === 'plot' ? rec.plotLabel : rec.fullLabel
@@ -364,8 +359,8 @@ export const Fields: FieldRecords = {
         range: [1.6, 19.55],
         isLog: false,
         isCategorical: false,
-        markedValue: 5,
-        markedValueDesc: "DESCRIPTION TK",
+        // markedValue: 5,
+        // markedValueDesc: "DESCRIPTION TK",
         displayInTable: true
     },
     'maxMeanSquaredCurve': {
@@ -377,8 +372,8 @@ export const Fields: FieldRecords = {
         range: [1.05, 35.05],
         isLog: false,
         isCategorical: false,
-        markedValue: 5,
-        markedValueDesc: "DESCRIPTION TK",
+        // markedValue: 5,
+        // markedValueDesc: "DESCRIPTION TK",
         displayInTable: true
     },
     'minIntercoilDist': {
@@ -390,8 +385,8 @@ export const Fields: FieldRecords = {
         range: [0.08, 0.4],
         isLog: false,
         isCategorical: false,
-        markedValue: 0.1,
-        markedValueDesc: "DESCRIPTION TK",
+        // markedValue: 0.1,
+        // markedValueDesc: "DESCRIPTION TK",
         displayInTable: true
     },
     'qaError': {
@@ -458,8 +453,8 @@ export const Fields: FieldRecords = {
         range: [0.0999, 0.685],
         isLog: false,
         isCategorical: false,
-        markedValue: 0.1,
-        markedValueDesc: "DESCRIPTION TK",
+        // markedValue: 0.1,
+        // markedValueDesc: "DESCRIPTION TK",
         displayInTable: true
     },
     'meanElongation': {

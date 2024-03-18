@@ -6,7 +6,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import useSvCamera from './SvCamera'
 import useSvControls from './SvControls'
 import { ambientLight, spotlights } from './SvLighting'
-import { fieldMaterial, getScaledTubeMaterial, grayBackground, tubeMaterial } from './SvMaterials'
+import { fieldMaterial, getScaledTubeMaterial, tubeMaterial, whiteBackground } from './SvMaterials'
 import useSvRenderer from './SvRenderer'
 import { colorizeSurfaces, makeSurfaces, makeTubes, usePositions } from './geometry'
 
@@ -30,7 +30,7 @@ type Positions = {
 }
 
 const scene = new THREE.Scene()
-scene.background = grayBackground
+scene.background = whiteBackground
 
 
 const SimulationView: FunctionComponent<Props> = (props: Props) => {
