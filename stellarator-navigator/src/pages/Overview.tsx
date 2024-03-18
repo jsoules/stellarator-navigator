@@ -25,7 +25,6 @@ import PlotGrid from "./PlotGrid"
 
 const drawerWidth = 500
 const drawerClosedLeftMargin = 15
-// const splitterWidthRolloff = 30
 export const plotGridInternalMargin = 20
 
 

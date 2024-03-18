@@ -1,6 +1,7 @@
 import { Button, Tooltip } from '@mui/material'
 // import imgUrl from 'assets/sample-197168.png'
 // import imgVideo from 'assets/sample-0197168.mp4'
+import imgLogo from 'assets/Quasr_Logo_RGB_Full.svg'
 import imgVideo from 'assets/sample-1708695.mp4'
 import { Dispatch, FunctionComponent, SetStateAction, useMemo } from "react"
 
@@ -68,7 +69,8 @@ const Home: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <div className="homeBase MainWindow ForceLightMode">
-            <h1>QUASR:
+            <img src={imgLogo} className="mainLogo" />
+            <h1>
                 A QUAsi-symmetric Stellarator Repository
             </h1>
 
@@ -88,7 +90,7 @@ const Home: FunctionComponent<Props> = (props: Props) => {
                 </div>
                 <div className="homeImage">
                     {/* <img src={imgUrl} /> */}
-                    <video loop autoPlay muted>
+                    <video loop autoPlay muted className="homeImage">
                         <source src={imgVideo} type="video/mp4" />
                     </video>
                 </div>

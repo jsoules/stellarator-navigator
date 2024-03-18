@@ -4,8 +4,11 @@ import { ColorPropsAction, PlotColorProps, usePlotColorCallbacks } from '@snComp
 import HrBar from '@snComponents/general/HrBar'
 import { Fields, RangeVariables, ToggleableVariables, TripartiteVariables, fieldIsCategorical } from '@snTypes/DataDictionary'
 import { FilterSettings } from '@snTypes/Types'
-import { Dispatch, FunctionComponent } from 'react'
+import imgLogo from 'assets/Quasr_Logo_RGB_Full.svg'
+import { Dispatch, FunctionComponent, useState } from 'react'
+// import { Dispatch, FunctionComponent } from 'react'
 import ToggleableVariableCheckboxGroup from './Checkboxes'
+import PlotVariableControlsDropdown from './PlotVariableControlsDropdown'
 import RangeSlider from './RangeSlider'
 import TripartDropdownSelector from './TripartDropdownSelector'
 import VariableSelector from './VariableSelectDropdown'
@@ -34,6 +37,7 @@ const SelectionControlPanel: FunctionComponent<Props> = (props: Props) => {
     const { filterSettings, callbacks, colorChgDispatcher } = props
     const { meanIota, ncPerHp, nfp, dependentVariable, independentVariable, coarsePlotSplit, finePlotSplit, nSurfaces } = filterSettings
     const { colorSplit, style } = props.colorProps
+    const [ plotVarsClosed, setPlotVarsClosed ] = useState(true)
 
     const { colorVariableCallback, colorSchemeCallback } = usePlotColorCallbacks(colorChgDispatcher)
     
@@ -50,14 +54,20 @@ const SelectionControlPanel: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <div className="ControlPanelWrapper">
-            <VariableSelector value={independentVariable} onChange={callbacks.handleIndependentVariableChange} type="Independent" />
-            <VariableSelector value={dependentVariable} onChange={callbacks.handleDependentVariableChange} type="Dependent" />
-            <HrBar />
-            <VariableSelector value={colorSplit} onChange={colorVariableCallback} type="ColorVariable" />
-            {styleSelector}
-            <HrBar />
-            <VariableSelector value={coarsePlotSplit} onChange={callbacks.handleCoarseVariableChange} type="CoarseSplit" />
-            <VariableSelector value={finePlotSplit} onChange={callbacks.handleFineVariableChange} type="FineSplit" />
+            <img className="ControlPanelImage" src={imgLogo} />
+            <PlotVariableControlsDropdown
+                isClosed={plotVarsClosed}
+                toggleFn={setPlotVarsClosed}
+            >
+                <VariableSelector value={independentVariable} onChange={callbacks.handleIndependentVariableChange} type="Independent" />
+                <VariableSelector value={dependentVariable} onChange={callbacks.handleDependentVariableChange} type="Dependent" />
+                <HrBar />
+                <VariableSelector value={colorSplit} onChange={colorVariableCallback} type="ColorVariable" />
+                {styleSelector}
+                <HrBar />
+                <VariableSelector value={coarsePlotSplit} onChange={callbacks.handleCoarseVariableChange} type="CoarseSplit" />
+                <VariableSelector value={finePlotSplit} onChange={callbacks.handleFineVariableChange} type="FineSplit" />
+            </PlotVariableControlsDropdown>
             <HrBar />
             {sliders}
             {/* TODO Unify the checkbox template thing by referencing values if it exists */}
