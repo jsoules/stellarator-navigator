@@ -340,7 +340,7 @@ export const Fields: FieldRecords = {
         isLog: false,
         isCategorical: true,
         markedValue: undefined,
-        tableColumnWidth: 60,
+        tableColumnWidth: 75,
         displayInTable: true
     },
     'nSurfaces': {
@@ -352,7 +352,7 @@ export const Fields: FieldRecords = {
         values: nSurfacesValidValues,
         isLog: false,
         isCategorical: true,
-        tableColumnWidth: 70,
+        tableColumnWidth: 75,
         displayInTable: true
     },
     'maxKappa': {
@@ -424,7 +424,7 @@ export const Fields: FieldRecords = {
         range: [2.5, 24.05],
         isLog: false,
         isCategorical: false,   // technically not categorical, but for our display purposes, might as well be
-        tableColumnWidth: 30,
+        tableColumnWidth: 75,
         displayInTable: true
     },
     'minorRadius': {
