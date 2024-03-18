@@ -10,7 +10,7 @@ type InstructionDrawerPropsBase = {
 
 type InstructionDrawerProps = PropsWithChildren<InstructionDrawerPropsBase>
 
-export const toggleInstructionDrawer = (handler: (newState: boolean) => void, open: boolean) =>
+const toggleInstructionDrawer = (handler: (newState: boolean) => void, open: boolean) =>
     (event: React.KeyboardEvent | React.MouseEvent) => {
         if (event.type === 'keydown' &&
             ((event as React.KeyboardEvent).key === 'Tab' ||

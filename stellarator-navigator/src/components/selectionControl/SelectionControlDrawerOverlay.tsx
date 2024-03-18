@@ -14,7 +14,7 @@ type DrawerProps = {
 
 
 // Query: do we need to trap these keypresses?
-export const toggleControlDrawer = (handler: (newState: boolean) => void, open: boolean) =>
+const toggleControlDrawer = (handler: (newState: boolean) => void, open: boolean) =>
     (event: React.KeyboardEvent | React.MouseEvent) => {
         if (
             event.type === 'keydown' &&
