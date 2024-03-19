@@ -7,6 +7,7 @@ import { defaultEmptyRecord } from "@snTypes/Defaults"
 import { getStringId } from "@snUtil/makeResourcePath"
 import useWindowDimensions from "@snUtil/useWindowDimensions"
 import { DownloadLinks, IotaProfilePlot, PoincarePlot, RecordManifest, SimulationView, SurfaceControls } from "@snVisualizer/index"
+import imgLogo from 'assets/Quasr_Logo_RGB_Full.svg'
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from "react"
 import { useParams } from "react-router"
 
@@ -31,7 +32,7 @@ const Model: FunctionComponent = () => {
     const downloadLinks = <DownloadLinks id={stringId.id} />
     const poincarePlot = <PoincarePlot id={stringId.id}/>
 
-    const ASSUMED_CONTROLS_HEIGHT = 300
+    const ASSUMED_CONTROLS_HEIGHT = 350
     const { width, height } = useWindowDimensions()
     // const { width } = useWindowDimensions()
     const lw = useMemo(() => Math.max(0, (2 * width / 3) - 80), [width])
@@ -81,6 +82,7 @@ const Model: FunctionComponent = () => {
         : (<div className="simulationViewParent ForceLightMode">
             <ModelInstructionDrawer open={instructionsOpen} changeOpenState={setInstructionsOpen} />
             <div className="modelButtonRow">
+                <img className="modelLogo" src={imgLogo} />
                 <InstructionButton open={instructionsOpen} changeOpenState={setInstructionsOpen} />
             </div>
             <div className="flexWrapper simulationViewParent">
@@ -104,10 +106,10 @@ const Model: FunctionComponent = () => {
                     />
                     {viewer}
                 </div>
-                <div style={{width: Math.floor(rw)}}>
-                    <RecordManifest rec={rec} />
-                    <HrBar />
+                <div style={{width: Math.floor(rw) }}>
                     <IotaProfilePlot iotaProfile={rec.iotaProfile} tfProfile={rec.tfProfile} meanIota={rec.meanIota} width={rw} height={rw} />
+                    <HrBar />
+                    <RecordManifest rec={rec} colWidth={Math.floor(rw)} />
                 </div>
             </div>
             <HrBar />
