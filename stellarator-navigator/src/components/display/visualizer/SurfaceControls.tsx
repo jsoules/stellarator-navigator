@@ -48,7 +48,7 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     )
 
     return (
-        <>
+        <div className="surfaceControlWrapper">
             {checksNeeded && surfacePart}
             <div className="flexWrapper">
                 <div className="surfaceControlFlexSplit">
@@ -68,7 +68,7 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
                     />
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 
