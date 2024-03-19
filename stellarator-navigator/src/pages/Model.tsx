@@ -81,7 +81,9 @@ const Model: FunctionComponent = () => {
                         showFullRing={showFullRing}
                         setShowFullRing={setShowFullRing}
                     />
-                    <canvas ref={canvasRef}
+                    <canvas
+                        ref={canvasRef}
+                        className="deviceModel"
                         title="Click and drag to rotate the camera; right-click, shift-click, or ctrl-click and drag to pan."
                     />
                     {viewer}

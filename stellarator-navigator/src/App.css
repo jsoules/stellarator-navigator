@@ -32,8 +32,8 @@ div.ForceLightMode {
 */
 
 .homeBase h1 {
-    margin-top: 8px;
-    /* margin-left: 2.5em; */
+    margin-top: 12px;
+    margin-left: 1em;
 }
 
 .homeImage {
@@ -260,6 +260,10 @@ div.ForceLightMode {
 .surfaceControlFlexSplitAlt {
     flex: 1;
     padding: 5px 20px 20px 20px;
+}
+
+.deviceModel {
+    border: #444444 1px solid;
 }
 
 .hrWrapper {

@@ -42,7 +42,7 @@ const LaunchButton = (props: Props) => {
                 <span>
                     <Button
                         variant="contained"
-                        style={{margin: 20}}
+                        style={{margin: 20, width: '66%'}}
                         aria-label={buttonString}
                         disabled={!props.ready}
                         onClick={() => document.getElementById("launch")?.click()}
