@@ -26,30 +26,33 @@ const Model: FunctionComponent = () => {
     const [colorMap, setColorMap] = useState<SupportedColorMap>(SupportedColorMap.PLASMA)
     const [showFullRing, setShowFullRing] = useState<boolean>(false)
     const [showCurrents, setShowCurrents] = useState<boolean>(true)
+    // const [autoRotate, setAutoRotate] = useState<boolean>(false)
     const [surfaceChecks, setSurfaceChecks] = useState<boolean[]>(Array(rec.nSurfaces).fill(true))
     useEffect(() => setSurfaceChecks(Array<boolean>(rec.nSurfaces).fill(true)), [rec.nSurfaces])
 
     const downloadLinks = <DownloadLinks id={stringId.id} />
     const poincarePlot = <PoincarePlot id={stringId.id}/>
 
-    const ASSUMED_CONTROLS_HEIGHT = 350
-    const { width, height } = useWindowDimensions()
-    // const { width } = useWindowDimensions()
+    // const { width, height } = useWindowDimensions()
+    const { width } = useWindowDimensions()
     const lw = useMemo(() => Math.max(0, (2 * width / 3) - 80), [width])
     const rw = useMemo(() => Math.max(0, (width / 3) - 40), [width])
-    // This is quite hacky--depends on hard-coding the dimensions of the top controls.
-    // It will probably work for most but break on some setups.
-    // I'm mostly letting it through because the whole thing ought to be done with CSS somehow.
-    // Also note the similarity to some computations in defining the plot grid--
-    // these should perhaps be unified in some way
-    const prescribedHeight = lw * 0.8
-    const availableHeight = height - ASSUMED_CONTROLS_HEIGHT
-    const constrainedLeftWidth = prescribedHeight <= availableHeight
-        ? lw
-        : Math.floor(availableHeight / 0.8)
-    const unused = lw - constrainedLeftWidth
-    const leftMargin = unused === 0 ? 0 : unused / 2 + 20 // because the parent width is lw + 40
-    // So many magic numbers for such a little layout task......
+    // NOTE: Removed (for the time being) per feedback 3/20/24.
+    // Keeping this in comments since we may revisit later.
+    // // This is quite hacky--depends on hard-coding the dimensions of the top controls.
+    // // It will probably work for most but break on some setups.
+    // // I'm mostly letting it through because the whole thing ought to be done with CSS somehow.
+    // // Also note the similarity to some computations in defining the plot grid--
+    // // these should perhaps be unified in some way
+    // const ASSUMED_CONTROLS_HEIGHT = 350
+    // const prescribedHeight = lw * 0.8
+    // const availableHeight = height - ASSUMED_CONTROLS_HEIGHT
+    // const constrainedLeftWidth = prescribedHeight <= availableHeight
+    //     ? lw
+    //     : Math.floor(availableHeight / 0.8)
+    // const unused = lw - constrainedLeftWidth
+    // const leftMargin = unused === 0 ? 0 : unused / 2 + 20 // because the parent width is lw + 40
+    // // So many magic numbers for such a little layout task......
 
     const viewer = useMemo(() => {
         // TODO: Can we avoid rendering a SimulationView with no data, without
@@ -57,8 +60,10 @@ const Model: FunctionComponent = () => {
         const ifAvail = (
             <>
                 <SimulationView
-                    width={constrainedLeftWidth}
-                    height={0.8 * constrainedLeftWidth}
+                    // width={constrainedLeftWidth}
+                    // height={0.8 * constrainedLeftWidth}
+                    width={lw}
+                    height={0.8 * lw}
                     canvasRef={canvasRef}
                     coils={showFullRing ? fullCoils : baseCoils}
                     surfs={showFullRing ? fullSurfs : baseSurfs}
@@ -70,12 +75,13 @@ const Model: FunctionComponent = () => {
             </>
         )
         const spinner = (
-            <div style={{width: constrainedLeftWidth, height: 0.8 * constrainedLeftWidth}}>
+            // <div style={{width: constrainedLeftWidth, height: 0.8 * constrainedLeftWidth}}>
+            <div style={{width: lw, height: 0.8 * lw}}>
                 <Spinner />
             </div>
         )
         return (baseCoils.length === 0 || baseSurfs === undefined || baseSurfs.incomplete) ? spinner : ifAvail
-    }, [baseCoils, baseSurfs, colorMap, fullCoils, fullSurfs, constrainedLeftWidth, rec.nfp, showCurrents, showFullRing, surfaceChecks])
+    }, [lw, showFullRing, fullCoils, baseCoils, fullSurfs, baseSurfs, surfaceChecks, colorMap, rec.nfp, showCurrents])
 
     return rec === defaultEmptyRecord
         ? <div></div>
@@ -101,7 +107,7 @@ const Model: FunctionComponent = () => {
                     <canvas
                         ref={canvasRef}
                         className="deviceModel"
-                        style={{marginLeft: `${leftMargin}px`}}
+                        // style={{marginLeft: `${leftMargin}px`}}
                         title="Click and drag to rotate the camera; right-click, shift-click, or ctrl-click and drag to pan."
                     />
                     {viewer}
