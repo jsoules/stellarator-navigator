@@ -290,16 +290,14 @@ div.ForceLightMode {
 }
 
 .simulationViewParent {
-    width: 100%
+    width: 100%;
 }
 
 .simulationViewWrapper {
     padding: 10px;
-    /* display: flex;
-    justify-content: center;
-    align-items: center; */
 }
-
+/* keep this--it may yet be possible to do this with css */
+/* 
 .simulationViewWrapperLeft {
     padding: 10px;
     flex: 2;
@@ -308,7 +306,7 @@ div.ForceLightMode {
 .simulationViewWrapperRight {
     padding: 10px;
     flex: 1;
-}
+} */
 
 .modelButtonRow {
     margin-top: 10px;
