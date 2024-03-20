@@ -525,8 +525,8 @@ export const Fields: FieldRecords = {
     },
     'helicity': {
         shortLabel: "Helicity",
-        plotLabel: "Helicity",
-        fullLabel: "Helicity",
+        plotLabel: "Type of QS",
+        fullLabel: "Type of Quasi-symmetry",
         description: "Quasi-axisymmetric (QA) or Quasi-helically symmetric (QH)",
         range: [0, 1],
         values: helicityValidValues,
