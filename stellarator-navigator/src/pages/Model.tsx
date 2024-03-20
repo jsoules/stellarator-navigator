@@ -26,7 +26,7 @@ const Model: FunctionComponent = () => {
     const [colorMap, setColorMap] = useState<SupportedColorMap>(SupportedColorMap.PLASMA)
     const [showFullRing, setShowFullRing] = useState<boolean>(false)
     const [showCurrents, setShowCurrents] = useState<boolean>(true)
-    // const [autoRotate, setAutoRotate] = useState<boolean>(false)
+    const [autorotate, setAutorotate] = useState<boolean>(false)
     const [surfaceChecks, setSurfaceChecks] = useState<boolean[]>(Array(rec.nSurfaces).fill(true))
     useEffect(() => setSurfaceChecks(Array<boolean>(rec.nSurfaces).fill(true)), [rec.nSurfaces])
 
@@ -71,6 +71,7 @@ const Model: FunctionComponent = () => {
                     colorScheme={colorMap}
                     displayedPeriods={showFullRing ? 2 * rec.nfp : 1}
                     showCurrents={showCurrents}
+                    autorotate={autorotate}
                 />
             </>
         )
@@ -81,7 +82,7 @@ const Model: FunctionComponent = () => {
             </div>
         )
         return (baseCoils.length === 0 || baseSurfs === undefined || baseSurfs.incomplete) ? spinner : ifAvail
-    }, [lw, showFullRing, fullCoils, baseCoils, fullSurfs, baseSurfs, surfaceChecks, colorMap, rec.nfp, showCurrents])
+    }, [lw, showFullRing, fullCoils, baseCoils, fullSurfs, baseSurfs, surfaceChecks, colorMap, rec.nfp, showCurrents, autorotate])
 
     return rec === defaultEmptyRecord
         ? <div></div>
@@ -103,6 +104,8 @@ const Model: FunctionComponent = () => {
                         setColorMap={setColorMap}
                         showFullRing={showFullRing}
                         setShowFullRing={setShowFullRing}
+                        autorotate={autorotate}
+                        setAutorotate={setAutorotate}
                     />
                     <canvas
                         ref={canvasRef}

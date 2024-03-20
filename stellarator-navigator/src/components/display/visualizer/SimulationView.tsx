@@ -1,6 +1,6 @@
 import { SupportedColorMap } from '@snDisplayComponents/Colormaps'
 import { CoilRecord, SurfaceObject } from '@snTypes/Types'
-import { FunctionComponent, MutableRefObject, useEffect, useMemo } from 'react'
+import { FunctionComponent, MutableRefObject, useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import useSvCamera from './SvCamera'
@@ -20,6 +20,7 @@ type Props = {
     surfs?: SurfaceObject
     displayedPeriods?: number
     showCurrents?: boolean
+    autorotate?: boolean
 }
 
 type Positions = {
@@ -33,40 +34,68 @@ const scene = new THREE.Scene()
 scene.background = whiteBackground
 
 
+const worldZ = new THREE.Vector3(0, 0, 1)
+const secondsPerRevolution = 10
+// degrees/rev * rev/sec * sec/tick
+const degreesPerTick = 360 * (1/secondsPerRevolution) / 60
+const theta = degreesPerTick * Math.PI/180  // need radians
+
+const spinObjects = (obj: THREE.Mesh<THREE.BufferGeometry, THREE.Material>[], ticks: number = 1) => {
+    obj.forEach(o => o.rotateOnWorldAxis(worldZ, -theta * ticks))
+}
+
+
 const SimulationView: FunctionComponent<Props> = (props: Props) => {
-    const { width, height, canvasRef, coils, surfs, surfaceChecks, colorScheme, displayedPeriods, showCurrents } = props
+    const { width, height, canvasRef, coils, surfs, surfaceChecks, colorScheme, displayedPeriods, showCurrents, autorotate } = props
+    const frameRequest = useRef<number | undefined>(undefined)
+    const totalTicks = useRef<number>(0)
     const canvas = canvasRef.current
+    // There is an issue with the tubes and surfaces refreshing when they logically shouldn't.
+    // This may have something to do with the cache, which is bad news.
+    // TODO: Find and plug the actual leak
+    // In the mean time, we're going to have to manually restrict our updates by looking at lengths of things,
+    // since we can't rely on actual object permanence. Sigh.
+
+    const myCoils = useMemo(() => {
+        return coils === undefined
+            ? [] as CoilRecord[]
+            : coils
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [coils?.length])
+
+    const mySurfs = useMemo(() => {
+        totalTicks.current = 0
+        return surfs?.surfacePoints === undefined
+            ? { surfacePoints: [], pointValues: [], incomplete: true } as SurfaceObject
+            : surfs
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [surfs?.surfacePoints[0]?.length])
 
     const tubes = useMemo(() => {
-        const coilTubes = coils === undefined ? [] : makeTubes(coils.map(r => r.coil))
-        const currents = coils === undefined ? [] : coils.map(r => r.current)
+        // NOTE: Could memoize these out individually but it's probably not terribly expensive
+        const coilTubes = makeTubes(myCoils.map(r => r.coil))
+        const currents = myCoils.map(r => r.current)
         const coilMeshes = showCurrents
             ? coilTubes.map((c, i) => new THREE.Mesh(c, getScaledTubeMaterial(currents[i], SupportedColorMap.BLUEORANGE)))
             : coilTubes.map(c => new THREE.Mesh(c, tubeMaterial))
+        spinObjects(coilMeshes, totalTicks.current)
         return coilMeshes
-    }, [coils, showCurrents])
+    }, [myCoils, showCurrents])
 
-    const surfaces = useMemo(() => {
-        const surfaces = surfs === undefined ? [] : makeSurfaces(surfs.surfacePoints, displayedPeriods)
-        if (surfs !== undefined) {
-            colorizeSurfaces(surfaces, surfs.pointValues, colorScheme)
-        }
-        const surfaceMeshes = surfaces.map(s => new THREE.Mesh(s, fieldMaterial))
-        return [...surfaceMeshes]
-    }, [colorScheme, displayedPeriods, surfs])
+    const baseSurfaces = useMemo(() => makeSurfaces(mySurfs.surfacePoints, displayedPeriods), [displayedPeriods, mySurfs.surfacePoints])
+    const coloredSurfs = useMemo(() => colorizeSurfaces(baseSurfaces, mySurfs.pointValues, colorScheme), [baseSurfaces, colorScheme, mySurfs.pointValues])
+    const surfaceMeshes = useMemo(() => {
+        const surfaceMeshes = coloredSurfs.map(s => new THREE.Mesh(s, fieldMaterial))
+        spinObjects(surfaceMeshes, totalTicks.current)
+        return surfaceMeshes
+    }, [coloredSurfs])
 
-    const objects = useMemo(() => {
-        const displayedSurfaces: THREE.Mesh<THREE.BufferGeometry, THREE.Material>[] = []
-        const definiteChecks = surfaceChecks ?? []
-        surfaces.length > 0 && definiteChecks.forEach((v, idx) => {
-            if (v) {
-                displayedSurfaces.push(surfaces[idx])
-            }
-        })
-        return [...tubes, ...displayedSurfaces]
-    }, [tubes, surfaces, surfaceChecks])
+    const visibleObjects = useMemo(() => {
+        const visibleSurfaces = surfaceMeshes.filter((_, idx) => (surfaceChecks ?? [])[idx])
+        return [...tubes, ...visibleSurfaces]
+    }, [tubes, surfaceMeshes, surfaceChecks])
 
-    const focalPositions = usePositions(coils?.map(c => c.coil))
+    const focalPositions = usePositions(myCoils.map(c => c.coil))
     const camera = useSvCamera(width, height)
     const controls = useSvControls(canvas, camera)
     const renderer = useSvRenderer(canvas, width, height)
@@ -76,8 +105,23 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
     }, [camera, controls, focalPositions, focalPositions.center, focalPositions.zOffset])
 
     useEffect(() => {
-        return makeScene(controls, camera, spotlights, objects, renderer)
-    }, [height, width, controls, camera, objects, renderer])
+        return makeScene(controls, camera, spotlights, visibleObjects, renderer)
+    }, [height, width, controls, camera, visibleObjects, renderer])
+
+    useEffect(() => {
+        if (frameRequest.current !== undefined)
+            cancelAnimationFrame(frameRequest.current)
+        if (!autorotate) return
+
+        const anim = () => {
+            spinObjects([...tubes, ...surfaceMeshes])
+            totalTicks.current += 1
+            renderer.render(scene, camera)
+            frameRequest.current = requestAnimationFrame(anim)
+        }
+        anim()
+    }, [renderer, camera, autorotate, tubes, surfaceMeshes])
+
     return (
         <></>
     )
