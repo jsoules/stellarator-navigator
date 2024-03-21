@@ -32,6 +32,7 @@ const useTitleGroup = (width: number) => {
             <text
                 style={{
                     fontSize: `${1.7*fontPx}px`,
+                    fontWeight: 'bold',
                     textAnchor: "middle"
                 }}
             >

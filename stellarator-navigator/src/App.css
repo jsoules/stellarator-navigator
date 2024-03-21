@@ -5,6 +5,8 @@
   text-align: center;
 } */
 
+/* Global/base */
+
 div.ForceLightMode {
     background-color: #FFFFFF;
     color: #000000;
@@ -15,21 +17,65 @@ div.ForceLightMode {
     overflow: hidden;
 }
 
+
+/* General-Purpose */
+
+.flexWrapper {
+    display: flex;
+}
+
+.floatLeft {
+    float: left;
+}
+
+.floatRight {
+    float: right;
+}
+
+.indent {
+    padding-left: 20px;
+}
+
+.emphasis {
+    font-weight: bold;
+}
+
+.hrWrapper {
+    padding: 10px;
+}
+
+.rightIcon {
+    margin: 10px;
+    float: right;
+}
+
+.padded {
+    padding: 20px;
+}
+
+/* About/Landing page */
+
 .homeBase {
     padding-left: 5%;
     padding-right: 5%;
 }
 
-.homeBase h1, .homeBase h2 {
-    padding-top: 2vh;
-    text-align: center;
+.homeBase .mainLogo {
+    max-width: 700px;
+    margin-top: 2em;
+}
+
+.homeBase h1 {
+    margin-top: 12px;
+    margin-left: 1em;
 }
 
 .homeImage {
-    flex: 3;
-    padding-left: 40px;
+    flex: 2;
+    /* padding-left: 40px; */
     padding-top: 20px;
     padding-bottom: 20px;
+    /* max-width: 90%; */
 }
 
 .homeImage img {
@@ -65,52 +111,38 @@ div.ForceLightMode {
     padding-top: 15px;
 }
 
-.checkboxGroup {
-    padding-left: 8px;
-    padding-top: 15px;
-}
 
-.manifestLabel {
-    padding-top: 0px;
-    padding-left: 20px;
-    /* padding-top: 20px; */
-    font-weight: bold;
-    min-width: 320px;
-    display: inline-block;
+/* Overview page (plot grid) */
+
+.overviewLogo {
+    max-width: 210px;
+    padding-top: 2em;
+    padding-left: 2em;
+    display: block;
 }
 
 .ControlPanelWrapper {
-    margin: 20px;
-    padding: 100px 20px 0px 20px;
+    margin: 0px 20px 20px 20px;
+    padding: 10px 20px 0px 20px;
 }
 
-.buttonRow {
-    display: inline flex;
-}
-
-.showFiltersButton {
+.ControlPanelLogo {
+    max-width: 210px;
+    padding-left: 2em;
+    padding-top: 2em;
+    padding-bottom: 2em;
     float: left;
-    margin: 20px 5px 20px 20px;
 }
 
-.instructionButton {
-    float: left;
-    margin: 15px 20px 10px 5px;
-    align-items: center;
+.dropdownWrapper {
+    padding-top: 10px;
+    padding-left: 8px;
+    padding-bottom: 10px;
 }
 
-.instructionBox {
-    font-size: larger;
-    line-height: 1.2;
-    max-width: 80ch;
-    align-content: center;
-    margin-left: calc(50% - 80ch/2);
-    margin-top: 50px;
-    margin-bottom: 50px;
-}
-
-.instructionBox div {
-    margin: 20px;
+.checkboxGroup {
+    padding-left: 8px;
+    padding-top: 15px;
 }
 
 /* !important isn't great style, but this will get overwritten by some MUI class styling otherwise */
@@ -136,21 +168,53 @@ div.ForceLightMode {
     float: right;
 }
 
-.highlightedPlot {
-    border: 1px solid #7f7f7f;
+.buttonRow {
+    display: inline flex;
 }
 
-.unhighlightedPlot {
-    border: 1px solid #ffffff;
+.showFiltersButton {
+    float: left;
+    margin: 0px 5px 0px 20px;
+}
+
+.instructionButton {
+    margin: -10px 20px 0px 5px;
+    align-items: center;
+}
+
+.instructionBox {
+    font-size: larger;
+    line-height: 1.2;
+    max-width: 80ch;
+    align-content: center;
+    margin-left: calc(50% - 80ch/2);
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.instructionBox div {
+    margin: 20px;
+}
+
+.collapseWrapper {
+    display: inline-block;
+    width: 100%;
+}
+
+.collapseLabel {
+    float: left;
+    font-weight: bold;
+    padding-left: 20px;
+}
+
+.collapseButton {
+    float: right;
+    margin-top: -10px;
 }
 
 .drawerCloser {
     display: block;
-}
-
-.rightIcon {
-    margin: 10px;
-    float: right;
+    padding-top: 2em;
 }
 
 .plotGrid {
@@ -159,6 +223,14 @@ div.ForceLightMode {
 
 .plotGridNote {
     padding: 20px 10px 10px 30px;
+}
+
+.highlightedPlot {
+    border: 1px solid #7f7f7f;
+}
+
+.unhighlightedPlot {
+    border: 1px solid #ffffff;
 }
 
 .plotCaption {
@@ -200,6 +272,13 @@ div.ForceLightMode {
     width: 100%;
 }
 
+
+/* Model page */
+
+.surfaceControlWrapper {
+    width: 100%;
+}
+
 .surfaceControlFlexSplit {
     flex: 1;
     padding: 20px;
@@ -210,30 +289,15 @@ div.ForceLightMode {
     padding: 5px 20px 20px 20px;
 }
 
-.hrWrapper {
-    padding: 10px;
-}
-
-.dropdownWrapper {
-    padding-top: 10px;
-    padding-left: 8px;
-    padding-bottom: 10px;
-}
-
-.codeSnippetWrapper {
-    border: 1px solid #7f7f7f;
-    margin: 10px 0px 10px 10px;
-    padding-left: 20px;
-}
-
 .simulationViewParent {
-    width: 100%
+    width: 100%;
 }
 
 .simulationViewWrapper {
     padding: 10px;
 }
-
+/* keep this--it may yet be possible to do this with css */
+/* 
 .simulationViewWrapperLeft {
     padding: 10px;
     flex: 2;
@@ -242,22 +306,61 @@ div.ForceLightMode {
 .simulationViewWrapperRight {
     padding: 10px;
     flex: 1;
-}
+} */
 
-.flexWrapper {
+.modelButtonRow {
+    margin-top: 10px;
     display: flex;
+    align-items: center;
 }
 
-.indent {
+.modelLogo {
+    margin: 10px;
+    padding-right: 40px;
+    max-height: 60px;
+    float: left;
+}
+
+.deviceModel {
+    border: #444444 1px solid;
+}
+
+.metadataManifest {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.metadataManifest > div:first-child {
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.metadataManifest > div:not(:first-child) {
+    width: 100%;
+    display: inline-block;
+    margin-top: -3px;
+}
+
+.manifestLabel {
+    padding-top: 0px;
+    padding-left: 20px;
+    font-weight: bold;
+    float: left;
+}
+
+.manifestContent {
+    float: right;
+}
+
+.codeSnippetWrapper {
+    border: 1px solid #7f7f7f;
+    margin: 10px 0px 10px 10px;
     padding-left: 20px;
 }
 
 .iotaProfileWrapper {
-    margin: 20px;
-}
-
-.padded {
-    padding: 20px;
+    margin: 20px 20px 20px 10px;
 }
 
 .poincareContainer {
@@ -266,8 +369,4 @@ div.ForceLightMode {
 
 .poincareContainer img {
     max-width: 98%;
-}
-
-.emphasis {
-    font-weight: bold;
 }

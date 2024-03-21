@@ -19,13 +19,13 @@ import { NavigatorStateAction } from "@snState/NavigatorReducer"
 import { DependentVariables, ToggleableVariables, fieldIsCategorical } from "@snTypes/DataDictionary"
 import { FilterSettings, StellaratorRecord } from "@snTypes/Types"
 import useWindowDimensions from "@snUtil/useWindowDimensions"
+import imgLogo from 'assets/Quasr_Logo_RGB_Full.svg'
 import { Dispatch, FunctionComponent, useMemo, useReducer, useState } from "react"
 import PlotGrid from "./PlotGrid"
 
 
 const drawerWidth = 500
 const drawerClosedLeftMargin = 15
-// const splitterWidthRolloff = 30
 export const plotGridInternalMargin = 20
 
 
@@ -53,8 +53,6 @@ const Overview: FunctionComponent<OverviewProps> = (props: OverviewProps) => {
     const [instructionsOpen, setInstructionsOpen] = useState(false)
     const callbacks = useFilterCallbacks(props.dispatch)
 
-    // Note: was height - 40, may need to reinstate to allow room for a banner
-    // const effectiveHeight = useMemo(() => height, [height])
     const effectiveWidth = useMemo(() => width - 40, [width])
     
     
@@ -113,17 +111,13 @@ const Overview: FunctionComponent<OverviewProps> = (props: OverviewProps) => {
             </SelectionControlDrawer>
 
             <OverviewInstructionDrawer open={instructionsOpen} changeOpenState={setInstructionsOpen} />
+            <img className="overviewLogo" src={imgLogo} />
 
-            <div className="buttonRow">
-                <ShowFiltersButton openState={drawerOpen} changeOpenState={setDrawerOpen} />
-                <InstructionButton open={instructionsOpen} changeOpenState={setInstructionsOpen} />
-            </div>
             <div
                 style={{
                     marginLeft: `${contentDivLeftMargin}px`
                 }}
             >
-                <OverallHitCount hits={records.length} />
                 <PlotGrid
                     plotDataSummary={plotDataSummary}
                     dataGeometry={dataGeometry}
@@ -136,6 +130,12 @@ const Overview: FunctionComponent<OverviewProps> = (props: OverviewProps) => {
                 />
                 {legend}
                 <MarkedValueDesc dependentVariable={filterSettings.dependentVariable} />
+                <OverallHitCount hits={records.length} />
+                <div className="buttonRow">
+                    <ShowFiltersButton openState={drawerOpen} changeOpenState={setDrawerOpen} />
+                    <InstructionButton open={instructionsOpen} changeOpenState={setInstructionsOpen} />
+                </div>
+
                 <HrBar />
                 <SnTable
                     records={records}

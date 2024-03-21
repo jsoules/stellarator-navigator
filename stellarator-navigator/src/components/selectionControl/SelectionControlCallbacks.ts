@@ -97,8 +97,6 @@ export const handleUpdateMarkedRecords = (dispatch: NavigatorDispatch, model: Gr
     dispatch(update)
 }
 
-// TODO: Add handler for updating the selected fields for coarse and fine plot splits
-
 export const _handleUpdateFocusedPlotIndices = (dispatch: NavigatorDispatch, coarseVal: number | undefined, fineVal: number | undefined) => {
     const newVals = [coarseVal, fineVal]
     const update: NavigatorStateAction = {
@@ -108,7 +106,7 @@ export const _handleUpdateFocusedPlotIndices = (dispatch: NavigatorDispatch, coa
     dispatch(update)
 }
 
-// TODO: Relocate this
+// TODO: Relocate this?
 export type PlotClickCallbackType = (coarsevVal: number | undefined, fineVal: number | undefined) => void
 export type RangesChangeCallbackType = (fields: RangeVariables[], newValues: number[][]) => void
 

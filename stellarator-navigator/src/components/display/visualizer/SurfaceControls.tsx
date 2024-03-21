@@ -15,10 +15,13 @@ type ModelProps = {
     setColorMap: Dispatch<SetStateAction<SupportedColorMap>>
     showFullRing: boolean
     setShowFullRing: Dispatch<SetStateAction<boolean>>
+    autorotate: boolean
+    setAutorotate: Dispatch<SetStateAction<boolean>>
 }
 
 const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
-    const { checksNeeded, surfaceChecks, setSurfaceChecks, showCurrents, setShowCurrents, colorMap, setColorMap, showFullRing, setShowFullRing } = props
+    const { checksNeeded, surfaceChecks, setSurfaceChecks, colorMap, setColorMap } = props
+    const { autorotate, setAutorotate, showCurrents, setShowCurrents, showFullRing, setShowFullRing } = props
 
     const handleCheckboxChange = useCallback((index: number, newState: boolean) => {
         if (index === -1) {
@@ -48,7 +51,7 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     )
 
     return (
-        <>
+        <div className="surfaceControlWrapper">
             {checksNeeded && surfacePart}
             <div className="flexWrapper">
                 <div className="surfaceControlFlexSplit">
@@ -67,8 +70,16 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
                         handleChange={setShowCurrents}
                     />
                 </div>
+                <div className="surfaceControlFlexSplit">
+                    <SnSwitch
+                        header="Revolve model"
+                        label="Revolve model?"
+                        checked={autorotate}
+                        handleChange={setAutorotate}
+                    />
+                </div>
             </div>
-        </>
+        </div>
     )
 }
 

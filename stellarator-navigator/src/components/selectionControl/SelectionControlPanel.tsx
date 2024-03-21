@@ -4,8 +4,10 @@ import { ColorPropsAction, PlotColorProps, usePlotColorCallbacks } from '@snComp
 import HrBar from '@snComponents/general/HrBar'
 import { Fields, RangeVariables, ToggleableVariables, TripartiteVariables, fieldIsCategorical } from '@snTypes/DataDictionary'
 import { FilterSettings } from '@snTypes/Types'
-import { Dispatch, FunctionComponent } from 'react'
+import { Dispatch, FunctionComponent, useState } from 'react'
+// import { Dispatch, FunctionComponent } from 'react'
 import ToggleableVariableCheckboxGroup from './Checkboxes'
+import PlotVariableControlsDropdown from './PlotVariableControlsDropdown'
 import RangeSlider from './RangeSlider'
 import TripartDropdownSelector from './TripartDropdownSelector'
 import VariableSelector from './VariableSelectDropdown'
@@ -34,6 +36,7 @@ const SelectionControlPanel: FunctionComponent<Props> = (props: Props) => {
     const { filterSettings, callbacks, colorChgDispatcher } = props
     const { meanIota, ncPerHp, nfp, dependentVariable, independentVariable, coarsePlotSplit, finePlotSplit, nSurfaces } = filterSettings
     const { colorSplit, style } = props.colorProps
+    const [ plotVarsClosed, setPlotVarsClosed ] = useState(true)
 
     const { colorVariableCallback, colorSchemeCallback } = usePlotColorCallbacks(colorChgDispatcher)
     
@@ -41,8 +44,16 @@ const SelectionControlPanel: FunctionComponent<Props> = (props: Props) => {
     const sliders = Object.values(RangeVariables).filter(rv => isNaN(Number(rv)))
         .map(rv => (<RangeSlider key={rv} field={rv} value={filterSettings[rv]} onChange={callbacks.handleRangeChange} onReset={callbacks.handleRangeReset} />))
 
-    const tripartDropdowns = Object.values(TripartiteVariables).filter(rv => isNaN(Number(rv)))
-        .map(rv => (<TripartDropdownSelector key={rv} field={rv} value={filterSettings[rv] ?? -1} onChange={callbacks.handleTripartiteDropdownChange} />))
+    // This is special-cased so it shows up as the first thing
+    const helicityDropdown = <TripartDropdownSelector
+        key={TripartiteVariables.HELICITY}
+        field={TripartiteVariables.HELICITY}
+        value={filterSettings[TripartiteVariables.HELICITY] ?? -1}
+        onChange={callbacks.handleTripartiteDropdownChange}
+    />
+    const tripartDropdowns = Object.values(TripartiteVariables).filter(tv => isNaN(Number(tv)))
+        .filter(tv => tv !== TripartiteVariables.HELICITY)
+        .map(tv => (<TripartDropdownSelector key={tv} field={tv} value={filterSettings[tv] ?? -1} onChange={callbacks.handleTripartiteDropdownChange} />))
 
     const styleSelector = fieldIsCategorical(colorSplit)
         ? <VariableSelector value={style as SupportedColorPalette} onChange={colorSchemeCallback} type="ColorStyleDiscrete" />
@@ -50,15 +61,21 @@ const SelectionControlPanel: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <div className="ControlPanelWrapper">
-            <VariableSelector value={independentVariable} onChange={callbacks.handleIndependentVariableChange} type="Independent" />
-            <VariableSelector value={dependentVariable} onChange={callbacks.handleDependentVariableChange} type="Dependent" />
+            <PlotVariableControlsDropdown
+                isClosed={plotVarsClosed}
+                toggleFn={setPlotVarsClosed}
+            >
+                <VariableSelector value={independentVariable} onChange={callbacks.handleIndependentVariableChange} type="Independent" />
+                <VariableSelector value={dependentVariable} onChange={callbacks.handleDependentVariableChange} type="Dependent" />
+                <HrBar />
+                <VariableSelector value={colorSplit} onChange={colorVariableCallback} type="ColorVariable" />
+                {styleSelector}
+                <HrBar />
+                <VariableSelector value={coarsePlotSplit} onChange={callbacks.handleCoarseVariableChange} type="CoarseSplit" />
+                <VariableSelector value={finePlotSplit} onChange={callbacks.handleFineVariableChange} type="FineSplit" />
+            </PlotVariableControlsDropdown>
             <HrBar />
-            <VariableSelector value={colorSplit} onChange={colorVariableCallback} type="ColorVariable" />
-            {styleSelector}
-            <HrBar />
-            <VariableSelector value={coarsePlotSplit} onChange={callbacks.handleCoarseVariableChange} type="CoarseSplit" />
-            <VariableSelector value={finePlotSplit} onChange={callbacks.handleFineVariableChange} type="FineSplit" />
-            <HrBar />
+            {helicityDropdown}
             {sliders}
             {/* TODO Unify the checkbox template thing by referencing values if it exists */}
             <ToggleableVariableCheckboxGroup

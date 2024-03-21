@@ -3,6 +3,7 @@ import { SupportedColorMap, valueToRgbTriplet } from '@snDisplayComponents/Color
 import * as THREE from 'three';
 
 export const grayBackground = new THREE.Color( 0x444444 )
+export const whiteBackground = new THREE.Color( 0xFFFFFF )
 export const fieldMaterial = new THREE.MeshStandardMaterial({
     color: 'white',
     flatShading: false,

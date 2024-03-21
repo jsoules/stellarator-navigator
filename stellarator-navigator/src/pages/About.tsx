@@ -1,5 +1,8 @@
 import { Button, Tooltip } from '@mui/material'
-import imgUrl from 'assets/sample-197168.png'
+// import imgUrl from 'assets/sample-197168.png'
+// import imgVideo from 'assets/sample-0197168.mp4'
+import imgLogo from 'assets/Quasr_Logo_RGB_Full.svg'
+import imgVideo from 'assets/sample-1708695.mp4'
 import { Dispatch, FunctionComponent, SetStateAction, useMemo } from "react"
 
 // const BASENAME = import.meta.env.BASE_URL
@@ -39,7 +42,7 @@ const LaunchButton = (props: Props) => {
                 <span>
                     <Button
                         variant="contained"
-                        style={{margin: 20}}
+                        style={{margin: 20, width: '66%'}}
                         aria-label={buttonString}
                         disabled={!props.ready}
                         onClick={() => document.getElementById("launch")?.click()}
@@ -59,21 +62,18 @@ const LaunchButton = (props: Props) => {
 
 
 const Home: FunctionComponent<Props> = (props: Props) => {
-    // TODO: Margin, more styling, etc.
     const { ready, setShowOverview } = props
 
     const button = useMemo(() => <LaunchButton ready={ready} setShowOverview={setShowOverview} />, [ready, setShowOverview])
 
     return (
         <div className="homeBase MainWindow ForceLightMode">
-            <h1>QUASR:
+            <img src={imgLogo} className="mainLogo" />
+            <h1>
                 A QUAsi-symmetric Stellarator Repository
             </h1>
 
             <div className="flexWrapper">
-                <div className="homeImage">
-                    <img src={imgUrl} />
-                </div>
                 <div className="homeCopy">
                     <div>
                         The QUASR repository contains a database of over 320,000 curl-free stellarators
@@ -86,6 +86,12 @@ const Home: FunctionComponent<Props> = (props: Props) => {
                         including an interactive 3-D model and Poincaré plots.
                     </div>
                     {button}
+                </div>
+                <div className="homeImage">
+                    {/* <img src={imgUrl} /> */}
+                    <video loop autoPlay muted className="homeImage">
+                        <source src={imgVideo} type="video/mp4" />
+                    </video>
                 </div>
             </div>
             <div className="authorship">
