@@ -2,9 +2,6 @@ import { CoilRecord, ScalarField, SurfaceObject, Vec3, Vec3Field } from '@snType
 import { MathNumericType, Matrix, concat, cos, index, matrix, multiply, range, reshape, sin } from 'mathjs'
 import { SURFACE_SIDE_RESOLUTION } from './geometry'
 
-// TODO: Remove per linter?
-// const coilTransformMatrices: {[key: number]: Matrix[]} = {}
-// const surfaceTransformMatrices: {[key: number]: Matrix[]} = {}
 const coilTransformMatrices: Record<number, Matrix[]> = {}
 const surfaceTransformMatrices: Record<number, Matrix[]> = {}
 

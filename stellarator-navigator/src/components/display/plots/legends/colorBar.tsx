@@ -11,9 +11,6 @@ type ColorBarProps = {
     visRange: number[]
 }
 
-// TODO: Restrict the width of this thing
-// TODO: How committed are we to these hard-coded dimensions.
-
 const barContentHeight = 20
 const barContentWidth = 460
 const fontPx = 10
@@ -72,7 +69,6 @@ const ColorBar: FunctionComponent<ColorBarProps> = (props: ColorBarProps) => {
         ctxt.save()
         ctxt.translate(dims.marginLeft, dims.marginTop)
         baseline(ctxt)
-        // TODO: actually draw the color bar
         for(let i = 0; i <= barContentWidth; i++) {
             drawObs(ctxt, i, barContentWidth, style)
         }

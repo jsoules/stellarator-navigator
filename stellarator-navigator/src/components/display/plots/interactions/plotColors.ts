@@ -28,8 +28,6 @@ export const isDiscreteColorStyle = (s: SupportedColorMap | SupportedColorPalett
     Object.values(SupportedColorPalette).includes(s as SupportedColorPalette)
 
 export const plotColorReducer = (s: PlotColorProps, a: ColorPropsAction): PlotColorProps => {
-    // TODO: Should we special-case the coil length fields? They're technically categorical but that's
-    // not useful for coloration...
     const splitVariableIsDiscrete = fieldIsCategorical(s.colorSplit)
     switch (a.type) {
         case 'updateVariable': {

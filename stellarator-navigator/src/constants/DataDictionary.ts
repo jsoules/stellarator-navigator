@@ -222,7 +222,6 @@ export const getLabel = (props: {name: string, labelType: 'short' | 'full' | 'pl
     const { name, labelType } = props
     const rec = Fields[name as KnownFields]
     const unitPart = rec.unit === undefined ? '' : ` (${rec.unit})`
-    // TODO: ugly, fix
     const labelPart = labelType === 'short' ? rec.shortLabel : labelType === 'plot' ? rec.plotLabel : rec.fullLabel
     return `${labelPart}${unitPart}`
 }

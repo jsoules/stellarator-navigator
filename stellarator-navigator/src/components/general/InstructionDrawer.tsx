@@ -22,9 +22,6 @@ const toggleInstructionDrawer = (handler: (newState: boolean) => void, open: boo
 
 export const InstructionDrawer: FunctionComponent<InstructionDrawerProps> = (props: InstructionDrawerProps) => {
     const { children, open, anchor, changeOpenState } = props
-    // TODO: more styling
-    // e.g. consider width
-    
     const drawer = (
         <Drawer
             variant="temporary"
@@ -34,7 +31,7 @@ export const InstructionDrawer: FunctionComponent<InstructionDrawerProps> = (pro
             ModalProps={{
                 keepMounted: true, // supposedly better performance on mobile
                 // though this honestly isn't a huge concern given how unfriendly
-                // this whole thing is
+                // this whole thing is to cell phones
             }}
         >
             {children}
@@ -47,7 +44,6 @@ export const InstructionDrawer: FunctionComponent<InstructionDrawerProps> = (pro
 
 export const OverviewInstructionDrawer: FunctionComponent<InstructionDrawerPropsBase> = (props: InstructionDrawerPropsBase) => {
     const content = (
-        // TODO styling
         <div className="instructionBox">
             <div>
                 This page presents plots of the devices in the QUASR database, filtered according to parameters of interest.

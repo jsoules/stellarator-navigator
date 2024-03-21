@@ -16,8 +16,6 @@ const RangeSlider: FunctionComponent<Props> = (props: Props) => {
         return onChange(event, field, newValue)
     }, [field, onChange])
     const fieldDesc = Fields[field]
-    // TODO: Delete this
-    // const marks = fieldDesc.values ? fieldDesc.values.map(v => { return {value: v, label: ""} }) : undefined
     const marks = fieldDesc.values?.map(v => { return {value: v, label: ""} })
     const step = marks ? null : (fieldDesc.range[1] - fieldDesc.range[0])/256
     const changeScale = step === null ? 1 : Math.max(0, -1 * (Math.floor(Math.log10(step))))
@@ -33,7 +31,6 @@ const RangeSlider: FunctionComponent<Props> = (props: Props) => {
 
     return (
         <div className="sliderWrapper">
-            {/* TODO: Not sure I love the font weight options here... */}
             <Typography id={`${label}-slider`} fontWeight="450" className="rangeLabel" gutterBottom>
                 { label }
             </Typography>

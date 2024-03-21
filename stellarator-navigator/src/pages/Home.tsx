@@ -7,7 +7,6 @@ import Overview from './Overview'
 
 
 const Home: FunctionComponent = () => {
-    // TODO: Margin, more styling, etc.
     const database = useDatabase()
     const [filterSettings, filterSettingDispatch] = useReducer(NavigatorReducer, initialNavigatorState)
     useEffect(() => filterSettingDispatch({type: 'initialize', database: database}), [database])

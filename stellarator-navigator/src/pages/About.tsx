@@ -62,7 +62,6 @@ const LaunchButton = (props: Props) => {
 
 
 const Home: FunctionComponent<Props> = (props: Props) => {
-    // TODO: Margin, more styling, etc.
     const { ready, setShowOverview } = props
 
     const button = useMemo(() => <LaunchButton ready={ready} setShowOverview={setShowOverview} />, [ready, setShowOverview])

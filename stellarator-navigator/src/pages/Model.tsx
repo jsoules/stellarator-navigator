@@ -55,8 +55,6 @@ const Model: FunctionComponent = () => {
     // // So many magic numbers for such a little layout task......
 
     const viewer = useMemo(() => {
-        // TODO: Can we avoid rendering a SimulationView with no data, without
-        // breaking the changing-number-of-hooks rules?
         const ifAvail = (
             <>
                 <SimulationView
