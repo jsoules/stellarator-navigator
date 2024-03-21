@@ -53,8 +53,6 @@ const Overview: FunctionComponent<OverviewProps> = (props: OverviewProps) => {
     const [instructionsOpen, setInstructionsOpen] = useState(false)
     const callbacks = useFilterCallbacks(props.dispatch)
 
-    // Note: was height - 40, may need to reinstate to allow room for a banner
-    // const effectiveHeight = useMemo(() => height, [height])
     const effectiveWidth = useMemo(() => width - 40, [width])
     
     
