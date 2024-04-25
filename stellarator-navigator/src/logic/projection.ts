@@ -105,9 +105,7 @@ const projectToPlotReadyData = (props: ProjectionCriteria): ProjectedData => {
     // Precondition: Assume that every row of the data is actually supposed to be there, and we just need to slot
     // them into the right place. Filtering of out-of-scope values should have already taken place.
     data.forEach((record) => {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         const fineIdx   = (fineSplit   ?   fineKeys[record[fineSplit]]   : 0) ?? 0
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         const coarseIdx = (coarseSplit ? coarseKeys[record[coarseSplit]] : 0) ?? 0
         const isSelected = markedIds?.has(record.id) ?? false
         buckets[coarseIdx][fineIdx].push(record[xVar])

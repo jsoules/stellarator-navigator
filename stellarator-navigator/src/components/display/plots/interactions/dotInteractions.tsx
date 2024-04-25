@@ -32,8 +32,6 @@ export const onOpenSelected = (ids?: Set<number>) => {
     }
     if (ids !== undefined) {
         ids.forEach(id => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            // await new Promise(_ => setTimeout(() => slowOpen(id), 250))
             setTimeout(() => slowOpen(id), 250)
         })
     }

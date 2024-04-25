@@ -67,7 +67,6 @@ const makeBooleanFilter = (key: ToggleableVariables, db: NavigatorDatabase) => {
         const vals = getValuesFromBoolArray(key, choices)
         const idx = db.categoricalIndexes[key as unknown as keyof CategoricalIndexSet]
         const sets = vals.map(v => idx[v])
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         const union = new Set(sets.reduce((curr: number[], newSet) => [...curr, ...(newSet || [])], []))
         return union
     }
