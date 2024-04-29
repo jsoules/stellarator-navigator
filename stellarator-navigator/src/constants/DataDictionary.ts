@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/prefer-literal-enum-member */
+
 export const getEnumVals = (x: object): string[] => {
     return (Object.values(x) as string[]).filter(v => isNaN(Number(v)))
 }

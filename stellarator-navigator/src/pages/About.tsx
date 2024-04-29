@@ -53,7 +53,7 @@ const LaunchButton = (props: Props) => {
             </Tooltip>
             <a id="launch"
                 // href={BASENAME === '/' ? "/overview" : `${BASENAME}/overview`}
-                onClick={() => props.setShowOverview(true)}
+                onClick={() => {props.setShowOverview(true)}}
                 style={{display: "none"}}
             />
         </div>

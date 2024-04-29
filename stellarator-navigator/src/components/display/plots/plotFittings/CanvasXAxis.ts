@@ -48,7 +48,7 @@ const CanvasXAxis = (props: AxisDescriptor, ctxt: CanvasRenderingContext2D) => {
     ctxt.font = `${dims.fontPx}px sans-serif`
     ctxt.textAlign = 'center'
     ctxt.textBaseline = 'top'
-    ticks.forEach(tick => drawTick(tick, ctxt, dims.tickLength))
+    ticks.forEach(tick => { drawTick(tick, ctxt, dims.tickLength) })
 
     drawAxisLabel(ctxt, dims, axisLabel)
     ctxt.restore()

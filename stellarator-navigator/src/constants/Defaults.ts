@@ -1,5 +1,5 @@
-import { FilterSettings, NavigatorDatabase, StellaratorRecord } from "@snTypes/Types";
-import { CategoricalIndexedFields, DependentVariables, Fields, IndependentVariables, ToggleableVariables, coilLengthPerHpValidValues, meanIotaValidValues, ncPerHpValidValues, nfpValidValues, totalCoilLengthValidValues } from "./DataDictionary";
+import { FilterSettings, NavigatorDatabase, StellaratorRecord } from "@snTypes/Types"
+import { CategoricalIndexedFields, DependentVariables, Fields, IndependentVariables, ToggleableVariables, coilLengthPerHpValidValues, meanIotaValidValues, ncPerHpValidValues, nfpValidValues, totalCoilLengthValidValues } from "./DataDictionary"
 
 export const defaultFinePlotSplit = ToggleableVariables.NFP
 export const defaultCoarsePlotSplit = ToggleableVariables.NC_PER_HP

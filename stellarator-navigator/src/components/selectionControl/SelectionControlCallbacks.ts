@@ -114,16 +114,25 @@ const useFilterCallbacks = (dispatch: Dispatch<NavigatorStateAction>) => {
     const handleRangeChange = useCallback((_: Event, field: RangeVariables, newValue: number | number[]) => {
         _handleRangeChange(dispatch, field, newValue)
     }, [dispatch])
-    const handleRangesChange: RangesChangeCallbackType = useCallback((fields: RangeVariables[], newValues: number[][]) => {
-        _handleRangesChange(dispatch, fields, newValues)
+    const handleRangesChange: RangesChangeCallbackType = useCallback(
+        (fields: RangeVariables[], newValues: number[][]) => {
+            _handleRangesChange(dispatch, fields, newValues)
     }, [dispatch])
-    const handleRangeReset = useCallback((field: RangeVariables) => _handleRangeReset(dispatch, field), [dispatch])
+    const handleRangeReset = useCallback((field: RangeVariables) => {
+        _handleRangeReset(dispatch, field)
+    }, [dispatch])
     const handleDependentVariableChange = useCallback((event: SelectChangeEvent) => {
         handleDependentVariableChg(dispatch, event)
     }, [dispatch])
-    const handleIndependentVariableChange = useCallback((e: SelectChangeEvent) => handleIndependentVariableChg(dispatch, e), [dispatch])
-    const handleCoarseVariableChange = useCallback((e: SelectChangeEvent) => _handleCoarseVariableChange(dispatch, e), [dispatch])
-    const handleFineVariableChange = useCallback((e: SelectChangeEvent) => _handleFineVariableChange(dispatch, e), [dispatch])
+    const handleIndependentVariableChange = useCallback((e: SelectChangeEvent) => {
+        handleIndependentVariableChg(dispatch, e)
+    }, [dispatch])
+    const handleCoarseVariableChange = useCallback((e: SelectChangeEvent) => {
+        _handleCoarseVariableChange(dispatch, e)
+    }, [dispatch])
+    const handleFineVariableChange = useCallback((e: SelectChangeEvent) => {
+        _handleFineVariableChange(dispatch, e)
+    }, [dispatch])
     const handleCheckboxChange = useCallback((field: ToggleableVariables, index: number, targetState: boolean) => {
         handleCheckboxChangeBase(dispatch, field, index, targetState)
     }, [dispatch])

@@ -24,7 +24,7 @@ const SnCheckboxGroup: FunctionComponent<BaseProps> = (props: BaseProps) => {
                     control={
                         <Checkbox
                             className="checkboxItem"
-                            onClick={() => onChange(-1, !allChecked)}
+                            onClick={() => { onChange(-1, !allChecked) }}
                             checked={allChecked}
                             indeterminate={(checkCount > 0) && !allChecked}
                         />
@@ -46,7 +46,7 @@ const SnCheckboxGroup: FunctionComponent<BaseProps> = (props: BaseProps) => {
                             control={
                                 <Checkbox
                                     className="checkboxItem"
-                                    onClick={() => onChange(i, !v)}
+                                    onClick={() => { onChange(i, !v) }}
                                     checked={v}
                                 />
                             }

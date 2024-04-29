@@ -18,7 +18,7 @@ const PlotVariableControlsDropdown: FunctionComponent<PropsWithChildren<Props>> 
                     { isClosed ? "Show" : "Hide" } plot variable controls
                 </span>
                 <span className="collapseButton">
-                    <IconButton onClick={() => toggleFn(!isClosed)}>
+                    <IconButton onClick={ () => { toggleFn(!isClosed) } }>
                         { isClosed ? <ExpandMore /> : <ExpandLess /> }    
                     </IconButton>
                 </span>

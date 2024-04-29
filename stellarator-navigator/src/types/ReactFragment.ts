@@ -1,3 +1,3 @@
-import { ReactNode } from 'react';
+import { ReactNode } from 'react'
 
-export type ReactFragment = Iterable<ReactNode>;
+export type ReactFragment = Iterable<ReactNode>

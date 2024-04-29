@@ -13,7 +13,7 @@ type Props = {
 const RangeSlider: FunctionComponent<Props> = (props: Props) => {
     const { field, onChange, onReset } = props
     const changeHandler = useCallback((event: Event, newValue: number | number[]) => {
-        return onChange(event, field, newValue)
+        onChange(event, field, newValue)
     }, [field, onChange])
     const fieldDesc = Fields[field]
     const marks = fieldDesc.values?.map(v => { return {value: v, label: ""} })

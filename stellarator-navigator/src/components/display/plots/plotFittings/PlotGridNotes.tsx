@@ -1,5 +1,5 @@
-import { DependentVariables, fieldMarkedValueDesc } from "@snTypes/DataDictionary";
-import { FunctionComponent, PropsWithChildren } from "react";
+import { DependentVariables, fieldMarkedValueDesc } from "@snTypes/DataDictionary"
+import { FunctionComponent, PropsWithChildren } from "react"
 
 type MarkedValueProps = {
     dependentVariable: DependentVariables

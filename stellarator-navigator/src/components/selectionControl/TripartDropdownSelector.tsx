@@ -16,7 +16,7 @@ const TripartDropdownSelector: FunctionComponent<Props> = (props: Props) => {
     const vals = (Fields[field].values) ?? []
     // TODO: Make this more rigorous
     const labels = getFieldValueDescriptions(field)
-    const cb = useCallback((evt: SelectChangeEvent<number>) => onChange(field, evt), [field, onChange])
+    const cb = useCallback((evt: SelectChangeEvent<number>) => { onChange(field, evt) }, [field, onChange])
 
     const bothItem = <MenuItem key={-1} value={defaultTripartiteBothState}>Any</MenuItem>
     const items = [

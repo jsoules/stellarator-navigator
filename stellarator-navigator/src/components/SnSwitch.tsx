@@ -21,7 +21,7 @@ const SnSwitch: FunctionComponent<SwitchProps> = (props: SwitchProps) => {
                 control={
                     <Switch
                         checked={checked}
-                        onChange={() => handleChange(!checked)}
+                        onChange={() => { handleChange(!checked) }}
                         size="small"
                     />
                 }

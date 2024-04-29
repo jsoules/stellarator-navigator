@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from 'three'
 
 export const ambientLight = new THREE.AmbientLight( 0xe0e0e0, 2.0 )
 export const spotlights = [

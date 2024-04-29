@@ -19,7 +19,7 @@ const OpenSelectedButton: FunctionComponent<OpenSelectedProps> = (props: OpenSel
             <Button
                 variant="contained"
                 size="small"
-                onClick={() => onOpenSelected(markedIds)}
+                onClick={() => { onOpenSelected(markedIds) }}
             >
                 Open selected
             </Button>

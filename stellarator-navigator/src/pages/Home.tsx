@@ -9,7 +9,9 @@ import Overview from './Overview'
 const Home: FunctionComponent = () => {
     const database = useDatabase()
     const [filterSettings, filterSettingDispatch] = useReducer(NavigatorReducer, initialNavigatorState)
-    useEffect(() => filterSettingDispatch({type: 'initialize', database: database}), [database])
+    useEffect(() => {
+        filterSettingDispatch({type: 'initialize', database: database})
+    }, [database])
 
     const [showOverview, setShowOverview] = useState<boolean>(false)
     const ready = database !== initialDatabase

@@ -32,7 +32,7 @@ export const onOpenSelected = (ids?: Set<number>) => {
     }
     if (ids !== undefined) {
         ids.forEach(id => {
-            setTimeout(() => slowOpen(id), 250)
+            setTimeout(() => { slowOpen(id), 250 })
         })
     }
 }

@@ -18,7 +18,7 @@ const ResetRangeButton: FunctionComponent<ResetRangeProps> = (props: ResetRangeP
                 <Button
                     variant="text"
                     size="small"
-                    onClick={ () => onReset(field) }
+                    onClick={ () => { onReset(field) } }
                 >
                     Reset
                 </Button>

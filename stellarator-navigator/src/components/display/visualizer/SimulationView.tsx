@@ -60,7 +60,6 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
         return coils === undefined
             ? [] as CoilRecord[]
             : coils
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [coils?.length])
 
     const mySurfs = useMemo(() => {
@@ -68,7 +67,6 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
         return surfs?.surfacePoints === undefined
             ? { surfacePoints: [], pointValues: [], incomplete: true } as SurfaceObject
             : surfs
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [surfs?.surfacePoints[0]?.length])
 
     const tubes = useMemo(() => {
@@ -163,9 +161,9 @@ const makeScene = (controls: OrbitControls | undefined, camera: THREE.Perspectiv
     scene.add(camera)
 
     const render = () => {
-        renderer.render( scene, camera );
+        renderer.render( scene, camera )
     }
-    controls.addEventListener( 'change', render );
+    controls.addEventListener( 'change', render )
     controls.update()
     render()
 

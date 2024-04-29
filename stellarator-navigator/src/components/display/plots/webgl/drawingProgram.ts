@@ -84,7 +84,7 @@ const loadShader = (gl: WebGLRenderingContext, shaderType: shaderTypes, source: 
         throw new TypeError(`Couldn't compile shader:\n${gl.getShaderInfoLog(shader)}`)
     }
 
-    return shader;
+    return shader
 }
 
 

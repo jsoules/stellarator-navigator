@@ -33,7 +33,7 @@ export const useMouseHandlerFactory = (props: useClickHandlerFactoryProps) => {
 
     return useCallback((props: perGraphClickProps) => {
         const { coarseValue, fineValue, data, radius, ids } = props
-        const overallPlotClick = () => plotClickHandler(coarseValue, fineValue)
+        const overallPlotClick = () => { plotClickHandler(coarseValue, fineValue) }
 
         return (e: React.MouseEvent) => {
             const [clickX, clickY] = getEventPoint(e)
@@ -133,13 +133,13 @@ const usePlotMouseHandlers = (props: MouseHandlerConfigurationProps): MouseHandl
     const { interpretClick, xDataPerPixel, yDataPerPixel } = usePixelToDataConversions(plotDimensions, props.dataGeometry)
     const pointClickChecker = usePointContainsClickFn(xDataPerPixel, yDataPerPixel)
     const mouseHandlerFactory = useMouseHandlerFactory({plotClickHandler, interpretClick, pointClickChecker})
-    const resolveRangeChange = useCallback((rect: number[]) =>
+    const resolveRangeChange = useCallback((rect: number[]) => {
         ResolveRangeChange(rect, {
             interpretClick,
             resolveRangeChangeHandler,
             independentVariable,
             dependentVariable
-        }), [dependentVariable, independentVariable, interpretClick, resolveRangeChangeHandler])
+        })}, [dependentVariable, independentVariable, interpretClick, resolveRangeChangeHandler])
     return { mouseHandlerFactory, resolveRangeChange }
 }
 

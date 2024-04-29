@@ -1,6 +1,6 @@
 
-import { SupportedColorMap, valueToRgbTriplet } from '@snDisplayComponents/Colormaps';
-import * as THREE from 'three';
+import { SupportedColorMap, valueToRgbTriplet } from '@snDisplayComponents/Colormaps'
+import * as THREE from 'three'
 
 export const grayBackground = new THREE.Color( 0x444444 )
 export const whiteBackground = new THREE.Color( 0xFFFFFF )

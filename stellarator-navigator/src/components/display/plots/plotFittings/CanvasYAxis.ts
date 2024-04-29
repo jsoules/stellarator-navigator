@@ -1,5 +1,5 @@
-import { BoundedPlotDimensions } from "@snTypes/Types";
-import { AxisDescriptor, DescribeAxis, TickDescriptor, markLineColor } from "./AxisGeometry";
+import { BoundedPlotDimensions } from "@snTypes/Types"
+import { AxisDescriptor, DescribeAxis, TickDescriptor, markLineColor } from "./AxisGeometry"
 
 const lightStrokeStyle = "#cbcbcb"
 
@@ -77,7 +77,7 @@ const CanvasYAxis = (props: AxisDescriptor, ctxt: CanvasRenderingContext2D) => {
     ctxt.font = `${dims.fontPx}px sans-serif`
     ctxt.textAlign = "end"
     ctxt.textBaseline = "middle"
-    ticks.forEach(tick => drawTick(tick, ctxt, dims.tickLength, dims.boundedWidth))
+    ticks.forEach(tick => { drawTick(tick, ctxt, dims.tickLength, dims.boundedWidth) })
 
     if (markedLine) {
         drawMarkedLine(ctxt, markedLine, dims.boundedWidth)

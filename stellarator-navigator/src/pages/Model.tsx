@@ -28,7 +28,9 @@ const Model: FunctionComponent = () => {
     const [showCurrents, setShowCurrents] = useState<boolean>(true)
     const [autorotate, setAutorotate] = useState<boolean>(false)
     const [surfaceChecks, setSurfaceChecks] = useState<boolean[]>(Array(rec.nSurfaces).fill(true))
-    useEffect(() => setSurfaceChecks(Array<boolean>(rec.nSurfaces).fill(true)), [rec.nSurfaces])
+    useEffect(() => {
+        setSurfaceChecks(Array<boolean>(rec.nSurfaces).fill(true))
+    }, [rec.nSurfaces])
 
     const downloadLinks = <DownloadLinks id={stringId.id} />
     const poincarePlot = <PoincarePlot id={stringId.id}/>

@@ -1,5 +1,5 @@
 // adapted from mcmc-monitor & https://stackoverflow.com/a/75101934/6131076
-import { RefObject, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { RefObject, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 
 type WindowDimensions = {
     width: number,
@@ -7,25 +7,25 @@ type WindowDimensions = {
 }
 
 const getWindowDimensions = (): WindowDimensions => {
-    const { innerWidth: width, innerHeight: height } = window;
+    const { innerWidth: width, innerHeight: height } = window
     return {
         width,
         height
-    };
+    }
 }
 
 const useWindowDimensions = () => {
-    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
 
     useEffect(() => {
         function handleResize() {
-            setWindowDimensions(getWindowDimensions());
+            setWindowDimensions(getWindowDimensions())
         }
 
         return subscribe(handleResize)
-    }, []);
+    }, [])
 
-    return windowDimensions;
+    return windowDimensions
 }
 
 export const useDimensions = (ref: RefObject<HTMLElement>) => {
@@ -40,7 +40,7 @@ export const useDimensions = (ref: RefObject<HTMLElement>) => {
 
 const subscribe = (callback: (e: Event) => void) => {    
     window.addEventListener("resize", callback)
-    return () => window.removeEventListener("resize", callback)
+    return () => { window.removeEventListener("resize", callback) }
 }
 
 export default useWindowDimensions

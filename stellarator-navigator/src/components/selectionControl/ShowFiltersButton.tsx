@@ -18,7 +18,7 @@ const ShowFiltersButton: FunctionComponent<ShowFiltersProps> = (props: ShowFilte
                 <Button
                     variant="contained"
                     size="small"
-                    onClick={ () => (props.changeOpenState(true)) }
+                    onClick={ () => {props.changeOpenState(true)} }
                 >
                     Show Filter Controls
                 </Button>

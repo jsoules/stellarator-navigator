@@ -35,6 +35,7 @@ export const applyFiltersToSet = (filters: FilterSettings, database: NavigatorDa
     })
     const selectionSets = makeSelectionFilters(database).map(f => {
         const { key, callback } = f
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         const val = filters[key as TripartiteVariables]
         return callback(val)
     })

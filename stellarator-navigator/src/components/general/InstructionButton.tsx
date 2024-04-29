@@ -11,7 +11,7 @@ type InfoButtonProps = {
 const InfoButton: FunctionComponent<InfoButtonProps> = (props: InfoButtonProps) => (
     <div className="instructionButton">
         <span className="infoIcon">
-            <IconButton onClick={(() => props.changeOpenState(true))}>
+            <IconButton onClick={() => { props.changeOpenState(true) }}>
                 <InfoIcon fontSize='large' />
             </IconButton>
         </span>

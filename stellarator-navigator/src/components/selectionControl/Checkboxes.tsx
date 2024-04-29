@@ -12,7 +12,11 @@ type Props = {
 
 const ToggleableVariableCheckboxGroup: FunctionComponent<Props> = (props: Props) => {
     const { type, selections, labels, onChange } = props
-    const handleChange = useCallback((i: number, targetState: boolean) => onChange(type, i, targetState), [onChange, type])
+    const handleChange = useCallback(
+        (i: number, targetState: boolean) => {
+            onChange(type, i, targetState)
+        },
+        [onChange, type])
     const id = `${type}-checkboxes`
     const desc = getLabel({name: type, labelType: 'full'})
     return SnCheckboxGroup({desc, id, selections, onChange: handleChange, labels})
