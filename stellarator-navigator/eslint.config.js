@@ -4,28 +4,48 @@ import eslint from '@eslint/js'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import react from 'eslint-plugin-react'
-// import jsxRuntime from 'eslint-plugin-react/configs/jsx-runtime.js'
 import hooksPlugin from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 // Consider adding jsdoc plugin
-
-// Note: former root: true stops iterative parent-directory searching.
-// That is no longer behavior, so the option no longer exists.
+// Consider adding accessibility plugin eg eslint-plugin-jsx-a11y
 
 // TODO:
 // - resume using rules for react-hooks
 // - resume using rules for react/recommended
-// - resume using rules for jsx-runtime
+// - add a jsdoc plugin & maybe document things or something
+
+// A manual copy of the rules from https://github.com/jsx-eslint/eslint-plugin-react/blob/master/configs/recommended.js
+// This should almost certainly be replaced once they have their act together for a
+// decent user-friendly rules configuration that doesn't require overwrite nonsense
+// const reactRecommendedRules = {
+//     'react/display-name': 'error',
+//     'react/jsx-key': 'error',
+//     'react/jsx-no-comment-textnodes': 'error',
+//     'react/jsx-no-duplicate-props': 'error',
+//     'react/jsx-no-target-blank': 'error',
+//     'react/jsx-no-undef': 'error',
+//     'react/jsx-uses-react': 'off',
+//     'react/jsx-uses-vars': 'error',
+//     'react/no-children-prop': 'error',
+//     'react/no-danger-with-children': 'error',
+//     'react/no-deprecated': 'error',
+//     'react/no-direct-mutation-state': 'error',
+//     'react/no-find-dom-node': 'error',
+//     'react/no-is-mounted': 'error',
+//     'react/no-render-return-value': 'error',
+//     'react/no-string-refs': 'error',
+//     'react/no-unescaped-entities': 'error',
+//     'react/no-unknown-property': 'error',
+//     'react/no-unsafe': 'error',
+//     'react/prop-types': 'error',
+//     'react/react-in-jsx-scope': 'off',
+//     'react/require-render-return': 'error',
+// }
 
 export default tseslint.config(
-    // These opinions are sometimes wrong (i.e. cause incorrect behavior)
-    // without the linter realizing it, so don't always enable & take it
-    // with a grain of salt
-    // ...tseslint.configs.stylisticTypeChecked,
     // ...react.configs.recommended,
     // ...jsxRuntime,
     // ...hooksPlugin.configs.recommended,
-    // ADD: react jsx-runtime
     {
         // NOTE: "extends" may (it's unclear) be considered less desirable
         // style with flat config. However, this works & the other things
@@ -33,6 +53,11 @@ export default tseslint.config(
         extends: [
             eslint.configs.recommended,
             ...tseslint.configs.strictTypeChecked,
+            // stylisticTypeChecked has some rules that are sometimes
+            // wrong (i.e. cause incorrect behavior), so don't be
+            // afraid to ignore it (by adding to rules/local overrides)
+            // when needed.
+            ...tseslint.configs.stylisticTypeChecked,
         ],
         languageOptions: {
             // ????
@@ -84,6 +109,11 @@ export default tseslint.config(
             // data dictionary work; linter doesn't realize how unsafe it is
             // and encourages us to remove safety rails that are actually needful
             '@typescript-eslint/no-unnecessary-condition': 'off',
+            // Favor types over interfaces
+            '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
+            '@typescript-eslint/no-inferrable-types': 'off',
+            // These rules are not yet using the ESLint 9.0 API
+            // ...reactRecommendedRules,
         }
     },
     // NOTE: For ignores to apply globally, they must be in their own separate

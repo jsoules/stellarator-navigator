@@ -71,6 +71,8 @@ const handleMove = (s: DragSelectState, point: number[]): DragSelectState => {
         Math.abs(dragAnchor[0] - point[0]),
         Math.abs(dragAnchor[1] - point[1])
     ]
+    // sic: we actually want an OR-condition, even if s.isActive is null
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     if (s.isActive || newDragRect[2] >= 10 || newDragRect[3] >= 10) {
         // if we were active, or we've moved past a threshold pixel size, track drag rect
         return { ...s, isActive: true, dragRect: newDragRect, dragPosition: point }

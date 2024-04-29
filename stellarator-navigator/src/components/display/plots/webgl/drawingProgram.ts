@@ -213,6 +213,7 @@ const setSizeAttribute = (gl: WebGLRenderingContext, buffers: BufferSet, program
 export type ScatterDataLoaderType = (data: number[], sizes: number[], colorValues: number[]) => void
 
 const initProgram = (glCtxt: WebGLRenderingContext | null) => {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     if (glCtxt === null) return () => () => {}
     const shaderProgram = createProgram(glCtxt, vertexShaderSrc, fragmentShaderSrc)
 

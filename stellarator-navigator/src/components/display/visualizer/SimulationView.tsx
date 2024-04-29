@@ -57,9 +57,10 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
     // since we can't rely on actual object permanence. Sigh.
 
     const myCoils = useMemo(() => {
-        return coils === undefined
-            ? [] as CoilRecord[]
-            : coils
+        return coils ?? []
+        // return coils === undefined
+        //     ? [] as CoilRecord[]
+        //     : coils
     }, [coils?.length])
 
     const mySurfs = useMemo(() => {
