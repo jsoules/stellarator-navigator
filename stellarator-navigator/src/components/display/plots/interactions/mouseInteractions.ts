@@ -7,17 +7,12 @@ import { onClickDot } from "./dotInteractions"
 import { DragMouseupHandlerType } from "./useDragSelect"
 
 
-export const getEventPoint = (e: React.MouseEvent): [number, number] => {
-    const boundingRect = e.currentTarget.getBoundingClientRect()
-    const point: [number, number] = [e.clientX - boundingRect.x, e.clientY - boundingRect.y]
-    return point
-}
-
 type useClickHandlerFactoryProps = {
     interpretClick: ClickToDataCallbackType
     pointClickChecker: PointContainsClickFnType
     plotClickHandler: PlotClickCallbackType
 }
+
 type perGraphClickProps = {
     coarseValue?: number,
     fineValue?: number,
@@ -25,6 +20,44 @@ type perGraphClickProps = {
     radius: number[],
     ids: number[]
 }
+
+type PointContainsClickFnType = (testX: number, testY: number, pointX: number, pointY: number, radiusSq: number) => boolean
+
+type mouseHandlerType = (e: React.MouseEvent) => void
+
+type dragResolverType = (rect: number[]) => void
+
+type ResolveRangeChangeProps = {
+    interpretClick: (clickX: number, clickY: number) => number[],
+    independentVariable: IndependentVariables,
+    dependentVariable: DependentVariables,
+    resolveRangeChangeHandler: RangesChangeCallbackType
+}
+
+type MouseHandlerConfigurationProps = {
+    plotDimensions: BoundedPlotDimensions,
+    dataGeometry: DataGeometry,
+    plotClickHandler: PlotClickCallbackType,
+    resolveRangeChangeHandler: RangesChangeCallbackType,
+    independentVariable: IndependentVariables,
+    dependentVariable: DependentVariables
+}
+
+export type MouseupHandlerType = (dragMouseupHandler: DragMouseupHandlerType, clickHandler: mouseHandlerType, dragResolver: dragResolverType) => mouseHandlerType
+
+export type MouseHandlers = {
+    mouseHandlerFactory: (props: perGraphClickProps) => (e: React.MouseEvent) => void
+    resolveRangeChange: (rect: number[]) => void
+}
+
+
+export const getEventPoint = (e: React.MouseEvent): [number, number] => {
+    const boundingRect = e.currentTarget.getBoundingClientRect()
+    const point: [number, number] = [e.clientX - boundingRect.x, e.clientY - boundingRect.y]
+    return point
+}
+
+
 // NOTE: Theoretically we could do something more interesting for checking clicks, but back-of-envelope suggests
 // that without random access to the data element list, building something like a kd-tree will never pencil out:
 // the overhead to construct the data structure is too high. Better to just iterate each time.
@@ -44,24 +77,21 @@ export const useMouseHandlerFactory = (props: useClickHandlerFactoryProps) => {
                 overallPlotClick()
             } else {
                 onClickDot(id)
-            }
-        }
-    }, [interpretClick, plotClickHandler, pointClickChecker])
-}
+            }    
+        }    
+    }, [interpretClick, plotClickHandler, pointClickChecker])    
+}    
 
 
-type PointContainsClickFnType = (testX: number, testY: number, pointX: number, pointY: number, radiusSq: number) => boolean
 export const usePointContainsClickFn = (xRatio: number, yRatio: number): PointContainsClickFnType => {
     return useCallback((testX: number, testY: number, pointX: number, pointY: number, radiusSq: number) => {
+        // prettier-ignore
         return ((((testX - pointX)/xRatio) ** 2) +
                 (((testY - pointY)/yRatio) ** 2)) < radiusSq
-    }, [xRatio, yRatio])
-}
+    }, [xRatio, yRatio])            
+}    
 
 
-type mouseHandlerType = (e: React.MouseEvent) => void
-type dragResolverType = (rect: number[]) => void
-export type MouseupHandlerType = (dragMouseupHandler: DragMouseupHandlerType, clickHandler: mouseHandlerType, dragResolver: dragResolverType) => mouseHandlerType
 export const useComposedMouseupHandler: MouseupHandlerType = (dragMouseupHandler, clickHandler, dragResolver) => {
     const composedFunction = useCallback((e: React.MouseEvent) => {
         const dragResult = dragMouseupHandler(e)
@@ -71,19 +101,12 @@ export const useComposedMouseupHandler: MouseupHandlerType = (dragMouseupHandler
             if (dragResult.rect !== undefined) {
                 dragResolver(dragResult.rect)
                 // console.log(`WE SHOULD UPDATE THE DISPLAYED DIMENSIONS NOW`)
-            }
-        }
-    }, [clickHandler, dragMouseupHandler, dragResolver])
+            }    
+        }    
+    }, [clickHandler, dragMouseupHandler, dragResolver])    
     return composedFunction
-}
+}    
 
-
-type ResolveRangeChangeProps = {
-    interpretClick: (clickX: number, clickY: number) => number[],
-    independentVariable: IndependentVariables,
-    dependentVariable: DependentVariables,
-    resolveRangeChangeHandler: RangesChangeCallbackType
-}
 
 const ResolveRangeChange = (rect: number[], contextProps: ResolveRangeChangeProps) => {
     const { interpretClick, independentVariable, dependentVariable, resolveRangeChangeHandler } = contextProps
@@ -110,21 +133,6 @@ const ResolveRangeChange = (rect: number[], contextProps: ResolveRangeChangeProp
         newValues.push(dataY)
     }
     resolveRangeChangeHandler(fields, newValues)
-}
-
-
-type MouseHandlerConfigurationProps = {
-    plotDimensions: BoundedPlotDimensions,
-    dataGeometry: DataGeometry,
-    plotClickHandler: PlotClickCallbackType,
-    resolveRangeChangeHandler: RangesChangeCallbackType,
-    independentVariable: IndependentVariables,
-    dependentVariable: DependentVariables
-}
-
-export type MouseHandlers = {
-    mouseHandlerFactory: (props: perGraphClickProps) => (e: React.MouseEvent) => void
-    resolveRangeChange: (rect: number[]) => void
 }
 
 
