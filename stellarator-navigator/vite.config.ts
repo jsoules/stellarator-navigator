@@ -6,10 +6,10 @@ import tsconfigPaths from "vite-tsconfig-paths"
 export default defineConfig({
     plugins: [react(), tsconfigPaths()],
     // base: "/~jsoules/QUASR",
-    // base: "/~jsoules/test",
+    base: "/~jsoules/test",
     server: {
         watch: {
-            ignored: ['**/public/**']
+            ignored: ['**/public/**', '**/publicX/**']
         }
     }
 })

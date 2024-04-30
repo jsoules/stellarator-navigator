@@ -72,11 +72,7 @@ deploy any local copies of the data files
   `SRC/stellarator-navigator/stellarator-navigator` (`yarn` commands should be run from this directory, as should
   all `node` package installations)
   - Run any tests (TODO)
-  - Run any linting via `yarn eslint .`
-    - It may be desirable to repeat this with the `stylistic-type-checked` plugin uncommented in `.eslintrc.cjs`;
-    that one's feedback is sometimes useful, but a bit too subjective/situational, so configuring it properly
-    is not worth the effort
-  - Ensure that the following are set up:
+  - Run any linting via `yarn lint`
   - `yarn build`
   - `chmod 755 dist/*`
   - `rsync -vahPn --delete dist/assets/ $TARGET_DEPLOYMENT_DIRECTORY/assets/` (where `$TARGET_DEPLOYMENT_DIRECTORY` is
