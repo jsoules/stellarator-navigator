@@ -120,6 +120,6 @@ export default tseslint.config(
     // config object. See https://eslint.org/docs/latest/use/configure/configuration-files#globally-ignoring-files-with-ignores
     {
         // TODO: Remove .eslintrc.csj when file is removed
-        ignores: ['dist', 'eslint.config.js', 'coverage', '**/*.js', '.yarn'],
+        ignores: ['dist', 'eslint.config.js', 'coverage', '**/*.js', '.yarn', 'test'],
     }
 )
