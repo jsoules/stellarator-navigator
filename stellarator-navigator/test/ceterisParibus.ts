@@ -8,7 +8,7 @@ import { expect } from 'vitest'
  * @param modified Modified copy, expected to be created through spread operator.
  * @param excluded Named fields which are expected to have been changed.
  */
-export const ceterisParibus = <T extends object>(original: T, modified: T, excluded: string[]) => {
+export const ceterisParibus = <T extends {[key: string]: unknown}>(original: T, modified: T, excluded: string[]) => {
     const known = new Set(Object.keys(original))
     const novel = new Set(Object.keys(modified))
     excluded.forEach(k => {

@@ -73,6 +73,9 @@ coverage.lcov
 .hypothesis/
 .pytest_cache/
 
+# bundle size visualizer
+stats.html
+
 # Translations
 *.mo
 *.pot

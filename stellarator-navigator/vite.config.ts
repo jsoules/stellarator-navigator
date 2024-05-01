@@ -32,7 +32,7 @@ export default defineConfig({
         exclude: [...configDefaults.exclude],
     
     },
-    plugins: [react(), tsconfigPaths()],
+    plugins: [react(), tsconfigPaths(),],
     // base: "/~jsoules/QUASR",
     // base: "/~jsoules/test",
     server: {
