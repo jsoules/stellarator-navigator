@@ -3,7 +3,7 @@ import makeResourcePath, { getStringId } from '@snUtil/makeResourcePath'
 import { describe, expect, test } from 'vitest'
 
 
-describe("snUtil makeResourcePath", () => {
+describe.concurrent("snUtil makeResourcePath", () => {
     const val = 1234
     const validId = getStringId(val)
     const basePath = 'http://localhost:5173/'
@@ -21,7 +21,7 @@ describe("snUtil makeResourcePath", () => {
     ]
 
     expected.map((o): void => {
-        test(`makeResourcePath returns expected value for ${o.t}`, () => {
+        test.concurrent(`makeResourcePath returns expected value for ${o.t}`, async () => {
             const path = makeResourcePath(validId, o.t)
             expect(path).toEqual(`${basePath}${o.path}`)
         })
@@ -29,18 +29,18 @@ describe("snUtil makeResourcePath", () => {
 
 })
 
-describe("snUtil getStringId", () => {
+describe.concurrent("snUtil getStringId", () => {
     const val = 1234
     const strVal = `${val}`
     const targetLength = 7 // hard-coded in makeResourcePath.ts
 
-    test("getStringId correctly pads integer inputs", () => {
+    test.concurrent("getStringId correctly pads integer inputs", async () => {
         const validId = getStringId(val)
         expect(validId.id.length).toEqual(targetLength)
         expect(Number(validId.id)).toEqual(val)
     })
 
-    test("getStringId correctly pads strign inputs", () => {
+    test.concurrent("getStringId correctly pads strign inputs", async () => {
         const validId = getStringId(strVal)
         expect(validId.id.length).toEqual(targetLength)
         expect(Number(validId.id)).toEqual(Number(strVal))
