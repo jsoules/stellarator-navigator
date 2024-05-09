@@ -71,7 +71,7 @@ deploy any local copies of the data files
   - Assuming the repository is checked out to SRC as `SRC/stellarator-navigator`, `cd` to
   `SRC/stellarator-navigator/stellarator-navigator` (`yarn` commands should be run from this directory, as should
   all `node` package installations)
-  - Run any tests (TODO)
+  - Run any tests via `yarn test`
   - Run any linting via `yarn lint`
   - `yarn build`
   - `chmod 755 dist/*`

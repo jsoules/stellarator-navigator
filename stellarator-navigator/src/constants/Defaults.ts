@@ -10,7 +10,10 @@ export const defaultPlotColorSplit = ToggleableVariables.NC_PER_HP
 export const initialNavigatorState: FilterSettings = {
     coilLengthPerHp: [Math.min(...coilLengthPerHpValidValues), Math.max(...coilLengthPerHpValidValues)],
     totalCoilLength: [Math.min(...totalCoilLengthValidValues), Math.max(...totalCoilLengthValidValues)],
-    meanIota: [ true, ...(new Array<boolean>(meanIotaValidValues.length - 1).fill(false)) ],
+    // Default-check the first and last elements--this ensures that some of both QA and QH devices are visible
+    // with default settings. (This is a bit of a hack; if needs change, might consider referencing the actual
+    // values in the list.)
+    meanIota: [ true, ...(new Array<boolean>(meanIotaValidValues.length - 2).fill(false)), true ],
     ncPerHp: new Array<boolean>(ncPerHpValidValues.length).fill(false),
     nfp: new Array<boolean>(nfpValidValues.length).fill(true),
     nSurfaces: new Array<boolean>((Fields.nSurfaces.values ?? []).length).fill(false),

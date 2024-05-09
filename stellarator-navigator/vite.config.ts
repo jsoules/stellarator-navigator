@@ -30,7 +30,6 @@ export default defineConfig({
             reporter: ['text', 'lcov']
         },
         exclude: [...configDefaults.exclude],
-    
     },
     plugins: [react(), tsconfigPaths(),],
     // base: "/~jsoules/QUASR",
