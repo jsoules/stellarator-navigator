@@ -83,11 +83,14 @@ const SimulationView: FunctionComponent<Props> = (props: Props) => {
 
     const baseSurfaces = useMemo(() => makeSurfaces(mySurfs.surfacePoints, displayedPeriods), [displayedPeriods, mySurfs.surfacePoints])
     const coloredSurfs = useMemo(() => colorizeSurfaces(baseSurfaces, mySurfs.pointValues, colorScheme), [baseSurfaces, colorScheme, mySurfs.pointValues])
+    // NOTE: changing the color scheme/recoloring the surfaces does not change the coloredSurfs reference, which is modified in-place.
+    // To ensure that changing the color actually updates the meshes, we need to make the following hook also depend on colorScheme
+    // even though it is not directly referenced in the contained code.
     const surfaceMeshes = useMemo(() => {
         const surfaceMeshes = coloredSurfs.map(s => new THREE.Mesh(s, fieldMaterial))
         spinObjects(surfaceMeshes, totalTicks.current)
         return surfaceMeshes
-    }, [coloredSurfs])
+    }, [coloredSurfs, colorScheme])
 
     const visibleObjects = useMemo(() => {
         const visibleSurfaces = surfaceMeshes.filter((_, idx) => (surfaceChecks ?? [])[idx])

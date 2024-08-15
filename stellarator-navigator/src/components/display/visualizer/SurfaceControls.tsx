@@ -5,7 +5,7 @@ import { SupportedColorMap } from "@snComponents/display/Colormaps"
 import SurfaceColorMapSelector from "@snVisualizer/SurfaceColorMapSelector"
 import { Dispatch, FunctionComponent, SetStateAction, useCallback } from "react"
 
-type ModelProps = {
+type SurfaceControlsProps = {
     checksNeeded: boolean
     surfaceChecks: boolean[]
     setSurfaceChecks: Dispatch<SetStateAction<boolean[]>>
@@ -19,7 +19,7 @@ type ModelProps = {
     setAutorotate: Dispatch<SetStateAction<boolean>>
 }
 
-const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
+const SurfaceControls: FunctionComponent<SurfaceControlsProps> = (props: SurfaceControlsProps) => {
     const { checksNeeded, surfaceChecks, setSurfaceChecks, colorMap, setColorMap } = props
     const { autorotate, setAutorotate, showCurrents, setShowCurrents, showFullRing, setShowFullRing } = props
 
@@ -85,4 +85,4 @@ const Model: FunctionComponent<ModelProps> = (props: ModelProps) => {
     )
 }
 
-export default Model
+export default SurfaceControls
