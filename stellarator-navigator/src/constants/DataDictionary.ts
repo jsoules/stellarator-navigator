@@ -8,6 +8,7 @@ export enum KnownFields {
     ID = 'id',
     COIL_LENGTH_PER_HP = 'coilLengthPerHp',
     TOTAL_COIL_LENGTH = 'totalCoilLength',
+    TOTAL_COIL_LENGTH_THRESHOLD = 'totalCoilLengthThresh',
     MEAN_IOTA = 'meanIota',
     NC_PER_HP = 'ncPerHp',
     NFP = 'nfp',
@@ -16,7 +17,7 @@ export enum KnownFields {
     MAX_KAPPA = 'maxKappa',
     MAX_MEAN_SQUARED_CURVE = 'maxMeanSquaredCurve',
     MIN_INTERCOIL_DIST = 'minIntercoilDist',
-    QA_ERROR = 'qaError',
+    QS_ERROR = 'qsError',
     ASPECT_RATIO = 'aspectRatio',
     MINOR_RADIUS = 'minorRadius',
     VOLUME = 'volume',
@@ -32,10 +33,11 @@ export enum KnownFields {
 
 export enum DependentVariables {
     TOTAL_COIL_LENGTH = KnownFields.TOTAL_COIL_LENGTH,
+    TOTAL_COIL_LENGTH_THRESHOLD = KnownFields.TOTAL_COIL_LENGTH_THRESHOLD,
     COIL_LENGTH_PER_HP = KnownFields.COIL_LENGTH_PER_HP,
     MIN_INTERCOIL_DIST = KnownFields.MIN_INTERCOIL_DIST,
     MIN_COIL_TO_SURFACE_DIST = KnownFields.MIN_COIL_TO_SURFACE_DIST,
-    QA_ERROR = KnownFields.QA_ERROR,
+    QS_ERROR = KnownFields.QS_ERROR,
     MAX_KAPPA = KnownFields.MAX_KAPPA,
     MAX_MEAN_SQUARED_CURVE = KnownFields.MAX_MEAN_SQUARED_CURVE,
     ASPECT_RATIO = KnownFields.ASPECT_RATIO,
@@ -47,10 +49,11 @@ export enum DependentVariables {
 
 export enum IndependentVariables {
     TOTAL_COIL_LENGTH = KnownFields.TOTAL_COIL_LENGTH,
+    TOTAL_COIL_LENGTH_THRESHOLD = KnownFields.TOTAL_COIL_LENGTH_THRESHOLD,
     COIL_LENGTH_PER_HP = KnownFields.COIL_LENGTH_PER_HP,
     MIN_INTERCOIL_DIST = KnownFields.MIN_INTERCOIL_DIST,
     MIN_COIL_TO_SURFACE_DIST = KnownFields.MIN_COIL_TO_SURFACE_DIST,
-    QA_ERROR = KnownFields.QA_ERROR,
+    QS_ERROR = KnownFields.QS_ERROR,
     MAX_KAPPA = KnownFields.MAX_KAPPA,
     MAX_MEAN_SQUARED_CURVE = KnownFields.MAX_MEAN_SQUARED_CURVE,
     ASPECT_RATIO = KnownFields.ASPECT_RATIO,
@@ -76,10 +79,11 @@ export enum ToggleableVariables {
 export enum RangeVariables {
     COIL_LENGTH_PER_HP = KnownFields.COIL_LENGTH_PER_HP,
     TOTAL_COIL_LENGTH = KnownFields.TOTAL_COIL_LENGTH,
+    TOTAL_COIL_LENGTH_THRESHOLD = KnownFields.TOTAL_COIL_LENGTH_THRESHOLD,
     MAX_KAPPA = KnownFields.MAX_KAPPA,
     MAX_MEAN_SQUARED_CURVE = KnownFields.MAX_MEAN_SQUARED_CURVE,
     MIN_INTERCOIL_DIST = KnownFields.MIN_INTERCOIL_DIST,
-    QA_ERROR = KnownFields.QA_ERROR,
+    QS_ERROR = KnownFields.QS_ERROR,
     ASPECT_RATIO = KnownFields.ASPECT_RATIO,
     MINOR_RADIUS = KnownFields.MINOR_RADIUS,
     VOLUME = KnownFields.VOLUME,
@@ -94,38 +98,40 @@ export enum TripartiteVariables {
 }
 
 export const dependentVariableDropdownConfig: { key: number, value: DependentVariables }[] = [
-    { key:  1, value: DependentVariables.QA_ERROR                 },
-    { key:  2, value: DependentVariables.MAX_KAPPA                },
-    { key:  3, value: DependentVariables.MAX_MEAN_SQUARED_CURVE   },
-    { key:  4, value: DependentVariables.MIN_INTERCOIL_DIST       },
-    { key:  5, value: DependentVariables.MIN_COIL_TO_SURFACE_DIST },
-    { key:  6, value: DependentVariables.MINOR_RADIUS             },
-    { key:  7, value: DependentVariables.VOLUME                   },
-    { key:  8, value: DependentVariables.ASPECT_RATIO             },
-    { key:  9, value: DependentVariables.COIL_LENGTH_PER_HP       },
-    { key: 10, value: DependentVariables.TOTAL_COIL_LENGTH        },
-    { key: 11, value: DependentVariables.MEAN_ELONGATION          },
-    { key: 12, value: DependentVariables.MAX_ELONGATION           },
+    { key:  1, value: DependentVariables.QS_ERROR                    },
+    { key:  2, value: DependentVariables.MAX_KAPPA                   },
+    { key:  3, value: DependentVariables.MAX_MEAN_SQUARED_CURVE      },
+    { key:  4, value: DependentVariables.MIN_INTERCOIL_DIST          },
+    { key:  5, value: DependentVariables.MIN_COIL_TO_SURFACE_DIST    },
+    { key:  6, value: DependentVariables.MINOR_RADIUS                },
+    { key:  7, value: DependentVariables.VOLUME                      },
+    { key:  8, value: DependentVariables.ASPECT_RATIO                },
+    { key:  9, value: DependentVariables.COIL_LENGTH_PER_HP          },
+    { key: 10, value: DependentVariables.TOTAL_COIL_LENGTH           },
+    { key: 11, value: DependentVariables.TOTAL_COIL_LENGTH_THRESHOLD },
+    { key: 12, value: DependentVariables.MEAN_ELONGATION             },
+    { key: 13, value: DependentVariables.MAX_ELONGATION              },
 ]
 
 export const independentVariableDropdownConfig: { key: number, value: IndependentVariables }[] = [
-    { key:  1, value: IndependentVariables.TOTAL_COIL_LENGTH        },
-    { key:  2, value: IndependentVariables.COIL_LENGTH_PER_HP       },
-    { key:  3, value: IndependentVariables.MIN_INTERCOIL_DIST       },
-    { key:  4, value: IndependentVariables.MIN_COIL_TO_SURFACE_DIST },
-    { key:  5, value: IndependentVariables.QA_ERROR                 },
-    { key:  6, value: IndependentVariables.MAX_KAPPA                },
-    { key:  7, value: IndependentVariables.MAX_MEAN_SQUARED_CURVE   },
-    { key:  8, value: IndependentVariables.ASPECT_RATIO             },
-    { key:  9, value: IndependentVariables.MINOR_RADIUS             },
-    { key: 10, value: IndependentVariables.VOLUME                   },
-    { key: 11, value: IndependentVariables.MEAN_IOTA                },
-    { key: 12, value: IndependentVariables.MEAN_ELONGATION          },
-    { key: 13, value: IndependentVariables.MAX_ELONGATION           },
-    { key: 14, value: IndependentVariables.NC_PER_HP                },
-    { key: 15, value: IndependentVariables.NFP                      },
-    { key: 17, value: IndependentVariables.N_FOURIER_COIL           },
-    { key: 18, value: IndependentVariables.NSURFACES                },
+    { key:  1, value: IndependentVariables.TOTAL_COIL_LENGTH           },
+    { key:  2, value: IndependentVariables.COIL_LENGTH_PER_HP          },
+    { key:  3, value: IndependentVariables.TOTAL_COIL_LENGTH_THRESHOLD },
+    { key:  4, value: IndependentVariables.MIN_INTERCOIL_DIST          },
+    { key:  5, value: IndependentVariables.MIN_COIL_TO_SURFACE_DIST    },
+    { key:  6, value: IndependentVariables.QS_ERROR                    },
+    { key:  7, value: IndependentVariables.MAX_KAPPA                   },
+    { key:  8, value: IndependentVariables.MAX_MEAN_SQUARED_CURVE      },
+    { key:  9, value: IndependentVariables.ASPECT_RATIO                },
+    { key: 10, value: IndependentVariables.MINOR_RADIUS                },
+    { key: 11, value: IndependentVariables.VOLUME                      },
+    { key: 12, value: IndependentVariables.MEAN_IOTA                   },
+    { key: 13, value: IndependentVariables.MEAN_ELONGATION             },
+    { key: 14, value: IndependentVariables.MAX_ELONGATION              },
+    { key: 15, value: IndependentVariables.NC_PER_HP                   },
+    { key: 16, value: IndependentVariables.NFP                         },
+    { key: 17, value: IndependentVariables.N_FOURIER_COIL              },
+    { key: 18, value: IndependentVariables.NSURFACES                   },
 ]
 
 export const toggleableVariableDropdownConfig: { key: number, value: ToggleableVariables }[] = [
@@ -163,41 +169,48 @@ type FieldRecords = {
 }
 
 
-export const coilLengthPerHpValidValues = [
-    4.5, 4.75, 5.0, 5.25, 5.5, 5.75, 6.0, 
-    6.25, 6.5, 6.75, 7.0, 7.25, 7.5, 7.75, 8.0, 8.25,
-    8.5, 8.75, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0,
-    12.5, 13.0, 13.5, 14.0, 14.25, 14.5, 15.0, 15.5, 15.75,
-    16.0, 16.5, 17.0, 17.25, 17.5, 18.0, 18.75, 19.0, 19.5,
-    20.0, 20.25, 21.0, 21.75, 22.0, 22.5, 23.0, 23.25, 23.75,
-    24.0, 24.75, 25.0, 25.5, 26.0, 26.25, 27.0, 27.5, 28.0,
-    28.5, 28.75, 29.0, 30.0, 31.0, 31.25, 31.5, 32.0, 32.5,
-    33.0, 33.25, 33.75, 34.0, 34.5, 35.0, 36.0, 36.25, 36.75,
-    37.5, 38.0, 38.5, 38.75, 39.0, 40.0, 40.25, 40.5, 41.25,
-    42.0, 42.5, 42.75, 43.5, 43.75, 44.0, 45.0, 45.5, 46.0,
-    46.5, 47.25, 47.5, 48.0, 49.0, 49.5, 50.0, 50.75, 51.0,
-    51.75, 52.0, 52.25, 52.5, 54.0, 54.25, 55.0, 56.0, 56.25,
-    57.0, 57.5, 57.75, 58.0, 58.5, 60.0
-]
+// These are out of date and not really used.
+// They principally serve to provide visible stops on the slider for the corresponding
+// fields in the filter UI, but those aren't needed or really helpful.
+// export const coilLengthPerHpValidValues = [
+//     4.5, 4.75, 5.0, 5.25, 5.5, 5.75, 6.0, 
+//     6.25, 6.5, 6.75, 7.0, 7.25, 7.5, 7.75, 8.0, 8.25,
+//     8.5, 8.75, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0,
+//     12.5, 13.0, 13.5, 14.0, 14.25, 14.5, 15.0, 15.5, 15.75,
+//     16.0, 16.5, 17.0, 17.25, 17.5, 18.0, 18.75, 19.0, 19.5,
+//     20.0, 20.25, 21.0, 21.75, 22.0, 22.5, 23.0, 23.25, 23.75,
+//     24.0, 24.75, 25.0, 25.5, 26.0, 26.25, 27.0, 27.5, 28.0,
+//     28.5, 28.75, 29.0, 30.0, 31.0, 31.25, 31.5, 32.0, 32.5,
+//     33.0, 33.25, 33.75, 34.0, 34.5, 35.0, 36.0, 36.25, 36.75,
+//     37.5, 38.0, 38.5, 38.75, 39.0, 40.0, 40.25, 40.5, 41.25,
+//     42.0, 42.5, 42.75, 43.5, 43.75, 44.0, 45.0, 45.5, 46.0,
+//     46.5, 47.25, 47.5, 48.0, 49.0, 49.5, 50.0, 50.75, 51.0,
+//     51.75, 52.0, 52.25, 52.5, 54.0, 54.25, 55.0, 56.0, 56.25,
+//     57.0, 57.5, 57.75, 58.0, 58.5, 60.0
+// ]
 
-export const totalCoilLengthValidValues = [
-    28.5, 30.0, 31.0, 31.5, 32.0, 33.0, 34.0, 34.5, 35.0, 
-    36.0, 37.5, 38.0, 39.0, 40.0, 40.5, 42.0, 43.5, 44.0,
-    45.0, 46.0, 46.5, 47.5, 48.0, 49.5, 50.0, 51.0, 52.0,
-    52.5, 54.0, 55.0, 56.0, 57.0, 57.5, 58.0, 60.0, 62.0,
-    62.5, 63.0, 64.0, 65.0, 66.0, 66.5, 67.5, 68.0, 69.0,
-    70.0, 72.0, 72.5, 73.5, 75.0, 76.0, 77.0, 77.5, 78.0, 
-    80.0, 80.5, 81.0, 82.5, 84.0, 85.0, 85.5, 87.0, 87.5,
-    88.0, 90.0, 91.0, 92.0, 93.0, 94.5, 95.0, 96.0, 98.0, 
-    99.0, 100.0, 101.5, 102.0, 103.5, 104.0, 104.5, 105.0,
-    108.0, 108.5, 110.0, 112.0, 112.5, 114.0, 115.0, 115.5, 
-    116.0, 117.0, 120.0
-]
+// export const totalCoilLengthValidValues = [
+//     28.5, 30.0, 31.0, 31.5, 32.0, 33.0, 34.0, 34.5, 35.0, 
+//     36.0, 37.5, 38.0, 39.0, 40.0, 40.5, 42.0, 43.5, 44.0,
+//     45.0, 46.0, 46.5, 47.5, 48.0, 49.5, 50.0, 51.0, 52.0,
+//     52.5, 54.0, 55.0, 56.0, 57.0, 57.5, 58.0, 60.0, 62.0,
+//     62.5, 63.0, 64.0, 65.0, 66.0, 66.5, 67.5, 68.0, 69.0,
+//     70.0, 72.0, 72.5, 73.5, 75.0, 76.0, 77.0, 77.5, 78.0, 
+//     80.0, 80.5, 81.0, 82.5, 84.0, 85.0, 85.5, 87.0, 87.5,
+//     88.0, 90.0, 91.0, 92.0, 93.0, 94.5, 95.0, 96.0, 98.0, 
+//     99.0, 100.0, 101.5, 102.0, 103.5, 104.0, 104.5, 105.0,
+//     108.0, 108.5, 110.0, 112.0, 112.5, 114.0, 115.0, 115.5, 
+//     116.0, 117.0, 120.0
+// ]
 
 export const meanIotaValidValues = [
     0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9,
+    0.91, 0.92, 0.93, 0.94, 0.95, 0.96, 0.97, 0.98, 0.99,
+    1.0,
     1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9,
-    2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6
+    2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9,
+    3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9,
+    4.0, 4.1, 4.2, 4.3, 4.4, 4.5
 ]
 
 export const ncPerHpValidValues = [
@@ -205,7 +218,7 @@ export const ncPerHpValidValues = [
 ]
 
 export const nfpValidValues = [
-    1, 2, 3, 4, 5
+    1, 2, 3, 4, 5, 6, 7, 8
 ]
 
 export const nFourierCoilValidValues = [6, 16]
@@ -248,7 +261,7 @@ export const Fields: FieldRecords = {
         fullLabel: "Device ID",
         description: "Unique identifier of the design simulation",
         unit: undefined,
-        range: [952, 1968351],
+        range: [952, 2793242],
         isLog: false,
         isCategorical: true,
         markedValue: undefined,
@@ -261,8 +274,8 @@ export const Fields: FieldRecords = {
         fullLabel: "Coil length per half-period",
         description: "Total length of coil per half-period",
         unit: METER_UNIT,
-        range: [4.5, 60],
-        values: coilLengthPerHpValidValues,
+        range: [2.4, 60.1],
+        // values: coilLengthPerHpValidValues,
         isLog: false,
         isCategorical: false,       // technically it is, but there's too many categories for it to make sense
         markedValue: undefined,
@@ -275,8 +288,22 @@ export const Fields: FieldRecords = {
         fullLabel: "Total coil length",
         description: "Total length of coil used to construct the device",
         unit: METER_UNIT,
-        range: [28.5, 120],
-        values: totalCoilLengthValidValues,
+        range: [19.2, 120.1],
+        // values: totalCoilLengthValidValues,
+        isLog: false,
+        isCategorical: false,       // technically it is, but there's too many categories for it to make sense
+        markedValue: undefined,
+        tableColumnWidth: 80,
+        displayInTable: true
+    },
+    'totalCoilLengthThresh': {
+        shortLabel: "Thresh Len",
+        plotLabel: "Total coil len thresh",
+        fullLabel: "Total coil length threshold",
+        description: "Upper bound of allowed total coil length for simulation",
+        unit: METER_UNIT,
+        range: [19.2, 120.1],
+        // values: totalCoilLengthValidValues,
         isLog: false,
         isCategorical: false,       // technically it is, but there's too many categories for it to make sense
         markedValue: undefined,
@@ -290,7 +317,7 @@ export const Fields: FieldRecords = {
         fullLabel: "Mean Iota",
         description: "The mean pitch of a particle trajectory across the surface",
         unit: undefined,
-        range: [0.1, 2.6],
+        range: [0.1, 4.5],
         values: meanIotaValidValues,
         isLog: false,
         isCategorical: true,
@@ -318,7 +345,7 @@ export const Fields: FieldRecords = {
         fullLabel: "Number of Field Periods (NFP)",
         description: "Count of field periods",
         unit: undefined,
-        range: [1, 5],
+        range: [1, 8],
         values: nfpValidValues,
         isLog: false,
         isCategorical: true,
@@ -357,7 +384,7 @@ export const Fields: FieldRecords = {
         fullLabel: "Max curvature (kappa)",
         description: "Maximum curvature in the coils of the device",
         unit: `1/${METER_UNIT}`,
-        range: [1.6, 19.55],
+        range: [1.7, 19.55],
         isLog: false,
         isCategorical: false,
         // markedValue: 5,
@@ -370,7 +397,7 @@ export const Fields: FieldRecords = {
         fullLabel: "Max mean-squared curvature",
         description: "Maximum mean squared curvature of the coils",
         unit: `1/${METER_UNIT}^2`,
-        range: [1.05, 35.05],
+        range: [1.21, 35.05],
         isLog: false,
         isCategorical: false,
         // markedValue: 5,
@@ -383,19 +410,19 @@ export const Fields: FieldRecords = {
         fullLabel: "Minimum intercoil dist",
         description: "Minimum distance between coils",
         unit: METER_UNIT,
-        range: [0.08, 0.4],
+        range: [0.09, 0.38],
         isLog: false,
         isCategorical: false,
         // markedValue: 0.1,
         // markedValueDesc: "DESCRIPTION TK",
         displayInTable: true
     },
-    'qaError': {
-        shortLabel: "Sqrt(QA Err)",
-        plotLabel: "Root of QA Error",
-        fullLabel: "Root of Quasi-Axisymmetry (QA) Error",
-        description: "Square root of quasi-Axisymmetry (QA) error, proxy for particle loss",
-        range: [-5.47, -0.44],
+    'qsError': {
+        shortLabel: "Sqrt(QS Err)",
+        plotLabel: "Root of QS Error",
+        fullLabel: "Root of Quasisymmetry (QS) Error",
+        description: "Square root of quasisymmetry (QS) error, proxy for particle loss",
+        range: [-5.47, -0.4],
         isLog: true,
         isCategorical: false,
         markedValue: -4.30,
@@ -417,7 +444,7 @@ export const Fields: FieldRecords = {
         plotLabel: "Aspect ratio",
         fullLabel: "Aspect ratio (AR)",
         description: "The aspect ratio of the device, computed using the VMEC definition",
-        range: [2.5, 24.05],
+        range: [2.7, 24.6],
         isLog: false,
         isCategorical: false,   // technically not categorical, but for our display purposes, might as well be
         tableColumnWidth: 75,
@@ -429,7 +456,7 @@ export const Fields: FieldRecords = {
         fullLabel: "Minor radius",
         description: "The minor radius of the outermost surface, scaled so the major radius is 1",
         unit: METER_UNIT,
-        range: [0.0416, 0.363],
+        range: [0.0413, 0.356],
         isLog: false,
         isCategorical: false,
         displayInTable: true
@@ -463,7 +490,7 @@ export const Fields: FieldRecords = {
         plotLabel: "Mean Elongation",
         fullLabel: "Mean Elongation (elliptical axis ratio)",
         description: "Ratio of major to minor axis of an ellipse fitted to an innermost magnetic surface (mean)",
-        range: [1, 62],
+        range: [1, 66],
         isLog: false,
         isCategorical: false,
         // markedValue?: undefined,

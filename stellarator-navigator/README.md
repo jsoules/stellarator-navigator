@@ -22,6 +22,8 @@ uses the following procedure.
     - Add new fields to the `KnownFields` enum
     - Add the new `KnownFields` entries to `DependentVariables`, `IndependentVariables` as appropriate
     (These determine which field options are allowed for the x- and y-axis value selection in browsing plots)
+    - Add the new `KnownFields` entries to the `dependentVariableDropdownConfig` and `independentVariableDropdownConfg`
+    configuration variables
     - Add the new `KnownFields` to `ToggleableVariables`, `RangeVariables`, `TripartiteVariables` as appropriate
     (These determine the type of controls that will be created for filtering: Toggleable are checkbox lists,
     Ranges are range selectors, and Tripartite are categorical fields where we can display option 1, option 2, or both)
@@ -31,6 +33,7 @@ uses the following procedure.
     - Add the new `KnownFields` entry to `CategoricalIndexedFields` if appropriate (these are used for creating
     indexes for the in-memory database)
   - In `Defaults.ts`:
+    - Ensure the new field is present in the `initialNavigatorState` with its range referenced
     - Ensure the new field is present with a sensible deafult in `defaultEmptyRecord`
     - If the new field is a categorical indexed field, add it to the `categoricalIndexes` of the `initialDatabase`
   - In `database.ts`:

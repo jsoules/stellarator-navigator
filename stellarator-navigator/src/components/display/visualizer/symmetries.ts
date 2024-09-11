@@ -6,14 +6,15 @@ const coilTransformMatrices: Record<number, Matrix[]> = {}
 const surfaceTransformMatrices: Record<number, Matrix[]> = {}
 
 const S = matrix([[1, 0, 0], [0, -1, 0], [0, 0, -1] ])
-// Create an array of 5 elements. Each element should be an array of length (index + 1),
+// Create an array of 8 elements (8 being the maximum number of field periods).
+// Each element should be an array of length (index + 1),
 // whose contents are (0 ... index) * 2pi/(index + 1), i.e. the angles of rotational
 // symmetry that would give you a complete revolution when there are n units per half-period.
 // (Note that's *half* period; we have to fill in the second half of the period using the
 // "stellarator symmetry", a 180-degree rotation around the X axis.)
 // This computes the angles of rotational symmetry (over the Z axis) for one half-period for
 // a device with n symmetries per half-period.
-const angleFractionsPerNfp = new Array(5).fill(1)
+const angleFractionsPerNfp = new Array(8).fill(1)
     .map((_, i) => (
         new Array(i + 1).fill(1).map((_, j) => (j) * -2 * Math.PI / (i + 1))
     ))

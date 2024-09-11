@@ -1,15 +1,16 @@
 import { FilterSettings, NavigatorDatabase, StellaratorRecord } from "@snTypes/Types"
-import { CategoricalIndexedFields, DependentVariables, Fields, IndependentVariables, ToggleableVariables, coilLengthPerHpValidValues, meanIotaValidValues, ncPerHpValidValues, nfpValidValues, totalCoilLengthValidValues } from "./DataDictionary"
+import { CategoricalIndexedFields, DependentVariables, Fields, IndependentVariables, ToggleableVariables, meanIotaValidValues, ncPerHpValidValues, nfpValidValues } from "./DataDictionary"
 
 export const defaultFinePlotSplit = ToggleableVariables.NFP
 export const defaultCoarsePlotSplit = ToggleableVariables.NC_PER_HP
-export const defaultDependentVariableValue = DependentVariables.QA_ERROR
+export const defaultDependentVariableValue = DependentVariables.QS_ERROR
 export const defaultIndependentVariableValue = IndependentVariables.TOTAL_COIL_LENGTH
 export const defaultPlotColorSplit = ToggleableVariables.NC_PER_HP
 
 export const initialNavigatorState: FilterSettings = {
-    coilLengthPerHp: [Math.min(...coilLengthPerHpValidValues), Math.max(...coilLengthPerHpValidValues)],
-    totalCoilLength: [Math.min(...totalCoilLengthValidValues), Math.max(...totalCoilLengthValidValues)],
+    coilLengthPerHp: (Fields.coilLengthPerHp.range),
+    totalCoilLength: (Fields.totalCoilLength.range),
+    totalCoilLengthThresh: (Fields.totalCoilLengthThresh.range),
     // Default-check the first and last elements--this ensures that some of both QA and QH devices are visible
     // with default settings. (This is a bit of a hack; if needs change, might consider referencing the actual
     // values in the list.)
@@ -20,7 +21,7 @@ export const initialNavigatorState: FilterSettings = {
     maxKappa: (Fields.maxKappa.range),
     maxMeanSquaredCurve: (Fields.maxMeanSquaredCurve.range),
     minIntercoilDist: (Fields.minIntercoilDist.range),
-    qaError: (Fields.qaError.range),
+    qsError: (Fields.qsError.range),
     aspectRatio: (Fields.aspectRatio.range),
     minorRadius: (Fields.minorRadius.range),
     volume: (Fields.volume.range),
@@ -59,6 +60,7 @@ export const defaultEmptyRecord: StellaratorRecord = {
     id: parseInt(nonExtantRecordId),
     coilLengthPerHp: 0,
     totalCoilLength: 0,
+    totalCoilLengthThresh: 0,
     meanIota: 0,
     ncPerHp: 0,
     nfp: 1,
@@ -67,7 +69,7 @@ export const defaultEmptyRecord: StellaratorRecord = {
     maxKappa: 0,
     maxMeanSquaredCurve: 0,
     minIntercoilDist: 0,
-    qaError: 0,
+    qsError: 0,
     aspectRatio: 0,
     minorRadius: 0,
     volume: 0,

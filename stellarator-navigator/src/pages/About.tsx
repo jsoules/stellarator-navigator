@@ -76,7 +76,7 @@ const Home: FunctionComponent<Props> = (props: Props) => {
             <div className="flexWrapper">
                 <div className="homeCopy">
                     <div>
-                        The QUASR repository contains a database of over 320,000 curl-free stellarators
+                        The QUASR repository contains a database of over 370,000 curl-free stellarators
                         and the coil sets that generate them, optimized for volume quasi-symmetry.
                     </div>
                     <div>

@@ -31,7 +31,12 @@ ids = data["ID"]
 # curves: graphics/curves/{PREFIX}/curves{ID}.[txt | json]
 # currents: NOT ALWAYS SUPPORTED?
 
-typenames = ['axis', 'surfaces', 'modB', 'curves']
+typenames = [
+    # 'axis',
+    'surfaces',
+    'modB',
+    'curves'
+]
 filetype_suffix = "txt"
 
 for id in ids:

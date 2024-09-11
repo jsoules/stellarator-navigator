@@ -20,11 +20,11 @@ fields_to_drop = ["constraint_success", #"run_ID", "shear", "well",
                   "min_coil2axis_dist", "axis_Rc", "axis_Zs"]
 data = data.drop(columns=fields_to_drop)
 
-# fields_to_log_scale = ["qa_error", "gradient"]
-fields_to_log_scale = ["qa_error"]
+# fields_to_log_scale = ["qs_error", "gradient"]
+fields_to_log_scale = ["qs_error"]
 for field in fields_to_log_scale:
     data[field] = data[field].transform(lambda x: np.log10(x))
-data["qa_error"] = data["qa_error"].transform(lambda x: x/2) # we actually want sqrt of this value
+data["qs_error"] = data["qs_error"].transform(lambda x: x/2) # we actually want sqrt of this value
 
 data.to_json(output_file_name, orient='split', double_precision=10)
 

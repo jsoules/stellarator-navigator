@@ -26,9 +26,13 @@ const RecordManifest: FunctionComponent<recordProps> = (props: recordProps) => {
                 <div className="manifestLabel">Length (m):</div>
                 <div className="manifestContent">{rec.totalCoilLength} ({rec.coilLengthPerHp} per half-period)</div>
             </div>
-            <div key="qaError">
-                <div className="manifestLabel">{getLabel({name: "qaError", labelType: "plot"})}:</div>
-                <div className="manifestContent">{(10 ** rec.qaError).toExponential(10)}</div>
+            <div key="threshold">
+                <div className="manifestLabel"> {getLabel({name: "totalCoilLengthThresh", labelType: "plot"})}:</div>
+                <div className="manifestContent">{rec.totalCoilLengthThresh}</div>
+            </div>
+            <div key="qsError">
+                <div className="manifestLabel">{getLabel({name: "qsError", labelType: "plot"})}:</div>
+                <div className="manifestContent">{(10 ** rec.qsError).toExponential(10)}</div>
             </div>
             <div key="iota">
                 <div className="manifestLabel">{getLabel({name: "meanIota", labelType: "plot"})}:</div>
