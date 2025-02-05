@@ -22,7 +22,7 @@ type OverallHitCountProps = {
 export const OverallHitCount: FunctionComponent<PropsWithChildren<OverallHitCountProps>> = (props: PropsWithChildren<OverallHitCountProps>) => (
     <div className="plotGridNote">
         {props.children}
-        <span className="plotGridNoteText">Current filter settings return {props.hits} devices.</span>
+        <span className="plotGridNoteText">Current filter settings return {props.hits} devices. Devices from the selected plot are shown below.</span>
     </div>
 )
 

@@ -111,9 +111,9 @@ const applyUpdatedFilters = (settings: FilterSettings, ignoreSizeCheck: boolean 
 
 
 const selectedOrFirst = (field: ToggleableVariables, choices: boolean[], selected: number | undefined): number | undefined => {
-    if (selected === undefined) return selected
     const setVals = getValuesFromBoolArray(field, choices)
-    return setVals.includes(selected) ? selected : setVals[0]
+    if (setVals.length === 0) return undefined
+    return selected != undefined && setVals.includes(selected) ? selected : setVals[0]
 }
 
 
