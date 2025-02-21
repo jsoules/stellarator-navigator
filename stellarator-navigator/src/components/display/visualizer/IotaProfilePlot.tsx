@@ -17,7 +17,14 @@ type Props = {
 
 
 const getRange = (dataSeries: number[]) => {
-    const range = [Math.min(...dataSeries), Math.max(...dataSeries)]
+    // Note: it's actually possible the iota profile/tf profile data
+    // will only have one data point. In that case, just add some
+    // padding to that data point. (It'll be further padded by the
+    // margin-adding code in IotaProfilePlot below, but who cares)
+    const vals = dataSeries.length === 1
+        ? [dataSeries[0] * .8, dataSeries[0] * 1.2]
+        : dataSeries
+    const range = [Math.min(...vals), Math.max(...vals)]
     return { range }
 }
 
@@ -63,6 +70,7 @@ const useIotaContent = (iotaProf: number[], tfProf: number[], canvasHeight: numb
     const data = tfProf.map((v, i) => [v, iotaProf[i]])
     const {slope, intercept} = useBestFitLine(data)
     const line = useMemo(() => {
+        if (!slope || !intercept) return <></>
         const nativeX1 = xScale.domain()[0]
         const nativeX2 = xScale.domain()[1]
         const realizedY1 = yScale(intercept + (slope * nativeX1))
