@@ -12,16 +12,13 @@ type Props = {
 
 SyntaxHighlighter.registerLanguage('python', python)
 
-const codeSnippet =
-`from simsopt._core import load
-# replace "NAME_OF_FILE_YOU_DOWNLOADED" with the name you gave the file
-[surfaces, coils] = load(f'NAME_OF_FILE_YOU_DOWNLOADED.json')`
 
 const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
     const { id } = props
+    
     const vmecPath = makeResourcePath(getStringId(id), KnownPathType.NML_VMEC)
     const simsoptPath = makeResourcePath(getStringId(id), KnownPathType.SIMSOPT)
-
+    
     // We have to do some fussy path-munging in order to construct the forced-download link correctly--otherwise
     // the browser will suggest saving the file according to its full path, not just its file name.
     const vmecPathParts = vmecPath.split("/")
@@ -30,6 +27,9 @@ const DownloadLinks: FunctionComponent<Props> = (props: Props) => {
     const simsoptPathParts = simsoptPath.split("/")
     const simsoptFile = simsoptPathParts.pop() ?? ""
     const simsoptPathFinal = simsoptPathParts.join("/")
+    const codeSnippet =
+`from simsopt._core import load
+[surfaces, coils] = load('${simsoptFile}')`
 
     return  (<div className="indent">
                 <Tooltip
