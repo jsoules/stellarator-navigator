@@ -1,9 +1,7 @@
 import { Button, Tooltip } from '@mui/material'
-// import imgUrl from 'assets/sample-197168.png'
-// import imgVideo from 'assets/sample-0197168.mp4'
-import imgLogo from 'assets/Quasr_Logo_RGB_Full.svg'
-import imgVideo from 'assets/sample-1708695.mp4'
 import { Dispatch, FunctionComponent, SetStateAction, useMemo } from "react"
+import imgLogo from 'src/assets/Quasr_Logo_RGB_Full.svg'
+import imgVideo from 'src/assets/sample-1708695.mp4'
 
 // const BASENAME = import.meta.env.BASE_URL
 

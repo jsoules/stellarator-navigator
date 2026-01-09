@@ -16,9 +16,8 @@ import ErrorPage from '@snComponents/general/ErrorPage'
 import './App.css'
 import './Loaders.css'
 
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router'
 
-// eslint-disable-next-line react-refresh/only-export-components
 const BASENAME = import.meta.env.BASE_URL
 
 const router = createBrowserRouter(
