@@ -1,10 +1,16 @@
 import react from '@vitejs/plugin-react'
+import * as path from 'path'
 import { defineConfig } from 'vite'
 import tsconfigPaths from "vite-tsconfig-paths"
 import { configDefaults, coverageConfigDefaults } from 'vitest/config'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    resolve: {
+        alias: {
+            src: path.resolve('src/')
+        },
+    },
     test: {
         // note for test: mockReset clears all spies/mocks and resets to empty function,
         // while restoreMocks: true calls .mockRestore() thereby clearing spies & mock

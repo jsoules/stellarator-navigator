@@ -1,6 +1,6 @@
+import useDatabase from '@snQuerying/useDatabase'
 import NavigatorReducer from "@snState/NavigatorReducer"
 import { initialDatabase, initialNavigatorState } from "@snTypes/Defaults"
-import useDatabase from 'querying/useDatabase'
 import { FunctionComponent, useEffect, useReducer, useState } from "react"
 import About from './About'
 import Overview from './Overview'

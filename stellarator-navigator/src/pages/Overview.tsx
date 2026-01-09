@@ -19,8 +19,8 @@ import { NavigatorStateAction } from "@snState/NavigatorReducer"
 import { DependentVariables, ToggleableVariables, fieldIsCategorical } from "@snTypes/DataDictionary"
 import { FilterSettings, StellaratorRecord } from "@snTypes/Types"
 import useWindowDimensions from "@snUtil/useWindowDimensions"
-import imgLogo from 'assets/Quasr_Logo_RGB_Full.svg'
 import { Dispatch, FunctionComponent, useMemo, useReducer, useState } from "react"
+import imgLogo from 'src/assets/Quasr_Logo_RGB_Full.svg'
 import PlotGrid from "./PlotGrid"
 
 

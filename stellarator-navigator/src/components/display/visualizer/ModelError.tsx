@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react"
-import { isRouteErrorResponse, useParams, useRouteError } from 'react-router-dom'
+import { isRouteErrorResponse, useParams, useRouteError } from 'react-router'
 
 const dev = import.meta.env.DEV
 

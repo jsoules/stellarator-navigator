@@ -7,9 +7,9 @@ import { defaultEmptyRecord } from "@snTypes/Defaults"
 import { getStringId } from "@snUtil/makeResourcePath"
 import useWindowDimensions from "@snUtil/useWindowDimensions"
 import { DownloadLinks, IotaProfilePlot, PoincarePlot, RecordManifest, SimulationView, SurfaceControls } from "@snVisualizer/index"
-import imgLogo from 'assets/Quasr_Logo_RGB_Full.svg'
 import { FunctionComponent, useEffect, useMemo, useRef, useState } from "react"
 import { useParams } from "react-router"
+import imgLogo from 'src/assets/Quasr_Logo_RGB_Full.svg'
 
 const Model: FunctionComponent = () => {
     const params = useParams()

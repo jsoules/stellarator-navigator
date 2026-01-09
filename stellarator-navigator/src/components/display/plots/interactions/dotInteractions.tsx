@@ -1,6 +1,5 @@
 import { getStringId } from "@snUtil/makeResourcePath"
 
-// eslint-disable-next-line react-refresh/only-export-components
 const BASENAME = import.meta.env.BASE_URL
 
 export const onHoverDot = (id: number) => {
